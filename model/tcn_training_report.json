@@ -1,0 +1,199 @@
+{
+  "dataset": "C:\\BSIT 3RD YEAR\\New VovGest\\dataset_words_lstm",
+  "model": "C:\\BSIT 3RD YEAR\\New VovGest\\model\\voxgest_tcn_v1.h5",
+  "labels": "C:\\BSIT 3RD YEAR\\New VovGest\\model\\class_labels_tcn_v1.json",
+  "tflite": "C:\\BSIT 3RD YEAR\\New VovGest\\model\\voxgest_tcn_v1.tflite",
+  "seq_len": 30,
+  "feature_size": 162,
+  "word_profile": "sentence11",
+  "target_words": [
+    "YES",
+    "NO",
+    "PLEASE",
+    "WATER",
+    "HELLO",
+    "HELP",
+    "STOP",
+    "DOCTOR",
+    "NAME",
+    "THANKYOU",
+    "ASK_NAME"
+  ],
+  "training_words": [
+    "YES",
+    "NO",
+    "PLEASE",
+    "WATER",
+    "HELLO",
+    "HELP",
+    "STOP",
+    "DOCTOR",
+    "NAME",
+    "THANKYOU",
+    "ASK_NAME",
+    "NOTHING"
+  ],
+  "include_extra_words": false,
+  "manual_to_train": true,
+  "classes": [
+    "YES",
+    "NO",
+    "PLEASE",
+    "WATER",
+    "HELLO",
+    "HELP",
+    "STOP",
+    "DOCTOR",
+    "NAME",
+    "THANKYOU",
+    "ASK_NAME",
+    "NOTHING"
+  ],
+  "missing_target_words": [],
+  "skipped_target_words": [],
+  "ignored_wrong_shape_files": 0,
+  "ignored_missing_hand_metadata_files": 0,
+  "class_stats": {
+    "YES": {
+      "sequences": 580,
+      "groups": 25,
+      "used": true,
+      "skipped_missing_hand_metadata": 0
+    },
+    "NO": {
+      "sequences": 519,
+      "groups": 23,
+      "used": true,
+      "skipped_missing_hand_metadata": 0
+    },
+    "PLEASE": {
+      "sequences": 440,
+      "groups": 21,
+      "used": true,
+      "skipped_missing_hand_metadata": 0
+    },
+    "WATER": {
+      "sequences": 580,
+      "groups": 25,
+      "used": true,
+      "skipped_missing_hand_metadata": 0
+    },
+    "HELLO": {
+      "sequences": 460,
+      "groups": 23,
+      "used": true,
+      "skipped_missing_hand_metadata": 0
+    },
+    "HELP": {
+      "sequences": 440,
+      "groups": 21,
+      "used": true,
+      "skipped_missing_hand_metadata": 0
+    },
+    "STOP": {
+      "sequences": 460,
+      "groups": 23,
+      "used": true,
+      "skipped_missing_hand_metadata": 0
+    },
+    "DOCTOR": {
+      "sequences": 541,
+      "groups": 22,
+      "used": true,
+      "skipped_missing_hand_metadata": 0
+    },
+    "NAME": {
+      "sequences": 460,
+      "groups": 23,
+      "used": true,
+      "skipped_missing_hand_metadata": 0
+    },
+    "THANKYOU": {
+      "sequences": 580,
+      "groups": 25,
+      "used": true,
+      "skipped_missing_hand_metadata": 0
+    },
+    "ASK_NAME": {
+      "sequences": 300,
+      "groups": 5,
+      "used": true,
+      "skipped_missing_hand_metadata": 0
+    },
+    "NOTHING": {
+      "sequences": 360,
+      "groups": 6,
+      "used": true,
+      "skipped_missing_hand_metadata": 0
+    }
+  },
+  "train_sequences": 4957,
+  "val_sequences": 763,
+  "train_groups": 199,
+  "val_groups": 43,
+  "best_grouped_val_accuracy": 57.92922377586365,
+  "per_class": {
+    "YES": {
+      "correct": 52,
+      "total": 95,
+      "accuracy": 54.736842105263165
+    },
+    "NO": {
+      "correct": 57,
+      "total": 76,
+      "accuracy": 75.0
+    },
+    "PLEASE": {
+      "correct": 38,
+      "total": 76,
+      "accuracy": 50.0
+    },
+    "WATER": {
+      "correct": 37,
+      "total": 76,
+      "accuracy": 48.68421052631579
+    },
+    "HELLO": {
+      "correct": 0,
+      "total": 58,
+      "accuracy": 0.0
+    },
+    "HELP": {
+      "correct": 57,
+      "total": 76,
+      "accuracy": 75.0
+    },
+    "STOP": {
+      "correct": 58,
+      "total": 77,
+      "accuracy": 75.32467532467533
+    },
+    "DOCTOR": {
+      "correct": 69,
+      "total": 76,
+      "accuracy": 90.78947368421053
+    },
+    "NAME": {
+      "correct": 24,
+      "total": 58,
+      "accuracy": 41.37931034482759
+    },
+    "THANKYOU": {
+      "correct": 50,
+      "total": 95,
+      "accuracy": 52.63157894736842
+    }
+  },
+  "top_miss": {
+    "YES": "NO",
+    "NO": "YES",
+    "PLEASE": "STOP",
+    "WATER": "HELP",
+    "HELLO": "WATER",
+    "HELP": "DOCTOR",
+    "STOP": "HELP",
+    "DOCTOR": "HELLO",
+    "NAME": "STOP",
+    "THANKYOU": "NAME"
+  }
+}

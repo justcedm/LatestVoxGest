@@ -1,0 +1,56 @@
+{
+  "generated_at": "2026-05-10T21:46:14",
+  "model_name": "LSTM",
+  "model_path": "C:\\BSIT 3RD YEAR\\New VovGest\\model\\voxgest_lstm_v1.h5",
+  "dominant_hand": "right",
+  "single_hand_pose": true,
+  "mirrored_input": true,
+  "expected_labels": [
+    "YES",
+    "NO",
+    "PLEASE",
+    "WATER",
+    "HELLO",
+    "HELP",
+    "STOP",
+    "DOCTOR",
+    "NAME",
+    "THANKYOU",
+    "NOTHING"
+  ],
+  "summary": {
+    "YES": {
+      "trials": 1,
+      "matched_expected": 1,
+      "accepted_by_gate": 0,
+      "false_accepts": 0,
+      "rejected": 1,
+      "confusions": {},
+      "failure_reasons": {
+        "low_motion<0.008": 1,
+        "low_path<0.05": 1,
+        "low_hand<0.25": 1
+      }
+    }
+  },
+  "records": [
+    {
+      "timestamp": "2026-05-10T21:45:45",
+      "model_name": "LSTM",
+      "model_path": "C:\\BSIT 3RD YEAR\\New VovGest\\model\\voxgest_lstm_v1.h5",
+      "expected_label": "YES",
+      "predicted_label": "YES",
+      "confidence": 0.96375,
+      "margin": 0.92777,
+      "motion": 0.0,
+      "wrist_path": 0.0,
+      "hand_presence": 0.0,
+      "accepted_by_gate": false,
+      "matched_expected": true,
+      "failure_reason": "low_motion<0.008;low_path<0.05;low_hand<0.25",
+      "dominant_hand": "right",
+      "single_hand_pose": true,
+      "mirrored_input": true
+    }
+  ]
+}

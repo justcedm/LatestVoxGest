@@ -1,0 +1,190 @@
+{
+  "dataset": "C:\\BSIT 3RD YEAR\\New VovGest\\dataset_words_lstm",
+  "model": "C:\\BSIT 3RD YEAR\\New VovGest\\model\\voxgest_lstm_v1.h5",
+  "labels": "C:\\BSIT 3RD YEAR\\New VovGest\\model\\class_labels_lstm_v1.json",
+  "tflite": "C:\\BSIT 3RD YEAR\\New VovGest\\model\\voxgest_lstm_v1.tflite",
+  "seq_len": 30,
+  "feature_size": 162,
+  "word_profile": "demo10",
+  "target_words": [
+    "YES",
+    "NO",
+    "PLEASE",
+    "WATER",
+    "HELLO",
+    "HELP",
+    "STOP",
+    "DOCTOR",
+    "NAME",
+    "THANKYOU"
+  ],
+  "training_words": [
+    "YES",
+    "NO",
+    "PLEASE",
+    "WATER",
+    "HELLO",
+    "HELP",
+    "STOP",
+    "DOCTOR",
+    "NAME",
+    "THANKYOU",
+    "NOTHING"
+  ],
+  "include_extra_words": false,
+  "manual_to_train": true,
+  "classes": [
+    "YES",
+    "NO",
+    "PLEASE",
+    "WATER",
+    "HELLO",
+    "HELP",
+    "STOP",
+    "DOCTOR",
+    "NAME",
+    "THANKYOU",
+    "NOTHING"
+  ],
+  "missing_target_words": [],
+  "skipped_target_words": [],
+  "ignored_wrong_shape_files": 0,
+  "ignored_missing_hand_metadata_files": 0,
+  "class_stats": {
+    "YES": {
+      "sequences": 520,
+      "groups": 24,
+      "used": true,
+      "skipped_missing_hand_metadata": 0
+    },
+    "NO": {
+      "sequences": 519,
+      "groups": 23,
+      "used": true,
+      "skipped_missing_hand_metadata": 0
+    },
+    "PLEASE": {
+      "sequences": 380,
+      "groups": 20,
+      "used": true,
+      "skipped_missing_hand_metadata": 0
+    },
+    "WATER": {
+      "sequences": 520,
+      "groups": 24,
+      "used": true,
+      "skipped_missing_hand_metadata": 0
+    },
+    "HELLO": {
+      "sequences": 400,
+      "groups": 22,
+      "used": true,
+      "skipped_missing_hand_metadata": 0
+    },
+    "HELP": {
+      "sequences": 380,
+      "groups": 20,
+      "used": true,
+      "skipped_missing_hand_metadata": 0
+    },
+    "STOP": {
+      "sequences": 400,
+      "groups": 22,
+      "used": true,
+      "skipped_missing_hand_metadata": 0
+    },
+    "DOCTOR": {
+      "sequences": 481,
+      "groups": 21,
+      "used": true,
+      "skipped_missing_hand_metadata": 0
+    },
+    "NAME": {
+      "sequences": 400,
+      "groups": 22,
+      "used": true,
+      "skipped_missing_hand_metadata": 0
+    },
+    "THANKYOU": {
+      "sequences": 520,
+      "groups": 24,
+      "used": true,
+      "skipped_missing_hand_metadata": 0
+    },
+    "NOTHING": {
+      "sequences": 240,
+      "groups": 4,
+      "used": true,
+      "skipped_missing_hand_metadata": 0
+    }
+  },
+  "train_sequences": 3998,
+  "val_sequences": 762,
+  "train_groups": 184,
+  "val_groups": 42,
+  "best_grouped_val_accuracy": 50.78740119934082,
+  "per_class": {
+    "YES": {
+      "correct": 29,
+      "total": 95,
+      "accuracy": 30.526315789473685
+    },
+    "NO": {
+      "correct": 55,
+      "total": 76,
+      "accuracy": 72.36842105263158
+    },
+    "PLEASE": {
+      "correct": 54,
+      "total": 76,
+      "accuracy": 71.05263157894737
+    },
+    "WATER": {
+      "correct": 29,
+      "total": 95,
+      "accuracy": 30.526315789473685
+    },
+    "HELLO": {
+      "correct": 38,
+      "total": 58,
+      "accuracy": 65.51724137931035
+    },
+    "HELP": {
+      "correct": 19,
+      "total": 76,
+      "accuracy": 25.0
+    },
+    "STOP": {
+      "correct": 20,
+      "total": 58,
+      "accuracy": 34.48275862068966
+    },
+    "DOCTOR": {
+      "correct": 38,
+      "total": 57,
+      "accuracy": 66.66666666666666
+    },
+    "NAME": {
+      "correct": 38,
+      "total": 76,
+      "accuracy": 50.0
+    },
+    "THANKYOU": {
+      "correct": 67,
+      "total": 95,
+      "accuracy": 70.52631578947368
+    }
+  },
+  "top_miss": {
+    "YES": "THANKYOU",
+    "NO": "YES",
+    "PLEASE": "STOP",
+    "WATER": "PLEASE",
+    "HELLO": "NAME",
+    "HELP": "NAME",
+    "STOP": "NAME",
+    "DOCTOR": "HELLO",
+    "NAME": "STOP",
+    "THANKYOU": "HELLO"
+  }
+}

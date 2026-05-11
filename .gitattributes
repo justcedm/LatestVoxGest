@@ -1,0 +1,10 @@
+*.h5 binary
+*.tflite binary
+*.npy binary
+*.npz binary
+*.mp4 binary
+*.avi binary
+*.mov binary
+*.mkv binary
+*.pdf binary
+*.docx binary

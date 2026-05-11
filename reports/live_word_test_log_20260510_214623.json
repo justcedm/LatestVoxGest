@@ -1,0 +1,188 @@
+{
+  "generated_at": "2026-05-10T21:47:18",
+  "model_name": "LSTM",
+  "model_path": "C:\\BSIT 3RD YEAR\\New VovGest\\model\\voxgest_lstm_v1.h5",
+  "dominant_hand": "right",
+  "single_hand_pose": true,
+  "mirrored_input": true,
+  "expected_labels": [
+    "YES",
+    "NO",
+    "PLEASE",
+    "WATER",
+    "HELLO",
+    "HELP",
+    "STOP",
+    "DOCTOR",
+    "NAME",
+    "THANKYOU",
+    "NOTHING"
+  ],
+  "summary": {
+    "YES": {
+      "trials": 1,
+      "matched_expected": 1,
+      "accepted_by_gate": 1,
+      "false_accepts": 0,
+      "rejected": 0,
+      "confusions": {},
+      "failure_reasons": {}
+    },
+    "NO": {
+      "trials": 2,
+      "matched_expected": 1,
+      "accepted_by_gate": 2,
+      "false_accepts": 1,
+      "rejected": 0,
+      "confusions": {
+        "YES": 1
+      },
+      "failure_reasons": {
+        "wrong_label:YES": 1
+      }
+    },
+    "PLEASE": {
+      "trials": 4,
+      "matched_expected": 0,
+      "accepted_by_gate": 4,
+      "false_accepts": 4,
+      "rejected": 0,
+      "confusions": {
+        "NOTHING": 3,
+        "THANKYOU": 1
+      },
+      "failure_reasons": {
+        "wrong_label:NOTHING": 3,
+        "wrong_label:THANKYOU": 1
+      }
+    }
+  },
+  "records": [
+    {
+      "timestamp": "2026-05-10T21:46:42",
+      "model_name": "LSTM",
+      "model_path": "C:\\BSIT 3RD YEAR\\New VovGest\\model\\voxgest_lstm_v1.h5",
+      "expected_label": "YES",
+      "predicted_label": "YES",
+      "confidence": 0.997674,
+      "margin": 0.995685,
+      "motion": 0.098719,
+      "wrist_path": 2.884894,
+      "hand_presence": 1.0,
+      "accepted_by_gate": true,
+      "matched_expected": true,
+      "failure_reason": "ok",
+      "dominant_hand": "right",
+      "single_hand_pose": true,
+      "mirrored_input": true
+    },
+    {
+      "timestamp": "2026-05-10T21:46:54",
+      "model_name": "LSTM",
+      "model_path": "C:\\BSIT 3RD YEAR\\New VovGest\\model\\voxgest_lstm_v1.h5",
+      "expected_label": "NO",
+      "predicted_label": "YES",
+      "confidence": 0.952727,
+      "margin": 0.905527,
+      "motion": 0.045377,
+      "wrist_path": 0.278011,
+      "hand_presence": 0.8,
+      "accepted_by_gate": true,
+      "matched_expected": false,
+      "failure_reason": "wrong_label:YES",
+      "dominant_hand": "right",
+      "single_hand_pose": true,
+      "mirrored_input": true
+    },
+    {
+      "timestamp": "2026-05-10T21:46:59",
+      "model_name": "LSTM",
+      "model_path": "C:\\BSIT 3RD YEAR\\New VovGest\\model\\voxgest_lstm_v1.h5",
+      "expected_label": "NO",
+      "predicted_label": "NO",
+      "confidence": 0.995709,
+      "margin": 0.991464,
+      "motion": 0.026257,
+      "wrist_path": 0.454462,
+      "hand_presence": 1.0,
+      "accepted_by_gate": true,
+      "matched_expected": true,
+      "failure_reason": "ok",
+      "dominant_hand": "right",
+      "single_hand_pose": true,
+      "mirrored_input": true
+    },
+    {
+      "timestamp": "2026-05-10T21:47:08",
+      "model_name": "LSTM",
+      "model_path": "C:\\BSIT 3RD YEAR\\New VovGest\\model\\voxgest_lstm_v1.h5",
+      "expected_label": "PLEASE",
+      "predicted_label": "NOTHING",
+      "confidence": 0.886984,
+      "margin": 0.775029,
+      "motion": 0.0885,
+      "wrist_path": 1.45389,
+      "hand_presence": 0.533333,
+      "accepted_by_gate": true,
+      "matched_expected": false,
+      "failure_reason": "wrong_label:NOTHING",
+      "dominant_hand": "right",
+      "single_hand_pose": true,
+      "mirrored_input": true
+    },
+    {
+      "timestamp": "2026-05-10T21:47:11",
+      "model_name": "LSTM",
+      "model_path": "C:\\BSIT 3RD YEAR\\New VovGest\\model\\voxgest_lstm_v1.h5",
+      "expected_label": "PLEASE",
+      "predicted_label": "THANKYOU",
+      "confidence": 0.605082,
+      "margin": 0.214426,
+      "motion": 0.086619,
+      "wrist_path": 1.52481,
+      "hand_presence": 0.9,
+      "accepted_by_gate": true,
+      "matched_expected": false,
+      "failure_reason": "wrong_label:THANKYOU",
+      "dominant_hand": "right",
+      "single_hand_pose": true,
+      "mirrored_input": true
+    },
+    {
+      "timestamp": "2026-05-10T21:47:14",
+      "model_name": "LSTM",
+      "model_path": "C:\\BSIT 3RD YEAR\\New VovGest\\model\\voxgest_lstm_v1.h5",
+      "expected_label": "PLEASE",
+      "predicted_label": "NOTHING",
+      "confidence": 0.999922,
+      "margin": 0.999861,
+      "motion": 0.048,
+      "wrist_path": 1.366797,
+      "hand_presence": 1.0,
+      "accepted_by_gate": true,
+      "matched_expected": false,
+      "failure_reason": "wrong_label:NOTHING",
+      "dominant_hand": "right",
+      "single_hand_pose": true,
+      "mirrored_input": true
+    },
+    {
+      "timestamp": "2026-05-10T21:47:16",
+      "model_name": "LSTM",
+      "model_path": "C:\\BSIT 3RD YEAR\\New VovGest\\model\\voxgest_lstm_v1.h5",
+      "expected_label": "PLEASE",
+      "predicted_label": "NOTHING",
+      "confidence": 0.999905,
+      "margin": 0.999831,
+      "motion": 0.064231,
+      "wrist_path": 1.826093,
+      "hand_presence": 1.0,
+      "accepted_by_gate": true,
+      "matched_expected": false,
+      "failure_reason": "wrong_label:NOTHING",
+      "dominant_hand": "right",
+      "single_hand_pose": true,
+      "mirrored_input": true
+    }
+  ]
+}

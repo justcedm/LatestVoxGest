@@ -1,0 +1,12 @@
+{
+  "id": "HELLO",
+  "type": "word",
+  "status": "placeholder_contract",
+  "gloss": "HELLO",
+  "fallback": "fingerspell",
+  "animation": {
+    "format": "avatar_keyframes_v1",
+    "dominant_hand": "configured_user_hand",
+    "keyframes": []
+  }
+}

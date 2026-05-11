@@ -1,0 +1,63 @@
+{
+  "dataset": "C:\\BSIT 3RD YEAR\\New VovGest\\dataset_phrase_intents",
+  "model": "C:\\BSIT 3RD YEAR\\New VovGest\\model\\voxgest_phrase_tcn_v1.h5",
+  "labels": "C:\\BSIT 3RD YEAR\\New VovGest\\model\\class_labels_phrase_tcn_v1.json",
+  "tflite": "C:\\BSIT 3RD YEAR\\New VovGest\\model\\voxgest_phrase_tcn_v1.tflite",
+  "seq_len": 60,
+  "feature_size": 162,
+  "training_labels": [
+    "ASK_NAME",
+    "NOTHING",
+    "PARTIAL_ASK_NAME"
+  ],
+  "required_labels": [
+    "ASK_NAME",
+    "NOTHING"
+  ],
+  "classes": [
+    "ASK_NAME",
+    "NOTHING"
+  ],
+  "missing_required_labels": [],
+  "ignored_wrong_shape_files": 0,
+  "ignored_missing_hand_metadata_files": 0,
+  "class_stats": {
+    "ASK_NAME": {
+      "sequences": 120,
+      "groups": 3,
+      "used": true,
+      "skipped_missing_hand_metadata": 0,
+      "need_sequences": 0,
+      "need_groups": 0
+    },
+    "NOTHING": {
+      "sequences": 120,
+      "groups": 3,
+      "used": true,
+      "skipped_missing_hand_metadata": 0,
+      "need_sequences": 0,
+      "need_groups": 0
+    }
+  },
+  "train_sequences": 150,
+  "val_sequences": 90,
+  "train_groups": 4,
+  "val_groups": 2,
+  "best_grouped_val_accuracy": 100.0,
+  "per_class": {
+    "ASK_NAME": {
+      "correct": 30,
+      "total": 30,
+      "accuracy": 100.0
+    },
+    "NOTHING": {
+      "correct": 60,
+      "total": 60,
+      "accuracy": 100.0
+    }
+  },
+  "top_miss": {
+    "ASK_NAME": "-",
+    "NOTHING": "-"
+  }
+}

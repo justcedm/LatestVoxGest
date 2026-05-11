@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Local environments
+voxgest_env/
+.venv/
+venv/
+env/
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+.vscode/
+
+# Large/generated ML data
+dataset_*/
+wlasl_videos/
+*.mp4
+*.avi
+*.mov
+*.mkv
+
+# Local calibration/output data
+calibration_static/
+static_calibration/
+
+# Runtime logs and temporary output
+*.log
+tmp/
+temp/
+
+# Keep lightweight model/runtime reports under model/ and reports/.
+# Large raw datasets and downloaded videos should be stored outside Git
+# or in Git LFS if they need to be shared.

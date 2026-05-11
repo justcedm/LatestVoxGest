@@ -1,0 +1,12 @@
+label,priority,total_files,valid_shape,wrong_shape,manual_samples,video_samples,groups,manual_groups,missing_hand_metadata,right_hand_meta,left_hand_meta,auto_hand_meta,mirrored_true,mirrored_false,single_hand_true,single_hand_false,ready,need_sequences,need_groups,guidance
+YES,focus,580,580,0,180,400,25,3,0,120,460,0,180,400,580,0,True,0,0,prioritize clean webcam calibration and live-test this class
+NO,focus,519,519,0,120,399,23,2,0,60,459,0,120,399,519,0,True,0,0,prioritize clean webcam calibration and live-test this class
+PLEASE,focus,440,440,0,60,380,21,1,0,60,380,0,60,380,440,0,True,0,0,prioritize clean webcam calibration and live-test this class
+WATER,focus,580,580,0,180,400,25,3,0,120,460,0,180,400,580,0,True,0,0,prioritize clean webcam calibration and live-test this class
+HELLO,focus,460,460,0,60,400,23,1,0,60,400,0,60,400,460,0,True,0,0,prioritize clean webcam calibration and live-test this class
+HELP,keep,440,440,0,60,380,21,1,0,60,380,0,60,380,440,0,True,0,0,ready for retraining/live test
+STOP,keep,460,460,0,60,400,23,1,0,60,400,0,60,400,460,0,True,0,0,ready for retraining/live test
+DOCTOR,focus,541,541,0,180,361,22,3,0,120,421,0,180,361,541,0,True,0,0,prioritize clean webcam calibration and live-test this class
+NAME,keep,460,460,0,60,400,23,1,0,60,400,0,60,400,460,0,True,0,0,ready for retraining/live test
+THANKYOU,focus,580,580,0,180,400,25,3,0,120,460,0,180,400,580,0,True,0,0,prioritize clean webcam calibration and live-test this class
+NOTHING,negative,360,360,0,360,0,6,6,0,240,120,0,360,0,360,0,True,0,0,"include idle, partial, incomplete, transition, and hand-enter/leave hard negatives"

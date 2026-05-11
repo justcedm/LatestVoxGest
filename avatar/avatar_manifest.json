@@ -1,0 +1,37 @@
+{
+  "version": 1,
+  "profile": "recognition_hardening_v1",
+  "purpose": "Contract for spoken-user-to-sign-user avatar playback after token composition.",
+  "input_contract": {
+    "source": "confirmed token composer output only",
+    "letters": "A-Z tokens form spelled words",
+    "words": "known word tokens map to word animations",
+    "nothing": "ignored; never spoken or animated"
+  },
+  "playback_rule": {
+    "known_word": "play avatar/signs/<WORD>.json",
+    "unknown_word": "fingerspell characters A-Z",
+    "space": "word boundary",
+    "del": "composer-only control; no animation"
+  },
+  "known_words": {
+    "YES": "signs/YES.json",
+    "NO": "signs/NO.json",
+    "PLEASE": "signs/PLEASE.json",
+    "WATER": "signs/WATER.json",
+    "HELLO": "signs/HELLO.json",
+    "HELP": "signs/HELP.json",
+    "STOP": "signs/STOP.json",
+    "DOCTOR": "signs/DOCTOR.json",
+    "NAME": "signs/NAME.json",
+    "THANKYOU": "signs/THANKYOU.json"
+  },
+  "fingerspell": {
+    "alphabet": "A-Z",
+    "fallback_for_unknown_words": true
+  },
+  "phrase_intents": {
+    "enabled": false,
+    "note": "Phrase-level sentence gestures are deferred until recognition hardening gates pass."
+  }
+}

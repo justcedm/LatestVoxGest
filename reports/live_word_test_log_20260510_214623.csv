@@ -1,0 +1,8 @@
+timestamp,model_name,model_path,expected_label,predicted_label,confidence,margin,motion,wrist_path,hand_presence,accepted_by_gate,matched_expected,failure_reason,dominant_hand,single_hand_pose,mirrored_input
+2026-05-10T21:46:42,LSTM,C:\BSIT 3RD YEAR\New VovGest\model\voxgest_lstm_v1.h5,YES,YES,0.997674,0.995685,0.098719,2.884894,1.0,True,True,ok,right,True,True
+2026-05-10T21:46:54,LSTM,C:\BSIT 3RD YEAR\New VovGest\model\voxgest_lstm_v1.h5,NO,YES,0.952727,0.905527,0.045377,0.278011,0.8,True,False,wrong_label:YES,right,True,True
+2026-05-10T21:46:59,LSTM,C:\BSIT 3RD YEAR\New VovGest\model\voxgest_lstm_v1.h5,NO,NO,0.995709,0.991464,0.026257,0.454462,1.0,True,True,ok,right,True,True
+2026-05-10T21:47:08,LSTM,C:\BSIT 3RD YEAR\New VovGest\model\voxgest_lstm_v1.h5,PLEASE,NOTHING,0.886984,0.775029,0.0885,1.45389,0.533333,True,False,wrong_label:NOTHING,right,True,True
+2026-05-10T21:47:11,LSTM,C:\BSIT 3RD YEAR\New VovGest\model\voxgest_lstm_v1.h5,PLEASE,THANKYOU,0.605082,0.214426,0.086619,1.52481,0.9,True,False,wrong_label:THANKYOU,right,True,True
+2026-05-10T21:47:14,LSTM,C:\BSIT 3RD YEAR\New VovGest\model\voxgest_lstm_v1.h5,PLEASE,NOTHING,0.999922,0.999861,0.048,1.366797,1.0,True,False,wrong_label:NOTHING,right,True,True
+2026-05-10T21:47:16,LSTM,C:\BSIT 3RD YEAR\New VovGest\model\voxgest_lstm_v1.h5,PLEASE,NOTHING,0.999905,0.999831,0.064231,1.826093,1.0,True,False,wrong_label:NOTHING,right,True,True
