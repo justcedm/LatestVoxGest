@@ -20,46 +20,46 @@
   ],
   "class_stats": {
     "J": {
-      "sequences": 60,
-      "groups": 3,
+      "sequences": 120,
+      "groups": 6,
       "used": true,
       "need_sequences": 0,
       "need_groups": 0
     },
     "Z": {
-      "sequences": 60,
-      "groups": 3,
+      "sequences": 120,
+      "groups": 6,
       "used": true,
       "need_sequences": 0,
       "need_groups": 0
     },
     "NOTHING": {
-      "sequences": 60,
-      "groups": 3,
+      "sequences": 120,
+      "groups": 6,
       "used": true,
       "need_sequences": 0,
       "need_groups": 0
     }
   },
   "wrong_shape_files": 0,
-  "train_sequences": 120,
-  "val_sequences": 60,
-  "best_grouped_val_accuracy": 36.666667461395264,
+  "train_sequences": 240,
+  "val_sequences": 120,
+  "best_grouped_val_accuracy": 68.33333373069763,
   "per_class": {
     "J": {
-      "correct": 18,
-      "total": 20,
-      "accuracy": 90.0
+      "correct": 35,
+      "total": 40,
+      "accuracy": 87.5
     },
     "Z": {
-      "correct": 4,
-      "total": 20,
-      "accuracy": 20.0
+      "correct": 14,
+      "total": 40,
+      "accuracy": 35.0
     },
     "NOTHING": {
-      "correct": 0,
-      "total": 20,
-      "accuracy": 0.0
+      "correct": 33,
+      "total": 40,
+      "accuracy": 82.5
     }
   }
 }

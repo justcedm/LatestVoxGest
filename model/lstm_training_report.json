@@ -52,8 +52,8 @@
   "ignored_missing_hand_metadata_files": 0,
   "class_stats": {
     "YES": {
-      "sequences": 520,
-      "groups": 24,
+      "sequences": 580,
+      "groups": 25,
       "used": true,
       "skipped_missing_hand_metadata": 0
     },
@@ -64,127 +64,127 @@
       "skipped_missing_hand_metadata": 0
     },
     "PLEASE": {
-      "sequences": 380,
-      "groups": 20,
-      "used": true,
-      "skipped_missing_hand_metadata": 0
-    },
-    "WATER": {
-      "sequences": 520,
-      "groups": 24,
-      "used": true,
-      "skipped_missing_hand_metadata": 0
-    },
-    "HELLO": {
-      "sequences": 400,
-      "groups": 22,
-      "used": true,
-      "skipped_missing_hand_metadata": 0
-    },
-    "HELP": {
-      "sequences": 380,
-      "groups": 20,
-      "used": true,
-      "skipped_missing_hand_metadata": 0
-    },
-    "STOP": {
-      "sequences": 400,
-      "groups": 22,
-      "used": true,
-      "skipped_missing_hand_metadata": 0
-    },
-    "DOCTOR": {
-      "sequences": 481,
+      "sequences": 440,
       "groups": 21,
       "used": true,
       "skipped_missing_hand_metadata": 0
     },
-    "NAME": {
-      "sequences": 400,
+    "WATER": {
+      "sequences": 580,
+      "groups": 25,
+      "used": true,
+      "skipped_missing_hand_metadata": 0
+    },
+    "HELLO": {
+      "sequences": 460,
+      "groups": 23,
+      "used": true,
+      "skipped_missing_hand_metadata": 0
+    },
+    "HELP": {
+      "sequences": 500,
       "groups": 22,
       "used": true,
       "skipped_missing_hand_metadata": 0
     },
+    "STOP": {
+      "sequences": 700,
+      "groups": 27,
+      "used": true,
+      "skipped_missing_hand_metadata": 0
+    },
+    "DOCTOR": {
+      "sequences": 640,
+      "groups": 26,
+      "used": true,
+      "skipped_missing_hand_metadata": 0
+    },
+    "NAME": {
+      "sequences": 460,
+      "groups": 23,
+      "used": true,
+      "skipped_missing_hand_metadata": 0
+    },
     "THANKYOU": {
-      "sequences": 520,
-      "groups": 24,
+      "sequences": 580,
+      "groups": 25,
       "used": true,
       "skipped_missing_hand_metadata": 0
     },
     "NOTHING": {
-      "sequences": 240,
-      "groups": 4,
+      "sequences": 600,
+      "groups": 10,
       "used": true,
       "skipped_missing_hand_metadata": 0
     }
   },
-  "train_sequences": 3998,
-  "val_sequences": 762,
-  "train_groups": 184,
-  "val_groups": 42,
-  "best_grouped_val_accuracy": 50.78740119934082,
+  "train_sequences": 5240,
+  "val_sequences": 819,
+  "train_groups": 205,
+  "val_groups": 45,
+  "best_grouped_val_accuracy": 62.148964405059814,
   "per_class": {
     "YES": {
-      "correct": 29,
+      "correct": 67,
       "total": 95,
-      "accuracy": 30.526315789473685
+      "accuracy": 70.52631578947368
     },
     "NO": {
-      "correct": 55,
+      "correct": 57,
       "total": 76,
-      "accuracy": 72.36842105263158
+      "accuracy": 75.0
     },
     "PLEASE": {
-      "correct": 54,
+      "correct": 35,
       "total": 76,
-      "accuracy": 71.05263157894737
+      "accuracy": 46.05263157894737
     },
     "WATER": {
-      "correct": 29,
-      "total": 95,
-      "accuracy": 30.526315789473685
-    },
-    "HELLO": {
-      "correct": 38,
-      "total": 58,
-      "accuracy": 65.51724137931035
-    },
-    "HELP": {
-      "correct": 19,
-      "total": 76,
-      "accuracy": 25.0
-    },
-    "STOP": {
-      "correct": 20,
-      "total": 58,
-      "accuracy": 34.48275862068966
-    },
-    "DOCTOR": {
-      "correct": 38,
-      "total": 57,
-      "accuracy": 66.66666666666666
-    },
-    "NAME": {
       "correct": 38,
       "total": 76,
       "accuracy": 50.0
     },
-    "THANKYOU": {
-      "correct": 67,
+    "HELLO": {
+      "correct": 35,
+      "total": 58,
+      "accuracy": 60.3448275862069
+    },
+    "HELP": {
+      "correct": 57,
+      "total": 76,
+      "accuracy": 75.0
+    },
+    "STOP": {
+      "correct": 38,
       "total": 95,
-      "accuracy": 70.52631578947368
+      "accuracy": 40.0
+    },
+    "DOCTOR": {
+      "correct": 55,
+      "total": 95,
+      "accuracy": 57.89473684210527
+    },
+    "NAME": {
+      "correct": 67,
+      "total": 77,
+      "accuracy": 87.01298701298701
+    },
+    "THANKYOU": {
+      "correct": 60,
+      "total": 95,
+      "accuracy": 63.1578947368421
     }
   },
   "top_miss": {
-    "YES": "THANKYOU",
-    "NO": "YES",
-    "PLEASE": "STOP",
-    "WATER": "PLEASE",
-    "HELLO": "NAME",
-    "HELP": "NAME",
+    "YES": "NAME",
+    "NO": "NAME",
+    "PLEASE": "HELLO",
+    "WATER": "DOCTOR",
+    "HELLO": "PLEASE",
+    "HELP": "STOP",
     "STOP": "NAME",
-    "DOCTOR": "HELLO",
-    "NAME": "STOP",
-    "THANKYOU": "HELLO"
+    "DOCTOR": "PLEASE",
+    "NAME": "PLEASE",
+    "THANKYOU": "NAME"
   }
 }

@@ -5,7 +5,7 @@
   "tflite": "C:\\BSIT 3RD YEAR\\New VovGest\\model\\voxgest_tcn_v1.tflite",
   "seq_len": 30,
   "feature_size": 162,
-  "word_profile": "sentence11",
+  "word_profile": "demo10",
   "target_words": [
     "YES",
     "NO",
@@ -16,8 +16,7 @@
     "STOP",
     "DOCTOR",
     "NAME",
-    "THANKYOU",
-    "ASK_NAME"
+    "THANKYOU"
   ],
   "training_words": [
     "YES",
@@ -30,7 +29,6 @@
     "DOCTOR",
     "NAME",
     "THANKYOU",
-    "ASK_NAME",
     "NOTHING"
   ],
   "include_extra_words": false,
@@ -46,7 +44,6 @@
     "DOCTOR",
     "NAME",
     "THANKYOU",
-    "ASK_NAME",
     "NOTHING"
   ],
   "missing_target_words": [],
@@ -85,20 +82,20 @@
       "skipped_missing_hand_metadata": 0
     },
     "HELP": {
-      "sequences": 440,
-      "groups": 21,
+      "sequences": 500,
+      "groups": 22,
       "used": true,
       "skipped_missing_hand_metadata": 0
     },
     "STOP": {
-      "sequences": 460,
-      "groups": 23,
+      "sequences": 700,
+      "groups": 27,
       "used": true,
       "skipped_missing_hand_metadata": 0
     },
     "DOCTOR": {
-      "sequences": 541,
-      "groups": 22,
+      "sequences": 640,
+      "groups": 26,
       "used": true,
       "skipped_missing_hand_metadata": 0
     },
@@ -114,29 +111,23 @@
       "used": true,
       "skipped_missing_hand_metadata": 0
     },
-    "ASK_NAME": {
-      "sequences": 300,
-      "groups": 5,
-      "used": true,
-      "skipped_missing_hand_metadata": 0
-    },
     "NOTHING": {
-      "sequences": 360,
-      "groups": 6,
+      "sequences": 600,
+      "groups": 10,
       "used": true,
       "skipped_missing_hand_metadata": 0
     }
   },
-  "train_sequences": 4957,
-  "val_sequences": 763,
-  "train_groups": 199,
-  "val_groups": 43,
-  "best_grouped_val_accuracy": 57.92922377586365,
+  "train_sequences": 5240,
+  "val_sequences": 819,
+  "train_groups": 205,
+  "val_groups": 45,
+  "best_grouped_val_accuracy": 66.300368309021,
   "per_class": {
     "YES": {
-      "correct": 52,
+      "correct": 71,
       "total": 95,
-      "accuracy": 54.736842105263165
+      "accuracy": 74.73684210526315
     },
     "NO": {
       "correct": 57,
@@ -149,50 +140,50 @@
       "accuracy": 50.0
     },
     "WATER": {
-      "correct": 37,
+      "correct": 38,
       "total": 76,
-      "accuracy": 48.68421052631579
+      "accuracy": 50.0
     },
     "HELLO": {
-      "correct": 0,
+      "correct": 39,
       "total": 58,
-      "accuracy": 0.0
+      "accuracy": 67.24137931034483
     },
     "HELP": {
-      "correct": 57,
+      "correct": 58,
       "total": 76,
-      "accuracy": 75.0
+      "accuracy": 76.31578947368422
     },
     "STOP": {
-      "correct": 58,
-      "total": 77,
-      "accuracy": 75.32467532467533
+      "correct": 61,
+      "total": 95,
+      "accuracy": 64.21052631578948
     },
     "DOCTOR": {
-      "correct": 69,
-      "total": 76,
-      "accuracy": 90.78947368421053
+      "correct": 48,
+      "total": 95,
+      "accuracy": 50.526315789473685
     },
     "NAME": {
-      "correct": 24,
-      "total": 58,
-      "accuracy": 41.37931034482759
+      "correct": 76,
+      "total": 77,
+      "accuracy": 98.7012987012987
     },
     "THANKYOU": {
-      "correct": 50,
+      "correct": 57,
       "total": 95,
-      "accuracy": 52.63157894736842
+      "accuracy": 60.0
     }
   },
   "top_miss": {
-    "YES": "NO",
-    "NO": "YES",
-    "PLEASE": "STOP",
+    "YES": "NAME",
+    "NO": "NAME",
+    "PLEASE": "HELP",
     "WATER": "HELP",
-    "HELLO": "WATER",
-    "HELP": "DOCTOR",
-    "STOP": "HELP",
-    "DOCTOR": "HELLO",
+    "HELLO": "HELP",
+    "HELP": "STOP",
+    "STOP": "NAME",
+    "DOCTOR": "STOP",
     "NAME": "STOP",
     "THANKYOU": "NAME"
   }

@@ -1,0 +1,93 @@
+{
+  "version": 1,
+  "profile": "sprint30",
+  "status": "experimental_until_live_tested",
+  "safe_baseline": "demo10 remains preserved in model/backups/demo10_before_sprint30_20260516_1337",
+  "phrase_enabled_default": false,
+  "input_contract": {
+    "input_shape": [1, 30, 162],
+    "sequence_length": 30,
+    "pose_size": 99,
+    "hand_size": 63,
+    "feature_size": 162,
+    "pose_policy": "head_torso_and_selected_arm_only_when_VOXGEST_SINGLE_HAND_POSE_is_enabled",
+    "negative_label": "NOTHING"
+  },
+  "models": {
+    "lstm": {
+      "file": "model/voxgest_lstm_sprint30.tflite",
+      "keras_file": "model/voxgest_lstm_sprint30.h5",
+      "labels_file": "model/class_labels_lstm_sprint30.json",
+      "training_report": "model/lstm_training_report_sprint30.json",
+      "grouped_validation_accuracy": 54.31985259056091
+    },
+    "tcn": {
+      "file": "model/voxgest_tcn_sprint30.tflite",
+      "keras_file": "model/voxgest_tcn_sprint30.h5",
+      "labels_file": "model/class_labels_tcn_sprint30.json",
+      "training_report": "model/tcn_training_report_sprint30.json",
+      "grouped_validation_accuracy": 56.34191036224365,
+      "recommended_for_first_live_test": true
+    }
+  },
+  "output": {
+    "label_count": 22,
+    "labels": [
+      "YES",
+      "NO",
+      "PLEASE",
+      "WATER",
+      "HELLO",
+      "HELP",
+      "STOP",
+      "DOCTOR",
+      "NAME",
+      "THANKYOU",
+      "UNDERSTAND",
+      "SORRY",
+      "AGAIN",
+      "MORE",
+      "PAIN",
+      "GO",
+      "FINE",
+      "EAT",
+      "TIME",
+      "WANT",
+      "MEDICINE",
+      "NOTHING"
+    ]
+  },
+  "runtime_gates": {
+    "run_every_n_frames": 3,
+    "smooth_window": 5,
+    "smooth_majority_ratio": 0.6,
+    "cooldown_seconds": 1.25,
+    "no_pose_reset_frames": 12,
+    "default_words_mode": {
+      "confidence": 0.65,
+      "margin": 0.12,
+      "motion": 0.03,
+      "wrist_path": 0.35,
+      "hand_presence": 0.25
+    },
+    "default_auto": {
+      "confidence": 0.75,
+      "margin": 0.2,
+      "motion": 0.05,
+      "wrist_path": 0.5,
+      "hand_presence": 0.3
+    },
+    "auto_override": {
+      "confidence": 0.88,
+      "margin": 0.28,
+      "motion": 0.07,
+      "wrist_path": 0.8
+    },
+    "nothing_policy": "NOTHING is no-output and must never enter displayed/spoken sentence text."
+  },
+  "notes": [
+    "This manifest is optional and must not replace runtime_manifest_v1.json until sprint30 passes live testing.",
+    "Android default should remain demo10.",
+    "Phrase recognition remains disabled."
+  ]
+}
