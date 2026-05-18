@@ -39,14 +39,17 @@ from lstm_features import (
     SEQ_LEN,
     apply_sequence_feature_policy,
     configured_hand_preference,
+    configured_feature_profile,
     configured_mirror_input,
+    default_dataset_dir_name,
     hand_mapping_text,
     single_hand_pose_enabled,
 )
 from word_config import TARGET_WORDS, TRAINING_WORDS, WORD_PROFILE
 
 ROOT = Path(__file__).resolve().parents[1]
-PREFERRED_DATA_DIR = Path(os.environ.get("VOXGEST_LSTM_DATASET", ROOT / "dataset_words_lstm"))
+FEATURE_PROFILE = configured_feature_profile()
+PREFERRED_DATA_DIR = Path(os.environ.get("VOXGEST_LSTM_DATASET", ROOT / default_dataset_dir_name()))
 LEGACY_DATA_DIR = ROOT / "dataset_words"
 ALLOW_LEGACY_FALLBACK = os.environ.get("VOXGEST_ALLOW_LEGACY_LSTM", "").strip() == "1"
 INCLUDE_EXTRA_WORDS = os.environ.get("VOXGEST_INCLUDE_EXTRA_WORDS", "").strip() == "1"
@@ -59,6 +62,9 @@ DATA_DIR = (
 
 
 def artifact_suffix():
+    if FEATURE_PROFILE != "onehand162":
+        safe_word = "".join(ch if ch.isalnum() or ch in {"_", "-"} else "_" for ch in WORD_PROFILE)
+        return safe_word if safe_word.endswith(f"_{FEATURE_PROFILE}") else f"{safe_word}_{FEATURE_PROFILE}"
     if WORD_PROFILE == "demo10":
         return "v1"
     return "".join(ch if ch.isalnum() or ch in {"_", "-"} else "_" for ch in WORD_PROFILE)
@@ -388,6 +394,7 @@ def main():
     print("=" * 72)
     print(f"  Dataset      : {DATA_DIR}")
     print(f"  Word profile : {WORD_PROFILE}")
+    print(f"  Feature prof : {FEATURE_PROFILE} ({FEAT_SIZE} floats/frame)")
     print(f"  Target words : {len(TARGET_WORDS)}")
     print(f"  Train words  : {len(TRAINING_WORDS)} including negatives")
     print(f"  Hand policy  : {configured_hand_preference()}")
@@ -546,6 +553,9 @@ def main():
         "tflite": str(TFLITE_PATH),
         "seq_len": SEQ_LEN,
         "feature_size": FEAT_SIZE,
+        "input_shape": [1, SEQ_LEN, FEAT_SIZE],
+        "output_shape": [1, len(classes)],
+        "feature_profile": FEATURE_PROFILE,
         "word_profile": WORD_PROFILE,
         "target_words": TARGET_WORDS,
         "training_words": TRAINING_WORDS,

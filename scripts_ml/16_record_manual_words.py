@@ -30,7 +30,9 @@ from lstm_features import (
     FEAT_SIZE,
     SEQ_LEN,
     configured_hand_preference,
+    configured_feature_profile,
     configured_mirror_input,
+    default_dataset_dir_name,
     extract_frame_features,
     hand_mapping_text,
     hand_is_present,
@@ -42,7 +44,8 @@ os.environ["PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION"] = "python"
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
 
 ROOT = Path(__file__).resolve().parents[1]
-SAVE_DIR = Path(os.environ.get("VOXGEST_LSTM_DATASET", ROOT / "dataset_words_lstm"))
+FEATURE_PROFILE = configured_feature_profile()
+SAVE_DIR = Path(os.environ.get("VOXGEST_LSTM_DATASET", ROOT / default_dataset_dir_name()))
 METADATA_PATH = SAVE_DIR / "metadata_lstm_v2.json"
 
 TARGET_SEQUENCES_PER_WORD = int(os.environ.get("VOXGEST_MANUAL_SEQUENCES_PER_WORD", "60"))
@@ -60,6 +63,7 @@ def load_metadata():
         "version": 2,
         "seq_len": SEQ_LEN,
         "feature_size": FEAT_SIZE,
+        "feature_profile": FEATURE_PROFILE,
         "samples": {},
     }
 
@@ -190,6 +194,7 @@ def record_word(word, holistic, metadata):
                         "source_video": "manual_webcam",
                         "augment_index": 0,
                         "shape": [SEQ_LEN, FEAT_SIZE],
+                        "feature_profile": FEATURE_PROFILE,
                         "dominant_hand": HAND_PREFERENCE,
                         "single_hand_pose": single_hand_pose_enabled(),
                         "mirrored_input": MIRROR_INPUT,
@@ -246,6 +251,7 @@ def main():
     print("=" * 62)
     print(f"  Dataset: {SAVE_DIR}")
     print(f"  Profile: {WORD_PROFILE}")
+    print(f"  Feature: {FEATURE_PROFILE} ({FEAT_SIZE} floats/frame)")
     print(f"  Words  : {words}")
     print(f"  Target : {TARGET_SEQUENCES_PER_WORD} new sequences per word")
     print(f"  Hand   : {HAND_PREFERENCE}")

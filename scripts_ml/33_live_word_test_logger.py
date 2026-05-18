@@ -19,7 +19,9 @@ import numpy as np
 import tensorflow as tf
 
 from lstm_features import (
+    FEAT_SIZE,
     SEQ_LEN,
+    configured_feature_profile,
     configured_hand_preference,
     configured_mirror_input,
     extract_frame_features,
@@ -38,9 +40,13 @@ os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
 
 ROOT = Path(__file__).resolve().parents[1]
 REPORT_DIR = ROOT / "reports"
+FEATURE_PROFILE = configured_feature_profile()
 
 
 def artifact_suffix():
+    if FEATURE_PROFILE != "onehand162":
+        safe_word = "".join(ch if ch.isalnum() or ch in {"_", "-"} else "_" for ch in WORD_PROFILE)
+        return safe_word if safe_word.endswith(f"_{FEATURE_PROFILE}") else f"{safe_word}_{FEATURE_PROFILE}"
     if WORD_PROFILE == "demo10":
         return "v1"
     return "".join(ch if ch.isalnum() or ch in {"_", "-"} else "_" for ch in WORD_PROFILE)
@@ -208,6 +214,7 @@ def write_header(path):
         "matched_expected",
         "failure_reason",
         "dominant_hand",
+        "feature_profile",
         "single_hand_pose",
         "mirrored_input",
     ]
@@ -259,6 +266,8 @@ def write_json_summary(path, rows, model_name, model_path):
         "generated_at": datetime.now().isoformat(timespec="seconds"),
         "model_name": model_name,
         "model_path": model_path,
+        "feature_profile": FEATURE_PROFILE,
+        "input_shape": [1, SEQ_LEN, FEAT_SIZE],
         "dominant_hand": configured_hand_preference(),
         "single_hand_pose": single_hand_pose_enabled(),
         "mirrored_input": configured_mirror_input(MIRROR_INPUT),
@@ -289,6 +298,7 @@ def main():
     print("=" * 76)
     print(f"Model   : {model_name} ({model_path})")
     print(f"Profile : {WORD_PROFILE}")
+    print(f"Feature : {FEATURE_PROFILE} ({FEAT_SIZE} floats/frame)")
     print(f"Labels  : {EXPECTED_LABELS}")
     print(f"CSV     : {out_path}")
     print(f"JSON    : {json_path}")
@@ -409,6 +419,7 @@ def main():
                     "matched_expected": matched,
                     "failure_reason": "ok" if not failures else ";".join(failures),
                     "dominant_hand": configured_hand_preference(),
+                    "feature_profile": FEATURE_PROFILE,
                     "single_hand_pose": single_hand_pose_enabled(),
                     "mirrored_input": configured_mirror_input(MIRROR_INPUT),
                 }

@@ -21,7 +21,9 @@ from lstm_features import (
     FEAT_SIZE,
     SEQ_LEN,
     configured_hand_preference,
+    configured_feature_profile,
     configured_mirror_input,
+    default_dataset_dir_name,
     enforce_nose_anchor,
     extract_frame_features,
     single_hand_pose_enabled,
@@ -32,8 +34,10 @@ os.environ["PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION"] = "python"
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
 
 ROOT = Path(__file__).resolve().parents[1]
-SAVE_DIR = Path(os.environ.get("VOXGEST_LSTM_DATASET", ROOT / "dataset_words_lstm"))
-LOG_PATH = ROOT / "model" / "extraction_log_lstm.txt"
+FEATURE_PROFILE = configured_feature_profile()
+SAVE_DIR = Path(os.environ.get("VOXGEST_LSTM_DATASET", ROOT / default_dataset_dir_name()))
+LOG_SUFFIX = "" if FEATURE_PROFILE == "onehand162" else f"_{FEATURE_PROFILE}"
+LOG_PATH = ROOT / "model" / f"extraction_log_lstm{LOG_SUFFIX}.txt"
 METADATA_PATH = SAVE_DIR / "metadata_lstm_v2.json"
 PRESERVE_MANUAL = os.environ.get("VOXGEST_PRESERVE_MANUAL", "1").strip() != "0"
 MIRROR_INPUT = False
@@ -305,6 +309,7 @@ def load_metadata():
             "version": 2,
             "seq_len": SEQ_LEN,
             "feature_size": FEAT_SIZE,
+            "feature_profile": FEATURE_PROFILE,
             "samples": {},
         }
     with open(METADATA_PATH, "r", encoding="utf-8") as f:
@@ -370,6 +375,7 @@ def extract_word(word, holistic, log_file, metadata):
                 "source_video": str(video_path),
                 "augment_index": aug_idx,
                 "shape": [SEQ_LEN, FEAT_SIZE],
+                "feature_profile": FEATURE_PROFILE,
                 "dominant_hand": configured_hand_preference(),
                 "single_hand_pose": single_hand_pose_enabled(),
                 "mirrored_input": MIRROR_INPUT,
@@ -383,9 +389,10 @@ def extract_word(word, holistic, log_file, metadata):
 
 def main():
     print("=" * 68)
-    print("  VoxGest LSTM Extractor | 30 frames x 162 holistic features")
+    print(f"  VoxGest LSTM Extractor | 30 frames x {FEAT_SIZE} holistic features")
     print("=" * 68)
     print(f"  Dataset      : {SAVE_DIR}")
+    print(f"  Feature prof : {FEATURE_PROFILE}")
     print(f"  Video roots  : {[str(p) for p in VIDEO_DIRS if p.exists()]}")
     print(f"  Word profile : {WORD_PROFILE}")
     print(f"  Target words : {len(ACTIVE_TARGET_WORDS)}")

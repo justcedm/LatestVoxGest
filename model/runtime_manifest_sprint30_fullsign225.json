@@ -1,0 +1,225 @@
+{
+  "version": 1,
+  "profile": "sprint30_fullsign225",
+  "word_profile": "sprint30",
+  "feature_profile": "fullsign225",
+  "experimental": true,
+  "default_runtime": false,
+  "demo10_remains_safe_baseline": true,
+  "phrase_enabled_default": false,
+  "notes": [
+    "Experimental full-sign dynamic word model. Do not promote until live testing improves.",
+    "Uses fixed physical left-hand and right-hand slots. Missing hand slots are zero-filled.",
+    "NOTHING is a no-output class. Raw predictions must not update sentence output.",
+    "Current NOTHING data is bootstrapped from onehand162 manual hard negatives and should be replaced with native fullsign225 recordings."
+  ],
+  "camera": {
+    "width": 640,
+    "height": 480,
+    "front_camera_recommended": true,
+    "mirror_before_feature_extraction": true
+  },
+  "feature_contract": {
+    "input_shape": [
+      1,
+      30,
+      225
+    ],
+    "sequence_length": 30,
+    "pose_size": 99,
+    "left_hand_size": 63,
+    "right_hand_size": 63,
+    "feature_size": 225,
+    "pose_anchor": "nose-centric, first 3 pose floats remain 0.0",
+    "hand_slots": "fixed physical left then physical right; missing slots are zeros",
+    "single_hand_pose": false,
+    "feature_profile_env": "VOXGEST_FEATURE_PROFILE=fullsign225",
+    "word_profile_env": "VOXGEST_WORD_PROFILE=sprint30"
+  },
+  "tcn_model": {
+    "file": "model/voxgest_tcn_sprint30_fullsign225.tflite",
+    "keras_file": "model/voxgest_tcn_sprint30_fullsign225.h5",
+    "labels_file": "model/class_labels_tcn_sprint30_fullsign225.json",
+    "training_report": "model/tcn_training_report_sprint30_fullsign225.json",
+    "input_shape": [
+      1,
+      30,
+      225
+    ],
+    "output_shape": [
+      1,
+      22
+    ],
+    "output_label_count": 22,
+    "labels": [
+      "YES",
+      "NO",
+      "PLEASE",
+      "WATER",
+      "HELLO",
+      "HELP",
+      "STOP",
+      "DOCTOR",
+      "NAME",
+      "THANKYOU",
+      "UNDERSTAND",
+      "SORRY",
+      "AGAIN",
+      "MORE",
+      "PAIN",
+      "GO",
+      "FINE",
+      "EAT",
+      "TIME",
+      "WANT",
+      "MEDICINE",
+      "NOTHING"
+    ],
+    "grouped_validation_accuracy": 54.91638779640198,
+    "model_size_bytes": 316544
+  },
+  "postprocess": {
+    "modes": [
+      "AUTO",
+      "LETTERS",
+      "WORDS"
+    ],
+    "smooth_window": 5,
+    "smooth_majority_ratio": 0.6,
+    "letter_stable_frames": 18,
+    "word_stable_frames": 10,
+    "words_mode_stable_frames": 8,
+    "cooldown_seconds": 1.25,
+    "no_pose_reset_frames": 12,
+    "phrase_segmenter": {
+      "states": [
+        "IDLE",
+        "ACTIVE"
+      ],
+      "start_motion_default": 0.018,
+      "end_motion_default": 0.01,
+      "start_frames_default": 3,
+      "end_hold_frames_default": 10,
+      "min_frames_default": 36,
+      "max_frames_default": 120,
+      "preroll_frames_default": 8,
+      "classify_after_endpoint_only": true
+    }
+  },
+  "word_thresholds": {
+    "default_auto": {
+      "confidence": 0.75,
+      "margin": 0.2,
+      "motion": 0.05,
+      "wrist_path": 0.5,
+      "hand_presence": 0.3
+    },
+    "default_words_mode": {
+      "confidence": 0.65,
+      "margin": 0.12,
+      "motion": 0.03,
+      "wrist_path": 0.35,
+      "hand_presence": 0.25
+    },
+    "auto_override": {
+      "confidence": 0.88,
+      "margin": 0.28,
+      "motion": 0.07,
+      "wrist_path": 0.8
+    },
+    "words_mode_rules": {
+      "YES": {
+        "confidence": 0.56,
+        "margin": 0.07,
+        "motion": 0.008,
+        "wrist_path": 0.05,
+        "stable_frames": 5
+      },
+      "NO": {
+        "confidence": 0.55,
+        "margin": 0.06,
+        "motion": 0.008,
+        "wrist_path": 0.04,
+        "stable_frames": 5
+      },
+      "WATER": {
+        "confidence": 0.56,
+        "margin": 0.06,
+        "motion": 0.006,
+        "wrist_path": 0.04,
+        "stable_frames": 5
+      },
+      "PLEASE": {
+        "confidence": 0.68,
+        "margin": 0.18,
+        "motion": 0.025,
+        "wrist_path": 0.25
+      },
+      "HELLO": {
+        "confidence": 0.7,
+        "margin": 0.18,
+        "motion": 0.03,
+        "wrist_path": 0.3
+      },
+      "HELP": {
+        "confidence": 0.6,
+        "margin": 0.1,
+        "motion": 0.025,
+        "wrist_path": 0.2
+      },
+      "STOP": {
+        "confidence": 0.62,
+        "margin": 0.1,
+        "motion": 0.025,
+        "wrist_path": 0.2
+      },
+      "DOCTOR": {
+        "confidence": 0.7,
+        "margin": 0.15,
+        "motion": 0.02,
+        "wrist_path": 0.2
+      },
+      "NAME": {
+        "confidence": 0.55,
+        "margin": 0.05,
+        "motion": 0.02,
+        "wrist_path": 0.2
+      },
+      "THANKYOU": {
+        "confidence": 0.52,
+        "margin": 0.03,
+        "motion": 0.01,
+        "wrist_path": 0.08,
+        "stable_frames": 6
+      },
+      "NOTHING": {
+        "confidence": 0.55,
+        "margin": 0.05,
+        "motion": 0.0,
+        "wrist_path": 0.0,
+        "hand_presence": 0.0,
+        "stable_frames": 4
+      }
+    }
+  },
+  "token_composer": {
+    "input_policy": "accepted_predictions_only",
+    "nothing_policy": "ignore_no_output",
+    "raw_prediction_policy": "never_update_sentence_output"
+  },
+  "comparison": {
+    "sprint30_onehand162_tcn_grouped_validation_accuracy": 56.34191036224365,
+    "fullsign225_tcn_grouped_validation_accuracy": 54.91638779640198,
+    "recommendation": "keep as experimental; do not promote over onehand162 yet"
+  },
+  "live_test_command": [
+    "$env:VOXGEST_ENABLE_PHRASE='0'",
+    "$env:VOXGEST_WORD_PROFILE='sprint30'",
+    "$env:VOXGEST_FEATURE_PROFILE='fullsign225'",
+    "$env:VOXGEST_DYNAMIC_MODEL='tcn'",
+    "$env:VOXGEST_SINGLE_HAND_POSE='0'",
+    "$env:VOXGEST_MODE='WORDS'",
+    ".\\voxgest_env\\Scripts\\python.exe scripts_ml\\33_live_word_test_logger.py"
+  ],
+  "generated_at": "2026-05-18T11:40:36"
+}

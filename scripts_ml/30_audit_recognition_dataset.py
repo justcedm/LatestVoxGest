@@ -14,18 +14,27 @@ from pathlib import Path
 
 import numpy as np
 
-from lstm_features import FEAT_SIZE, SEQ_LEN, single_hand_pose_enabled
+from lstm_features import (
+    FEAT_SIZE,
+    SEQ_LEN,
+    configured_feature_profile,
+    default_dataset_dir_name,
+    single_hand_pose_enabled,
+)
 from word_config import NEGATIVE_WORDS, TARGET_WORDS, TRAINING_WORDS, WORD_PROFILE
 
 
 ROOT = Path(__file__).resolve().parents[1]
-DATA_DIR = Path(os.environ.get("VOXGEST_LSTM_DATASET", ROOT / "dataset_words_lstm"))
+FEATURE_PROFILE = configured_feature_profile()
+DATA_DIR = Path(os.environ.get("VOXGEST_LSTM_DATASET", ROOT / default_dataset_dir_name()))
 REPORT_DIR = ROOT / "reports"
-PROFILE_PREFIX = (
-    "recognition"
-    if WORD_PROFILE in {"demo10", "hardening", "recognition_hardening"}
-    else f"{WORD_PROFILE}_recognition"
-)
+if WORD_PROFILE in {"demo10", "hardening", "recognition_hardening"} and FEATURE_PROFILE == "onehand162":
+    PROFILE_PREFIX = "recognition"
+else:
+    base_profile = WORD_PROFILE
+    if FEATURE_PROFILE != "onehand162" and not base_profile.endswith(f"_{FEATURE_PROFILE}"):
+        base_profile = f"{base_profile}_{FEATURE_PROFILE}"
+    PROFILE_PREFIX = f"{base_profile}_recognition"
 JSON_OUT = REPORT_DIR / f"{PROFILE_PREFIX}_audit_words.json"
 CSV_OUT = REPORT_DIR / f"{PROFILE_PREFIX}_audit_words.csv"
 MD_OUT = REPORT_DIR / f"{PROFILE_PREFIX}_audit_summary.md"
@@ -222,6 +231,8 @@ def main():
         "word_profile": WORD_PROFILE,
         "seq_len": SEQ_LEN,
         "feature_size": FEAT_SIZE,
+        "input_shape": [1, SEQ_LEN, FEAT_SIZE],
+        "feature_profile": FEATURE_PROFILE,
         "single_hand_pose_enabled": single_hand_pose_enabled(),
         "required_labels": REQUIRED_LABELS,
         "target_words": TARGET_WORDS,
@@ -269,6 +280,7 @@ def main():
     print(f"VoxGest dataset audit | profile={WORD_PROFILE}")
     print("=" * 76)
     print(f"Dataset : {DATA_DIR}")
+    print(f"Feature : {FEATURE_PROFILE} ({FEAT_SIZE} floats/frame)")
     print(f"JSON    : {JSON_OUT}")
     print(f"CSV     : {CSV_OUT}")
     print(f"MD      : {MD_OUT}")

@@ -5,15 +5,53 @@ import numpy as np
 SEQ_LEN = 30
 POSE_SIZE = 99
 HAND_SIZE = 63
-FEAT_SIZE = POSE_SIZE + HAND_SIZE
+ONEHAND_FEAT_SIZE = POSE_SIZE + HAND_SIZE
+FULLSIGN_HAND_SIZE = HAND_SIZE * 2
+FULLSIGN_FEAT_SIZE = POSE_SIZE + FULLSIGN_HAND_SIZE
 
 VALID_HAND_PREFERENCES = {"auto", "right", "left"}
+VALID_FEATURE_PROFILES = {"onehand162", "fullsign225"}
 TRUTHY = {"1", "true", "yes", "on"}
 
 HEAD_LANDMARKS = set(range(0, 11))
 TORSO_LANDMARKS = {11, 12, 23, 24}
 LEFT_ARM_LANDMARKS = {11, 13, 15, 17, 19, 21}
 RIGHT_ARM_LANDMARKS = {12, 14, 16, 18, 20, 22}
+
+
+def configured_feature_profile(feature_profile=None):
+    """Return the dynamic word feature contract in use."""
+    raw = feature_profile or os.environ.get("VOXGEST_FEATURE_PROFILE", "onehand162")
+    profile = str(raw).strip().lower().replace("-", "_")
+    aliases = {
+        "onehand_162": "onehand162",
+        "singlehand162": "onehand162",
+        "162": "onehand162",
+        "fullsign_225": "fullsign225",
+        "full_225": "fullsign225",
+        "225": "fullsign225",
+    }
+    profile = aliases.get(profile, profile)
+    return profile if profile in VALID_FEATURE_PROFILES else "onehand162"
+
+
+def feature_size_for_profile(feature_profile=None):
+    """Return the per-frame vector width for a dynamic feature profile."""
+    profile = configured_feature_profile(feature_profile)
+    if profile == "fullsign225":
+        return FULLSIGN_FEAT_SIZE
+    return ONEHAND_FEAT_SIZE
+
+
+def default_dataset_dir_name(feature_profile=None):
+    """Return the default dataset folder for the active feature profile."""
+    profile = configured_feature_profile(feature_profile)
+    if profile == "fullsign225":
+        return "dataset_words_lstm_fullsign225"
+    return "dataset_words_lstm"
+
+
+FEAT_SIZE = feature_size_for_profile()
 
 
 def configured_hand_preference(hand_preference=None):
@@ -81,9 +119,15 @@ def hand_mapping_text(hand_preference=None, mirrored_input=None):
 
 
 def apply_sequence_feature_policy(seq, hand_preference=None, mirrored_input=None):
-    """Apply current single-hand pose policy to an existing Nx162 sequence."""
+    """Apply the active feature policy to an existing dynamic sequence."""
     arr = np.asarray(seq, dtype=np.float32).copy()
-    if arr.ndim != 2 or arr.shape[1] != FEAT_SIZE:
+    if arr.ndim != 2:
+        return arr
+
+    if arr.shape[1] == FULLSIGN_FEAT_SIZE:
+        return enforce_nose_anchor(arr)
+
+    if arr.shape[1] != ONEHAND_FEAT_SIZE:
         return arr
 
     media_side = mediapipe_side_for_preference(hand_preference, mirrored_input)
@@ -126,10 +170,33 @@ def select_hand_landmarks(results, hand_preference=None, mirrored_input=None):
 
 def hand_is_present(results, hand_preference=None, mirrored_input=None):
     """Return whether the configured dynamic hand is currently visible."""
+    if configured_feature_profile() == "fullsign225":
+        return (
+            results.left_hand_landmarks is not None
+            or results.right_hand_landmarks is not None
+        )
     return select_hand_landmarks(results, hand_preference, mirrored_input) is not None
 
 
-def extract_frame_features(results, hand_preference=None, mirrored_input=None):
+def _hand_landmarks_to_array(landmarks, nose):
+    if landmarks is None:
+        return np.zeros((21, 3), dtype=np.float32)
+    hand = np.array(
+        [[lm.x, lm.y, lm.z] for lm in landmarks.landmark],
+        dtype=np.float32,
+    )
+    hand -= nose[np.newaxis, :]
+    return hand
+
+
+def select_fullsign_hand_sources(results, mirrored_input=None):
+    """Return physical left/right hand landmarks for fixed fullsign slots."""
+    if configured_mirror_input(mirrored_input):
+        return results.right_hand_landmarks, results.left_hand_landmarks
+    return results.left_hand_landmarks, results.right_hand_landmarks
+
+
+def extract_onehand162_frame_features(results, hand_preference=None, mirrored_input=None):
     """Return one 162-float holistic frame, or None when pose is missing."""
     if results.pose_landmarks is None:
         return None
@@ -143,18 +210,45 @@ def extract_frame_features(results, hand_preference=None, mirrored_input=None):
 
     hand_side, hand_source = select_hand_source(results, hand_preference, mirrored_input)
     pose = mask_pose_to_single_hand(pose, hand_side)
-    if hand_source is not None:
-        hand = np.array(
-            [[lm.x, lm.y, lm.z] for lm in hand_source.landmark],
-            dtype=np.float32,
-        )
-        hand -= nose[np.newaxis, :]
-    else:
-        hand = np.zeros((21, 3), dtype=np.float32)
+    hand = _hand_landmarks_to_array(hand_source, nose)
 
     vector = np.concatenate([pose.reshape(-1), hand.reshape(-1)]).astype(np.float32)
     vector[:3] = 0.0
     return vector
+
+
+def extract_fullsign225_frame_features(results, mirrored_input=None):
+    """Return one 225-float frame with fixed left/right hand slots."""
+    if results.pose_landmarks is None:
+        return None
+
+    pose = np.array(
+        [[lm.x, lm.y, lm.z] for lm in results.pose_landmarks.landmark],
+        dtype=np.float32,
+    )
+    nose = pose[0].copy()
+    pose -= nose[np.newaxis, :]
+
+    left_source, right_source = select_fullsign_hand_sources(results, mirrored_input)
+    left_hand = _hand_landmarks_to_array(left_source, nose)
+    right_hand = _hand_landmarks_to_array(right_source, nose)
+
+    vector = np.concatenate(
+        [pose.reshape(-1), left_hand.reshape(-1), right_hand.reshape(-1)]
+    ).astype(np.float32)
+    vector[:3] = 0.0
+    return vector
+
+
+def extract_frame_features(results, hand_preference=None, mirrored_input=None):
+    """Return one active-profile dynamic frame, or None when pose is missing."""
+    if configured_feature_profile() == "fullsign225":
+        return extract_fullsign225_frame_features(results, mirrored_input=mirrored_input)
+    return extract_onehand162_frame_features(
+        results,
+        hand_preference=hand_preference,
+        mirrored_input=mirrored_input,
+    )
 
 
 def normalize_static_hand(landmarks):
@@ -177,9 +271,11 @@ def enforce_nose_anchor(seq):
 def sequence_motion_energy(seq):
     """Small scalar describing average hand movement between frames."""
     arr = np.asarray(seq, dtype=np.float32)
-    if arr.shape != (SEQ_LEN, FEAT_SIZE):
+    if arr.ndim != 2 or arr.shape[0] != SEQ_LEN:
         return 0.0
-    hand = arr[:, POSE_SIZE:].reshape(SEQ_LEN, 21, 3)
+    hand = _sequence_hands(arr)
+    if hand is None:
+        return 0.0
     diffs = np.diff(hand, axis=0)
     return float(np.mean(np.linalg.norm(diffs, axis=2)))
 
@@ -187,9 +283,11 @@ def sequence_motion_energy(seq):
 def sequence_hand_presence_ratio(seq, eps=1e-4):
     """Return fraction of frames with a detected, nonzero hand vector."""
     arr = np.asarray(seq, dtype=np.float32)
-    if arr.shape != (SEQ_LEN, FEAT_SIZE):
+    if arr.ndim != 2 or arr.shape[0] != SEQ_LEN:
         return 0.0
     hand = arr[:, POSE_SIZE:]
+    if hand.shape[1] not in {HAND_SIZE, FULLSIGN_HAND_SIZE}:
+        return 0.0
     present = np.linalg.norm(hand, axis=1) > eps
     return float(np.mean(present))
 
@@ -197,15 +295,31 @@ def sequence_hand_presence_ratio(seq, eps=1e-4):
 def sequence_wrist_path(seq, eps=1e-4):
     """Return wrist travel across consecutive frames where the hand exists."""
     arr = np.asarray(seq, dtype=np.float32)
-    if arr.shape != (SEQ_LEN, FEAT_SIZE):
+    if arr.ndim != 2 or arr.shape[0] != SEQ_LEN:
         return 0.0
-    hand = arr[:, POSE_SIZE:].reshape(SEQ_LEN, 21, 3)
+    hand = _sequence_hands(arr)
+    if hand is None:
+        return 0.0
     present = np.linalg.norm(hand.reshape(SEQ_LEN, -1), axis=1) > eps
     valid = present[1:] & present[:-1]
     if not np.any(valid):
         return 0.0
-    wrist_diffs = np.linalg.norm(np.diff(hand[:, 0, :], axis=0), axis=1)
+    if hand.shape[1] == 42:
+        left_wrist = np.linalg.norm(np.diff(hand[:, 0, :], axis=0), axis=1)
+        right_wrist = np.linalg.norm(np.diff(hand[:, 21, :], axis=0), axis=1)
+        wrist_diffs = np.maximum(left_wrist, right_wrist)
+    else:
+        wrist_diffs = np.linalg.norm(np.diff(hand[:, 0, :], axis=0), axis=1)
     return float(np.sum(wrist_diffs[valid]))
+
+
+def _sequence_hands(arr):
+    hand_width = arr.shape[1] - POSE_SIZE
+    if hand_width == HAND_SIZE:
+        return arr[:, POSE_SIZE:].reshape(SEQ_LEN, 21, 3)
+    if hand_width == FULLSIGN_HAND_SIZE:
+        return arr[:, POSE_SIZE:].reshape(SEQ_LEN, 42, 3)
+    return None
 
 
 def top_prediction(probs):

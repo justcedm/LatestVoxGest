@@ -1,0 +1,371 @@
+{
+  "dataset": "C:\\BSIT 3RD YEAR\\New VovGest\\dataset_words_lstm_fullsign225",
+  "model": "C:\\BSIT 3RD YEAR\\New VovGest\\model\\voxgest_tcn_sprint30_fullsign225.h5",
+  "labels": "C:\\BSIT 3RD YEAR\\New VovGest\\model\\class_labels_tcn_sprint30_fullsign225.json",
+  "tflite": "C:\\BSIT 3RD YEAR\\New VovGest\\model\\voxgest_tcn_sprint30_fullsign225.tflite",
+  "seq_len": 30,
+  "feature_size": 225,
+  "input_shape": [
+    1,
+    30,
+    225
+  ],
+  "output_shape": [
+    1,
+    22
+  ],
+  "feature_profile": "fullsign225",
+  "word_profile": "sprint30",
+  "target_words": [
+    "YES",
+    "NO",
+    "PLEASE",
+    "WATER",
+    "HELLO",
+    "HELP",
+    "STOP",
+    "DOCTOR",
+    "NAME",
+    "THANKYOU",
+    "UNDERSTAND",
+    "SORRY",
+    "AGAIN",
+    "MORE",
+    "PAIN",
+    "GO",
+    "FINE",
+    "EAT",
+    "TIME",
+    "WANT",
+    "MEDICINE"
+  ],
+  "training_words": [
+    "YES",
+    "NO",
+    "PLEASE",
+    "WATER",
+    "HELLO",
+    "HELP",
+    "STOP",
+    "DOCTOR",
+    "NAME",
+    "THANKYOU",
+    "UNDERSTAND",
+    "SORRY",
+    "AGAIN",
+    "MORE",
+    "PAIN",
+    "GO",
+    "FINE",
+    "EAT",
+    "TIME",
+    "WANT",
+    "MEDICINE",
+    "NOTHING"
+  ],
+  "include_extra_words": false,
+  "manual_to_train": false,
+  "classes": [
+    "YES",
+    "NO",
+    "PLEASE",
+    "WATER",
+    "HELLO",
+    "HELP",
+    "STOP",
+    "DOCTOR",
+    "NAME",
+    "THANKYOU",
+    "UNDERSTAND",
+    "SORRY",
+    "AGAIN",
+    "MORE",
+    "PAIN",
+    "GO",
+    "FINE",
+    "EAT",
+    "TIME",
+    "WANT",
+    "MEDICINE",
+    "NOTHING"
+  ],
+  "missing_target_words": [],
+  "skipped_target_words": [],
+  "ignored_wrong_shape_files": 0,
+  "ignored_missing_hand_metadata_files": 0,
+  "class_stats": {
+    "YES": {
+      "sequences": 400,
+      "groups": 16,
+      "used": true,
+      "skipped_missing_hand_metadata": 0
+    },
+    "NO": {
+      "sequences": 400,
+      "groups": 16,
+      "used": true,
+      "skipped_missing_hand_metadata": 0
+    },
+    "PLEASE": {
+      "sequences": 400,
+      "groups": 16,
+      "used": true,
+      "skipped_missing_hand_metadata": 0
+    },
+    "WATER": {
+      "sequences": 400,
+      "groups": 16,
+      "used": true,
+      "skipped_missing_hand_metadata": 0
+    },
+    "HELLO": {
+      "sequences": 400,
+      "groups": 16,
+      "used": true,
+      "skipped_missing_hand_metadata": 0
+    },
+    "HELP": {
+      "sequences": 400,
+      "groups": 16,
+      "used": true,
+      "skipped_missing_hand_metadata": 0
+    },
+    "STOP": {
+      "sequences": 400,
+      "groups": 16,
+      "used": true,
+      "skipped_missing_hand_metadata": 0
+    },
+    "DOCTOR": {
+      "sequences": 400,
+      "groups": 16,
+      "used": true,
+      "skipped_missing_hand_metadata": 0
+    },
+    "NAME": {
+      "sequences": 400,
+      "groups": 16,
+      "used": true,
+      "skipped_missing_hand_metadata": 0
+    },
+    "THANKYOU": {
+      "sequences": 400,
+      "groups": 16,
+      "used": true,
+      "skipped_missing_hand_metadata": 0
+    },
+    "UNDERSTAND": {
+      "sequences": 400,
+      "groups": 16,
+      "used": true,
+      "skipped_missing_hand_metadata": 0
+    },
+    "SORRY": {
+      "sequences": 350,
+      "groups": 14,
+      "used": true,
+      "skipped_missing_hand_metadata": 0
+    },
+    "AGAIN": {
+      "sequences": 350,
+      "groups": 14,
+      "used": true,
+      "skipped_missing_hand_metadata": 0
+    },
+    "MORE": {
+      "sequences": 350,
+      "groups": 14,
+      "used": true,
+      "skipped_missing_hand_metadata": 0
+    },
+    "PAIN": {
+      "sequences": 275,
+      "groups": 11,
+      "used": true,
+      "skipped_missing_hand_metadata": 0
+    },
+    "GO": {
+      "sequences": 225,
+      "groups": 9,
+      "used": true,
+      "skipped_missing_hand_metadata": 0
+    },
+    "FINE": {
+      "sequences": 275,
+      "groups": 11,
+      "used": true,
+      "skipped_missing_hand_metadata": 0
+    },
+    "EAT": {
+      "sequences": 200,
+      "groups": 8,
+      "used": true,
+      "skipped_missing_hand_metadata": 0
+    },
+    "TIME": {
+      "sequences": 200,
+      "groups": 8,
+      "used": true,
+      "skipped_missing_hand_metadata": 0
+    },
+    "WANT": {
+      "sequences": 250,
+      "groups": 10,
+      "used": true,
+      "skipped_missing_hand_metadata": 0
+    },
+    "MEDICINE": {
+      "sequences": 175,
+      "groups": 7,
+      "used": true,
+      "skipped_missing_hand_metadata": 0
+    },
+    "NOTHING": {
+      "sequences": 600,
+      "groups": 10,
+      "used": true,
+      "skipped_missing_hand_metadata": 0
+    }
+  },
+  "train_sequences": 6155,
+  "val_sequences": 1495,
+  "train_groups": 235,
+  "val_groups": 57,
+  "best_grouped_val_accuracy": 54.91638779640198,
+  "per_class": {
+    "YES": {
+      "correct": 49,
+      "total": 75,
+      "accuracy": 65.33333333333333
+    },
+    "NO": {
+      "correct": 25,
+      "total": 75,
+      "accuracy": 33.33333333333333
+    },
+    "PLEASE": {
+      "correct": 32,
+      "total": 75,
+      "accuracy": 42.66666666666667
+    },
+    "WATER": {
+      "correct": 43,
+      "total": 75,
+      "accuracy": 57.333333333333336
+    },
+    "HELLO": {
+      "correct": 0,
+      "total": 75,
+      "accuracy": 0.0
+    },
+    "HELP": {
+      "correct": 13,
+      "total": 75,
+      "accuracy": 17.333333333333336
+    },
+    "STOP": {
+      "correct": 39,
+      "total": 75,
+      "accuracy": 52.0
+    },
+    "DOCTOR": {
+      "correct": 49,
+      "total": 75,
+      "accuracy": 65.33333333333333
+    },
+    "NAME": {
+      "correct": 25,
+      "total": 75,
+      "accuracy": 33.33333333333333
+    },
+    "THANKYOU": {
+      "correct": 25,
+      "total": 75,
+      "accuracy": 33.33333333333333
+    },
+    "UNDERSTAND": {
+      "correct": 25,
+      "total": 75,
+      "accuracy": 33.33333333333333
+    },
+    "SORRY": {
+      "correct": 50,
+      "total": 75,
+      "accuracy": 66.66666666666666
+    },
+    "AGAIN": {
+      "correct": 49,
+      "total": 75,
+      "accuracy": 65.33333333333333
+    },
+    "MORE": {
+      "correct": 75,
+      "total": 75,
+      "accuracy": 100.0
+    },
+    "PAIN": {
+      "correct": 50,
+      "total": 50,
+      "accuracy": 100.0
+    },
+    "GO": {
+      "correct": 50,
+      "total": 50,
+      "accuracy": 100.0
+    },
+    "FINE": {
+      "correct": 25,
+      "total": 50,
+      "accuracy": 50.0
+    },
+    "EAT": {
+      "correct": 0,
+      "total": 50,
+      "accuracy": 0.0
+    },
+    "TIME": {
+      "correct": 25,
+      "total": 50,
+      "accuracy": 50.0
+    },
+    "WANT": {
+      "correct": 29,
+      "total": 50,
+      "accuracy": 57.99999999999999
+    },
+    "MEDICINE": {
+      "correct": 23,
+      "total": 25,
+      "accuracy": 92.0
+    },
+    "NOTHING": {
+      "correct": 120,
+      "total": 120,
+      "accuracy": 100.0
+    }
+  },
+  "top_miss": {
+    "YES": "STOP",
+    "NO": "STOP",
+    "PLEASE": "STOP",
+    "WATER": "STOP",
+    "HELLO": "HELP",
+    "HELP": "WATER",
+    "STOP": "NAME",
+    "DOCTOR": "STOP",
+    "NAME": "HELP",
+    "THANKYOU": "TIME",
+    "UNDERSTAND": "STOP",
+    "SORRY": "WATER",
+    "AGAIN": "MORE",
+    "MORE": "-",
+    "PAIN": "-",
+    "GO": "-",
+    "FINE": "THANKYOU",
+    "EAT": "WATER",
+    "TIME": "STOP",
+    "WANT": "MEDICINE",
+    "MEDICINE": "HELP",
+    "NOTHING": "-"
+  }
+}
