@@ -1,4 +1,10 @@
-# Python
+# VoxGest GitHub-safe ignore rules
+
+# Python environments and caches
+voxgest_env/
+.venv/
+venv/
+env/
 __pycache__/
 *.py[cod]
 *$py.class
@@ -6,34 +12,70 @@ __pycache__/
 .mypy_cache/
 .ruff_cache/
 
-# Local environments
-voxgest_env/
-.venv/
-venv/
-env/
+# Android/Gradle generated output
+**/.gradle/
+**/.idea/
+**/.kotlin/
+**/build/
+**/captures/
+**/local.properties
+*.apk
+*.aab
+*.ap_
+*.dex
+*.hprof
 
-# OS/editor noise
-.DS_Store
-Thumbs.db
-.vscode/
-
-# Large/generated ML data
+# Local datasets, downloaded videos, and extracted feature arrays
 dataset_*/
 wlasl_videos/
+phrase_videos/
+asl_citizen*/
+kaggle*/
+WLASL*/
+scripts_ml/WLASL_v*.json
+*.npy
+*.npz
 *.mp4
 *.avi
 *.mov
 *.mkv
+*.webm
+
+# ML checkpoints and old backups
+model/backups/
+model/*.h5
+model/*.keras
+model/*.ckpt
+model/*.pb
+model/extraction_log*.txt
+
+# Keep small demo TFLite files, manifests, and labels available for review.
+!model/*.tflite
+!model/runtime_manifest*.json
+!model/class_labels*.json
+
+# Generated logs/reports. Keep written Markdown summaries.
+reports/*.csv
+reports/*.json
+reports/live_word_test_log_*
+reports/live_log_comparison.*
+!reports/*.md
+
+# Archives and temporary output
+*.zip
+*.7z
+*.rar
+*.tar
+*.tar.gz
+tmp/
+temp/
+*.log
 
 # Local calibration/output data
 calibration_static/
 static_calibration/
 
-# Runtime logs and temporary output
-*.log
-tmp/
-temp/
-
-# Keep lightweight model/runtime reports under model/ and reports/.
-# Large raw datasets and downloaded videos should be stored outside Git
-# or in Git LFS if they need to be shared.
+# OS/editor noise
+.DS_Store
+Thumbs.db
+.vscode/

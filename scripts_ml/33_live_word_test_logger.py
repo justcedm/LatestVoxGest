@@ -23,13 +23,14 @@ from lstm_features import (
     configured_hand_preference,
     configured_mirror_input,
     extract_frame_features,
+    hand_mapping_text,
     sequence_hand_presence_ratio,
     sequence_motion_energy,
     sequence_wrist_path,
     single_hand_pose_enabled,
     top_prediction,
 )
-from word_config import DEMO10_WORDS, NEGATIVE_WORDS
+from word_config import NEGATIVE_WORDS, TARGET_WORDS, TRAINING_WORDS, WORD_PROFILE
 
 
 os.environ["PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION"] = "python"
@@ -37,12 +38,29 @@ os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
 
 ROOT = Path(__file__).resolve().parents[1]
 REPORT_DIR = ROOT / "reports"
-LSTM_MODEL = ROOT / "model" / "voxgest_lstm_v1.h5"
-LSTM_LABELS = ROOT / "model" / "class_labels_lstm_v1.json"
-LSTM_REPORT = ROOT / "model" / "lstm_training_report.json"
-TCN_MODEL = ROOT / "model" / "voxgest_tcn_v1.h5"
-TCN_LABELS = ROOT / "model" / "class_labels_tcn_v1.json"
-TCN_REPORT = ROOT / "model" / "tcn_training_report.json"
+
+
+def artifact_suffix():
+    if WORD_PROFILE == "demo10":
+        return "v1"
+    return "".join(ch if ch.isalnum() or ch in {"_", "-"} else "_" for ch in WORD_PROFILE)
+
+
+ARTIFACT_SUFFIX = artifact_suffix()
+LSTM_MODEL = ROOT / "model" / f"voxgest_lstm_{ARTIFACT_SUFFIX}.h5"
+LSTM_LABELS = ROOT / "model" / f"class_labels_lstm_{ARTIFACT_SUFFIX}.json"
+LSTM_REPORT = (
+    ROOT / "model" / "lstm_training_report.json"
+    if WORD_PROFILE == "demo10"
+    else ROOT / "model" / f"lstm_training_report_{ARTIFACT_SUFFIX}.json"
+)
+TCN_MODEL = ROOT / "model" / f"voxgest_tcn_{ARTIFACT_SUFFIX}.h5"
+TCN_LABELS = ROOT / "model" / f"class_labels_tcn_{ARTIFACT_SUFFIX}.json"
+TCN_REPORT = (
+    ROOT / "model" / "tcn_training_report.json"
+    if WORD_PROFILE == "demo10"
+    else ROOT / "model" / f"tcn_training_report_{ARTIFACT_SUFFIX}.json"
+)
 DYNAMIC_MODEL_KIND = os.environ.get("VOXGEST_DYNAMIC_MODEL", "auto").strip().lower()
 ALLOW_EXTRA_WORD_LABELS = os.environ.get("VOXGEST_ALLOW_EXTRA_WORD_LABELS", "0").strip().lower() in {
     "1",
@@ -51,10 +69,12 @@ ALLOW_EXTRA_WORD_LABELS = os.environ.get("VOXGEST_ALLOW_EXTRA_WORD_LABELS", "0")
     "on",
 }
 
-ACTIVE_WORD_LABELS = set(DEMO10_WORDS)
-ACTIVE_DYNAMIC_LABELS = ACTIVE_WORD_LABELS | set(NEGATIVE_WORDS)
+ACTIVE_WORD_LABELS = set(TARGET_WORDS)
+ACTIVE_DYNAMIC_LABELS = set(TRAINING_WORDS)
 MIRROR_INPUT = True
-EXPECTED_LABELS = [item.upper() for item in sys.argv[1:]] or list(DEMO10_WORDS) + list(NEGATIVE_WORDS)
+EXPECTED_LABELS = [item.upper() for item in sys.argv[1:]] or list(TARGET_WORDS) + list(NEGATIVE_WORDS)
+DYNAMIC_EVERY_N_FRAMES = int(os.environ.get("VOXGEST_DYNAMIC_EVERY_N_FRAMES", "3"))
+NO_POSE_RESET_FRAMES = 12
 
 THRESHOLDS = {
     "YES": {"conf": 0.56, "margin": 0.07, "motion": 0.008, "path": 0.05, "presence": 0.25},
@@ -268,17 +288,22 @@ def main():
     print("VoxGest live word test logger")
     print("=" * 76)
     print(f"Model   : {model_name} ({model_path})")
+    print(f"Profile : {WORD_PROFILE}")
     print(f"Labels  : {EXPECTED_LABELS}")
     print(f"CSV     : {out_path}")
     print(f"JSON    : {json_path}")
     print(f"Hand    : {configured_hand_preference()}")
+    print(f"Map     : {hand_mapping_text(mirrored_input=MIRROR_INPUT)}")
     print(f"Pose    : {'single-hand' if single_hand_pose_enabled() else 'full-pose'}")
     print(f"Mirror  : {configured_mirror_input(MIRROR_INPUT)}")
+    print(f"Cadence : every {DYNAMIC_EVERY_N_FRAMES} frame(s) once the 30-frame buffer is full")
     print()
 
     frame_window = deque(maxlen=SEQ_LEN)
     expected_idx = 0
     trial_count = 0
+    frame_count = 0
+    no_pose_frames = 0
     last_row = None
     last_prediction = {
         "label": "",
@@ -304,6 +329,7 @@ def main():
             ok, frame = cap.read()
             if not ok:
                 break
+            frame_count += 1
             frame = cv2.flip(frame, 1)
             rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             results = holistic.process(rgb)
@@ -316,8 +342,9 @@ def main():
 
             vec = extract_frame_features(results, mirrored_input=MIRROR_INPUT)
             if vec is not None:
+                no_pose_frames = 0
                 frame_window.append(vec)
-                if len(frame_window) == SEQ_LEN:
+                if len(frame_window) == SEQ_LEN and frame_count % DYNAMIC_EVERY_N_FRAMES == 0:
                     seq = np.array(list(frame_window), dtype=np.float32)
                     probs = model.predict(seq[np.newaxis, ...], verbose=0)[0]
                     pred_idx, conf, margin = top_prediction(probs)
@@ -329,6 +356,19 @@ def main():
                         "wrist_path": sequence_wrist_path(seq),
                         "hand_presence": sequence_hand_presence_ratio(seq),
                     }
+            else:
+                no_pose_frames += 1
+                if no_pose_frames >= NO_POSE_RESET_FRAMES:
+                    frame_window.clear()
+                    last_prediction = {
+                        "label": "",
+                        "confidence": 0.0,
+                        "margin": 0.0,
+                        "motion": 0.0,
+                        "wrist_path": 0.0,
+                        "hand_presence": 0.0,
+                    }
+                    no_pose_frames = 0
 
             expected = EXPECTED_LABELS[expected_idx]
             draw(frame, model_name, expected, trial_count, last_row)

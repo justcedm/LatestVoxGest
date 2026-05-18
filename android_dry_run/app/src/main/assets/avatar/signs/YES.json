@@ -1,0 +1,42 @@
+{
+  "id": "YES",
+  "type": "word",
+  "status": "prototype",
+  "gloss": "YES",
+  "description": "Fist nod/down-up motion.",
+  "animation": {
+    "format": "avatar_keyframes_v1",
+    "dominant_hand": "configured_user_hand",
+    "fallback": "fingerspell",
+    "keyframes": [
+      {
+        "t": 0,
+        "pose": "ready",
+        "right_hand": {"x": 0.64, "y": 0.46, "shape": "fist"},
+        "right_elbow": {"x": 0.56, "y": 0.58},
+        "face": "neutral"
+      },
+      {
+        "t": 180,
+        "pose": "fist_down",
+        "right_hand": {"x": 0.64, "y": 0.56, "shape": "fist"},
+        "right_elbow": {"x": 0.56, "y": 0.62},
+        "face": "confirm"
+      },
+      {
+        "t": 360,
+        "pose": "fist_up",
+        "right_hand": {"x": 0.64, "y": 0.46, "shape": "fist"},
+        "right_elbow": {"x": 0.56, "y": 0.58},
+        "face": "confirm"
+      },
+      {
+        "t": 520,
+        "pose": "hold",
+        "right_hand": {"x": 0.64, "y": 0.50, "shape": "fist"},
+        "right_elbow": {"x": 0.56, "y": 0.60},
+        "face": "neutral"
+      }
+    ]
+  }
+}

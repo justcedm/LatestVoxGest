@@ -69,6 +69,17 @@ def mediapipe_side_for_preference(hand_preference=None, mirrored_input=None):
     return pref
 
 
+def hand_mapping_text(hand_preference=None, mirrored_input=None):
+    """Human-readable physical-hand mapping for logs and live tools."""
+    pref = configured_hand_preference(hand_preference)
+    mirrored = configured_mirror_input(mirrored_input)
+    if pref == "auto":
+        return "auto physical hand selection"
+    media_side = mediapipe_side_for_preference(pref, mirrored)
+    mirror_note = "mirrored input" if mirrored else "unmirrored input"
+    return f"physical {pref} hand -> MediaPipe {media_side} hand ({mirror_note})"
+
+
 def apply_sequence_feature_policy(seq, hand_preference=None, mirrored_input=None):
     """Apply current single-hand pose policy to an existing Nx162 sequence."""
     arr = np.asarray(seq, dtype=np.float32).copy()

@@ -1,10 +1,23 @@
-*.h5 binary
+# Normalize source/document text for GitHub.
+* text=auto
+
+# Binary artifacts that should not be diffed as text.
 *.tflite binary
+*.h5 binary
+*.keras binary
+*.ckpt binary
+*.pb binary
 *.npy binary
 *.npz binary
 *.mp4 binary
 *.avi binary
 *.mov binary
 *.mkv binary
+*.webm binary
 *.pdf binary
 *.docx binary
+*.zip binary
+
+# Git LFS is not required for the current GitHub-safe snapshot because only
+# small demo TFLite files are kept. If large model/data artifacts must be
+# versioned later, enable Git LFS deliberately before tracking them.

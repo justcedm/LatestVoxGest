@@ -1,0 +1,56 @@
+<resources>
+    <style name="Text" />
+    <style name="Widget" />
+    <style name="Text.VoxGest" />
+    <style name="Widget.VoxGest" />
+
+    <style name="Text.VoxGest.ScreenTitle">
+        <item name="android:textSize">@dimen/text_screen_title</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:fontFamily">@font/poppins</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:letterSpacing">0.02</item>
+    </style>
+
+    <style name="Text.VoxGest.Label">
+        <item name="android:textSize">@dimen/text_current_label</item>
+        <item name="android:textColor">@color/text_secondary</item>
+        <item name="android:fontFamily">@font/poppins</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:letterSpacing">0.15</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="Text.VoxGest.SectionHeader" parent="Text.VoxGest.Label" />
+
+    <style name="Text.VoxGest.BottomNav">
+        <item name="android:textSize">@dimen/text_nav_label</item>
+        <item name="android:fontFamily">@font/poppins</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="Widget.VoxGest.ActionButton" parent="Widget.Material3.Button">
+        <item name="android:textAllCaps">false</item>
+        <item name="android:fontFamily">@font/poppins</item>
+        <item name="android:textStyle">bold</item>
+        <item name="cornerRadius">@dimen/btn_radius</item>
+        <item name="android:stateListAnimator">@animator/press_scale_state</item>
+    </style>
+
+    <style name="Widget.VoxGest.BottomNav" />
+
+    <style name="Widget.VoxGest.BottomNav.ActiveIndicator" parent="">
+        <item name="android:width">74dp</item>
+        <item name="android:height">@dimen/nav_active_height</item>
+        <item name="android:color">@color/nav_active</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.VoxGest.NavPill</item>
+    </style>
+
+    <style name="ShapeAppearance.VoxGest.NavPill" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">18dp</item>
+    </style>
+</resources>

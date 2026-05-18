@@ -1,0 +1,25 @@
+<resources>
+    <style name="AppTheme" parent="Theme.Material3.Light.NoActionBar">
+        <item name="android:fontFamily">@font/poppins</item>
+        <item name="fontFamily">@font/poppins</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:forceDarkAllowed">false</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar">true</item>
+        <item name="android:statusBarColor">@color/surface_white</item>
+        <item name="android:navigationBarColor">@color/bottom_nav_bg</item>
+        <item name="colorPrimary">@color/primary_teal</item>
+        <item name="colorOnPrimary">@color/surface_white</item>
+        <item name="colorPrimaryContainer">@color/medical_bg</item>
+        <item name="colorSecondary">@color/primary_dark</item>
+        <item name="colorSurface">@color/surface_white</item>
+        <item name="colorOnSurface">@color/text_primary</item>
+        <item name="colorOutline">@color/divider</item>
+        <item name="colorError">@color/no_red</item>
+        <item name="android:colorAccent">@color/primary_teal</item>
+        <item name="motionDurationShort1">80</item>
+        <item name="motionDurationShort2">120</item>
+        <item name="motionDurationMedium1">180</item>
+    </style>
+</resources>

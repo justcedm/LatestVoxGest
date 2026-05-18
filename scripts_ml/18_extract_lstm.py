@@ -10,6 +10,7 @@ holistic LSTM data cannot be mixed with older 63-feature hand-only data.
 
 import json
 import os
+import sys
 from pathlib import Path
 
 import cv2
@@ -44,13 +45,22 @@ VIDEO_DIRS = [
 
 MIN_FRAMES = 5
 MIN_SOURCE_VIDEOS = 8
-TARGET_SEQS = 400
-N_AUGMENTS = 18
+TARGET_SEQS = int(os.environ.get("VOXGEST_TARGET_SEQS_PER_WORD", "400"))
+N_AUGMENTS = int(os.environ.get("VOXGEST_N_AUGMENTS_PER_SOURCE", "18"))
+MIN_READY_SEQS = int(os.environ.get("VOXGEST_MIN_SEQS_PER_CLASS", "80"))
+MIN_READY_GROUPS = int(os.environ.get("VOXGEST_MIN_GROUPS_PER_CLASS", "4"))
+SKIP_READY_WORDS = os.environ.get("VOXGEST_SKIP_READY_WORDS", "0").strip().lower() in {
+    "1",
+    "true",
+    "yes",
+    "on",
+}
 DETECTION_CONF = 0.35
 TRACKING_CONF = 0.30
 
 VIDEO_EXTS = {".mp4", ".avi", ".mov", ".webm", ".mkv"}
 mp_holistic = mp.solutions.holistic
+ACTIVE_TARGET_WORDS = [arg.strip().upper() for arg in sys.argv[1:] if arg.strip()] or list(TARGET_WORDS)
 
 
 def clean_word_folder(word_dir):
@@ -60,6 +70,49 @@ def clean_word_folder(word_dir):
         if PRESERVE_MANUAL and file_path.name.startswith("manual_"):
             continue
         file_path.unlink()
+
+
+def drop_replaced_metadata_for_word(metadata, word):
+    prefix = f"{word}/"
+    kept = {}
+    for key, value in metadata.get("samples", {}).items():
+        if not key.startswith(prefix):
+            kept[key] = value
+            continue
+        if PRESERVE_MANUAL and Path(key).name.startswith("manual_"):
+            kept[key] = value
+    metadata["samples"] = kept
+
+
+def infer_group_id(word, file_name, metadata):
+    key = f"{word}/{file_name}"
+    if key in metadata:
+        return metadata[key].get("source_id", key)
+
+    stem = Path(file_name).stem
+    if "_aug" in stem:
+        return f"{word}/{stem.rsplit('_aug', 1)[0]}"
+    if "_seq" in stem and stem.startswith("manual_"):
+        return f"{word}/{stem.rsplit('_seq', 1)[0]}"
+    return f"{word}/{stem}"
+
+
+def existing_ready_stats(word, metadata):
+    word_dir = SAVE_DIR / word
+    if not word_dir.exists():
+        return 0, 0
+    valid = 0
+    groups = set()
+    for file_path in sorted(word_dir.glob("*.npy")):
+        try:
+            shape = tuple(np.load(file_path, mmap_mode="r", allow_pickle=False).shape)
+        except Exception:
+            continue
+        if shape != (SEQ_LEN, FEAT_SIZE):
+            continue
+        valid += 1
+        groups.add(infer_group_id(word, file_path.name, metadata))
+    return valid, len(groups)
 
 
 def video_sources_for_word(word):
@@ -267,11 +320,23 @@ def save_metadata(metadata):
 def extract_word(word, holistic, log_file, metadata):
     word_dir = SAVE_DIR / word
     word_dir.mkdir(parents=True, exist_ok=True)
+    if SKIP_READY_WORDS:
+        existing_sequences, existing_groups = existing_ready_stats(word, metadata)
+        if existing_sequences >= MIN_READY_SEQS and existing_groups >= MIN_READY_GROUPS:
+            log_file.write(
+                f"KEEP  {word:<15} existing_sequences={existing_sequences} "
+                f"existing_groups={existing_groups}\n"
+            )
+            log_file.flush()
+            return existing_sequences, existing_groups, 0
+
+    drop_replaced_metadata_for_word(metadata, word)
     clean_word_folder(word_dir)
 
     sources = video_sources_for_word(word)
     if not sources:
         log_file.write(f"MISS  {word:<15} no videos found\n")
+        log_file.flush()
         return 0, 0, 0
 
     saved = 0
@@ -286,6 +351,7 @@ def extract_word(word, holistic, log_file, metadata):
         if seq is None:
             bad += 1
             log_file.write(f"SKIP  {word}/{video_path.name}\n")
+            log_file.flush()
             continue
 
         good += 1
@@ -311,6 +377,7 @@ def extract_word(word, holistic, log_file, metadata):
             saved += 1
 
     log_file.write(f"DONE  {word:<15} good={good} bad={bad} saved={saved}\n")
+    log_file.flush()
     return saved, good, bad
 
 
@@ -321,7 +388,11 @@ def main():
     print(f"  Dataset      : {SAVE_DIR}")
     print(f"  Video roots  : {[str(p) for p in VIDEO_DIRS if p.exists()]}")
     print(f"  Word profile : {WORD_PROFILE}")
-    print(f"  Target words : {len(TARGET_WORDS)}")
+    print(f"  Target words : {len(ACTIVE_TARGET_WORDS)}")
+    print(f"  Target seqs  : {TARGET_SEQS}")
+    print(f"  Augments/src : {N_AUGMENTS}")
+    if SKIP_READY_WORDS:
+        print("  Ready labels : skipped when they already pass trainer minimums")
     print(f"  Hand policy  : {configured_hand_preference()}")
     print(f"  Pose mask    : {'single-hand' if single_hand_pose_enabled() else 'full-pose'}")
     print(f"  Mirror input : {configured_mirror_input(MIRROR_INPUT)}")
@@ -337,13 +408,7 @@ def main():
     (ROOT / "model").mkdir(exist_ok=True)
     SAVE_DIR.mkdir(parents=True, exist_ok=True)
     metadata = load_metadata()
-    if PRESERVE_MANUAL:
-        metadata["samples"] = {
-            key: value
-            for key, value in metadata.get("samples", {}).items()
-            if Path(key).name.startswith("manual_")
-        }
-    else:
+    if not PRESERVE_MANUAL:
         metadata["samples"] = {}
 
     totals = {}
@@ -358,11 +423,15 @@ def main():
             min_detection_confidence=DETECTION_CONF,
             min_tracking_confidence=TRACKING_CONF,
         ) as holistic:
-            for word in TARGET_WORDS:
+            for word in ACTIVE_TARGET_WORDS:
                 saved, good, bad = extract_word(word, holistic, log_file, metadata)
                 totals[word] = (saved, good, bad)
                 status = "OK" if good >= MIN_SOURCE_VIDEOS else "LOW"
-                print(f"  {status:<3} {word:<12} sequences={saved:>4} source_ok={good:>2} skipped={bad:>2}")
+                print(
+                    f"  {status:<3} {word:<12} sequences={saved:>4} "
+                    f"source_ok={good:>2} skipped={bad:>2}",
+                    flush=True,
+                )
 
     save_metadata(metadata)
 
@@ -373,7 +442,7 @@ def main():
     print("\n" + "=" * 68)
     print("  Extraction Summary")
     print("=" * 68)
-    print(f"  Ready words       : {len(ready)} / {len(TARGET_WORDS)}")
+    print(f"  Ready words       : {len(ready)} / {len(ACTIVE_TARGET_WORDS)}")
     print(f"  Total sequences   : {sum(v[0] for v in totals.values())}")
     print(f"  Metadata          : {METADATA_PATH}")
     print(f"  Log               : {LOG_PATH}")

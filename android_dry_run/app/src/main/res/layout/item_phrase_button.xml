@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/phraseCard"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/phrase_card_min_height"
+    android:layout_margin="5dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackground"
+    app:cardBackgroundColor="@color/card_surface"
+    app:cardCornerRadius="@dimen/action_card_radius"
+    app:cardElevation="1dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="16dp">
+
+        <FrameLayout
+            android:id="@+id/phraseIconCircle"
+            android:layout_width="@dimen/phrase_icon_circle"
+            android:layout_height="@dimen/phrase_icon_circle"
+            android:background="@drawable/bg_icon_teal">
+
+            <ImageView
+                android:id="@+id/phraseIcon"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_chat" />
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/phraseText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_weight="1"
+            android:fontFamily="@font/poppins"
+            android:includeFontPadding="false"
+            android:textColor="@color/text_primary"
+            android:textSize="@dimen/text_phrase_button"
+            android:textStyle="bold" />
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

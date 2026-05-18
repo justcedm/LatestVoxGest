@@ -15,6 +15,10 @@ WLASL_JSON = ROOT / "scripts_ml" / "WLASL_v0.3.json"
 VIDEO_DIR = ROOT / "wlasl_videos"
 MIN_VIDEOS = 15
 VIDEO_EXTS = (".mp4", ".avi", ".mov", ".webm", ".mkv")
+ALLOW_UNVERIFIED_YOUTUBE_FALLBACK = os.environ.get(
+    "VOXGEST_ALLOW_UNVERIFIED_YOUTUBE_FALLBACK",
+    "0",
+).strip().lower() in {"1", "true", "yes", "on"}
 
 
 def load_wlasl(json_path):
@@ -43,7 +47,7 @@ def download_wlasl_word(word, instances, save_dir, min_needed=MIN_VIDEOS):
 
     downloaded = existing
     for inst in instances:
-        if downloaded >= min_needed * 2:
+        if downloaded >= min_needed:
             break
 
         url = inst.get("url", "")
@@ -154,9 +158,11 @@ def main():
         else:
             count = 0
 
-        if count < MIN_VIDEOS:
-            print(f"Only {count} from WLASL, trying YouTube...", end=" -> ")
+        if count < MIN_VIDEOS and ALLOW_UNVERIFIED_YOUTUBE_FALLBACK:
+            print(f"Only {count} from WLASL, trying unverified YouTube fallback...", end=" -> ")
             count = download_youtube_fallback(word, save_dir)
+        elif count < MIN_VIDEOS:
+            print(f"Only {count} from WLASL, YouTube fallback disabled...", end=" -> ")
 
         results[word] = count
         print(f"{count} videos total")

@@ -32,6 +32,7 @@ from lstm_features import (
     configured_hand_preference,
     configured_mirror_input,
     extract_frame_features,
+    hand_mapping_text,
     hand_is_present,
     single_hand_pose_enabled,
 )
@@ -76,7 +77,7 @@ def existing_count(word):
     return sum(1 for p in word_dir.glob("manual_*.npy"))
 
 
-def draw_status(frame, word, recording, saved, target, buffer_len, hand_frames):
+def draw_status(frame, word, recording, saved, target, buffer_len, hand_frames, hand_map):
     height, width = frame.shape[:2]
     overlay = frame.copy()
     cv2.rectangle(overlay, (0, 0), (width, 132), (10, 10, 10), -1)
@@ -101,6 +102,15 @@ def draw_status(frame, word, recording, saved, target, buffer_len, hand_frames):
     )
     cv2.putText(
         frame,
+        hand_map,
+        (15, 122),
+        cv2.FONT_HERSHEY_SIMPLEX,
+        0.46,
+        (210, 210, 210),
+        1,
+    )
+    cv2.putText(
+        frame,
         "SPACE=start/pause  N=next  Q=quit",
         (15, height - 18),
         cv2.FONT_HERSHEY_SIMPLEX,
@@ -119,10 +129,12 @@ def record_word(word, holistic, metadata):
     target = already + TARGET_SEQUENCES_PER_WORD
     source_stamp = time.strftime("manual_%Y%m%d_%H%M%S")
     source_id = f"{word}/{source_stamp}"
+    hand_map = hand_mapping_text(HAND_PREFERENCE, MIRROR_INPUT)
 
     print(f"\nRecording {word}")
     print(f"  Existing manual sequences: {already}")
     print(f"  New target: {TARGET_SEQUENCES_PER_WORD}")
+    print(f"  Hand map: {hand_map}")
     if word == "NOTHING":
         print(
             "  Record hard negatives: idle hands, transitions, partial signs, "
@@ -193,6 +205,7 @@ def record_word(word, holistic, metadata):
             TARGET_SEQUENCES_PER_WORD,
             len(frame_buffer),
             sum(1 for item in hand_buffer if item),
+            hand_map,
         )
 
         cv2.imshow(f"Record LSTM word: {word}", frame)
@@ -236,6 +249,7 @@ def main():
     print(f"  Words  : {words}")
     print(f"  Target : {TARGET_SEQUENCES_PER_WORD} new sequences per word")
     print(f"  Hand   : {HAND_PREFERENCE}")
+    print(f"  Map    : {hand_mapping_text(HAND_PREFERENCE, MIRROR_INPUT)}")
     print(f"  Pose   : {'single-hand' if single_hand_pose_enabled() else 'full-pose'}")
     print(f"  Mirror : {configured_mirror_input(MIRROR_INPUT)}")
     print()

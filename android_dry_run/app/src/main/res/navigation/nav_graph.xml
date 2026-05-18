@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/signFragment">
+
+    <fragment
+        android:id="@+id/signFragment"
+        android:name="com.voxgest.app.SignFragment"
+        android:label="@string/tab_sign">
+        <action
+            android:id="@+id/action_sign_to_listen"
+            app:destination="@id/listenFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/listenFragment"
+        android:name="com.voxgest.app.ListenFragment"
+        android:label="@string/tab_listen">
+        <action
+            android:id="@+id/action_listen_to_phrases"
+            app:destination="@id/phrasesFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/phrasesFragment"
+        android:name="com.voxgest.app.PhrasesFragment"
+        android:label="@string/tab_phrases">
+        <action
+            android:id="@+id/action_phrases_to_history"
+            app:destination="@id/historyFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/historyFragment"
+        android:name="com.voxgest.app.HistoryFragment"
+        android:label="@string/tab_history">
+        <action
+            android:id="@+id/action_history_to_sign"
+            app:destination="@id/signFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+</navigation>

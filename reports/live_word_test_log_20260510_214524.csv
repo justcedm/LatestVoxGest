@@ -1,2 +1,0 @@
-timestamp,model_name,model_path,expected_label,predicted_label,confidence,margin,motion,wrist_path,hand_presence,accepted_by_gate,matched_expected,failure_reason,dominant_hand,single_hand_pose,mirrored_input
-2026-05-10T21:45:45,LSTM,C:\BSIT 3RD YEAR\New VovGest\model\voxgest_lstm_v1.h5,YES,YES,0.96375,0.92777,0.0,0.0,0.0,False,True,low_motion<0.008;low_path<0.05;low_hand<0.25,right,True,True

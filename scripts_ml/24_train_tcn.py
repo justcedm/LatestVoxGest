@@ -40,6 +40,7 @@ from lstm_features import (
     apply_sequence_feature_policy,
     configured_hand_preference,
     configured_mirror_input,
+    hand_mapping_text,
     single_hand_pose_enabled,
 )
 from word_config import TARGET_WORDS, TRAINING_WORDS, WORD_PROFILE
@@ -56,10 +57,22 @@ DATA_DIR = (
     else LEGACY_DATA_DIR
 )
 
-MODEL_PATH = ROOT / "model" / "voxgest_tcn_v1.h5"
-LABELS_PATH = ROOT / "model" / "class_labels_tcn_v1.json"
-TFLITE_PATH = ROOT / "model" / "voxgest_tcn_v1.tflite"
-REPORT_PATH = ROOT / "model" / "tcn_training_report.json"
+
+def artifact_suffix():
+    if WORD_PROFILE == "demo10":
+        return "v1"
+    return "".join(ch if ch.isalnum() or ch in {"_", "-"} else "_" for ch in WORD_PROFILE)
+
+
+ARTIFACT_SUFFIX = artifact_suffix()
+MODEL_PATH = ROOT / "model" / f"voxgest_tcn_{ARTIFACT_SUFFIX}.h5"
+LABELS_PATH = ROOT / "model" / f"class_labels_tcn_{ARTIFACT_SUFFIX}.json"
+TFLITE_PATH = ROOT / "model" / f"voxgest_tcn_{ARTIFACT_SUFFIX}.tflite"
+REPORT_PATH = (
+    ROOT / "model" / "tcn_training_report.json"
+    if WORD_PROFILE == "demo10"
+    else ROOT / "model" / f"tcn_training_report_{ARTIFACT_SUFFIX}.json"
+)
 
 EPOCHS = int(os.environ.get("VOXGEST_TCN_EPOCHS", "120"))
 BATCH_SIZE = int(os.environ.get("VOXGEST_TCN_BATCH_SIZE", "64"))
@@ -378,6 +391,7 @@ def main():
     print(f"  Target words : {len(TARGET_WORDS)}")
     print(f"  Train words  : {len(TRAINING_WORDS)} including negatives")
     print(f"  Hand policy  : {configured_hand_preference()}")
+    print(f"  Hand mapping : {hand_mapping_text(mirrored_input=configured_mirror_input())}")
     print(f"  Pose mask    : {'single-hand' if single_hand_pose_enabled() else 'full-pose'}")
     print(f"  Mirror env   : {configured_mirror_input()}")
     print(f"  Require meta : {REQUIRE_HAND_METADATA}")

@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/historyCard"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/card_margin_h"
+    android:layout_marginTop="4dp"
+    android:layout_marginEnd="@dimen/card_margin_h"
+    android:layout_marginBottom="4dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackground"
+    app:cardBackgroundColor="@color/card_surface"
+    app:cardCornerRadius="@dimen/action_card_radius"
+    app:cardElevation="1dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="78dp"
+        android:padding="14dp">
+
+        <FrameLayout
+            android:id="@+id/typeIconCircle"
+            android:layout_width="@dimen/history_icon_circle"
+            android:layout_height="@dimen/history_icon_circle"
+            android:background="@drawable/bg_icon_teal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/typeIcon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_hand_gesture"
+                app:tint="@color/history_sign_icon" />
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/typeLabel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="14dp"
+            android:layout_marginEnd="8dp"
+            android:fontFamily="@font/poppins"
+            android:includeFontPadding="false"
+            android:textColor="@color/primary_teal"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@id/timestampText"
+            app:layout_constraintStart_toEndOf="@id/typeIconCircle"
+            app:layout_constraintTop_toTopOf="@id/typeIconCircle" />
+
+        <TextView
+            android:id="@+id/timestampText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins"
+            android:includeFontPadding="false"
+            android:textColor="@color/text_muted"
+            android:textSize="@dimen/text_history_timestamp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/typeIconCircle" />
+
+        <TextView
+            android:id="@+id/messageText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="14dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="8dp"
+            android:ellipsize="end"
+            android:fontFamily="@font/poppins"
+            android:includeFontPadding="false"
+            android:maxLines="2"
+            android:textColor="@color/text_primary"
+            android:textSize="@dimen/text_history_title"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@id/playButton"
+            app:layout_constraintStart_toEndOf="@id/typeIconCircle"
+            app:layout_constraintTop_toBottomOf="@id/typeLabel" />
+
+        <LinearLayout
+            android:id="@+id/metaRow"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="14dp"
+            android:layout_marginTop="5dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toStartOf="@id/playButton"
+            app:layout_constraintStart_toEndOf="@id/typeIconCircle"
+            app:layout_constraintTop_toBottomOf="@id/messageText">
+
+            <ImageView
+                android:id="@+id/metaIcon"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:src="@drawable/ic_volume_up"
+                app:tint="@color/text_muted" />
+
+            <TextView
+                android:id="@+id/metaText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:fontFamily="@font/poppins"
+                android:includeFontPadding="false"
+                android:textColor="@color/text_muted"
+                android:textSize="10sp" />
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/playButton"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/cd_play_signs"
+            android:padding="10dp"
+            android:src="@drawable/ic_play_arrow"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/moreButton"
+            app:layout_constraintTop_toBottomOf="@id/timestampText"
+            app:tint="@color/primary_dark" />
+
+        <ImageButton
+            android:id="@+id/moreButton"
+            android:layout_width="36dp"
+            android:layout_height="40dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/cd_filter"
+            android:padding="9dp"
+            android:src="@drawable/ic_more_vert"
+            app:layout_constraintBottom_toBottomOf="@id/playButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/playButton" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>

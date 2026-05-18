@@ -31,6 +31,7 @@ from lstm_features import (
     configured_hand_preference,
     configured_mirror_input,
     extract_frame_features,
+    hand_mapping_text,
     normalize_static_hand,
     sequence_hand_presence_ratio,
     sequence_motion_energy,
@@ -423,6 +424,7 @@ print("\nVoxGest live")
 print("  M=mode  SPACE=word boundary  C=clear  S=speak  Q=quit")
 print(f"  Modes: AUTO, LETTERS, WORDS  start={MODES[mode_idx]}")
 print(f"  Dominant hand policy: {HAND_PREFERENCE}")
+print(f"  Hand mapping: {hand_mapping_text(HAND_PREFERENCE, MIRROR_INPUT)}")
 print(f"  Pose policy: {'single-hand' if single_hand_pose_enabled() else 'full-pose'}")
 print(f"  Mirror input: {configured_mirror_input(MIRROR_INPUT)}")
 print(f"  Active word contract: {sorted(ACTIVE_DYNAMIC_LABELS)}")
@@ -464,6 +466,7 @@ with mp_holistic.Holistic(
         frame_count += 1
         height, width = frame.shape[:2]
         mode = MODES[mode_idx]
+        dynamic_due = frame_count % LSTM_EVERY_N_FRAMES == 0
 
         rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         results = holistic.process(rgb)
@@ -553,8 +556,8 @@ with mp_holistic.Holistic(
 
         word_candidate = ("", 0.0, "motion", 0.0, 0.0)
         if has_lstm and len(frame_window) == SEQ_LEN and mode != "LETTERS":
-            seq = np.array(list(frame_window), dtype=np.float32)
-            if frame_count % LSTM_EVERY_N_FRAMES == 0:
+            if dynamic_due:
+                seq = np.array(list(frame_window), dtype=np.float32)
                 probs = lstm_model.predict(seq[np.newaxis, ...], verbose=0)[0]
                 word_idx, word_conf, word_margin = top_prediction(probs)
                 word_label = lstm_idx_to_label.get(word_idx, "?")
@@ -583,8 +586,8 @@ with mp_holistic.Holistic(
 
         motion_letter_candidate = ("", 0.0, "motion-letter", 0.0, 0.0)
         if has_motion_letters and len(frame_window) == SEQ_LEN and mode != "WORDS":
-            seq = np.array(list(frame_window), dtype=np.float32)
-            if frame_count % LSTM_EVERY_N_FRAMES == 0:
+            if dynamic_due:
+                seq = np.array(list(frame_window), dtype=np.float32)
                 probs = motion_letter_model.predict(seq[np.newaxis, ...], verbose=0)[0]
                 letter_idx, letter_conf, letter_margin = top_prediction(probs)
                 letter_label = motion_letter_idx_to_label.get(letter_idx, "?")

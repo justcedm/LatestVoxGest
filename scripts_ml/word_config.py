@@ -83,6 +83,20 @@ SPRINT25_WORDS = DEMO10_WORDS + [
     "BAD",
 ]
 
+SPRINT30_WORDS = DEMO10_WORDS + [
+    "UNDERSTAND",
+    "SORRY",
+    "AGAIN",
+    "MORE",
+    "PAIN",
+    "GO",
+    "FINE",
+    "EAT",
+    "TIME",
+    "WANT",
+    "MEDICINE",
+]
+
 EXTENDED_WORDS = [
     "EMERGENCY",
     "HURT",
@@ -132,6 +146,7 @@ WORD_PROFILES = {
     "sentence11": DEMO10_SENTENCE_WORDS,
     "demo25": SPRINT25_WORDS,
     "sprint25": SPRINT25_WORDS,
+    "sprint30": SPRINT30_WORDS,
     "focus": FOCUS_WORDS,
     "core": CORE_WORDS,
     "full": FULL_WORDS,
