@@ -158,6 +158,19 @@ THRESHOLDS = {
     "NOTHING": {"conf": 0.55, "margin": 0.05, "motion": 0.0, "path": 0.0, "presence": 0.0},
 }
 DEFAULT_THRESHOLD = {"conf": 0.65, "margin": 0.12, "motion": 0.03, "path": 0.35, "presence": 0.25}
+PROFILE_THRESHOLDS = {
+    "fullsign225_manual5": {
+        "EAT": {"conf": 0.60, "margin": 0.08, "motion": 0.015, "path": 0.20, "presence": 0.25},
+    },
+}
+
+
+def threshold_for(label):
+    rule = dict(THRESHOLDS.get(label, DEFAULT_THRESHOLD))
+    profile_rule = PROFILE_THRESHOLDS.get(WORD_PROFILE, {}).get(label)
+    if profile_rule:
+        rule.update(profile_rule)
+    return rule
 
 
 def load_label_maps(path):
@@ -226,7 +239,7 @@ def gate_failure(label, conf, margin, motion, wrist_path, hand_presence, quality
     if not quality_allows_inference(quality_status):
         return [f"quality:{quality_status}"]
 
-    rule = THRESHOLDS.get(label, DEFAULT_THRESHOLD)
+    rule = threshold_for(label)
     failures = []
     if conf < rule["conf"]:
         failures.append(f"low_conf<{rule['conf']:.2f}")

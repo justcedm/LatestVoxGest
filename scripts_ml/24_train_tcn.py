@@ -86,9 +86,18 @@ RUNTIME_MANIFEST_PATH = ROOT / "model" / f"runtime_manifest_{ARTIFACT_SUFFIX}.js
 EPOCHS = int(os.environ.get("VOXGEST_TCN_EPOCHS", "120"))
 BATCH_SIZE = int(os.environ.get("VOXGEST_TCN_BATCH_SIZE", "64"))
 VAL_SPLIT = float(os.environ.get("VOXGEST_VAL_SPLIT", "0.20"))
-MIN_SEQS = int(os.environ.get("VOXGEST_MIN_SEQS_PER_CLASS", "80"))
-MIN_GROUPS = int(os.environ.get("VOXGEST_MIN_GROUPS_PER_CLASS", "4"))
+MIN_SEQS_DEFAULT = "30" if WORD_PROFILE == "fullsign225_manual5" else "80"
+MIN_GROUPS_DEFAULT = "1" if WORD_PROFILE == "fullsign225_manual5" else "4"
+MIN_SEQS = int(os.environ.get("VOXGEST_MIN_SEQS_PER_CLASS", MIN_SEQS_DEFAULT))
+MIN_GROUPS = int(os.environ.get("VOXGEST_MIN_GROUPS_PER_CLASS", MIN_GROUPS_DEFAULT))
 RANDOM_SEED = int(os.environ.get("VOXGEST_RANDOM_SEED", "42"))
+RANDOM_VAL_FALLBACK = (
+    os.environ.get(
+        "VOXGEST_RANDOM_VAL_FALLBACK",
+        "1" if WORD_PROFILE == "fullsign225_manual5" else "0",
+    ).strip()
+    != "0"
+)
 LEGACY_AUGS_PER_SOURCE = 19
 REQUIRE_HAND_METADATA = (
     os.environ.get(
@@ -266,15 +275,32 @@ def load_sequences():
     )
 
 
+def random_class_split_for_indices(indices, rng):
+    indices = np.array(indices, dtype=np.int32)
+    rng.shuffle(indices)
+    n_val = max(1, int(round(len(indices) * VAL_SPLIT)))
+    if len(indices) > 1:
+        n_val = min(n_val, len(indices) - 1)
+    return indices[n_val:].tolist(), indices[:n_val].tolist()
+
+
 def grouped_class_split(labels, groups):
     rng = np.random.default_rng(RANDOM_SEED)
     train_idx = []
     val_idx = []
+    random_fallback_classes = []
 
     for class_idx in sorted(set(labels.tolist())):
         class_indices = np.where(labels == class_idx)[0]
         class_groups = sorted(set(groups[class_indices].tolist()))
         rng.shuffle(class_groups)
+        if RANDOM_VAL_FALLBACK and len(class_groups) < 2:
+            train_part, val_part = random_class_split_for_indices(class_indices, rng)
+            train_idx.extend(train_part)
+            val_idx.extend(val_part)
+            random_fallback_classes.append(int(class_idx))
+            continue
+
         non_manual_groups = [
             group
             for group in class_groups
@@ -302,6 +328,11 @@ def grouped_class_split(labels, groups):
 
     rng.shuffle(train_idx)
     rng.shuffle(val_idx)
+    if random_fallback_classes:
+        print(
+            "  Random validation fallback used for class indices: "
+            f"{random_fallback_classes}"
+        )
     return np.array(train_idx, dtype=np.int32), np.array(val_idx, dtype=np.int32)
 
 
@@ -457,6 +488,8 @@ def main():
     print(f"  Mirror env   : {configured_mirror_input()}")
     print(f"  Require meta : {REQUIRE_HAND_METADATA}")
     print(f"  Require all  : {REQUIRE_ALL_TRAINING_WORDS}")
+    print(f"  Min seq/group: {MIN_SEQS}/{MIN_GROUPS}")
+    print(f"  Random val   : {RANDOM_VAL_FALLBACK}")
     print(f"  Epochs/batch : {EPOCHS}/{BATCH_SIZE}")
     if INCLUDE_EXTRA_WORDS:
         print("  Extra words  : enabled by VOXGEST_INCLUDE_EXTRA_WORDS=1")
@@ -615,6 +648,9 @@ def main():
         "training_words": TRAINING_WORDS,
         "include_extra_words": INCLUDE_EXTRA_WORDS,
         "manual_to_train": MANUAL_TO_TRAIN,
+        "random_val_fallback": RANDOM_VAL_FALLBACK,
+        "min_sequences_per_class": MIN_SEQS,
+        "min_groups_per_class": MIN_GROUPS,
         "classes": classes,
         "missing_target_words": [
             word for word in TARGET_WORDS if word not in class_stats

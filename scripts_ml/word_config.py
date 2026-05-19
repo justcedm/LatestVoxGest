@@ -152,6 +152,13 @@ FULLSIGN225_MANUAL15_WORDS = [
     "TIME",
 ]
 
+FULLSIGN225_MANUAL5_WORDS = [
+    "EAT",
+    "HELLO",
+    "WATER",
+    "THANKYOU",
+]
+
 EXTENDED_WORDS = [
     "EMERGENCY",
     "HURT",
@@ -207,6 +214,7 @@ WORD_PROFILES = {
     "sprint16_fullsign225": FULLSIGN225_TEAM16_WORDS,
     "fullsign225_manual16": FULLSIGN225_MANUAL16_WORDS,
     "fullsign225_manual15": FULLSIGN225_MANUAL15_WORDS,
+    "fullsign225_manual5": FULLSIGN225_MANUAL5_WORDS,
     "focus": FOCUS_WORDS,
     "core": CORE_WORDS,
     "full": FULL_WORDS,
