@@ -135,6 +135,23 @@ FULLSIGN225_MANUAL16_WORDS = [
     "TIME",
 ]
 
+FULLSIGN225_MANUAL15_WORDS = [
+    "YES",
+    "NO",
+    "WATER",
+    "HELLO",
+    "HELP",
+    "STOP",
+    "DOCTOR",
+    "NAME",
+    "THANKYOU",
+    "PLEASE",
+    "SORRY",
+    "PAIN",
+    "EAT",
+    "TIME",
+]
+
 EXTENDED_WORDS = [
     "EMERGENCY",
     "HURT",
@@ -189,6 +206,7 @@ WORD_PROFILES = {
     "fullsign225_team16": FULLSIGN225_TEAM16_WORDS,
     "sprint16_fullsign225": FULLSIGN225_TEAM16_WORDS,
     "fullsign225_manual16": FULLSIGN225_MANUAL16_WORDS,
+    "fullsign225_manual15": FULLSIGN225_MANUAL15_WORDS,
     "focus": FOCUS_WORDS,
     "core": CORE_WORDS,
     "full": FULL_WORDS,
