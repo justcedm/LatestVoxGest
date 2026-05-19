@@ -91,7 +91,7 @@ def _capture_mode():
 def artifact_suffix():
     safe_word = "".join(ch if ch.isalnum() or ch in {"_", "-"} else "_" for ch in WORD_PROFILE)
     if FEATURE_PROFILE != "onehand162":
-        if safe_word == "fullsign225_team16" or safe_word.endswith(f"_{FEATURE_PROFILE}"):
+        if safe_word.startswith("fullsign225_") or safe_word.endswith(f"_{FEATURE_PROFILE}"):
             return safe_word
         return f"{safe_word}_{FEATURE_PROFILE}"
     if WORD_PROFILE == "demo10":

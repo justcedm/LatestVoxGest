@@ -99,6 +99,42 @@ SPRINT30_WORDS = DEMO10_WORDS + [
 
 SPRINT30_FULLSIGN225_WORDS = SPRINT30_WORDS
 
+FULLSIGN225_TEAM16_WORDS = [
+    "DOCTOR",
+    "EAT",
+    "HELLO",
+    "HELP",
+    "NAME",
+    "NO",
+    "PAIN",
+    "PLEASE",
+    "SORRY",
+    "STOP",
+    "THANKYOU",
+    "TIME",
+    "WANT",
+    "WATER",
+    "YES",
+]
+
+FULLSIGN225_MANUAL16_WORDS = [
+    "YES",
+    "NO",
+    "WATER",
+    "HELLO",
+    "HELP",
+    "STOP",
+    "DOCTOR",
+    "NAME",
+    "THANKYOU",
+    "PLEASE",
+    "SORRY",
+    "PAIN",
+    "EAT",
+    "WANT",
+    "TIME",
+]
+
 EXTENDED_WORDS = [
     "EMERGENCY",
     "HURT",
@@ -150,6 +186,9 @@ WORD_PROFILES = {
     "sprint25": SPRINT25_WORDS,
     "sprint30": SPRINT30_WORDS,
     "sprint30_fullsign225": SPRINT30_FULLSIGN225_WORDS,
+    "fullsign225_team16": FULLSIGN225_TEAM16_WORDS,
+    "sprint16_fullsign225": FULLSIGN225_TEAM16_WORDS,
+    "fullsign225_manual16": FULLSIGN225_MANUAL16_WORDS,
     "focus": FOCUS_WORDS,
     "core": CORE_WORDS,
     "full": FULL_WORDS,

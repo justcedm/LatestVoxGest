@@ -62,12 +62,14 @@ DATA_DIR = (
 
 
 def artifact_suffix():
+    safe_word = "".join(ch if ch.isalnum() or ch in {"_", "-"} else "_" for ch in WORD_PROFILE)
     if FEATURE_PROFILE != "onehand162":
-        safe_word = "".join(ch if ch.isalnum() or ch in {"_", "-"} else "_" for ch in WORD_PROFILE)
-        return safe_word if safe_word.endswith(f"_{FEATURE_PROFILE}") else f"{safe_word}_{FEATURE_PROFILE}"
+        if safe_word.startswith("fullsign225_") or safe_word.endswith(f"_{FEATURE_PROFILE}"):
+            return safe_word
+        return f"{safe_word}_{FEATURE_PROFILE}"
     if WORD_PROFILE == "demo10":
         return "v1"
-    return "".join(ch if ch.isalnum() or ch in {"_", "-"} else "_" for ch in WORD_PROFILE)
+    return safe_word
 
 
 ARTIFACT_SUFFIX = artifact_suffix()
@@ -79,6 +81,7 @@ REPORT_PATH = (
     if WORD_PROFILE == "demo10"
     else ROOT / "model" / f"tcn_training_report_{ARTIFACT_SUFFIX}.json"
 )
+RUNTIME_MANIFEST_PATH = ROOT / "model" / f"runtime_manifest_{ARTIFACT_SUFFIX}.json"
 
 EPOCHS = int(os.environ.get("VOXGEST_TCN_EPOCHS", "120"))
 BATCH_SIZE = int(os.environ.get("VOXGEST_TCN_BATCH_SIZE", "64"))
@@ -388,6 +391,57 @@ def export_tflite(model):
     return input_details["shape"].tolist(), output_details["shape"].tolist(), int(out.argmax())
 
 
+def write_runtime_manifest(classes, report):
+    if WORD_PROFILE == "demo10":
+        return None
+    manifest = {
+        "version": 1,
+        "profile": WORD_PROFILE,
+        "status": "experimental_until_live_tested",
+        "default_model": False,
+        "replaces_demo10": False,
+        "replaces_onehand162": False,
+        "phrase_enabled_default": False,
+        "feature_profile": FEATURE_PROFILE,
+        "model_kind": "tcn",
+        "models": {
+            "tcn": {
+                "file": str(TFLITE_PATH.relative_to(ROOT)).replace("\\", "/"),
+                "keras_file": str(MODEL_PATH.relative_to(ROOT)).replace("\\", "/"),
+                "labels_file": str(LABELS_PATH.relative_to(ROOT)).replace("\\", "/"),
+                "training_report": str(REPORT_PATH.relative_to(ROOT)).replace("\\", "/"),
+                "input_shape": [1, SEQ_LEN, FEAT_SIZE],
+                "output_shape": [1, len(classes)],
+                "sequence_length": SEQ_LEN,
+                "feature_size": FEAT_SIZE,
+                "labels": classes,
+                "negative_label": "NOTHING",
+                "nothing_policy": "ignore_no_output",
+            }
+        },
+        "dataset": {
+            "features": str(DATA_DIR),
+            "class_stats": report.get("class_stats", {}),
+        },
+        "validation": {
+            "best_grouped_val_accuracy": report.get("best_grouped_val_accuracy"),
+            "per_class": report.get("per_class", {}),
+            "top_miss": report.get("top_miss", {}),
+        },
+        "runtime_policy": {
+            "input_policy": "accepted_predictions_only",
+            "raw_prediction_policy": "never_update_sentence_output_directly",
+            "nothing_policy": "NOTHING remains no-output",
+            "word_profile_env": f"VOXGEST_WORD_PROFILE={WORD_PROFILE}",
+            "feature_profile_env": f"VOXGEST_FEATURE_PROFILE={FEATURE_PROFILE}",
+            "dynamic_model_env": "VOXGEST_DYNAMIC_MODEL=tcn",
+        },
+    }
+    with open(RUNTIME_MANIFEST_PATH, "w", encoding="utf-8") as f:
+        json.dump(manifest, f, indent=2)
+    return RUNTIME_MANIFEST_PATH
+
+
 def main():
     print("=" * 72)
     print("  VoxGest TCN Trainer | fast temporal Conv1D motion classifier")
@@ -583,12 +637,15 @@ def main():
     }
     with open(REPORT_PATH, "w", encoding="utf-8") as f:
         json.dump(report, f, indent=2)
+    manifest_path = write_runtime_manifest(classes, report)
 
     print("\n" + "=" * 72)
     print("  COMPLETE")
     print(f"  Model  : {MODEL_PATH}")
     print(f"  Labels : {LABELS_PATH}")
     print(f"  Report : {REPORT_PATH}")
+    if manifest_path:
+        print(f"  Manifest: {manifest_path}")
     print(f"  Classes: {classes}")
     print("=" * 72)
 
