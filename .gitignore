@@ -26,6 +26,7 @@ __pycache__/
 *.hprof
 
 # Local datasets, downloaded videos, and extracted feature arrays
+external_datasets/
 dataset_*/
 wlasl_videos/
 phrase_videos/
@@ -36,8 +37,10 @@ scripts_ml/WLASL_v*.json
 *.npy
 *.npz
 *.mp4
+*.MP4
 *.avi
 *.mov
+*.MOV
 *.mkv
 *.webm
 

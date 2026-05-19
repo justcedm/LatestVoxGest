@@ -1,36 +1,60 @@
 # VoxGest Live Log Summary
 
-Generated: 2026-05-17T12:59:48
-Source logs: 7
-Total trials: 237
+Generated: 2026-05-18T15:29:37
+Source logs: 10
+Total trials: 382
 
 ## Weakest Labels
 
 | Rank | Label | Trials | Correct | Accepted | True accept | False accepts | Rejected | Top confusion | Recommendation |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | --- | --- |
-| 1 | NAME | 35 | 34.3% | 30 | 34.3% | 18 | 5 | STOP (14) | record targeted repair samples for this known weak label |
-| 2 | STOP | 44 | 50.0% | 36 | 43.2% | 17 | 8 | NAME (12) | record sprint30 hardening repair samples and confusable NOTHING negatives |
-| 3 | HELP | 24 | 50.0% | 14 | 45.8% | 3 | 10 | DOCTOR (4) | record targeted repair samples for this known weak label |
-| 4 | NOTHING | 29 | 51.7% | 25 | 51.7% | 10 | 4 | PLEASE (3) | record hard negatives and transition/partial-sign NOTHING samples |
-| 5 | PLEASE | 17 | 58.8% | 16 | 58.8% | 6 | 1 | NOTHING (3) | record targeted repair samples for this known weak label |
-| 6 | DOCTOR | 21 | 66.7% | 20 | 66.7% | 6 | 1 | YES (7) | record sprint30 hardening repair samples and confusable NOTHING negatives |
-| 7 | YES | 26 | 84.6% | 22 | 73.1% | 3 | 4 | NOTHING (3) | add confusable negatives and clean contrast samples |
-| 8 | NO | 10 | 90.0% | 10 | 90.0% | 1 | 0 | YES (1) | add confusable negatives and clean contrast samples |
-| 9 | HELLO | 7 | 100.0% | 7 | 100.0% | 0 | 0 | - | keep current demo coverage |
-| 10 | THANKYOU | 15 | 100.0% | 15 | 100.0% | 0 | 0 | - | keep current demo coverage |
-| 11 | WATER | 9 | 100.0% | 9 | 100.0% | 0 | 0 | - | keep current demo coverage |
+| 1 | GO | 3 | 0.0% | 3 | 0.0% | 3 | 0 | NOTHING (3) | record sprint30 hardening repair samples and confusable NOTHING negatives |
+| 2 | MEDICINE | 5 | 0.0% | 4 | 0.0% | 4 | 1 | PLEASE (2) | record sprint30 hardening repair samples and confusable NOTHING negatives |
+| 3 | MORE | 3 | 0.0% | 2 | 0.0% | 2 | 1 | PAIN (3) | record more controlled demo10 samples |
+| 4 | UNDERSTAND | 8 | 0.0% | 5 | 0.0% | 5 | 3 | NOTHING (4) | record sprint30 hardening repair samples and confusable NOTHING negatives |
+| 5 | AGAIN | 3 | 0.0% | 1 | 0.0% | 1 | 2 | DOCTOR (2) | record more controlled demo10 samples |
+| 6 | SORRY | 9 | 0.0% | 2 | 0.0% | 2 | 7 | PLEASE (3) | record more controlled demo10 samples |
+| 7 | TIME | 6 | 33.3% | 2 | 16.7% | 1 | 4 | DOCTOR (2) | record sprint30 hardening repair samples and confusable NOTHING negatives |
+| 8 | NAME | 45 | 31.1% | 38 | 31.1% | 24 | 7 | STOP (19) | record targeted repair samples for this known weak label |
+| 9 | EAT | 7 | 42.9% | 4 | 28.6% | 2 | 3 | FINE (4) | record sprint30 hardening repair samples and confusable NOTHING negatives |
+| 10 | FINE | 7 | 71.4% | 3 | 28.6% | 1 | 4 | EAT (2) | record sprint30 hardening repair samples and confusable NOTHING negatives |
+| 11 | NOTHING | 35 | 45.7% | 28 | 42.9% | 13 | 7 | PLEASE (3) | record hard negatives and transition/partial-sign NOTHING samples |
+| 12 | STOP | 48 | 52.1% | 39 | 45.8% | 17 | 9 | NAME (12) | record sprint30 hardening repair samples and confusable NOTHING negatives |
+| 13 | HELP | 32 | 46.9% | 18 | 43.8% | 4 | 14 | DOCTOR (5) | record targeted repair samples for this known weak label |
+| 14 | YES | 42 | 59.5% | 34 | 50.0% | 13 | 8 | NOTHING (9) | record more controlled demo10 samples |
+| 15 | PLEASE | 26 | 53.8% | 22 | 53.8% | 8 | 4 | NOTHING (3) | record targeted repair samples for this known weak label |
+| 16 | WANT | 5 | 80.0% | 4 | 60.0% | 1 | 1 | PAIN (1) | record more controlled demo10 samples |
+| 17 | NO | 19 | 63.2% | 17 | 63.2% | 5 | 2 | NOTHING (3) | record more controlled demo10 samples |
+| 18 | HELLO | 13 | 69.2% | 13 | 69.2% | 4 | 0 | NOTHING (2) | record more controlled demo10 samples |
+| 19 | DOCTOR | 26 | 69.2% | 25 | 69.2% | 7 | 1 | YES (7) | record sprint30 hardening repair samples and confusable NOTHING negatives |
+| 20 | WATER | 14 | 85.7% | 13 | 85.7% | 1 | 1 | FINE (2) | add confusable negatives and clean contrast samples |
+| 21 | THANKYOU | 23 | 91.3% | 21 | 91.3% | 0 | 2 | FINE (2) | keep current demo coverage |
+| 22 | PAIN | 3 | 100.0% | 3 | 100.0% | 0 | 0 | - | keep current demo coverage |
 
 ## Record Next
 
+- GO
+- MEDICINE
+- UNDERSTAND
+- TIME
 - NAME
+- EAT
+- FINE
+- NOTHING
 - STOP
 - HELP
-- NOTHING
 - PLEASE
 - DOCTOR
 - THANKYOU
+- PAIN
+- MORE
+- AGAIN
+- SORRY
 - YES
+- WANT
 - NO
+- HELLO
+- WATER
 
 ## Known Safer Demo Labels
 
@@ -54,17 +78,28 @@ TCN and LSTM logs are both present.
 | LSTM | PLEASE | 4 | 0.0% | 0.0% | 4 | 0 |
 | LSTM | STOP | 28 | 39.3% | 35.7% | 13 | 5 |
 | LSTM | YES | 2 | 100.0% | 50.0% | 0 | 1 |
-| TCN | DOCTOR | 15 | 60.0% | 60.0% | 5 | 1 |
-| TCN | HELLO | 7 | 100.0% | 100.0% | 0 | 0 |
-| TCN | HELP | 13 | 61.5% | 53.8% | 0 | 6 |
-| TCN | NAME | 19 | 26.3% | 26.3% | 9 | 5 |
-| TCN | NO | 8 | 100.0% | 100.0% | 0 | 0 |
-| TCN | NOTHING | 15 | 40.0% | 40.0% | 8 | 1 |
-| TCN | PLEASE | 13 | 76.9% | 76.9% | 2 | 1 |
-| TCN | STOP | 16 | 68.8% | 56.2% | 4 | 3 |
-| TCN | THANKYOU | 15 | 100.0% | 100.0% | 0 | 0 |
-| TCN | WATER | 9 | 100.0% | 100.0% | 0 | 0 |
-| TCN | YES | 24 | 83.3% | 75.0% | 3 | 3 |
+| TCN | AGAIN | 3 | 0.0% | 0.0% | 1 | 2 |
+| TCN | DOCTOR | 20 | 65.0% | 65.0% | 6 | 1 |
+| TCN | EAT | 7 | 42.9% | 28.6% | 2 | 3 |
+| TCN | FINE | 7 | 71.4% | 28.6% | 1 | 4 |
+| TCN | GO | 3 | 0.0% | 0.0% | 3 | 0 |
+| TCN | HELLO | 13 | 69.2% | 69.2% | 4 | 0 |
+| TCN | HELP | 21 | 52.4% | 47.6% | 1 | 10 |
+| TCN | MEDICINE | 5 | 0.0% | 0.0% | 4 | 1 |
+| TCN | MORE | 3 | 0.0% | 0.0% | 2 | 1 |
+| TCN | NAME | 29 | 24.1% | 24.1% | 15 | 7 |
+| TCN | NO | 17 | 64.7% | 64.7% | 4 | 2 |
+| TCN | NOTHING | 21 | 33.3% | 28.6% | 11 | 4 |
+| TCN | PAIN | 3 | 100.0% | 100.0% | 0 | 0 |
+| TCN | PLEASE | 22 | 63.6% | 63.6% | 4 | 4 |
+| TCN | SORRY | 9 | 0.0% | 0.0% | 2 | 7 |
+| TCN | STOP | 20 | 70.0% | 60.0% | 4 | 4 |
+| TCN | THANKYOU | 23 | 91.3% | 91.3% | 0 | 2 |
+| TCN | TIME | 6 | 33.3% | 16.7% | 1 | 4 |
+| TCN | UNDERSTAND | 8 | 0.0% | 0.0% | 5 | 3 |
+| TCN | WANT | 5 | 80.0% | 60.0% | 1 | 1 |
+| TCN | WATER | 14 | 85.7% | 85.7% | 1 | 1 |
+| TCN | YES | 40 | 57.5% | 50.0% | 13 | 7 |
 
 ## Source Files
 
@@ -75,3 +110,6 @@ TCN and LSTM logs are both present.
 - live_word_test_log_20260514_120519.json
 - live_word_test_log_20260515_155802.json
 - live_word_test_log_20260515_222007.json
+- live_word_test_log_20260517_132028.json
+- live_word_test_log_20260518_143932.json
+- live_word_test_log_20260518_144214.json
