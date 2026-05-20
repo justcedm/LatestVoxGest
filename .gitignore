@@ -27,6 +27,8 @@ __pycache__/
 
 # Local datasets, downloaded videos, and extracted feature arrays
 external_datasets/
+tools/VoxGest_Recorder_Pack/recorded_features/
+tools/VoxGest_Recorder_Pack/recorder_env/
 dataset_*/
 wlasl_videos/
 phrase_videos/
