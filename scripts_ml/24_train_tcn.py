@@ -86,15 +86,20 @@ RUNTIME_MANIFEST_PATH = ROOT / "model" / f"runtime_manifest_{ARTIFACT_SUFFIX}.js
 EPOCHS = int(os.environ.get("VOXGEST_TCN_EPOCHS", "120"))
 BATCH_SIZE = int(os.environ.get("VOXGEST_TCN_BATCH_SIZE", "64"))
 VAL_SPLIT = float(os.environ.get("VOXGEST_VAL_SPLIT", "0.20"))
-MIN_SEQS_DEFAULT = "30" if WORD_PROFILE == "fullsign225_manual5" else "80"
-MIN_GROUPS_DEFAULT = "1" if WORD_PROFILE == "fullsign225_manual5" else "4"
+SEED_PROFILES = {"fullsign225_manual5", "fullsign225_manual5_anas_seed"}
+MIN_SEQS_DEFAULT = (
+    "20"
+    if WORD_PROFILE == "fullsign225_manual5_anas_seed"
+    else ("30" if WORD_PROFILE == "fullsign225_manual5" else "80")
+)
+MIN_GROUPS_DEFAULT = "1" if WORD_PROFILE in SEED_PROFILES else "4"
 MIN_SEQS = int(os.environ.get("VOXGEST_MIN_SEQS_PER_CLASS", MIN_SEQS_DEFAULT))
 MIN_GROUPS = int(os.environ.get("VOXGEST_MIN_GROUPS_PER_CLASS", MIN_GROUPS_DEFAULT))
 RANDOM_SEED = int(os.environ.get("VOXGEST_RANDOM_SEED", "42"))
 RANDOM_VAL_FALLBACK = (
     os.environ.get(
         "VOXGEST_RANDOM_VAL_FALLBACK",
-        "1" if WORD_PROFILE == "fullsign225_manual5" else "0",
+        "1" if WORD_PROFILE in SEED_PROFILES else "0",
     ).strip()
     != "0"
 )

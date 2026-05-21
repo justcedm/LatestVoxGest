@@ -159,6 +159,13 @@ FULLSIGN225_MANUAL5_WORDS = [
     "THANKYOU",
 ]
 
+FULLSIGN225_MANUAL5_ANAS_SEED_WORDS = [
+    "EAT",
+    "WATER",
+    "HELLO",
+    "THANKYOU",
+]
+
 EXTENDED_WORDS = [
     "EMERGENCY",
     "HURT",
@@ -215,6 +222,7 @@ WORD_PROFILES = {
     "fullsign225_manual16": FULLSIGN225_MANUAL16_WORDS,
     "fullsign225_manual15": FULLSIGN225_MANUAL15_WORDS,
     "fullsign225_manual5": FULLSIGN225_MANUAL5_WORDS,
+    "fullsign225_manual5_anas_seed": FULLSIGN225_MANUAL5_ANAS_SEED_WORDS,
     "focus": FOCUS_WORDS,
     "core": CORE_WORDS,
     "full": FULL_WORDS,
