@@ -180,6 +180,9 @@ PROFILE_THRESHOLDS = {
     "fullsign225_manual5_team": {
         "EAT": {"conf": 0.60, "margin": 0.08, "motion": 0.015, "path": 0.20, "presence": 0.25},
     },
+    "fullsign225_manual5_team_v2": {
+        "EAT": {"conf": 0.60, "margin": 0.08, "motion": 0.015, "path": 0.20, "presence": 0.25},
+    },
 }
 
 

@@ -54,6 +54,8 @@ FEATURE_PROFILE = configured_feature_profile()
 def default_training_data_dir():
     if WORD_PROFILE == "fullsign225_manual5_team":
         return ROOT / "external_datasets" / "fullsign225_manual5_team_features"
+    if WORD_PROFILE == "fullsign225_manual5_team_v2":
+        return ROOT / "external_datasets" / "fullsign225_manual5_team_features_v2"
     return ROOT / default_dataset_dir_name()
 
 
@@ -94,10 +96,20 @@ RUNTIME_MANIFEST_PATH = ROOT / "model" / f"runtime_manifest_{ARTIFACT_SUFFIX}.js
 EPOCHS = int(os.environ.get("VOXGEST_TCN_EPOCHS", "120"))
 BATCH_SIZE = int(os.environ.get("VOXGEST_TCN_BATCH_SIZE", "64"))
 VAL_SPLIT = float(os.environ.get("VOXGEST_VAL_SPLIT", "0.20"))
-SEED_PROFILES = {"fullsign225_manual5", "fullsign225_manual5_anas_seed", "fullsign225_manual5_team"}
+SEED_PROFILES = {
+    "fullsign225_manual5",
+    "fullsign225_manual5_anas_seed",
+    "fullsign225_manual5_team",
+    "fullsign225_manual5_team_v2",
+}
 MIN_SEQS_DEFAULT = (
     "20"
-    if WORD_PROFILE in {"fullsign225_manual5_anas_seed", "fullsign225_manual5_team"}
+    if WORD_PROFILE
+    in {
+        "fullsign225_manual5_anas_seed",
+        "fullsign225_manual5_team",
+        "fullsign225_manual5_team_v2",
+    }
     else ("30" if WORD_PROFILE == "fullsign225_manual5" else "80")
 )
 MIN_GROUPS_DEFAULT = "1" if WORD_PROFILE in SEED_PROFILES else "4"

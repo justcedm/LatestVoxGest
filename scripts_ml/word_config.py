@@ -173,6 +173,14 @@ FULLSIGN225_MANUAL5_TEAM_WORDS = [
     "THANKYOU",
 ]
 
+FULLSIGN225_MANUAL5_TEAM_V2_WORDS = [
+    "EAT",
+    "WATER",
+    "HELLO",
+    "THANKYOU",
+    "NOTHING",
+]
+
 WORD_TOKEN_PHRASE_WORDS = [
     "EAT",
     "HELLO",
@@ -252,6 +260,7 @@ WORD_PROFILES = {
     "fullsign225_manual5": FULLSIGN225_MANUAL5_WORDS,
     "fullsign225_manual5_anas_seed": FULLSIGN225_MANUAL5_ANAS_SEED_WORDS,
     "fullsign225_manual5_team": FULLSIGN225_MANUAL5_TEAM_WORDS,
+    "fullsign225_manual5_team_v2": FULLSIGN225_MANUAL5_TEAM_V2_WORDS,
     "fullsign225_phrase_words": WORD_TOKEN_PHRASE_WORDS,
     "onehand162_phrase_words": WORD_TOKEN_PHRASE_WORDS,
     "focus": FOCUS_WORDS,
