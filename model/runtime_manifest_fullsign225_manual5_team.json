@@ -1,0 +1,119 @@
+{
+  "version": 1,
+  "profile": "fullsign225_manual5_team",
+  "status": "experimental_until_live_tested",
+  "default_model": false,
+  "replaces_demo10": false,
+  "replaces_onehand162": false,
+  "phrase_enabled_default": false,
+  "feature_profile": "fullsign225",
+  "model_kind": "tcn",
+  "models": {
+    "tcn": {
+      "file": "model/voxgest_tcn_fullsign225_manual5_team.tflite",
+      "keras_file": "model/voxgest_tcn_fullsign225_manual5_team.h5",
+      "labels_file": "model/class_labels_tcn_fullsign225_manual5_team.json",
+      "training_report": "model/tcn_training_report_fullsign225_manual5_team.json",
+      "input_shape": [
+        1,
+        30,
+        225
+      ],
+      "output_shape": [
+        1,
+        5
+      ],
+      "sequence_length": 30,
+      "feature_size": 225,
+      "labels": [
+        "EAT",
+        "WATER",
+        "HELLO",
+        "THANKYOU",
+        "NOTHING"
+      ],
+      "negative_label": "NOTHING",
+      "nothing_policy": "ignore_no_output"
+    }
+  },
+  "dataset": {
+    "features": "C:\\BSIT 3RD YEAR\\New VovGest\\external_datasets\\fullsign225_manual5_team_features",
+    "class_stats": {
+      "EAT": {
+        "sequences": 73,
+        "groups": 3,
+        "used": true,
+        "skipped_missing_hand_metadata": 0
+      },
+      "WATER": {
+        "sequences": 70,
+        "groups": 2,
+        "used": true,
+        "skipped_missing_hand_metadata": 0
+      },
+      "HELLO": {
+        "sequences": 70,
+        "groups": 2,
+        "used": true,
+        "skipped_missing_hand_metadata": 0
+      },
+      "THANKYOU": {
+        "sequences": 70,
+        "groups": 2,
+        "used": true,
+        "skipped_missing_hand_metadata": 0
+      },
+      "NOTHING": {
+        "sequences": 50,
+        "groups": 1,
+        "used": true,
+        "skipped_missing_hand_metadata": 0
+      }
+    }
+  },
+  "validation": {
+    "best_grouped_val_accuracy": 36.42384111881256,
+    "per_class": {
+      "EAT": {
+        "correct": 36,
+        "total": 41,
+        "accuracy": 87.8048780487805
+      },
+      "WATER": {
+        "correct": 0,
+        "total": 30,
+        "accuracy": 0.0
+      },
+      "HELLO": {
+        "correct": 0,
+        "total": 30,
+        "accuracy": 0.0
+      },
+      "THANKYOU": {
+        "correct": 14,
+        "total": 40,
+        "accuracy": 35.0
+      },
+      "NOTHING": {
+        "correct": 5,
+        "total": 10,
+        "accuracy": 50.0
+      }
+    },
+    "top_miss": {
+      "EAT": "WATER",
+      "WATER": "EAT",
+      "HELLO": "EAT",
+      "THANKYOU": "EAT",
+      "NOTHING": "THANKYOU"
+    }
+  },
+  "runtime_policy": {
+    "input_policy": "accepted_predictions_only",
+    "raw_prediction_policy": "never_update_sentence_output_directly",
+    "nothing_policy": "NOTHING remains no-output",
+    "word_profile_env": "VOXGEST_WORD_PROFILE=fullsign225_manual5_team",
+    "feature_profile_env": "VOXGEST_FEATURE_PROFILE=fullsign225",
+    "dynamic_model_env": "VOXGEST_DYNAMIC_MODEL=tcn"
+  }
+}

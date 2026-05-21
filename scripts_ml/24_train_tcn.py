@@ -49,7 +49,15 @@ from word_config import TARGET_WORDS, TRAINING_WORDS, WORD_PROFILE
 
 ROOT = Path(__file__).resolve().parents[1]
 FEATURE_PROFILE = configured_feature_profile()
-PREFERRED_DATA_DIR = Path(os.environ.get("VOXGEST_LSTM_DATASET", ROOT / default_dataset_dir_name()))
+
+
+def default_training_data_dir():
+    if WORD_PROFILE == "fullsign225_manual5_team":
+        return ROOT / "external_datasets" / "fullsign225_manual5_team_features"
+    return ROOT / default_dataset_dir_name()
+
+
+PREFERRED_DATA_DIR = Path(os.environ.get("VOXGEST_LSTM_DATASET", default_training_data_dir()))
 LEGACY_DATA_DIR = ROOT / "dataset_words"
 ALLOW_LEGACY_FALLBACK = os.environ.get("VOXGEST_ALLOW_LEGACY_LSTM", "").strip() == "1"
 INCLUDE_EXTRA_WORDS = os.environ.get("VOXGEST_INCLUDE_EXTRA_WORDS", "").strip() == "1"
@@ -86,10 +94,10 @@ RUNTIME_MANIFEST_PATH = ROOT / "model" / f"runtime_manifest_{ARTIFACT_SUFFIX}.js
 EPOCHS = int(os.environ.get("VOXGEST_TCN_EPOCHS", "120"))
 BATCH_SIZE = int(os.environ.get("VOXGEST_TCN_BATCH_SIZE", "64"))
 VAL_SPLIT = float(os.environ.get("VOXGEST_VAL_SPLIT", "0.20"))
-SEED_PROFILES = {"fullsign225_manual5", "fullsign225_manual5_anas_seed"}
+SEED_PROFILES = {"fullsign225_manual5", "fullsign225_manual5_anas_seed", "fullsign225_manual5_team"}
 MIN_SEQS_DEFAULT = (
     "20"
-    if WORD_PROFILE == "fullsign225_manual5_anas_seed"
+    if WORD_PROFILE in {"fullsign225_manual5_anas_seed", "fullsign225_manual5_team"}
     else ("30" if WORD_PROFILE == "fullsign225_manual5" else "80")
 )
 MIN_GROUPS_DEFAULT = "1" if WORD_PROFILE in SEED_PROFILES else "4"
@@ -171,14 +179,14 @@ def infer_mirrored_input(word, file_name, metadata):
     if "mirrored_input" in sample_meta:
         return bool(sample_meta["mirrored_input"])
     source_video = str(sample_meta.get("source_video", ""))
-    return source_video == "manual_webcam" or file_name.startswith("manual_")
+    return source_video in {"manual_webcam", "team_recorder_fullsign225"} or file_name.startswith("manual_")
 
 
 def is_manual_sample(word, file_name, metadata):
     sample_meta = metadata.get(f"{word}/{file_name}", {})
     return (
         file_name.startswith("manual_")
-        or str(sample_meta.get("source_video", "")) == "manual_webcam"
+        or str(sample_meta.get("source_video", "")) in {"manual_webcam", "team_recorder_fullsign225"}
     )
 
 
