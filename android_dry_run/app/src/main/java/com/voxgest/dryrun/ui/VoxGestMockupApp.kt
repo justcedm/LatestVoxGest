@@ -36,6 +36,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.Typography
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -47,7 +48,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -57,6 +57,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
+import com.voxgest.app.avatar.AvatarController
+import com.voxgest.app.avatar.AvatarPlaybackState
+import com.voxgest.app.avatar.AvatarView
+import com.voxgest.dryrun.BuildConfig
 import com.voxgest.dryrun.R
 
 private val PrimaryTeal = Color(0xFF00897B)
@@ -162,17 +167,61 @@ private fun SignScreen() {
 
 @Composable
 private fun ListenScreen() {
+    var listening by remember { mutableStateOf(false) }
+    var avatarState by remember { mutableStateOf(AvatarPlaybackState()) }
+    var transcript by remember { mutableStateOf("Hello, I need water.") }
+    val avatarController = remember {
+        AvatarController { avatarState = it }
+    }
+
+    DisposableEffect(Unit) {
+        onDispose { avatarController.detach() }
+    }
+
+    fun setListening(active: Boolean) {
+        listening = active
+        avatarController.setListening(active)
+    }
+
+    fun playTranscript() {
+        setListening(false)
+        avatarController.playTextAsSigns(transcript)
+    }
+
     ScreenColumn {
         TopBar(title = "LISTEN", trailingIcons = listOf(R.drawable.ic_settings))
         Column(
             modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            SpeechTranscriptCard()
-            AvatarCard()
+            SpeechTranscriptCard(
+                transcript = transcript,
+                listening = listening,
+                onMicTap = {
+                    setListening(!listening)
+                    if (!listening) {
+                        transcript = "Hello, I need water."
+                    }
+                }
+            )
+            AvatarCard(
+                avatarController = avatarController,
+                avatarState = avatarState,
+                listening = listening,
+                onDebugWord = { word ->
+                    if (!avatarController.playWord(word)) {
+                        avatarState = AvatarPlaybackState(
+                            label = "Ignored",
+                            detail = "NOTHING is no-output",
+                            currentWord = "",
+                            isPlaying = false
+                        )
+                    }
+                }
+            )
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                 OutlinedButton(
-                    onClick = {},
+                    onClick = { avatarController.replay() },
                     modifier = Modifier
                         .weight(1f)
                         .height(48.dp),
@@ -184,7 +233,7 @@ private fun ListenScreen() {
                     Text("Replay", color = PrimaryTeal, fontSize = 14.sp, fontWeight = FontWeight.Medium)
                 }
                 Button(
-                    onClick = {},
+                    onClick = { playTranscript() },
                     modifier = Modifier
                         .weight(1f)
                         .height(48.dp),
@@ -440,14 +489,18 @@ private fun ActionButton(
 }
 
 @Composable
-private fun SpeechTranscriptCard() {
+private fun SpeechTranscriptCard(
+    transcript: String,
+    listening: Boolean,
+    onMicTap: () -> Unit
+) {
     VoxCard(padding = 20.dp) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             LabelText("SPEECH TRANSCRIPT", modifier = Modifier.weight(1f))
             VoxIcon(R.drawable.ic_volume_up, "Speak transcript", TextSecondary, Modifier.size(18.dp))
         }
         Text(
-            text = "Hello, how can I help you?",
+            text = transcript,
             color = TextPrimary,
             fontSize = 28.sp,
             lineHeight = 36.sp,
@@ -465,9 +518,10 @@ private fun SpeechTranscriptCard() {
             Surface(
                 modifier = Modifier
                     .padding(horizontal = 20.dp)
-                    .size(64.dp),
+                    .size(64.dp)
+                    .clickable { onMicTap() },
                 shape = CircleShape,
-                color = PrimaryTeal,
+                color = if (listening) PrimaryDark else PrimaryTeal,
                 shadowElevation = 6.dp
             ) {
                 Box(contentAlignment = Alignment.Center) {
@@ -477,7 +531,7 @@ private fun SpeechTranscriptCard() {
             WaveBars(reverse = false)
         }
         Text(
-            text = "Listening...",
+            text = if (listening) "Listening..." else "Tap mic to listen",
             color = TextSecondary,
             fontSize = 13.sp,
             fontWeight = FontWeight.Medium,
@@ -516,7 +570,12 @@ private fun WaveBars(reverse: Boolean) {
 }
 
 @Composable
-private fun AvatarCard() {
+private fun AvatarCard(
+    avatarController: AvatarController,
+    avatarState: AvatarPlaybackState,
+    listening: Boolean,
+    onDebugWord: (String) -> Unit
+) {
     Card(
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
@@ -544,7 +603,12 @@ private fun AvatarCard() {
                             .background(PrimaryTeal)
                     )
                     Spacer(Modifier.width(6.dp))
-                    Text("Analyzing...", color = PrimaryTeal, fontSize = 10.sp, fontWeight = FontWeight.Medium)
+                    Text(
+                        if (listening) "Listening..." else avatarState.label,
+                        color = PrimaryTeal,
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.Medium
+                    )
                 }
             }
             Box(
@@ -553,9 +617,20 @@ private fun AvatarCard() {
                     .height(160.dp)
                     .background(Brush.verticalGradient(listOf(Color(0xFFE8F5E9), SurfaceWhite)))
             ) {
-                FriendlyAvatar(Modifier.align(Alignment.Center))
+                AndroidView(
+                    factory = { viewContext ->
+                        AvatarView(viewContext).also { avatarController.attach(it) }
+                    },
+                    update = {
+                        it.contentDescription = "Avatar signing: ${avatarState.currentWord.ifBlank { avatarState.label }}"
+                    },
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .fillMaxWidth()
+                        .height(150.dp)
+                )
                 Text(
-                    text = "Converting speech to sign language",
+                    text = avatarState.detail,
                     color = TextSecondary,
                     fontSize = 12.sp,
                     textAlign = TextAlign.Center,
@@ -564,6 +639,41 @@ private fun AvatarCard() {
                         .fillMaxWidth()
                         .padding(bottom = 10.dp)
                 )
+            }
+            if (BuildConfig.DEBUG) {
+                DebugAvatarWordChips(onDebugWord = onDebugWord)
+            }
+        }
+    }
+}
+
+@Composable
+private fun DebugAvatarWordChips(onDebugWord: (String) -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 12.dp, vertical = 10.dp),
+        horizontalArrangement = Arrangement.spacedBy(6.dp)
+    ) {
+        listOf("HELLO", "THANKYOU", "WATER", "EAT", "NOTHING").forEach { word ->
+            Surface(
+                modifier = Modifier
+                    .weight(1f)
+                    .height(34.dp)
+                    .clickable { onDebugWord(word) },
+                shape = RoundedCornerShape(17.dp),
+                color = if (word == "NOTHING") BackgroundLight else MedicalBg,
+                border = BorderStroke(1.dp, if (word == "NOTHING") TextMuted.copy(alpha = 0.35f) else PrimaryTeal.copy(alpha = 0.25f))
+            ) {
+                Box(contentAlignment = Alignment.Center) {
+                    Text(
+                        text = if (word == "THANKYOU") "THANK" else word,
+                        color = if (word == "NOTHING") TextMuted else PrimaryDark,
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        maxLines = 1
+                    )
+                }
             }
         }
     }

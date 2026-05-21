@@ -8,6 +8,7 @@ public final class FeatureExtractor {
     public static final int STATIC_FEATURE_SIZE = 63;
     public static final int SEQUENCE_LENGTH = 30;
     public static final int DYNAMIC_FEATURE_SIZE = 162;
+    public static final int FULLSIGN225_FEATURE_SIZE = 225;
 
     private final ArrayDeque<float[]> dynamicFrames = new ArrayDeque<>();
 

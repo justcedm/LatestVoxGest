@@ -19,6 +19,8 @@ public final class DynamicWordRecognizer {
         try {
             TfliteModelLoader loader = new TfliteModelLoader(context);
             interpreter = loader.loadInterpreter(
+                    "model/voxgest_tcn_fullsign225_manual5_team_v2.tflite",
+                    "voxgest_tcn_fullsign225_manual5_team_v2.tflite",
                     "model/voxgest_tcn_v1.tflite",
                     "voxgest_tcn_v1.tflite",
                     "model/voxgest_lstm_v1.tflite",
@@ -26,6 +28,8 @@ public final class DynamicWordRecognizer {
             );
             labels = loadLabels(
                     context,
+                    "model/class_labels_tcn_fullsign225_manual5_team_v2.json",
+                    "class_labels_tcn_fullsign225_manual5_team_v2.json",
                     "model/class_labels_tcn_v1.json",
                     "class_labels_tcn_v1.json",
                     "model/class_labels_lstm_v1.json",
@@ -39,20 +43,25 @@ public final class DynamicWordRecognizer {
         }
     }
 
-    public RecognitionResult recognize(float[][] sequence30x162) {
-        if (interpreter == null || sequence30x162 == null || sequence30x162.length != FeatureExtractor.SEQUENCE_LENGTH) {
+    public RecognitionResult recognize(float[][] sequence) {
+        if (interpreter == null || sequence == null || sequence.length != FeatureExtractor.SEQUENCE_LENGTH) {
             return RecognitionResult.inactive(status);
         }
         if (labels.length == 0) {
             return RecognitionResult.inactive(status);
         }
+        int featureSize = sequence[0] == null ? 0 : sequence[0].length;
+        if (featureSize != FeatureExtractor.DYNAMIC_FEATURE_SIZE
+                && featureSize != FeatureExtractor.FULLSIGN225_FEATURE_SIZE) {
+            return RecognitionResult.inactive("Dynamic sequence feature size mismatch");
+        }
 
-        float[][][] input = new float[1][FeatureExtractor.SEQUENCE_LENGTH][FeatureExtractor.DYNAMIC_FEATURE_SIZE];
+        float[][][] input = new float[1][FeatureExtractor.SEQUENCE_LENGTH][featureSize];
         for (int i = 0; i < FeatureExtractor.SEQUENCE_LENGTH; i++) {
-            if (sequence30x162[i] == null || sequence30x162[i].length != FeatureExtractor.DYNAMIC_FEATURE_SIZE) {
+            if (sequence[i] == null || sequence[i].length != featureSize) {
                 return RecognitionResult.inactive("Dynamic sequence shape mismatch");
             }
-            System.arraycopy(sequence30x162[i], 0, input[0][i], 0, FeatureExtractor.DYNAMIC_FEATURE_SIZE);
+            System.arraycopy(sequence[i], 0, input[0][i], 0, featureSize);
         }
 
         float[][] output = new float[1][labels.length];

@@ -10,7 +10,7 @@ data class AvatarPhraseResult(
 )
 
 object AvatarPhraseMapper {
-    private val directlyAnimated = setOf("YES", "NO", "HELLO", "THANKYOU", "WATER")
+    private val directlyAnimated = setOf("YES", "NO", "HELLO", "THANKYOU", "WATER", "EAT")
     private val controlledFallback = setOf("HELP", "PLEASE", "STOP", "DOCTOR")
     private val fingerspellOnly = setOf("NAME", "GO", "BATHROOM", "PAIN", "SICK", "MEDICINE", "HOSPITAL", "HURT")
 
@@ -25,6 +25,7 @@ object AvatarPhraseMapper {
             normalized == "thanks" || normalized == "thank you" || normalized == "thankyou" ||
                 normalized.contains("thank you") -> listOf("THANKYOU")
             normalized == "water" || normalized.contains("water") -> listOf("WATER")
+            normalized == "eat" || normalized.contains("eat") || normalized.contains("food") -> listOf("EAT")
             normalized.contains("your name") || normalized.contains("name") -> listOf("NAME")
             normalized.contains("help") -> listOf("HELP")
             normalized.contains("please") -> listOf("PLEASE")

@@ -1,5 +1,30 @@
 # VoxGest Android Developer Handoff
 
+## Current Android UI / Avatar Pass
+
+The launcher currently uses Jetpack Compose through `MainActivity.setContent { VoxGestMockupApp() }`.
+XML fragments still exist for fallback/reference, but the visible app shell is the
+Compose mockup UI.
+
+Current Android avatar implementation:
+
+- Renderer: native Canvas `AvatarView`
+- Playback controller: `AvatarController`
+- Known animated words: `HELLO`, `THANKYOU`, `WATER`, `EAT`
+- `NOTHING`: ignored, no animation, no display, no speech
+- Unknown words: fingerspelling fallback
+
+Current experimental FullSign225 Android assets:
+
+- `android_dry_run/app/src/main/assets/model/voxgest_tcn_fullsign225_manual5_team_v2.tflite`
+- `android_dry_run/app/src/main/assets/model/class_labels_tcn_fullsign225_manual5_team_v2.json`
+- `android_dry_run/app/src/main/assets/model/runtime_manifest_fullsign225_manual5_team_v2.json`
+
+The real CameraX + MediaPipe frame provider is still behind an interface. The
+next inference task is to emit `[30, 225]` landmark windows into
+`VoxGestWordRecognizer`, then pass only accepted gated tokens to
+`AvatarController`.
+
 ## Recognition Hardening v1 Priority
 
 The Android build should follow this order:

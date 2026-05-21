@@ -18,14 +18,13 @@ Missing or empty animation -> clean placeholder fallback.
 
 Current known prototype words:
 
-- YES
-- NO
 - HELLO
 - THANKYOU
 - WATER
+- EAT
 
-Other demo10 words may keep placeholder files until the recognition set is more
-stable.
+YES and NO may remain as legacy prototype assets, but the current FullSign225
+manual5 UI path focuses on HELLO, THANKYOU, WATER, EAT, and NOTHING.
 
 ## Asset Layout
 
@@ -38,6 +37,7 @@ android_dry_run/app/src/main/assets/avatar/signs/NO.json
 android_dry_run/app/src/main/assets/avatar/signs/HELLO.json
 android_dry_run/app/src/main/assets/avatar/signs/THANKYOU.json
 android_dry_run/app/src/main/assets/avatar/signs/WATER.json
+android_dry_run/app/src/main/assets/avatar/signs/EAT.json
 ```
 
 Root prototype assets may also exist under:
@@ -62,8 +62,8 @@ Simple 2D character parts:
 - face markers
 
 Each sign file uses keyframes. A keyframe stores time in milliseconds and rough
-part positions. The renderer can interpolate between frames later. For now, a
-simple frame-by-frame playback or placeholder message is acceptable.
+part positions. `AvatarView` interpolates between frames with native Android
+Canvas drawing and `ValueAnimator`; no Lottie dependency is required.
 
 ## Playback Rules
 
@@ -80,6 +80,18 @@ simple frame-by-frame playback or placeholder message is acceptable.
 - NO: simple index/middle close or pinch indicator.
 - THANKYOU: hand from chin moving outward.
 - WATER: hand near mouth/chin tap indicator.
+- EAT: pinched hand moves to mouth with a small repeated tap.
+
+## Android Runtime Components
+
+- `AvatarView`: native Canvas renderer for the human-like avatar.
+- `AvatarController`: safe playback controller with `playWord`, `playTextAsSigns`,
+  `replay`, and `stop`.
+- `VoxGestMockupApp`: Compose UI route that embeds `AvatarView` with
+  `AndroidView`.
+
+`AvatarController` ignores NOTHING and routes unknown words to fingerspelling
+fallback. It should only be called after a token has passed recognition gates.
 
 ## Integration Boundary
 
@@ -103,4 +115,3 @@ camera input -> landmarks -> model -> gates -> token composer -> avatar
 The avatar does not claim full ASL grammar or complete signing correctness. It
 is a lightweight visual response prototype for the controlled VoxGest demo
 vocabulary.
-

@@ -26,7 +26,8 @@
     "NO": "signs/NO.json",
     "HELLO": "signs/HELLO.json",
     "THANKYOU": "signs/THANKYOU.json",
-    "WATER": "signs/WATER.json"
+    "WATER": "signs/WATER.json",
+    "EAT": "signs/EAT.json"
   },
   "phrase_intents": {
     "enabled": false,

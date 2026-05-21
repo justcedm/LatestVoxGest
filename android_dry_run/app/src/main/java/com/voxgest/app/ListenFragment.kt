@@ -4,6 +4,8 @@ import android.Manifest
 import android.animation.ObjectAnimator
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.MotionEvent
 import android.view.View
 import android.view.animation.DecelerateInterpolator
@@ -29,6 +31,7 @@ class ListenFragment : Fragment(R.layout.fragment_listen) {
     private lateinit var avatarPanel: View
     private lateinit var waveformLeft: WaveformView
     private lateinit var waveformRight: WaveformView
+    private val avatarSequenceHandler = Handler(Looper.getMainLooper())
     private var lastSpeech = "Hello, how can I help you?"
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -37,6 +40,7 @@ class ListenFragment : Fragment(R.layout.fragment_listen) {
         statusPill = view.findViewById(R.id.statusPill)
         micStatusText = view.findViewById(R.id.micStatusText)
         avatarView = view.findViewById(R.id.avatarView)
+        avatarView.animateIdleBreathing()
         avatarPanel = view.findViewById(R.id.avatarPanel)
         waveformLeft = view.findViewById(R.id.waveformLeft)
         waveformRight = view.findViewById(R.id.waveformRight)
@@ -64,6 +68,7 @@ class ListenFragment : Fragment(R.layout.fragment_listen) {
     }
 
     override fun onDestroyView() {
+        avatarSequenceHandler.removeCallbacksAndMessages(null)
         speechController?.shutdown()
         waveformLeft.setListening(false)
         waveformRight.setListening(false)
@@ -101,7 +106,19 @@ class ListenFragment : Fragment(R.layout.fragment_listen) {
         }
         val mapping = AvatarPhraseMapper.map(clean)
         statusPill.setText(R.string.avatar_analyzing)
-        avatarView.signText(mapping.sequence.firstOrNull() ?: clean)
+        avatarSequenceHandler.removeCallbacksAndMessages(null)
+        val firstWord = mapping.sequence.firstOrNull() ?: clean
+        avatarView.signText(firstWord)
+        if (mapping.sequence.size > 1) {
+            mapping.sequence.drop(1).forEachIndexed { i, word ->
+                avatarSequenceHandler.postDelayed(
+                    {
+                        avatarView.signText(word)
+                    },
+                    (i + 1) * 620L
+                )
+            }
+        }
         if (final) VoxHistoryStore.add(HistoryType.Speech, clean, getString(R.string.history_shown_signs))
     }
 
