@@ -114,6 +114,9 @@ TCN_REPORT = (
     if WORD_PROFILE == "demo10"
     else ROOT / "model" / f"tcn_training_report_{ARTIFACT_SUFFIX}.json"
 )
+RD_TCN_MODEL = ROOT / "model" / f"voxgest_rd_tcn_{ARTIFACT_SUFFIX}.h5"
+RD_TCN_LABELS = ROOT / "model" / f"class_labels_rd_tcn_{ARTIFACT_SUFFIX}.json"
+RD_TCN_REPORT = ROOT / "model" / f"rd_tcn_training_report_{ARTIFACT_SUFFIX}.json"
 DYNAMIC_MODEL_KIND = os.environ.get("VOXGEST_DYNAMIC_MODEL", "auto").strip().lower()
 ALLOW_EXTRA_WORD_LABELS = _bool_env("VOXGEST_ALLOW_EXTRA_WORD_LABELS", False)
 
@@ -162,6 +165,9 @@ PROFILE_THRESHOLDS = {
     "fullsign225_manual5": {
         "EAT": {"conf": 0.60, "margin": 0.08, "motion": 0.015, "path": 0.20, "presence": 0.25},
     },
+    "fullsign225_manual5_team": {
+        "EAT": {"conf": 0.60, "margin": 0.08, "motion": 0.015, "path": 0.20, "presence": 0.25},
+    },
 }
 
 
@@ -196,6 +202,8 @@ def report_score(path):
 def dynamic_candidates():
     options = {
         "tcn": [("TCN", TCN_MODEL, TCN_LABELS, TCN_REPORT)],
+        "rd_tcn": [("RD-TCN", RD_TCN_MODEL, RD_TCN_LABELS, RD_TCN_REPORT)],
+        "residual_dilated_tcn": [("RD-TCN", RD_TCN_MODEL, RD_TCN_LABELS, RD_TCN_REPORT)],
         "lstm": [("LSTM", LSTM_MODEL, LSTM_LABELS, LSTM_REPORT)],
     }
     if DYNAMIC_MODEL_KIND in options:
