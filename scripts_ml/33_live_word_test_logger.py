@@ -82,6 +82,16 @@ def _labels_from_env():
     return [item.strip().upper() for item in raw.replace(";", ",").split(",") if item.strip()]
 
 
+def _unique_labels(labels):
+    seen = set()
+    out = []
+    for label in labels:
+        if label not in seen:
+            out.append(label)
+            seen.add(label)
+    return out
+
+
 def _capture_mode():
     default = "hand_trigger_auto" if FEATURE_PROFILE == "fullsign225" else "manual"
     mode = os.environ.get("VOXGEST_LIVE_TEST_CAPTURE_MODE", default).strip().lower()
@@ -124,7 +134,9 @@ ACTIVE_WORD_LABELS = set(TARGET_WORDS)
 ACTIVE_DYNAMIC_LABELS = set(TRAINING_WORDS)
 MIRROR_INPUT = True
 ENV_LABELS = _labels_from_env()
-EXPECTED_LABELS = ENV_LABELS or [item.upper() for item in sys.argv[1:]] or list(TARGET_WORDS) + list(NEGATIVE_WORDS)
+EXPECTED_LABELS = _unique_labels(
+    ENV_LABELS or [item.upper() for item in sys.argv[1:]] or list(TARGET_WORDS) + list(NEGATIVE_WORDS)
+)
 DYNAMIC_EVERY_N_FRAMES = _int_env("VOXGEST_DYNAMIC_EVERY_N_FRAMES", 3)
 NO_POSE_RESET_FRAMES = 12
 CAPTURE_MODE = _capture_mode()

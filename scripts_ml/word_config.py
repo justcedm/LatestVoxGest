@@ -173,6 +173,27 @@ FULLSIGN225_MANUAL5_TEAM_WORDS = [
     "THANKYOU",
 ]
 
+WORD_TOKEN_PHRASE_WORDS = [
+    "EAT",
+    "HELLO",
+    "THANKYOU",
+    "WATER",
+    "WHAT",
+    "IS",
+    "YOUR",
+    "NAME",
+    "MY",
+    "ARE",
+    "YOU",
+    "A",
+    "STUDENT",
+    "OKAY",
+    "WHERE",
+    "DO",
+    "LIVE",
+    "NOTHING",
+]
+
 EXTENDED_WORDS = [
     "EMERGENCY",
     "HURT",
@@ -231,6 +252,8 @@ WORD_PROFILES = {
     "fullsign225_manual5": FULLSIGN225_MANUAL5_WORDS,
     "fullsign225_manual5_anas_seed": FULLSIGN225_MANUAL5_ANAS_SEED_WORDS,
     "fullsign225_manual5_team": FULLSIGN225_MANUAL5_TEAM_WORDS,
+    "fullsign225_phrase_words": WORD_TOKEN_PHRASE_WORDS,
+    "onehand162_phrase_words": WORD_TOKEN_PHRASE_WORDS,
     "focus": FOCUS_WORDS,
     "core": CORE_WORDS,
     "full": FULL_WORDS,
@@ -240,13 +263,23 @@ WORD_PROFILE = os.environ.get("VOXGEST_WORD_PROFILE", "demo10").strip().lower()
 if WORD_PROFILE not in WORD_PROFILES:
     WORD_PROFILE = "demo10"
 
-TARGET_WORDS = WORD_PROFILES[WORD_PROFILE]
+def unique_words(words):
+    seen = set()
+    out = []
+    for word in words:
+        if word not in seen:
+            out.append(word)
+            seen.add(word)
+    return out
+
+
+TARGET_WORDS = unique_words(WORD_PROFILES[WORD_PROFILE])
 TARGET_WORD_SET = frozenset(TARGET_WORDS)
 
 NEGATIVE_WORDS = ["NOTHING"]
-TRAINING_WORDS = TARGET_WORDS + NEGATIVE_WORDS
+TRAINING_WORDS = unique_words(TARGET_WORDS + NEGATIVE_WORDS)
 TRAINING_WORD_SET = frozenset(TRAINING_WORDS)
-RECORDABLE_WORDS = TARGET_WORDS + NEGATIVE_WORDS
+RECORDABLE_WORDS = unique_words(TARGET_WORDS + NEGATIVE_WORDS)
 RECORDABLE_WORD_SET = frozenset(RECORDABLE_WORDS)
 
 

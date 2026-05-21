@@ -28,6 +28,7 @@ import tensorflow as tf
 from lstm_features import (
     FEAT_SIZE,
     SEQ_LEN,
+    configured_feature_profile,
     configured_hand_preference,
     configured_mirror_input,
     extract_frame_features,
@@ -41,7 +42,8 @@ from lstm_features import (
     top_prediction,
 )
 from token_composer import TokenComposer
-from word_config import DEMO10_WORDS, NEGATIVE_WORDS
+from phrase_builder import PhraseBuilder
+from word_config import NEGATIVE_WORDS, TARGET_WORDS, TRAINING_WORDS, WORD_PROFILE
 from motion_letter_config import MOTION_LETTER_OUTPUTS
 
 try:
@@ -63,12 +65,37 @@ os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
 
 STATIC_MODEL = os.environ.get("VOXGEST_STATIC_MODEL", "model/voxgest_v3.h5")
 STATIC_LABELS = os.environ.get("VOXGEST_STATIC_LABELS", "model/class_labels_v3.json")
-LSTM_MODEL = "model/voxgest_lstm_v1.h5"
-LSTM_LABELS = "model/class_labels_lstm_v1.json"
-LSTM_REPORT = "model/lstm_training_report.json"
-TCN_MODEL = "model/voxgest_tcn_v1.h5"
-TCN_LABELS = "model/class_labels_tcn_v1.json"
-TCN_REPORT = "model/tcn_training_report.json"
+
+
+def artifact_suffix():
+    safe_word = "".join(ch if ch.isalnum() or ch in {"_", "-"} else "_" for ch in WORD_PROFILE)
+    feature_profile = configured_feature_profile()
+    if feature_profile != "onehand162":
+        if safe_word.startswith("fullsign225_") or safe_word.endswith(f"_{feature_profile}"):
+            return safe_word
+        return f"{safe_word}_{feature_profile}"
+    if WORD_PROFILE == "demo10":
+        return "v1"
+    return safe_word
+
+
+ARTIFACT_SUFFIX = artifact_suffix()
+LSTM_MODEL = os.environ.get("VOXGEST_LSTM_MODEL", f"model/voxgest_lstm_{ARTIFACT_SUFFIX}.h5")
+LSTM_LABELS = os.environ.get("VOXGEST_LSTM_LABELS", f"model/class_labels_lstm_{ARTIFACT_SUFFIX}.json")
+LSTM_REPORT = os.environ.get(
+    "VOXGEST_LSTM_REPORT",
+    "model/lstm_training_report.json"
+    if WORD_PROFILE == "demo10"
+    else f"model/lstm_training_report_{ARTIFACT_SUFFIX}.json",
+)
+TCN_MODEL = os.environ.get("VOXGEST_TCN_MODEL", f"model/voxgest_tcn_{ARTIFACT_SUFFIX}.h5")
+TCN_LABELS = os.environ.get("VOXGEST_TCN_LABELS", f"model/class_labels_tcn_{ARTIFACT_SUFFIX}.json")
+TCN_REPORT = os.environ.get(
+    "VOXGEST_TCN_REPORT",
+    "model/tcn_training_report.json"
+    if WORD_PROFILE == "demo10"
+    else f"model/tcn_training_report_{ARTIFACT_SUFFIX}.json",
+)
 PHRASE_MODEL = "model/voxgest_phrase_tcn_v1.h5"
 PHRASE_LABELS = "model/class_labels_phrase_tcn_v1.json"
 MOTION_LETTER_MODEL = os.environ.get(
@@ -153,8 +180,8 @@ LSTM_EVERY_N_FRAMES = int(os.environ.get("VOXGEST_DYNAMIC_EVERY_N_FRAMES", "3"))
 N_LETTERS = 29
 HAND_PREFERENCE = configured_hand_preference()
 MIRROR_INPUT = True
-ACTIVE_WORD_LABELS = set(DEMO10_WORDS)
-ACTIVE_DYNAMIC_LABELS = ACTIVE_WORD_LABELS | set(NEGATIVE_WORDS)
+ACTIVE_WORD_LABELS = set(TARGET_WORDS) - set(NEGATIVE_WORDS)
+ACTIVE_DYNAMIC_LABELS = set(TRAINING_WORDS)
 
 MODES = ("AUTO", "LETTERS", "WORDS")
 DEFAULT_MODE = os.environ.get("VOXGEST_MODE", "AUTO").strip().upper()
@@ -398,8 +425,10 @@ frame_window = deque(maxlen=SEQ_LEN)
 phrase_segmenter = GestureSegmenter() if ENABLE_PHRASE and GestureSegmenter is not None else None
 pred_buffer = deque(maxlen=SMOOTH_WIN)
 composer = TokenComposer(ACTIVE_WORD_LABELS)
+phrase_builder = PhraseBuilder()
 speaker = init_speaker()
 last_accepted_token = ""
+last_phrase_output = ""
 
 mode_idx = MODES.index(DEFAULT_MODE)
 current_label = ""
@@ -683,6 +712,12 @@ with mp_holistic.Holistic(
                 result = composer.accept(current_label)
                 if result.accepted:
                     last_accepted_token = result.token or current_label
+                    phrase_result = phrase_builder.accept(current_label)
+                    if phrase_result.finalized_text:
+                        last_phrase_output = phrase_result.finalized_text
+                        print(f"PHRASE-BUILDER: {last_phrase_output}")
+                    elif phrase_result.action in {"append", "delete"}:
+                        last_phrase_output = ""
                 elif result.action == "noop":
                     last_accepted_token = ""
 
@@ -817,9 +852,10 @@ with mp_holistic.Holistic(
         cv2.rectangle(frame, (15, 142), (15 + bar_width, 154), color, -1)
 
         cv2.rectangle(frame, (0, height - 112), (width, height - 66), (20, 20, 20), -1)
+        builder_preview = last_phrase_output or phrase_builder.strip(58)
         cv2.putText(
             frame,
-            composer.strip(58) or "|",
+            builder_preview or composer.strip(58) or "|",
             (12, height - 82),
             cv2.FONT_HERSHEY_SIMPLEX,
             0.82,
@@ -840,15 +876,19 @@ with mp_holistic.Holistic(
         cv2.imshow("VoxGest", frame)
         key = cv2.waitKey(1) & 0xFF
         if key == ord("q"):
-            final = composer.sentence()
+            phrase_final = phrase_builder.confirm()
+            final = phrase_final.finalized_text or last_phrase_output or composer.sentence()
             print(f"\nFinal: {final}")
             break
         if key == ord(" "):
             result = composer.accept("space")
+            phrase_builder.accept("space")
             last_accepted_token = result.token if result.accepted else ""
         elif key == ord("c"):
             composer.clear()
+            phrase_builder.clear()
             last_accepted_token = ""
+            last_phrase_output = ""
             current_label = ""
             stable = 0
             pred_buffer.clear()
@@ -862,7 +902,10 @@ with mp_holistic.Holistic(
             last_motion_letter = ("", 0.0, 0.0, 0.0, 0.0, 0.0)
             last_phrase = ("", 0.0, 0.0)
         elif key == ord("s"):
-            final = composer.sentence()
+            phrase_final = phrase_builder.confirm()
+            if phrase_final.finalized_text:
+                last_phrase_output = phrase_final.finalized_text
+            final = phrase_final.finalized_text or last_phrase_output or composer.sentence()
             print(f"Speak: {final}")
             if speaker is not None and final:
                 speaker.say(final)
