@@ -40,7 +40,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.Typography
-import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
@@ -61,7 +61,6 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -75,25 +74,22 @@ import com.voxgest.dryrun.BuildConfig
 import com.voxgest.dryrun.R
 import java.util.Locale
 
-private val Bg = Color(0xFF09090B)
-private val Bg2 = Color(0xFF111114)
-private val CardBg = Color(0xFF17171C)
-private val CardHi = Color(0xFF1E1E26)
-private val CardTop = Color(0xFF24242E)
-private val Border = Color.White.copy(alpha = 0.08f)
-private val BorderStrong = Color.White.copy(alpha = 0.14f)
+private val Primary = Color(0xFFB8F060)
+private val PrimaryLight = Color(0xFF9ED84A)
+private val AppBg = Color(0xFF09090B)
+private val CardWhite = Color(0xFF17171C)
+private val SoftCyan = Color(0xFF1E1E26)
+private val AccentGreen = Color(0xFFB8F060)
 private val TextMain = Color(0xFFEDEDEA)
 private val TextMuted = Color(0xFF989894)
-private val TextDim = Color(0xFF55554F)
-private val TextFaint = Color(0xFF3A3A36)
-private val Accent = Color(0xFFB8F060)
-private val Accent2 = Color(0xFF9ED84A)
-private val AccentDim = Color(0x26B8F060)
-private val Red = Color(0xFFFF5252)
-private val Amber = Color(0xFFF0A830)
-private val Teal = Color(0xFF3ECFAA)
-private val Blue = Color(0xFF5B9EF0)
-private val Purple = Color(0xFFA78BFA)
+private val TextFaint = Color(0xFF55554F)
+private val Border = Color(0x24FFFFFF)
+private val DarkInk = Color(0xFF09090B)
+private val Amber = Color(0xFFF59E0B)
+private val Red = Color(0xFFEF4444)
+private val Blue = Color(0xFF38BDF8)
+private val Purple = Color(0xFF8B5CF6)
+private val Green = Color(0xFF22C55E)
 
 private enum class VoxTab(
     val label: String,
@@ -101,36 +97,44 @@ private enum class VoxTab(
 ) {
     Sign("Sign", R.drawable.ic_hand_gesture),
     Listen("Listen", R.drawable.ic_mic),
-    Phrases("Phrases", R.drawable.ic_bolt),
+    Phrases("Phrases", R.drawable.ic_chat),
     History("History", R.drawable.ic_history)
 }
 
 private data class HistoryUiEntry(
+    val section: String,
     val type: String,
     val text: String,
-    val detail: String,
     val time: String,
-    val confidence: String,
-    val words: List<String>
+    val status: String,
+    val icon: Int,
+    val iconColor: Color
+)
+
+private data class PhraseUi(
+    val label: String,
+    val icon: Int,
+    val color: Color
 )
 
 @Composable
 fun VoxGestMockupApp() {
     var selectedTab by remember { mutableStateOf(VoxTab.Sign) }
-    var signSentence by remember { mutableStateOf("Thank you, I need water") }
+    var currentWord by remember { mutableStateOf("HELLO") }
+    var sentence by remember { mutableStateOf("HELLO, I NEED WATER") }
     val history = remember {
         mutableStateListOf(
-            HistoryUiEntry("Sign", "Thank you, I need water", "spoken aloud via voice output", "2 min ago", "94% avg", listOf("THANKYOU", "WATER")),
-            HistoryUiEntry("Listen", "How are you feeling today?", "translated to sign via avatar", "8 min ago", "speech", listOf("HOW", "FEELING", "TODAY")),
-            HistoryUiEntry("Phrase", "Please wait", "quick phrase", "15 min ago", "manual", listOf("PLEASE", "WAIT")),
-            HistoryUiEntry("Sign", "Hello, please stop", "spoken aloud via voice output", "32 min ago", "88% avg", listOf("HELLO", "STOP")),
-            HistoryUiEntry("Listen", "Do you need a doctor?", "translated to sign via avatar", "1 hr ago", "speech", listOf("DOCTOR", "NEED"))
+            HistoryUiEntry("Today", "Sign", "HELLO, I NEED WATER", "10:45 AM", "Spoken", R.drawable.ic_hand_gesture, PrimaryLight),
+            HistoryUiEntry("Today", "Speech", "Hello, how can I help you?", "10:42 AM", "Shown in signs", R.drawable.ic_waveform, Primary),
+            HistoryUiEntry("Today", "Phrase", "I need help", "10:40 AM", "Shown in signs", R.drawable.ic_chat, Amber),
+            HistoryUiEntry("Yesterday", "Sign", "THANK YOU", "08:15 PM", "Spoken", R.drawable.ic_hand_gesture, PrimaryLight),
+            HistoryUiEntry("Yesterday", "Speech", "Please wait a moment.", "07:50 PM", "Shown in signs", R.drawable.ic_waveform, Primary),
+            HistoryUiEntry("Yesterday", "Phrase", "Call a doctor", "07:30 PM", "Shown in signs", R.drawable.ic_chat, Amber)
         )
     }
     val context = LocalContext.current
-    val tts = remember {
-        TextToSpeech(context) { }
-    }
+    val tts = remember { TextToSpeech(context) { } }
+
     DisposableEffect(Unit) {
         onDispose {
             tts.stop()
@@ -139,18 +143,19 @@ fun VoxGestMockupApp() {
     }
 
     MaterialTheme(
-        colorScheme = darkColorScheme(
-            primary = Accent,
-            background = Bg,
-            surface = CardBg,
+        colorScheme = lightColorScheme(
+            primary = Primary,
+            onPrimary = DarkInk,
+            background = AppBg,
+            surface = CardWhite,
             onSurface = TextMain
         ),
         typography = Typography()
     ) {
         Scaffold(
-            containerColor = Bg,
+            containerColor = AppBg,
             bottomBar = {
-                HtmlBottomNav(
+                BottomNavBar(
                     selectedTab = selectedTab,
                     onTabSelected = { selectedTab = it }
                 )
@@ -159,30 +164,36 @@ fun VoxGestMockupApp() {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Bg)
+                    .background(AppBg)
                     .padding(innerPadding)
             ) {
-                HtmlStatusBar()
-                HtmlTopBar()
+                FakeStatusBar()
                 Box(modifier = Modifier.weight(1f)) {
                     when (selectedTab) {
                         VoxTab.Sign -> SignScreen(
-                            sentence = signSentence,
+                            currentWord = currentWord,
+                            sentence = sentence,
                             onSpeak = {
-                                speak(tts, signSentence)
-                                history.add(0, HistoryUiEntry("Sign", signSentence, "spoken aloud via voice output", "now", "94% avg", listOf("THANKYOU", "WATER")))
+                                speak(tts, sentence)
+                                history.add(0, HistoryUiEntry("Today", "Sign", sentence, "Now", "Spoken", R.drawable.ic_hand_gesture, PrimaryLight))
                             },
-                            onClear = { signSentence = "" }
+                            onDelete = {
+                                sentence = sentence.split(",").dropLast(1).joinToString(", ").ifBlank { currentWord }
+                            },
+                            onClear = {
+                                currentWord = "READY"
+                                sentence = ""
+                            }
                         )
                         VoxTab.Listen -> ListenScreen(
-                            onHistory = { text ->
-                                history.add(0, HistoryUiEntry("Listen", text, "translated to sign via avatar", "now", "speech", text.uppercase(Locale.US).split(" ").take(3)))
+                            onSpeechSaved = { text ->
+                                history.add(0, HistoryUiEntry("Today", "Speech", text, "Now", "Shown in signs", R.drawable.ic_waveform, Primary))
                             }
                         )
                         VoxTab.Phrases -> PhrasesScreen(
                             onPhrase = { phrase ->
                                 speak(tts, phrase)
-                                history.add(0, HistoryUiEntry("Phrase", phrase, "quick phrase", "now", "manual", phrase.uppercase(Locale.US).split(" ").take(3)))
+                                history.add(0, HistoryUiEntry("Today", "Phrase", phrase, "Now", "Shown in signs", R.drawable.ic_chat, Amber))
                             }
                         )
                         VoxTab.History -> HistoryScreen(entries = history)
@@ -201,857 +212,830 @@ private fun speak(tts: TextToSpeech, text: String) {
 }
 
 @Composable
-private fun HtmlStatusBar() {
+private fun FakeStatusBar() {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(36.dp)
-            .padding(start = 22.dp, end = 22.dp, top = 12.dp),
+            .height(30.dp)
+            .padding(start = 20.dp, end = 20.dp, top = 8.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text("9:41", color = TextMain, fontSize = 13.sp, fontWeight = FontWeight.Medium)
-        Row(horizontalArrangement = Arrangement.spacedBy(5.dp), verticalAlignment = Alignment.CenterVertically) {
-            Row(horizontalArrangement = Arrangement.spacedBy(2.dp), verticalAlignment = Alignment.Bottom) {
-                listOf(4, 7, 10, 13).forEach { h ->
-                    Box(
-                        modifier = Modifier
-                            .width(3.dp)
-                            .height(h.dp)
-                            .clip(RoundedCornerShape(1.dp))
-                            .background(TextMain)
-                    )
-                }
-            }
-            Box(
-                modifier = Modifier
-                    .width(22.dp)
-                    .height(11.dp)
-                    .border(1.5.dp, TextMuted, RoundedCornerShape(3.dp))
-                    .padding(2.dp)
-            ) {
-                Box(
-                    modifier = Modifier
-                        .width(14.dp)
-                        .height(6.dp)
-                        .clip(RoundedCornerShape(2.dp))
-                        .background(Accent)
-                )
-            }
+        Text("9:30", color = TextMain, fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
+        Row(horizontalArrangement = Arrangement.spacedBy(4.dp), verticalAlignment = Alignment.CenterVertically) {
+            SignalIcon()
+            WifiDot()
+            BatteryIcon()
         }
     }
 }
 
 @Composable
-private fun HtmlTopBar() {
+private fun ScreenTopBar(title: String, @DrawableRes trailing: Int, secondTrailing: Int? = null) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 20.dp, end = 20.dp, top = 4.dp, bottom = 10.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
+            .padding(start = 20.dp, end = 20.dp, top = 6.dp, bottom = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text("Vox", color = TextMain, fontSize = 19.sp, fontWeight = FontWeight.Medium)
-            Text("Gest", color = Accent, fontSize = 19.sp, fontWeight = FontWeight.Medium)
+        Spacer(Modifier.width(if (secondTrailing == null) 24.dp else 56.dp))
+        Text(
+            text = title,
+            color = Primary,
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center,
+            letterSpacing = 0.7.sp,
+            modifier = Modifier.weight(1f)
+        )
+        Row(horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
+            secondTrailing?.let { VoxIcon(it, "$title action", Primary, Modifier.size(21.dp)) }
+            VoxIcon(trailing, "$title menu", Primary, Modifier.size(22.dp))
         }
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            IconSquare(R.drawable.ic_filter_list, "Settings")
-            IconSquare(R.drawable.ic_warning, "Alerts")
-        }
-    }
-}
-
-@Composable
-private fun IconSquare(@DrawableRes icon: Int, description: String) {
-    Box(
-        modifier = Modifier
-            .size(36.dp)
-            .clip(RoundedCornerShape(8.dp))
-            .background(CardBg)
-            .border(0.5.dp, BorderStrong, RoundedCornerShape(8.dp)),
-        contentAlignment = Alignment.Center
-    ) {
-        VoxIcon(icon, description, TextMuted, Modifier.size(17.dp))
     }
 }
 
 @Composable
 private fun SignScreen(
+    currentWord: String,
     sentence: String,
     onSpeak: () -> Unit,
+    onDelete: () -> Unit,
     onClear: () -> Unit
 ) {
     ScreenScroll {
-        CameraCard()
-        SectionLabel("RECOGNIZED SENTENCE")
-        HtmlSentenceCard(sentence = sentence.ifBlank { "Ready for accepted signs" }, onSpeak = onSpeak, onClear = onClear)
-        ConfidenceBars()
+        ScreenTopBar("SIGN", R.drawable.ic_settings)
+        CameraPreviewCard()
+        CurrentWordCard(currentWord)
+        SentenceCard(sentence.ifBlank { "Ready for accepted signs" }, onSpeak)
         Row(
-            modifier = Modifier.padding(horizontal = 14.dp, vertical = 9.dp),
-            horizontalArrangement = Arrangement.spacedBy(6.dp)
+            modifier = Modifier.padding(horizontal = 20.dp, vertical = 10.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            MiniModeButton("Switch to Letters", R.drawable.ic_grid, Modifier.weight(1f))
-            MiniModeButton("Phrases Mode", R.drawable.ic_bolt, Modifier.weight(1f))
+            ActionButton(R.drawable.ic_volume_up, "Speak", Primary, Modifier.weight(1f), onSpeak)
+            ActionButton(R.drawable.ic_delete_outline, "Delete", TextMuted, Modifier.weight(1f), onDelete)
+            ActionButton(R.drawable.ic_cancel, "Clear", Red, Modifier.weight(1f), onClear)
         }
-        Spacer(Modifier.height(14.dp))
+        Spacer(Modifier.height(12.dp))
     }
 }
 
 @Composable
-private fun CameraCard() {
+private fun CameraPreviewCard() {
     Box(
         modifier = Modifier
-            .padding(horizontal = 14.dp)
+            .padding(horizontal = 20.dp)
             .fillMaxWidth()
-            .height(300.dp)
-            .clip(RoundedCornerShape(14.dp))
-            .background(CardBg)
-            .border(0.5.dp, BorderStrong, RoundedCornerShape(14.dp))
+            .height(320.dp)
+            .clip(RoundedCornerShape(24.dp))
+            .background(Color(0xFFD1D5DB))
     ) {
         Canvas(Modifier.fillMaxSize()) {
-            drawCircle(Accent.copy(alpha = 0.08f), radius = size.minDimension * 0.38f, center = Offset(size.width * 0.5f, size.height * 0.46f))
-            val palm = Offset(size.width * 0.50f, size.height * 0.46f)
-            val wrist = Offset(size.width * 0.50f, size.height * 0.68f)
-            drawLine(Accent.copy(alpha = 0.16f), wrist, palm, strokeWidth = 2.dp.toPx(), cap = StrokeCap.Round)
-            repeat(5) { i ->
-                val dx = (i - 2) * 13.dp.toPx()
-                val tip = Offset(palm.x + dx, size.height * (0.18f + i * 0.02f))
-                drawLine(Accent.copy(alpha = 0.18f), palm, tip, strokeWidth = 1.4.dp.toPx(), cap = StrokeCap.Round)
-                drawCircle(Accent.copy(alpha = 0.26f), 3.dp.toPx(), tip)
+            val w = size.width
+            val h = size.height
+            drawRect(Brush.verticalGradient(listOf(Color(0xFFE5E7EB), Color(0xFF9CA3AF))))
+            val cx = w * 0.52f
+            val headR = w * 0.13f
+            drawCircle(Color(0xFFF1C9A8), headR, Offset(cx, h * 0.28f))
+            drawOval(Color(0xFF3B2418), Offset(cx - headR * 1.05f, h * 0.16f), Size(headR * 2.1f, headR * 1.0f))
+            drawRoundRect(Color(0xFF111827), Offset(cx - w * 0.22f, h * 0.44f), Size(w * 0.44f, h * 0.32f), CornerRadius(28.dp.toPx(), 28.dp.toPx()))
+            drawCircle(Color(0xFF111827), w * 0.20f, Offset(cx, h * 0.60f))
+            drawLine(Color(0xFFF1C9A8), Offset(w * 0.30f, h * 0.73f), Offset(w * 0.35f, h * 0.44f), strokeWidth = 16.dp.toPx(), cap = StrokeCap.Round)
+            drawLine(Color(0xFFF1C9A8), Offset(w * 0.35f, h * 0.44f), Offset(w * 0.30f, h * 0.32f), strokeWidth = 14.dp.toPx(), cap = StrokeCap.Round)
+            drawRoundRect(Color(0xFFF1C9A8), Offset(w * 0.25f, h * 0.27f), Size(42.dp.toPx(), 58.dp.toPx()), CornerRadius(14.dp.toPx(), 14.dp.toPx()))
+            val palm = Offset(w * 0.31f, h * 0.34f)
+            val fingerXs = listOf(-18, -8, 2, 12, 22)
+            fingerXs.forEachIndexed { index, dx ->
+                val tip = Offset(palm.x + dx.dp.toPx(), h * (0.16f + index * 0.015f))
+                drawLine(AccentGreen.copy(alpha = 0.75f), palm, tip, strokeWidth = 2.dp.toPx(), cap = StrokeCap.Round)
+                drawCircle(AccentGreen.copy(alpha = 0.75f), 3.5.dp.toPx(), tip)
             }
-            drawCircle(Accent.copy(alpha = 0.24f), 4.dp.toPx(), wrist)
+            drawLine(AccentGreen.copy(alpha = 0.65f), Offset(w * 0.31f, h * 0.50f), palm, strokeWidth = 2.dp.toPx(), cap = StrokeCap.Round)
         }
-        ScanLine()
-        Row(
+        TrackingBadge()
+        Surface(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(12.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+                .align(Alignment.TopEnd)
+                .padding(14.dp)
+                .size(36.dp),
+            shape = CircleShape,
+            color = Color.White.copy(alpha = 0.86f)
         ) {
-            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                BlinkDot(Red)
-                MonoText("LIVE", color = TextMuted, size = 10)
-            }
-            PillText("WORDS MODE", accent = Accent)
-        }
-        Row(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(10.dp),
-            horizontalArrangement = Arrangement.spacedBy(6.dp)
-        ) {
-            StatChip("HAND", "RIGHT", Teal, Modifier.weight(1f))
-            StatChip("FRAMES", "26/30", Accent, Modifier.weight(1f))
-            StatChip("CONF", "94%", Accent, Modifier.weight(1f))
-            StatChip("FPS", "29", TextMuted, Modifier.weight(1f))
-        }
-    }
-}
-
-@Composable
-private fun ScanLine() {
-    val transition = rememberInfiniteTransition(label = "scan")
-    val y by transition.animateFloat(
-        initialValue = 0.12f,
-        targetValue = 0.80f,
-        animationSpec = infiniteRepeatable(tween(3000, easing = FastOutSlowInEasing), RepeatMode.Reverse),
-        label = "scan-y"
-    )
-    Canvas(Modifier.fillMaxSize()) {
-        val top = size.height * y
-        drawLine(
-            brush = Brush.horizontalGradient(listOf(Color.Transparent, Accent.copy(alpha = 0.9f), Color.Transparent)),
-            start = Offset(0f, top),
-            end = Offset(size.width, top),
-            strokeWidth = 1.5.dp.toPx()
-        )
-    }
-}
-
-@Composable
-private fun HtmlSentenceCard(sentence: String, onSpeak: () -> Unit, onClear: () -> Unit) {
-    Box(
-        modifier = Modifier
-            .padding(horizontal = 14.dp)
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(14.dp))
-            .background(CardBg)
-            .border(0.5.dp, BorderStrong, RoundedCornerShape(14.dp))
-    ) {
-        Box(
-            modifier = Modifier
-                .align(Alignment.CenterStart)
-                .width(3.dp)
-                .fillMaxSize()
-                .background(Accent)
-        )
-        Column(Modifier.padding(15.dp)) {
-            Text(sentence, color = TextMain, fontSize = 19.sp, lineHeight = 25.sp, fontWeight = FontWeight.Light)
-            MonoText("3 signs · 94% avg confidence", color = TextDim, size = 11, modifier = Modifier.padding(top = 4.dp))
-            Row(
-                modifier = Modifier.padding(top = 10.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                Button(
-                    onClick = onSpeak,
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(42.dp),
-                    shape = RoundedCornerShape(8.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Accent, contentColor = Bg)
-                ) {
-                    VoxIcon(R.drawable.ic_volume_up, "Speak aloud", Bg, Modifier.size(16.dp))
-                    Spacer(Modifier.width(7.dp))
-                    Text("Speak aloud", color = Bg, fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
-                }
-                Surface(
-                    modifier = Modifier
-                        .size(42.dp)
-                        .clickable { onClear() },
-                    shape = RoundedCornerShape(8.dp),
-                    color = CardHi,
-                    border = BorderStroke(0.5.dp, BorderStrong)
-                ) {
-                    Box(contentAlignment = Alignment.Center) {
-                        VoxIcon(R.drawable.ic_cancel, "Clear", TextMuted, Modifier.size(15.dp))
-                    }
-                }
+            Box(contentAlignment = Alignment.Center) {
+                VoxIcon(R.drawable.ic_wb_sunny, "Light", TextMuted, Modifier.size(17.dp))
             }
         }
+        TrackingCorners()
     }
 }
 
 @Composable
-private fun ConfidenceBars() {
-    val bars = listOf(
-        Triple("THANK YOU", 94, Accent),
-        Triple("WATER", 88, Accent2),
-        Triple("HELLO", 6, TextFaint),
-        Triple("YES", 2, TextFaint)
-    )
-    Column(
-        modifier = Modifier.padding(horizontal = 14.dp, vertical = 9.dp),
-        verticalArrangement = Arrangement.spacedBy(6.dp)
-    ) {
-        bars.forEach { (label, pct, color) ->
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                MonoText(label, color = TextDim, size = 10, modifier = Modifier.width(76.dp))
-                Box(
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(3.dp)
-                        .clip(RoundedCornerShape(999.dp))
-                        .background(CardHi)
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth(pct / 100f)
-                            .height(3.dp)
-                            .clip(RoundedCornerShape(999.dp))
-                            .background(color)
-                    )
-                }
-                MonoText("$pct%", color = TextDim, size = 10, modifier = Modifier.width(30.dp))
-            }
-        }
-    }
-}
-
-@Composable
-private fun MiniModeButton(label: String, @DrawableRes icon: Int, modifier: Modifier = Modifier) {
+private fun TrackingBadge() {
     Row(
-        modifier = modifier
-            .clip(RoundedCornerShape(8.dp))
-            .background(CardBg)
-            .border(0.5.dp, BorderStrong, RoundedCornerShape(8.dp))
-            .clickable {}
-            .padding(horizontal = 10.dp, vertical = 9.dp),
+        modifier = Modifier
+            .padding(14.dp)
+            .clip(RoundedCornerShape(999.dp))
+            .background(Color(0xB0000000))
+            .padding(horizontal = 12.dp, vertical = 7.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(7.dp)
     ) {
-        VoxIcon(icon, label, TextDim, Modifier.size(15.dp))
-        Text(label, color = TextMuted, fontSize = 11.sp, maxLines = 1)
+        BlinkDot(AccentGreen)
+        Text("Tracking Hand", color = Color.White, fontSize = 11.sp, fontWeight = FontWeight.SemiBold)
     }
 }
 
 @Composable
-private fun ListenScreen(onHistory: (String) -> Unit) {
-    var listening by remember { mutableStateOf(false) }
-    var heardText by remember { mutableStateOf("How are you feeling today?") }
-    var avatarState by remember { mutableStateOf(AvatarPlaybackState()) }
-    val avatarController = remember {
-        AvatarController { avatarState = it }
+private fun TrackingCorners() {
+    Canvas(Modifier.fillMaxSize().padding(18.dp)) {
+        val stroke = 3.dp.toPx()
+        val len = 28.dp.toPx()
+        val color = AccentGreen.copy(alpha = 0.82f)
+        drawLine(color, Offset(0f, 0f), Offset(len, 0f), stroke, StrokeCap.Round)
+        drawLine(color, Offset(0f, 0f), Offset(0f, len), stroke, StrokeCap.Round)
+        drawLine(color, Offset(size.width, 0f), Offset(size.width - len, 0f), stroke, StrokeCap.Round)
+        drawLine(color, Offset(size.width, 0f), Offset(size.width, len), stroke, StrokeCap.Round)
+        drawLine(color, Offset(0f, size.height), Offset(len, size.height), stroke, StrokeCap.Round)
+        drawLine(color, Offset(0f, size.height), Offset(0f, size.height - len), stroke, StrokeCap.Round)
+        drawLine(color, Offset(size.width, size.height), Offset(size.width - len, size.height), stroke, StrokeCap.Round)
+        drawLine(color, Offset(size.width, size.height), Offset(size.width, size.height - len), stroke, StrokeCap.Round)
     }
+}
+
+@Composable
+private fun CurrentWordCard(word: String) {
+    VoxCard(modifier = Modifier.padding(horizontal = 20.dp, vertical = 14.dp)) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Label("CURRENT WORD", Modifier.weight(1f))
+            VoxIcon(R.drawable.ic_volume_up, "Speak current word", Primary, Modifier.size(17.dp))
+        }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 12.dp, bottom = 4.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(word, color = Primary, fontSize = 30.sp, fontWeight = FontWeight.Bold)
+            Spacer(Modifier.width(8.dp))
+            VoxIcon(R.drawable.ic_hand_gesture, "Gesture", Amber, Modifier.size(26.dp))
+        }
+    }
+}
+
+@Composable
+private fun SentenceCard(sentence: String, onSpeak: () -> Unit) {
+    VoxCard(modifier = Modifier.padding(horizontal = 20.dp)) {
+        Label("SENTENCE")
+        Text(
+            sentence,
+            color = Primary,
+            fontSize = 20.sp,
+            lineHeight = 27.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(top = 10.dp)
+        )
+        Row(
+            modifier = Modifier
+                .padding(top = 12.dp)
+                .clickable { onSpeak() },
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Surface(shape = CircleShape, color = Color(0xFFFFF7ED)) {
+                Box(Modifier.size(25.dp), contentAlignment = Alignment.Center) {
+                    VoxIcon(R.drawable.ic_volume_up, "Tap to speak", Amber, Modifier.size(14.dp))
+                }
+            }
+            Spacer(Modifier.width(8.dp))
+            Text("Tap to speak", color = Amber, fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
+        }
+    }
+}
+
+@Composable
+private fun ActionButton(
+    @DrawableRes icon: Int,
+    label: String,
+    tint: Color,
+    modifier: Modifier,
+    onClick: () -> Unit
+) {
+    Card(
+        modifier = modifier
+            .height(74.dp)
+            .clickable { onClick() },
+        shape = RoundedCornerShape(18.dp),
+        colors = CardDefaults.cardColors(containerColor = CardWhite),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        border = BorderStroke(1.dp, Border)
+    ) {
+        Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+            VoxIcon(icon, label, tint, Modifier.size(22.dp))
+            Spacer(Modifier.height(7.dp))
+            Text(label, color = TextMain, fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
+        }
+    }
+}
+
+@Composable
+private fun ListenScreen(onSpeechSaved: (String) -> Unit) {
+    var listening by remember { mutableStateOf(true) }
+    var transcript by remember { mutableStateOf("Hello, how can I help you?") }
+    var avatarState by remember { mutableStateOf(AvatarPlaybackState()) }
+    val avatarController = remember { AvatarController { avatarState = it } }
+
     DisposableEffect(Unit) {
         onDispose { avatarController.detach() }
     }
 
-    fun playText() {
-        avatarController.playTextAsSigns(heardText)
-        onHistory(heardText)
+    fun playTranscript() {
+        avatarController.playTextAsSigns(transcript)
+        onSpeechSaved(transcript)
     }
 
     ScreenScroll {
-        ListenHero(
+        ScreenTopBar("LISTEN", R.drawable.ic_settings)
+        SpeechTranscriptCard(
+            transcript = transcript,
             listening = listening,
-            heardText = heardText,
-            onMic = {
+            onMicTap = {
                 listening = !listening
                 avatarController.setListening(listening)
-                if (listening) heardText = "How are you feeling today?"
+                if (listening) transcript = "Hello, how can I help you?"
             }
         )
-        AvatarHtmlCard(
+        Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth().padding(top = 2.dp, bottom = 14.dp)) {
+            Text(if (listening) "Listening..." else "Tap mic to listen", color = TextMain, fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
+            Text("Speak clearly", color = TextFaint, fontSize = 12.sp)
+        }
+        AvatarCard(
             avatarController = avatarController,
             avatarState = avatarState,
+            onReplay = { avatarController.replay() },
+            onPlay = { playTranscript() },
+            onStop = { avatarController.stop() },
             onDebugWord = { word ->
                 if (!avatarController.playWord(word)) {
-                    avatarState = AvatarPlaybackState(label = "Ignored", detail = "NOTHING is no-output")
+                    avatarState = AvatarPlaybackState(label = "Ready", detail = "NOTHING ignored", currentWord = "")
                 }
             }
         )
-        TranscriptCard()
-        Row(
-            modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            HtmlButton(
-                label = if (listening) "Listening..." else "Start listening",
-                icon = R.drawable.ic_mic,
-                modifier = Modifier.weight(1f),
-                onClick = {
-                    listening = !listening
-                    avatarController.setListening(listening)
-                }
-            )
-            Surface(
-                modifier = Modifier
-                    .size(44.dp)
-                    .clickable {
-                        listening = false
-                        avatarController.stop()
-                    },
-                shape = RoundedCornerShape(8.dp),
-                color = Red.copy(alpha = 0.10f),
-                border = BorderStroke(0.5.dp, Red.copy(alpha = 0.28f))
-            ) {
-                Box(contentAlignment = Alignment.Center) {
-                    VoxIcon(R.drawable.ic_cancel, "Stop", Red, Modifier.size(18.dp))
-                }
-            }
-        }
-        Row(
-            modifier = Modifier.padding(horizontal = 14.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            HtmlButton("Replay avatar", R.drawable.ic_replay, Modifier.weight(1f), onClick = { avatarController.replay() })
-            HtmlAccentButton("Play signs", R.drawable.ic_play_arrow, Modifier.weight(1f), onClick = { playText() })
-        }
-        Spacer(Modifier.height(14.dp))
+        Spacer(Modifier.height(12.dp))
     }
 }
 
 @Composable
-private fun ListenHero(
+private fun SpeechTranscriptCard(
+    transcript: String,
     listening: Boolean,
-    heardText: String,
-    onMic: () -> Unit
+    onMicTap: () -> Unit
 ) {
-    Column(
-        modifier = Modifier
-            .padding(horizontal = 14.dp)
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(14.dp))
-            .background(CardBg)
-            .border(0.5.dp, BorderStrong, RoundedCornerShape(14.dp))
-            .padding(14.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        MonoText(if (listening) "LISTENING" else "TAP TO LISTEN", color = TextDim, size = 10)
-        Box(
-            modifier = Modifier
-                .padding(top = 10.dp, bottom = 10.dp)
-                .size(92.dp)
-                .clickable { onMic() },
-            contentAlignment = Alignment.Center
+    VoxCard(modifier = Modifier.padding(horizontal = 20.dp)) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Label("SPEECH TRANSCRIPT", Modifier.weight(1f))
+            VoxIcon(R.drawable.ic_volume_up, "Speak transcript", TextMuted, Modifier.size(17.dp))
+        }
+        Text(
+            transcript,
+            color = Primary,
+            fontSize = 27.sp,
+            lineHeight = 35.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(top = 14.dp, bottom = 18.dp)
+        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
         ) {
-            MicRing(54, 0)
-            MicRing(70, 400)
-            MicRing(86, 800)
+            Waveform(Modifier.weight(1f), listening)
             Box(
                 modifier = Modifier
-                    .size(44.dp)
+                    .size(72.dp)
                     .clip(CircleShape)
-                    .background(AccentDim)
-                    .border(1.5.dp, Accent, CircleShape),
+                    .background(Primary)
+                    .clickable { onMicTap() },
                 contentAlignment = Alignment.Center
             ) {
-                VoxIcon(R.drawable.ic_mic, "Mic", Accent, Modifier.size(20.dp))
+                if (listening) {
+                    MicPulse()
+                }
+                VoxIcon(R.drawable.ic_mic, "Microphone", DarkInk, Modifier.size(30.dp))
             }
-        }
-        Waveform()
-        Text("“$heardText”", color = TextMuted, fontSize = 12.sp, fontStyle = FontStyle.Italic)
-    }
-}
-
-@Composable
-private fun MicRing(size: Int, delay: Int) {
-    val transition = rememberInfiniteTransition(label = "ring-$size")
-    val alpha by transition.animateFloat(
-        initialValue = 0.55f,
-        targetValue = 0f,
-        animationSpec = infiniteRepeatable(tween(2000, delayMillis = delay), RepeatMode.Restart),
-        label = "alpha"
-    )
-    val scale by transition.animateFloat(
-        initialValue = 0.75f,
-        targetValue = 1.30f,
-        animationSpec = infiniteRepeatable(tween(2000, delayMillis = delay), RepeatMode.Restart),
-        label = "scale"
-    )
-    Canvas(Modifier.size(size.dp)) {
-        drawCircle(
-            color = Accent.copy(alpha = alpha),
-            radius = size.dp.toPx() * 0.5f * scale,
-            style = Stroke(width = 1.5.dp.toPx())
-        )
-    }
-}
-
-@Composable
-private fun Waveform() {
-    val heights = listOf(7, 15, 23, 18, 11, 21, 15, 8, 17, 10)
-    Row(
-        modifier = Modifier
-            .height(26.dp)
-            .padding(bottom = 6.dp),
-        horizontalArrangement = Arrangement.spacedBy(3.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        heights.forEachIndexed { index, height ->
-            val transition = rememberInfiniteTransition(label = "wave-$index")
-            val scale by transition.animateFloat(
-                initialValue = 0.35f,
-                targetValue = 1f,
-                animationSpec = infiniteRepeatable(tween(800, delayMillis = index * 80), RepeatMode.Reverse),
-                label = "scale"
-            )
-            Box(
-                modifier = Modifier
-                    .width(3.dp)
-                    .height((height * scale).dp.coerceAtLeast(4.dp))
-                    .clip(RoundedCornerShape(999.dp))
-                    .background(Accent)
-            )
+            Waveform(Modifier.weight(1f), listening)
         }
     }
 }
 
 @Composable
-private fun AvatarHtmlCard(
+private fun AvatarCard(
     avatarController: AvatarController,
     avatarState: AvatarPlaybackState,
+    onReplay: () -> Unit,
+    onPlay: () -> Unit,
+    onStop: () -> Unit,
     onDebugWord: (String) -> Unit
 ) {
-    Column(
+    Card(
         modifier = Modifier
-            .padding(horizontal = 14.dp, vertical = 10.dp)
+            .padding(horizontal = 20.dp)
             .fillMaxWidth()
-            .clip(RoundedCornerShape(14.dp))
-            .background(CardBg)
-            .border(0.5.dp, BorderStrong, RoundedCornerShape(14.dp))
+            .height(292.dp),
+        shape = RoundedCornerShape(24.dp),
+        colors = CardDefaults.cardColors(containerColor = SoftCyan),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(220.dp)
-                .background(CardHi)
-        ) {
-            Canvas(Modifier.fillMaxSize()) {
-                drawOval(
-                    color = Accent.copy(alpha = 0.12f),
-                    topLeft = Offset(size.width * 0.5f - 80.dp.toPx(), size.height - 30.dp.toPx()),
-                    size = Size(160.dp.toPx(), 30.dp.toPx())
-                )
-            }
+        Column(Modifier.fillMaxSize()) {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 14.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Row(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(999.dp))
-                        .background(Bg.copy(alpha = 0.70f))
-                        .border(0.5.dp, BorderStrong, RoundedCornerShape(999.dp))
-                        .padding(horizontal = 10.dp, vertical = 5.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(5.dp)
-                ) {
-                    BlinkDot(Accent)
-                    MonoText(avatarState.label.uppercase(Locale.US), color = Accent, size = 10)
+                Label("AVATAR", Modifier.weight(1f))
+                Surface(shape = RoundedCornerShape(999.dp), color = CardWhite.copy(alpha = 0.86f), shadowElevation = 2.dp) {
+                    Row(
+                        modifier = Modifier.padding(horizontal = 11.dp, vertical = 6.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(5.dp)
+                    ) {
+                        BlinkDot(Primary)
+                        Text(
+                            if (avatarState.isPlaying) "Signing..." else "Analyzing...",
+                            color = Primary,
+                            fontSize = 11.sp,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    }
                 }
-                PillText(avatarState.currentWord.ifBlank { "READY" }, Accent)
             }
             AndroidView(
                 factory = { viewContext -> AvatarView(viewContext).also { avatarController.attach(it) } },
-                update = {
-                    it.contentDescription = "Avatar signing: ${avatarState.currentWord.ifBlank { avatarState.label }}"
-                },
+                update = { it.contentDescription = "Avatar signing: ${avatarState.currentWord.ifBlank { avatarState.label }}" },
                 modifier = Modifier
-                    .align(Alignment.BottomCenter)
                     .fillMaxWidth()
-                    .height(198.dp)
+                    .weight(1f)
+                    .padding(horizontal = 10.dp)
             )
-        }
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 14.dp, vertical = 10.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            MonoText(avatarState.detail.ifBlank { "Signing: ready" }, color = TextDim, size = 11)
-            Box(
-                modifier = Modifier
-                    .width(100.dp)
-                    .height(3.dp)
-                    .clip(RoundedCornerShape(999.dp))
-                    .background(CardTop)
-            ) {
-                Box(
+            Surface(color = CardWhite.copy(alpha = 0.92f), shadowElevation = 0.dp) {
+                Column(
                     modifier = Modifier
-                        .fillMaxWidth(if (avatarState.isPlaying) 0.80f else 0.35f)
-                        .height(3.dp)
-                        .clip(RoundedCornerShape(999.dp))
-                        .background(Accent)
-                )
-            }
-        }
-        if (BuildConfig.DEBUG) {
-            Row(
-                modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp),
-                horizontalArrangement = Arrangement.spacedBy(6.dp)
-            ) {
-                listOf("HELLO", "THANKYOU", "WATER", "EAT", "NOTHING").forEach { word ->
-                    Surface(
-                        modifier = Modifier
-                            .weight(1f)
-                            .height(32.dp)
-                            .clickable { onDebugWord(word) },
-                        shape = RoundedCornerShape(999.dp),
-                        color = if (word == "NOTHING") CardHi else AccentDim,
-                        border = BorderStroke(0.5.dp, if (word == "NOTHING") BorderStrong else Accent.copy(alpha = 0.5f))
+                        .fillMaxWidth()
+                        .padding(12.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        avatarState.detail.ifBlank { "Converting speech to sign language" },
+                        color = TextMuted,
+                        fontSize = 12.sp,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                    Row(
+                        modifier = Modifier.padding(top = 10.dp),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        Box(contentAlignment = Alignment.Center) {
-                            Text(
-                                if (word == "THANKYOU") "THANK" else word,
-                                color = if (word == "NOTHING") TextDim else Accent,
-                                fontSize = 9.sp,
-                                fontWeight = FontWeight.Medium,
-                                maxLines = 1
-                            )
-                        }
+                        OutlinePillButton("Replay", R.drawable.ic_replay, Modifier.weight(1f), onReplay)
+                        FilledPillButton("Play Signs", R.drawable.ic_play_arrow, Modifier.weight(1f), onPlay)
                     }
                 }
             }
         }
     }
-}
-
-@Composable
-private fun TranscriptCard() {
-    Column(
-        modifier = Modifier
-            .padding(horizontal = 14.dp)
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(14.dp))
-            .background(CardBg)
-            .border(0.5.dp, BorderStrong, RoundedCornerShape(14.dp))
-            .padding(14.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        TranscriptLine("YOU", "How are you feeling today?", TextDim)
-        DividerLine()
-        TranscriptLine("SIGN", "I am fine, thank you", Accent)
-        DividerLine()
-        TranscriptLine("APP", "Avatar sequence: HELLO · WATER · EAT", TextDim)
-    }
-}
-
-@Composable
-private fun TranscriptLine(who: String, said: String, color: Color) {
-    Row(horizontalArrangement = Arrangement.spacedBy(10.dp), verticalAlignment = Alignment.Top) {
-        MonoText(who, color = color, size = 10, modifier = Modifier.width(38.dp))
-        Text(said, color = if (color == Accent) TextMain else TextMuted, fontSize = 13.sp, lineHeight = 19.sp)
+    if (BuildConfig.DEBUG) {
+        Row(
+            modifier = Modifier
+                .padding(horizontal = 20.dp, vertical = 8.dp)
+                .horizontalScroll(rememberScrollState()),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            listOf("HELLO", "THANKYOU", "WATER", "EAT", "NOTHING", "STOP").forEach { word ->
+                Surface(
+                    modifier = Modifier
+                        .height(32.dp)
+                        .clickable {
+                            if (word == "STOP") onStop() else onDebugWord(word)
+                        },
+                    shape = RoundedCornerShape(999.dp),
+                    color = SoftCyan,
+                    border = BorderStroke(1.dp, Border)
+                ) {
+                    Box(contentAlignment = Alignment.Center, modifier = Modifier.padding(horizontal = 12.dp)) {
+                        Text(if (word == "THANKYOU") "THANK" else word, color = Primary, fontSize = 10.sp, fontWeight = FontWeight.Bold)
+                    }
+                }
+            }
+        }
     }
 }
 
 @Composable
 private fun PhrasesScreen(onPhrase: (String) -> Unit) {
     ScreenScroll {
-        SearchBox()
-        PhraseSectionTitle("EMERGENCY", R.drawable.ic_warning, Red)
-        Row(
-            modifier = Modifier.padding(horizontal = 14.dp),
-            horizontalArrangement = Arrangement.spacedBy(6.dp)
-        ) {
-            EmergencyCard("I need help", "Alert nearby person", Modifier.weight(1f), onClick = { onPhrase("I need help") })
-            EmergencyCard("Call a doctor", "Medical request", Modifier.weight(1f), onClick = { onPhrase("Call a doctor") })
-        }
-        PhraseSectionTitle("QUICK PHRASES", R.drawable.ic_bolt, Amber)
-        Column(
-            modifier = Modifier.padding(horizontal = 14.dp),
-            verticalArrangement = Arrangement.spacedBy(6.dp)
-        ) {
-            listOf(
-                Triple("I need water", "Request a drink", R.drawable.ic_water_drop),
-                Triple("Please wait", "Ask for patience", R.drawable.ic_clock),
-                Triple("Thank you", "Show gratitude", R.drawable.ic_hand_gesture),
-                Triple("Yes", "Confirm", R.drawable.ic_check_circle),
-                Triple("No", "Decline", R.drawable.ic_no_circle),
-                Triple("I want to eat", "Food request", R.drawable.ic_bolt)
-            ).forEach { (word, sub, icon) ->
-                PhraseItem(word, sub, icon, onClick = { onPhrase(word) })
+        ScreenTopBar("PHRASES", R.drawable.ic_search)
+        QuickPhraseHero()
+        CategoryChips()
+        PhraseGrid(onPhrase)
+        Spacer(Modifier.height(16.dp))
+    }
+}
+
+@Composable
+private fun QuickPhraseHero() {
+    Box(
+        modifier = Modifier
+            .padding(horizontal = 20.dp)
+            .fillMaxWidth()
+            .height(132.dp)
+            .clip(RoundedCornerShape(22.dp))
+            .background(Brush.linearGradient(listOf(Primary, PrimaryLight)))
+            .padding(20.dp)
+    ) {
+        Column(Modifier.align(Alignment.CenterStart).width(190.dp)) {
+            Text("Quick Phrases", color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+            Text(
+                "Tap a phrase to show it in sign or speak it out.",
+                color = Color.White.copy(alpha = 0.86f),
+                fontSize = 13.sp,
+                lineHeight = 18.sp,
+                modifier = Modifier.padding(top = 6.dp)
+            )
+            Row(Modifier.padding(top = 16.dp), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                Box(Modifier.size(7.dp).clip(CircleShape).background(Color.White))
+                repeat(3) { Box(Modifier.size(7.dp).clip(CircleShape).background(Color.White.copy(alpha = 0.40f))) }
             }
         }
-        Row(
+        Surface(
             modifier = Modifier
-                .padding(horizontal = 14.dp, vertical = 12.dp)
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(8.dp))
-                .background(CardBg)
-                .border(0.5.dp, BorderStrong, RoundedCornerShape(8.dp))
-                .clickable {}
-                .padding(12.dp),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
+                .align(Alignment.CenterEnd)
+                .size(64.dp),
+            shape = CircleShape,
+            color = Color.White.copy(alpha = 0.23f)
         ) {
-            VoxIcon(R.drawable.ic_plus, "Add custom phrase", TextDim, Modifier.size(16.dp))
-            Spacer(Modifier.width(7.dp))
-            Text("Add custom phrase", color = TextDim, fontSize = 12.sp)
+            Box(contentAlignment = Alignment.Center) {
+                VoxIcon(R.drawable.ic_bolt, "Quick phrases", Color.White, Modifier.size(32.dp))
+            }
         }
-        Spacer(Modifier.height(14.dp))
     }
 }
 
 @Composable
-private fun SearchBox() {
+private fun CategoryChips() {
     Row(
         modifier = Modifier
-            .padding(horizontal = 14.dp, vertical = 0.dp)
-            .fillMaxWidth()
+            .padding(horizontal = 20.dp, vertical = 16.dp)
+            .horizontalScroll(rememberScrollState()),
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        CategoryChip("Emergency", R.drawable.ic_warning, Amber, Color(0x26F59E0B), true)
+        CategoryChip("Medical", R.drawable.ic_medical, PrimaryLight, Color(0x2618686D), false)
+        CategoryChip("Daily", R.drawable.ic_wb_sunny, TextMuted, CardWhite, false)
+        CategoryChip("Conversation", R.drawable.ic_chat, TextMuted, CardWhite, false)
+    }
+}
+
+@Composable
+private fun CategoryChip(label: String, @DrawableRes icon: Int, tint: Color, bg: Color, active: Boolean) {
+    Row(
+        modifier = Modifier
             .height(42.dp)
-            .clip(RoundedCornerShape(8.dp))
-            .background(CardBg)
-            .border(0.5.dp, BorderStrong, RoundedCornerShape(8.dp))
-            .padding(horizontal = 12.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        VoxIcon(R.drawable.ic_search, "Search", TextDim, Modifier.size(16.dp))
-        Spacer(Modifier.width(10.dp))
-        Text("Search phrases...", color = TextDim, fontSize = 13.sp)
-    }
-}
-
-@Composable
-private fun PhraseSectionTitle(title: String, @DrawableRes icon: Int, color: Color) {
-    Row(
-        modifier = Modifier.padding(start = 14.dp, end = 14.dp, top = 12.dp, bottom = 8.dp),
+            .clip(RoundedCornerShape(999.dp))
+            .background(bg)
+            .border(1.dp, if (active) tint.copy(alpha = 0.35f) else Border, RoundedCornerShape(999.dp))
+            .padding(horizontal = 14.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(6.dp)
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        VoxIcon(icon, title, color, Modifier.size(13.dp))
-        MonoText(title, color = TextDim, size = 10)
+        VoxIcon(icon, label, tint, Modifier.size(16.dp))
+        Text(label, color = tint, fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
     }
 }
 
 @Composable
-private fun EmergencyCard(text: String, sub: String, modifier: Modifier, onClick: () -> Unit) {
+private fun PhraseGrid(onPhrase: (String) -> Unit) {
+    val phrases = listOf(
+        PhraseUi("I need help", R.drawable.ic_warning, Color(0xFFF97316)),
+        PhraseUi("Call a doctor", R.drawable.ic_medical, PrimaryLight),
+        PhraseUi("I need water", R.drawable.ic_water_drop, Blue),
+        PhraseUi("Stop", R.drawable.ic_hand_gesture, Red),
+        PhraseUi("Please wait", R.drawable.ic_clock, Amber),
+        PhraseUi("Thank you", R.drawable.ic_hand_gesture, Purple),
+        PhraseUi("Yes", R.drawable.ic_check_circle, Green),
+        PhraseUi("No", R.drawable.ic_no_circle, Red)
+    )
     Column(
-        modifier = modifier
-            .clip(RoundedCornerShape(8.dp))
-            .background(Red.copy(alpha = 0.07f))
-            .border(0.5.dp, Red.copy(alpha = 0.20f), RoundedCornerShape(8.dp))
-            .clickable { onClick() }
-            .padding(12.dp)
+        modifier = Modifier.padding(horizontal = 20.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        VoxIcon(R.drawable.ic_warning, text, Red, Modifier.size(18.dp))
-        Text(text, color = TextMain, fontSize = 12.sp, fontWeight = FontWeight.Medium, modifier = Modifier.padding(top = 5.dp))
-        Text(sub, color = TextDim, fontSize = 10.sp)
+        phrases.chunked(2).forEach { row ->
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                row.forEach { phrase ->
+                    PhraseCard(phrase = phrase, modifier = Modifier.weight(1f), onClick = { onPhrase(phrase.label) })
+                }
+            }
+        }
     }
 }
 
 @Composable
-private fun PhraseItem(text: String, sub: String, @DrawableRes icon: Int, onClick: () -> Unit) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(8.dp))
-            .background(CardBg)
-            .border(0.5.dp, BorderStrong, RoundedCornerShape(8.dp))
-            .clickable { onClick() }
-            .padding(12.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(10.dp)
+private fun PhraseCard(phrase: PhraseUi, modifier: Modifier, onClick: () -> Unit) {
+    Card(
+        modifier = modifier
+            .height(86.dp)
+            .clickable { onClick() },
+        shape = RoundedCornerShape(18.dp),
+        colors = CardDefaults.cardColors(containerColor = CardWhite),
+        elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
+        border = BorderStroke(1.dp, Border)
     ) {
-        Box(
-            modifier = Modifier
-                .size(32.dp)
-                .clip(RoundedCornerShape(8.dp))
-                .background(AccentDim),
-            contentAlignment = Alignment.Center
-        ) {
-            VoxIcon(icon, text, Accent, Modifier.size(16.dp))
-        }
-        Column(Modifier.weight(1f)) {
-            Text(text, color = TextMain, fontSize = 12.sp, fontWeight = FontWeight.Medium)
-            Text(sub, color = TextDim, fontSize = 10.sp)
+        Row(Modifier.fillMaxSize().padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
+            Surface(shape = CircleShape, color = phrase.color.copy(alpha = 0.12f), modifier = Modifier.size(40.dp)) {
+                Box(contentAlignment = Alignment.Center) {
+                    VoxIcon(phrase.icon, phrase.label, phrase.color, Modifier.size(22.dp))
+                }
+            }
+            Spacer(Modifier.width(10.dp))
+            Text(phrase.label, color = TextMain, fontSize = 14.sp, fontWeight = FontWeight.Bold, maxLines = 2)
         }
     }
 }
 
 @Composable
 private fun HistoryScreen(entries: List<HistoryUiEntry>) {
-    var filter by remember { mutableStateOf("All") }
-    val shown = if (filter == "All" || filter == "Today") entries else entries.filter { it.type == filter.dropLastWhile { ch -> ch == 's' } }
     ScreenScroll {
-        Row(
+        ScreenTopBar("HISTORY", R.drawable.ic_filter_list, R.drawable.ic_search)
+        HistorySection("Today", entries.filter { it.section == "Today" })
+        HistorySection("Yesterday", entries.filter { it.section == "Yesterday" })
+        Button(
+            onClick = {},
             modifier = Modifier
-                .padding(horizontal = 14.dp)
+                .padding(horizontal = 20.dp, vertical = 12.dp)
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(8.dp))
-                .background(CardBg)
-                .border(0.5.dp, Border, RoundedCornerShape(8.dp))
-                .padding(14.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
+                .height(52.dp),
+            shape = RoundedCornerShape(16.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = Primary)
         ) {
-            SummaryStat(entries.size.toString(), "TOTAL")
-            VerticalRule()
-            SummaryStat(entries.count { it.type == "Sign" }.toString(), "SIGN")
-            VerticalRule()
-            SummaryStat(entries.count { it.type == "Listen" }.toString(), "LISTEN")
-            VerticalRule()
-            SummaryStat(entries.count { it.type == "Phrase" }.toString(), "PHRASE")
+            VoxIcon(R.drawable.ic_delete_outline, "Clear history", DarkInk, Modifier.size(18.dp))
+            Spacer(Modifier.width(8.dp))
+            Text("Clear All History", color = DarkInk, fontSize = 14.sp, fontWeight = FontWeight.Bold)
         }
+        Spacer(Modifier.height(12.dp))
+    }
+}
+
+@Composable
+private fun HistorySection(title: String, entries: List<HistoryUiEntry>) {
+    if (entries.isEmpty()) return
+    Text(
+        title,
+        color = Primary,
+        fontSize = 12.sp,
+        fontWeight = FontWeight.Bold,
+        modifier = Modifier.padding(start = 20.dp, top = 4.dp, bottom = 10.dp)
+    )
+    Column(modifier = Modifier.padding(horizontal = 20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        entries.forEach { HistoryItem(it) }
+    }
+    Spacer(Modifier.height(18.dp))
+}
+
+@Composable
+private fun HistoryItem(entry: HistoryUiEntry) {
+    Card(
+        shape = RoundedCornerShape(18.dp),
+        colors = CardDefaults.cardColors(containerColor = CardWhite),
+        elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
+        border = BorderStroke(1.dp, Border)
+    ) {
         Row(
             modifier = Modifier
-                .padding(horizontal = 14.dp, vertical = 8.dp)
-                .horizontalScroll(rememberScrollState()),
-            horizontalArrangement = Arrangement.spacedBy(6.dp)
+                .fillMaxWidth()
+                .padding(14.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            listOf("All", "Sign", "Listen", "Phrases", "Today").forEach { item ->
-                FilterChip(label = item, selected = filter == item, onClick = { filter = item })
+            Surface(shape = CircleShape, color = entry.iconColor, modifier = Modifier.size(48.dp)) {
+                Box(contentAlignment = Alignment.Center) {
+                    VoxIcon(entry.icon, entry.type, Color.White, Modifier.size(22.dp))
+                }
             }
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(horizontal = 14.dp)
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(entry.type, color = TextMuted, fontSize = 12.sp, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
+                    Text(entry.time, color = TextFaint, fontSize = 10.sp, fontWeight = FontWeight.SemiBold)
+                }
+                Text(
+                    entry.text,
+                    color = TextMain,
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.padding(top = 2.dp)
+                )
+                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(top = 4.dp)) {
+                    VoxIcon(if (entry.status == "Spoken") R.drawable.ic_volume_up else R.drawable.ic_play_arrow, entry.status, TextFaint, Modifier.size(12.dp))
+                    Spacer(Modifier.width(5.dp))
+                    Text(entry.status, color = TextFaint, fontSize = 11.sp)
+                }
+            }
+            VoxIcon(R.drawable.ic_play_arrow, "Replay", Primary, Modifier.size(18.dp))
+            Spacer(Modifier.width(10.dp))
+            VoxIcon(R.drawable.ic_more_vert, "More", TextFaint, Modifier.size(18.dp))
         }
-        Column(
-            modifier = Modifier.padding(horizontal = 14.dp),
-            verticalArrangement = Arrangement.spacedBy(7.dp)
-        ) {
-            shown.forEach { entry -> HistoryHtmlCard(entry) }
-        }
-        Spacer(Modifier.height(14.dp))
     }
 }
 
 @Composable
-private fun SummaryStat(value: String, label: String) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(value, color = TextMain, fontSize = 17.sp, fontWeight = FontWeight.Medium)
-        MonoText(label, color = TextDim, size = 10)
+private fun VoxCard(modifier: Modifier = Modifier, content: @Composable ColumnScope.() -> Unit) {
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(22.dp),
+        colors = CardDefaults.cardColors(containerColor = CardWhite),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        border = BorderStroke(1.dp, Border)
+    ) {
+        Column(Modifier.padding(18.dp), content = content)
     }
 }
 
 @Composable
-private fun VerticalRule() {
-    Box(
-        modifier = Modifier
-            .width(0.5.dp)
-            .height(34.dp)
-            .background(Border)
+private fun Label(text: String, modifier: Modifier = Modifier) {
+    Text(
+        text,
+        color = TextMuted,
+        fontSize = 11.sp,
+        fontWeight = FontWeight.Bold,
+        letterSpacing = 1.0.sp,
+        maxLines = 1,
+        modifier = modifier
     )
 }
 
 @Composable
-private fun FilterChip(label: String, selected: Boolean, onClick: () -> Unit) {
-    Surface(
-        modifier = Modifier
-            .height(30.dp)
-            .clickable { onClick() },
-        shape = RoundedCornerShape(999.dp),
-        color = if (selected) AccentDim else CardBg,
-        border = BorderStroke(0.5.dp, if (selected) Accent else BorderStrong)
-    ) {
-        Box(contentAlignment = Alignment.Center, modifier = Modifier.padding(horizontal = 12.dp)) {
-            Text(label, color = if (selected) Accent else TextDim, fontSize = 11.sp, fontWeight = FontWeight.Medium)
-        }
-    }
-}
-
-@Composable
-private fun HistoryHtmlCard(entry: HistoryUiEntry) {
-    val tint = when (entry.type) {
-        "Sign" -> Accent
-        "Listen" -> Blue
-        else -> Purple
-    }
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
+private fun OutlinePillButton(label: String, @DrawableRes icon: Int, modifier: Modifier, onClick: () -> Unit) {
+    Row(
+        modifier = modifier
+            .height(42.dp)
             .clip(RoundedCornerShape(14.dp))
-            .background(CardBg)
-            .border(0.5.dp, BorderStrong, RoundedCornerShape(14.dp))
-            .padding(14.dp)
+            .background(CardWhite)
+            .border(1.dp, Border, RoundedCornerShape(14.dp))
+            .clickable { onClick() },
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
     ) {
-        Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
-            Row(
+        VoxIcon(icon, label, Primary, Modifier.size(18.dp))
+        Spacer(Modifier.width(7.dp))
+        Text(label, color = Primary, fontSize = 13.sp, fontWeight = FontWeight.Bold)
+    }
+}
+
+@Composable
+private fun FilledPillButton(label: String, @DrawableRes icon: Int, modifier: Modifier, onClick: () -> Unit) {
+    Row(
+        modifier = modifier
+            .height(42.dp)
+            .clip(RoundedCornerShape(14.dp))
+            .background(Primary)
+            .clickable { onClick() },
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
+    ) {
+        VoxIcon(icon, label, DarkInk, Modifier.size(18.dp))
+        Spacer(Modifier.width(7.dp))
+        Text(label, color = DarkInk, fontSize = 13.sp, fontWeight = FontWeight.Bold)
+    }
+}
+
+@Composable
+private fun Waveform(modifier: Modifier, active: Boolean) {
+    val transition = rememberInfiniteTransition(label = "wave")
+    val pulse by transition.animateFloat(
+        initialValue = 0f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(tween(520, easing = FastOutSlowInEasing), RepeatMode.Reverse),
+        label = "pulse"
+    )
+    Row(modifier, horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
+        val heights = listOf(8, 14, 24, 34, 22, 13, 8)
+        heights.forEachIndexed { index, height ->
+            val scale = if (active) 0.55f + ((pulse + index * 0.17f) % 1f) * 0.55f else 0.55f
+            Box(
                 modifier = Modifier
+                    .padding(horizontal = 2.dp)
+                    .width(3.dp)
+                    .height((height * scale).dp)
                     .clip(RoundedCornerShape(999.dp))
-                    .background(tint.copy(alpha = 0.10f))
-                    .border(0.5.dp, tint.copy(alpha = 0.5f), RoundedCornerShape(999.dp))
-                    .padding(horizontal = 8.dp, vertical = 4.dp),
-                horizontalArrangement = Arrangement.spacedBy(4.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                VoxIcon(if (entry.type == "Listen") R.drawable.ic_mic else if (entry.type == "Phrase") R.drawable.ic_bolt else R.drawable.ic_hand_gesture, entry.type, tint, Modifier.size(10.dp))
-                MonoText(entry.type, color = tint, size = 10)
-            }
-            MonoText(entry.time, color = TextDim, size = 10)
-        }
-        Text(
-            "\"${entry.text}\" — ${entry.detail}",
-            color = TextMuted,
-            fontSize = 13.sp,
-            lineHeight = 19.sp,
-            modifier = Modifier.padding(top = 8.dp, bottom = 7.dp)
-        )
-        Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-            Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                entry.words.take(3).forEach { WordChip(it) }
-            }
-            MonoText(entry.confidence, color = TextDim, size = 10)
+                    .background(if (index in 2..4) Primary.copy(alpha = 0.55f) else Color(0xFFD1E6E8))
+            )
         }
     }
 }
 
 @Composable
-private fun WordChip(text: String) {
+private fun MicPulse() {
+    val transition = rememberInfiniteTransition(label = "mic-pulse")
+    val scale by transition.animateFloat(
+        initialValue = 0.82f,
+        targetValue = 1.22f,
+        animationSpec = infiniteRepeatable(tween(900), RepeatMode.Reverse),
+        label = "scale"
+    )
+    Canvas(Modifier.fillMaxSize()) {
+        drawCircle(Color.White.copy(alpha = 0.18f), radius = size.minDimension * 0.5f * scale)
+    }
+}
+
+@Composable
+private fun BlinkDot(color: Color) {
+    val transition = rememberInfiniteTransition(label = "blink")
+    val alpha by transition.animateFloat(
+        initialValue = 1f,
+        targetValue = 0.35f,
+        animationSpec = infiniteRepeatable(tween(850), RepeatMode.Reverse),
+        label = "alpha"
+    )
     Box(
         modifier = Modifier
-            .clip(RoundedCornerShape(999.dp))
-            .background(CardHi)
-            .border(0.5.dp, Border, RoundedCornerShape(999.dp))
-            .padding(horizontal = 7.dp, vertical = 3.dp)
+            .size(8.dp)
+            .clip(CircleShape)
+            .background(color.copy(alpha = alpha))
+    )
+}
+
+@Composable
+private fun SignalIcon() {
+    Canvas(Modifier.size(17.dp)) {
+        val barW = 2.7.dp.toPx()
+        listOf(5, 8, 11, 14).forEachIndexed { index, h ->
+            drawRoundRect(
+                color = TextMain,
+                topLeft = Offset(index * 4.dp.toPx(), size.height - h.dp.toPx()),
+                size = Size(barW, h.dp.toPx()),
+                cornerRadius = CornerRadius(1.dp.toPx(), 1.dp.toPx())
+            )
+        }
+    }
+}
+
+@Composable
+private fun WifiDot() {
+    Canvas(Modifier.size(15.dp)) {
+        drawArc(TextMain, 205f, 130f, false, topLeft = Offset(size.width * 0.10f, size.height * 0.10f), size = Size(size.width * 0.80f, size.height * 0.80f), style = Stroke(2.dp.toPx(), cap = StrokeCap.Round))
+        drawArc(TextMain, 215f, 110f, false, topLeft = Offset(size.width * 0.25f, size.height * 0.32f), size = Size(size.width * 0.50f, size.height * 0.50f), style = Stroke(2.dp.toPx(), cap = StrokeCap.Round))
+        drawCircle(TextMain, 1.8.dp.toPx(), Offset(size.width * 0.5f, size.height * 0.76f))
+    }
+}
+
+@Composable
+private fun BatteryIcon() {
+    Canvas(Modifier.size(18.dp, 13.dp)) {
+        drawRoundRect(TextMain, Offset(0f, 2.dp.toPx()), Size(15.dp.toPx(), 9.dp.toPx()), CornerRadius(2.dp.toPx(), 2.dp.toPx()), style = Stroke(1.5.dp.toPx()))
+        drawRoundRect(TextMain, Offset(3.dp.toPx(), 4.dp.toPx()), Size(9.dp.toPx(), 5.dp.toPx()), CornerRadius(1.dp.toPx(), 1.dp.toPx()))
+        drawRoundRect(TextMain, Offset(16.dp.toPx(), 5.dp.toPx()), Size(2.dp.toPx(), 4.dp.toPx()), CornerRadius(1.dp.toPx(), 1.dp.toPx()))
+    }
+}
+
+@Composable
+private fun BottomNavBar(selectedTab: VoxTab, onTabSelected: (VoxTab) -> Unit) {
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        color = CardWhite,
+        shadowElevation = 10.dp
     ) {
-        Text(text, color = TextDim, fontSize = 10.sp, maxLines = 1)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(78.dp)
+                .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 10.dp),
+            horizontalArrangement = Arrangement.SpaceAround,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            VoxTab.values().forEach { tab ->
+                val active = tab == selectedTab
+                Column(
+                    modifier = Modifier
+                        .width(66.dp)
+                        .height(56.dp)
+                        .clip(RoundedCornerShape(17.dp))
+                        .background(if (active) Primary else Color.Transparent)
+                        .clickable { onTabSelected(tab) },
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    VoxIcon(tab.icon, tab.label, if (active) DarkInk else TextMuted, Modifier.size(22.dp))
+                    Spacer(Modifier.height(3.dp))
+                    Text(
+                        tab.label,
+                        color = if (active) DarkInk else TextMuted,
+                        fontSize = if (active) 10.sp else 9.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        maxLines = 1
+                    )
+                }
+            }
+        }
     }
 }
 
@@ -1063,151 +1047,6 @@ private fun ScreenScroll(content: @Composable ColumnScope.() -> Unit) {
             .verticalScroll(rememberScrollState()),
         content = content
     )
-}
-
-@Composable
-private fun SectionLabel(text: String) {
-    MonoText(text, color = TextDim, size = 10, modifier = Modifier.padding(start = 14.dp, top = 10.dp, bottom = 7.dp))
-}
-
-@Composable
-private fun StatChip(label: String, value: String, color: Color, modifier: Modifier = Modifier) {
-    Column(
-        modifier = modifier
-            .clip(RoundedCornerShape(8.dp))
-            .background(Bg.copy(alpha = 0.80f))
-            .border(0.5.dp, BorderStrong, RoundedCornerShape(8.dp))
-            .padding(horizontal = 8.dp, vertical = 6.dp)
-    ) {
-        MonoText(label, color = TextDim, size = 9)
-        Text(value, color = color, fontSize = 12.sp, fontWeight = FontWeight.Medium)
-    }
-}
-
-@Composable
-private fun PillText(text: String, accent: Color) {
-    Text(
-        text = text,
-        color = accent,
-        fontSize = 10.sp,
-        fontWeight = FontWeight.Medium,
-        modifier = Modifier
-            .clip(RoundedCornerShape(999.dp))
-            .background(CardHi)
-            .border(0.5.dp, BorderStrong, RoundedCornerShape(999.dp))
-            .padding(horizontal = 10.dp, vertical = 5.dp)
-    )
-}
-
-@Composable
-private fun BlinkDot(color: Color) {
-    val transition = rememberInfiniteTransition(label = "blink")
-    val alpha by transition.animateFloat(
-        initialValue = 1f,
-        targetValue = 0.25f,
-        animationSpec = infiniteRepeatable(tween(1100), RepeatMode.Reverse),
-        label = "alpha"
-    )
-    Box(
-        modifier = Modifier
-            .size(7.dp)
-            .clip(CircleShape)
-            .background(color.copy(alpha = alpha))
-    )
-}
-
-@Composable
-private fun HtmlButton(label: String, @DrawableRes icon: Int, modifier: Modifier = Modifier, onClick: () -> Unit) {
-    Row(
-        modifier = modifier
-            .height(44.dp)
-            .clip(RoundedCornerShape(8.dp))
-            .background(CardBg)
-            .border(0.5.dp, BorderStrong, RoundedCornerShape(8.dp))
-            .clickable { onClick() }
-            .padding(horizontal = 12.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
-    ) {
-        VoxIcon(icon, label, Accent, Modifier.size(17.dp))
-        Spacer(Modifier.width(7.dp))
-        Text(label, color = TextMain, fontSize = 12.sp, fontWeight = FontWeight.Medium)
-    }
-}
-
-@Composable
-private fun HtmlAccentButton(label: String, @DrawableRes icon: Int, modifier: Modifier = Modifier, onClick: () -> Unit) {
-    Row(
-        modifier = modifier
-            .height(44.dp)
-            .clip(RoundedCornerShape(8.dp))
-            .background(Accent)
-            .clickable { onClick() }
-            .padding(horizontal = 12.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
-    ) {
-        VoxIcon(icon, label, Bg, Modifier.size(17.dp))
-        Spacer(Modifier.width(7.dp))
-        Text(label, color = Bg, fontSize = 12.sp, fontWeight = FontWeight.Bold)
-    }
-}
-
-@Composable
-private fun DividerLine() {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(0.5.dp)
-            .background(Border)
-    )
-}
-
-@Composable
-private fun MonoText(text: String, color: Color, size: Int, modifier: Modifier = Modifier) {
-    Text(
-        text = text,
-        color = color,
-        fontSize = size.sp,
-        fontWeight = FontWeight.Medium,
-        letterSpacing = 0.4.sp,
-        modifier = modifier,
-        maxLines = 1,
-        overflow = TextOverflow.Ellipsis
-    )
-}
-
-@Composable
-private fun HtmlBottomNav(
-    selectedTab: VoxTab,
-    onTabSelected: (VoxTab) -> Unit
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(Bg)
-            .border(0.5.dp, Border)
-            .padding(start = 12.dp, end = 12.dp, top = 6.dp, bottom = 20.dp)
-    ) {
-        Row {
-            VoxTab.values().forEach { tab ->
-                val selected = tab == selectedTab
-                Column(
-                    modifier = Modifier
-                        .weight(1f)
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(if (selected) CardBg else Color.Transparent)
-                        .clickable { onTabSelected(tab) }
-                        .padding(vertical = 8.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    VoxIcon(tab.icon, tab.label, if (selected) Accent else TextFaint, Modifier.size(20.dp))
-                    Text(tab.label, color = if (selected) Accent else TextDim, fontSize = 10.sp, fontWeight = FontWeight.Medium)
-                }
-            }
-        }
-    }
 }
 
 @Composable

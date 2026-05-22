@@ -26,29 +26,6 @@ import kotlin.math.atan2
 import kotlin.math.max
 import kotlin.math.sin
 
-data class Keyframe(
-    val t: Long,
-    val handX: Float,
-    val handY: Float,
-    val elbowX: Float,
-    val elbowY: Float,
-    val shape: HandShape,
-    val face: FaceExpression
-)
-
-enum class HandShape { OPEN_PALM, FIST, FLAT_PALM, PINCH, TWO_FINGERS, W_HAND }
-
-enum class FaceExpression { NEUTRAL, FRIENDLY, CONFIRM, FIRM, WARM }
-
-data class FrameState(
-    val handX: Float,
-    val handY: Float,
-    val elbowX: Float,
-    val elbowY: Float,
-    val shape: HandShape,
-    val face: FaceExpression
-)
-
 class AvatarView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
@@ -195,6 +172,45 @@ class AvatarView @JvmOverloads constructor(
         }
     }
 
+    fun setStatus(status: AvatarStatus) {
+        if (Looper.myLooper() != Looper.getMainLooper()) {
+            mainHandler.post { setStatus(status) }
+            return
+        }
+        when (status) {
+            AvatarStatus.LISTENING -> setListening(true)
+            AvatarStatus.SIGNING -> {
+                listeningActive = false
+                listeningAnimator?.cancel()
+                debugStateText = "Signing"
+                requestDraw()
+            }
+            AvatarStatus.FINGERSPELLING -> {
+                debugStateText = "Fingerspelling"
+                requestDraw()
+            }
+            AvatarStatus.ANALYZING -> {
+                debugStateText = "Analyzing"
+                requestDraw()
+            }
+            AvatarStatus.ASSET_MISSING -> {
+                debugStateText = "Avatar asset missing"
+                requestDraw()
+            }
+            AvatarStatus.STOPPED -> {
+                signText("")
+                debugStateText = "Stopped"
+                requestDraw()
+            }
+            AvatarStatus.READY -> {
+                listeningActive = false
+                listeningAnimator?.cancel()
+                debugStateText = "Idle"
+                requestDraw()
+            }
+        }
+    }
+
     fun setLandmarks(points: FloatArray) {
         lastLandmarkCount = points.size
         requestDraw()
@@ -236,6 +252,7 @@ class AvatarView @JvmOverloads constructor(
         drawBodyShadow(canvas, w, h)
         drawBody(canvas, w, h)
         drawHead(canvas, w, h)
+        drawRestingLeftArm(canvas, w, h)
         drawArm(canvas, w, h)
         drawHand(canvas, w, h)
         if (fingerspellActive) {
@@ -509,6 +526,20 @@ class AvatarView @JvmOverloads constructor(
         canvas.drawRoundRect(torsoLeft, torsoTop, torsoRight, torsoBottom, 18f.dp, 18f.dp, fillPaint)
         canvas.drawRoundRect(torsoLeft, torsoTop, torsoRight, torsoBottom, 18f.dp, 18f.dp, strokePaint)
 
+        fillPaint.color = SHIRT_HIGHLIGHT
+        canvas.drawRoundRect(
+            torsoLeft + 10f.dp,
+            torsoTop + 8f.dp,
+            cx + torsoW * 0.05f,
+            torsoTop + torsoH * 0.62f,
+            14f.dp,
+            14f.dp,
+            fillPaint
+        )
+
+        fillPaint.color = withAlpha(Color.WHITE, 34)
+        canvas.drawCircle(cx - torsoW * 0.18f, torsoTop + torsoH * 0.18f, 9f.dp, fillPaint)
+
         strokePaint.color = PRIMARY_DARK
         strokePaint.strokeWidth = 3f.dp
         canvas.drawLine(cx - w * 0.22f, torsoTop + 8f.dp, cx + w * 0.22f, torsoTop + 8f.dp, strokePaint)
@@ -532,10 +563,19 @@ class AvatarView @JvmOverloads constructor(
         canvas.drawCircle(cx, cy, r, fillPaint)
         canvas.drawCircle(cx, cy, r, strokePaint)
 
+        fillPaint.color = withAlpha(Color.WHITE, 74)
+        canvas.drawCircle(cx - r * 0.30f, cy - r * 0.34f, r * 0.30f, fillPaint)
+
+        fillPaint.color = withAlpha(SKIN_STROKE, 42)
+        canvas.drawOval(cx - r * 0.56f, cy + r * 0.24f, cx + r * 0.56f, cy + r * 0.82f, fillPaint)
+
         fillPaint.color = HAIR
         canvas.drawArc(cx - r * 1.04f, cy - r * 1.10f, cx + r * 1.04f, cy + r * 0.32f, 190f, 160f, true, fillPaint)
         canvas.drawOval(cx - r * 1.10f, cy - r * 0.42f, cx - r * 0.62f, cy + r * 0.36f, fillPaint)
         canvas.drawOval(cx + r * 0.62f, cy - r * 0.42f, cx + r * 1.10f, cy + r * 0.36f, fillPaint)
+
+        fillPaint.color = withAlpha(Color.WHITE, 38)
+        canvas.drawOval(cx - r * 0.78f, cy - r * 0.86f, cx - r * 0.22f, cy - r * 0.50f, fillPaint)
 
         fillPaint.color = EYE
         val eyeY = cy - r * 0.08f
@@ -546,6 +586,29 @@ class AvatarView @JvmOverloads constructor(
 
         drawEyebrows(canvas, leftEyeX, rightEyeX, eyeY - 10f.dp, face)
         drawMouth(canvas, cx, cy + r * 0.24f, r, face)
+    }
+
+    private fun drawRestingLeftArm(canvas: Canvas, w: Float, h: Float) {
+        val cx = w * 0.5f
+        val torsoTop = torsoTopY(w, h)
+        val shoulderX = cx - w * 0.20f
+        val shoulderY = torsoTop + h * 0.04f
+        val elbowX = cx - w * 0.32f
+        val elbowY = torsoTop + h * 0.18f
+        val wristX = cx - w * 0.20f
+        val wristY = torsoTop + h * 0.28f
+
+        strokePaint.color = SKIN
+        strokePaint.strokeWidth = 12f.dp
+        canvas.drawLine(shoulderX, shoulderY, elbowX, elbowY, strokePaint)
+        strokePaint.strokeWidth = 10f.dp
+        canvas.drawLine(elbowX, elbowY, wristX, wristY, strokePaint)
+
+        fillPaint.color = SKIN
+        strokePaint.color = SKIN_STROKE
+        strokePaint.strokeWidth = 1.5f.dp
+        canvas.drawRoundRect(wristX - 11f.dp, wristY - 14f.dp, wristX + 11f.dp, wristY + 14f.dp, 8f.dp, 8f.dp, fillPaint)
+        canvas.drawRoundRect(wristX - 11f.dp, wristY - 14f.dp, wristX + 11f.dp, wristY + 14f.dp, 8f.dp, 8f.dp, strokePaint)
     }
 
     private fun drawEyebrows(canvas: Canvas, leftX: Float, rightX: Float, y: Float, face: FaceExpression) {
@@ -828,7 +891,8 @@ class AvatarView @JvmOverloads constructor(
         private const val HAND_STROKE = 0xFFD09266.toInt()
         private const val HAIR = 0xFF3A261D.toInt()
         private const val EYE = 0xFF2B1A13.toInt()
-        private const val SHIRT = 0xFF24242E.toInt()
+        private const val SHIRT = 0xFF0B3F43.toInt()
+        private const val SHIRT_HIGHLIGHT = 0xFF18686D.toInt()
         private const val SHADOW_30 = 0x4D000000
 
         private const val FINGER_THUMB = 0xFFFFB300.toInt()
