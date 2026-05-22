@@ -503,8 +503,8 @@ class AvatarView @JvmOverloads constructor(
         canvas.drawRoundRect(cx - neckW * 0.5f, neckTop, cx + neckW * 0.5f, neckTop + neckH, 8f.dp, 8f.dp, fillPaint)
         canvas.drawRoundRect(cx - neckW * 0.5f, neckTop, cx + neckW * 0.5f, neckTop + neckH, 8f.dp, 8f.dp, strokePaint)
 
-        fillPaint.color = PRIMARY_TEAL
-        strokePaint.color = PRIMARY_DARK
+        fillPaint.color = SHIRT
+        strokePaint.color = PRIMARY_TEAL
         strokePaint.strokeWidth = 2f.dp
         canvas.drawRoundRect(torsoLeft, torsoTop, torsoRight, torsoBottom, 18f.dp, 18f.dp, fillPaint)
         canvas.drawRoundRect(torsoLeft, torsoTop, torsoRight, torsoBottom, 18f.dp, 18f.dp, strokePaint)
@@ -817,17 +817,18 @@ class AvatarView @JvmOverloads constructor(
         private const val TWO_PI = (Math.PI * 2.0).toFloat()
         private const val TAG = "VoxGestAvatar"
 
-        private const val AVATAR_BG = 0xFFE8F5E9.toInt()
-        private const val SURFACE_WHITE = 0xFFFFFFFF.toInt()
-        private const val PRIMARY_TEAL = 0xFF00897B.toInt()
-        private const val PRIMARY_DARK = 0xFF00695C.toInt()
-        private const val TEXT_PRIMARY = 0xFF1A1A2E.toInt()
-        private const val TEXT_SECONDARY = 0xFF546E7A.toInt()
+        private const val AVATAR_BG = 0xFF1E1E26.toInt()
+        private const val SURFACE_WHITE = 0xFF17171C.toInt()
+        private const val PRIMARY_TEAL = 0xFFB8F060.toInt()
+        private const val PRIMARY_DARK = 0xFF9ED84A.toInt()
+        private const val TEXT_PRIMARY = 0xFFEDEDEA.toInt()
+        private const val TEXT_SECONDARY = 0xFF989894.toInt()
         private const val SKIN = 0xFFF2C9A8.toInt()
         private const val SKIN_STROKE = 0xFFD9A47D.toInt()
         private const val HAND_STROKE = 0xFFD09266.toInt()
         private const val HAIR = 0xFF3A261D.toInt()
         private const val EYE = 0xFF2B1A13.toInt()
+        private const val SHIRT = 0xFF24242E.toInt()
         private const val SHADOW_30 = 0x4D000000
 
         private const val FINGER_THUMB = 0xFFFFB300.toInt()
