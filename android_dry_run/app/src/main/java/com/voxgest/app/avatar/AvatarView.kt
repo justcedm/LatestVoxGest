@@ -104,7 +104,7 @@ class AvatarView @JvmOverloads constructor(
         }
 
         val word = cleaned.split(Regex("[^A-Z]+")).firstOrNull().orEmpty().ifBlank { cleaned }
-        val frames = synchronized(cacheLock) { keyframeCache[word] }
+        val frames = synchronized(cacheLock) { keyframeCache[word] } ?: builtInFrames(word)
         if (frames != null && frames.isNotEmpty()) {
             pendingWord = null
             contentDescription = "Avatar signing: $word"
@@ -333,6 +333,103 @@ class AvatarView @JvmOverloads constructor(
         } catch (_: Exception) {
             emptyList()
         }
+    }
+
+    private fun builtInFrames(word: String): List<Keyframe> {
+        return when (word) {
+            "HELLO" -> listOf(
+                kf(0, 0.70f, 0.30f, 0.62f, 0.48f, HandShape.OPEN_PALM, FaceExpression.FRIENDLY),
+                kf(130, 0.78f, 0.24f, 0.63f, 0.46f, HandShape.OPEN_PALM, FaceExpression.FRIENDLY),
+                kf(260, 0.67f, 0.27f, 0.61f, 0.48f, HandShape.OPEN_PALM, FaceExpression.FRIENDLY),
+                kf(390, 0.78f, 0.24f, 0.63f, 0.46f, HandShape.OPEN_PALM, FaceExpression.FRIENDLY),
+                kf(620, 0.70f, 0.30f, 0.62f, 0.48f, HandShape.OPEN_PALM, FaceExpression.CONFIRM)
+            )
+            "THANKYOU" -> listOf(
+                kf(0, 0.55f, 0.32f, 0.64f, 0.49f, HandShape.FLAT_PALM, FaceExpression.WARM),
+                kf(180, 0.58f, 0.27f, 0.63f, 0.46f, HandShape.FLAT_PALM, FaceExpression.WARM),
+                kf(420, 0.82f, 0.28f, 0.70f, 0.45f, HandShape.FLAT_PALM, FaceExpression.CONFIRM),
+                kf(680, 0.74f, 0.37f, 0.68f, 0.52f, HandShape.FLAT_PALM, FaceExpression.FRIENDLY)
+            )
+            "WATER" -> listOf(
+                kf(0, 0.62f, 0.36f, 0.66f, 0.52f, HandShape.W_HAND, FaceExpression.FRIENDLY),
+                kf(150, 0.58f, 0.30f, 0.64f, 0.48f, HandShape.W_HAND, FaceExpression.FRIENDLY),
+                kf(280, 0.60f, 0.34f, 0.65f, 0.49f, HandShape.W_HAND, FaceExpression.FRIENDLY),
+                kf(420, 0.58f, 0.30f, 0.64f, 0.48f, HandShape.W_HAND, FaceExpression.FRIENDLY),
+                kf(640, 0.72f, 0.45f, 0.68f, 0.57f, HandShape.W_HAND, FaceExpression.CONFIRM)
+            )
+            "EAT" -> listOf(
+                kf(0, 0.72f, 0.48f, 0.67f, 0.58f, HandShape.PINCH, FaceExpression.FRIENDLY),
+                kf(160, 0.60f, 0.34f, 0.65f, 0.50f, HandShape.PINCH, FaceExpression.FRIENDLY),
+                kf(300, 0.58f, 0.29f, 0.64f, 0.48f, HandShape.PINCH, FaceExpression.FRIENDLY),
+                kf(460, 0.61f, 0.35f, 0.65f, 0.50f, HandShape.PINCH, FaceExpression.FRIENDLY),
+                kf(640, 0.73f, 0.48f, 0.68f, 0.58f, HandShape.PINCH, FaceExpression.CONFIRM)
+            )
+            "WHAT" -> listOf(
+                kf(0, 0.72f, 0.50f, 0.65f, 0.58f, HandShape.OPEN_PALM, FaceExpression.NEUTRAL),
+                kf(180, 0.62f, 0.43f, 0.62f, 0.54f, HandShape.OPEN_PALM, FaceExpression.FIRM),
+                kf(360, 0.78f, 0.43f, 0.68f, 0.54f, HandShape.OPEN_PALM, FaceExpression.FIRM),
+                kf(540, 0.62f, 0.43f, 0.62f, 0.54f, HandShape.OPEN_PALM, FaceExpression.FIRM),
+                kf(720, 0.74f, 0.50f, 0.66f, 0.58f, HandShape.OPEN_PALM, FaceExpression.NEUTRAL)
+            )
+            "YOUR", "YOU" -> listOf(
+                kf(0, 0.70f, 0.48f, 0.65f, 0.57f, HandShape.TWO_FINGERS, FaceExpression.FRIENDLY),
+                kf(180, 0.82f, 0.40f, 0.70f, 0.51f, HandShape.TWO_FINGERS, FaceExpression.CONFIRM),
+                kf(360, 0.88f, 0.36f, 0.72f, 0.48f, HandShape.TWO_FINGERS, FaceExpression.CONFIRM),
+                kf(560, 0.76f, 0.48f, 0.68f, 0.57f, HandShape.TWO_FINGERS, FaceExpression.FRIENDLY)
+            )
+            "NAME" -> listOf(
+                kf(0, 0.74f, 0.48f, 0.67f, 0.58f, HandShape.TWO_FINGERS, FaceExpression.FRIENDLY),
+                kf(180, 0.58f, 0.43f, 0.63f, 0.54f, HandShape.TWO_FINGERS, FaceExpression.FRIENDLY),
+                kf(360, 0.66f, 0.42f, 0.65f, 0.53f, HandShape.TWO_FINGERS, FaceExpression.CONFIRM),
+                kf(540, 0.58f, 0.43f, 0.63f, 0.54f, HandShape.TWO_FINGERS, FaceExpression.FRIENDLY),
+                kf(720, 0.74f, 0.50f, 0.67f, 0.58f, HandShape.TWO_FINGERS, FaceExpression.FRIENDLY)
+            )
+            "MY" -> listOf(
+                kf(0, 0.76f, 0.48f, 0.68f, 0.58f, HandShape.FLAT_PALM, FaceExpression.WARM),
+                kf(220, 0.53f, 0.46f, 0.60f, 0.54f, HandShape.FLAT_PALM, FaceExpression.WARM),
+                kf(420, 0.51f, 0.50f, 0.59f, 0.57f, HandShape.FLAT_PALM, FaceExpression.CONFIRM),
+                kf(560, 0.64f, 0.53f, 0.64f, 0.60f, HandShape.FLAT_PALM, FaceExpression.FRIENDLY)
+            )
+            "OKAY" -> listOf(
+                kf(0, 0.74f, 0.50f, 0.67f, 0.58f, HandShape.PINCH, FaceExpression.FRIENDLY),
+                kf(200, 0.70f, 0.34f, 0.66f, 0.49f, HandShape.PINCH, FaceExpression.CONFIRM),
+                kf(420, 0.80f, 0.30f, 0.70f, 0.47f, HandShape.PINCH, FaceExpression.CONFIRM),
+                kf(680, 0.74f, 0.48f, 0.67f, 0.58f, HandShape.PINCH, FaceExpression.FRIENDLY)
+            )
+            "STUDENT" -> listOf(
+                kf(0, 0.76f, 0.50f, 0.68f, 0.58f, HandShape.FLAT_PALM, FaceExpression.FRIENDLY),
+                kf(180, 0.68f, 0.28f, 0.65f, 0.46f, HandShape.FLAT_PALM, FaceExpression.FRIENDLY),
+                kf(380, 0.56f, 0.36f, 0.61f, 0.50f, HandShape.FLAT_PALM, FaceExpression.FRIENDLY),
+                kf(560, 0.62f, 0.50f, 0.63f, 0.58f, HandShape.OPEN_PALM, FaceExpression.CONFIRM),
+                kf(760, 0.76f, 0.52f, 0.68f, 0.60f, HandShape.OPEN_PALM, FaceExpression.FRIENDLY)
+            )
+            "WHERE" -> listOf(
+                kf(0, 0.72f, 0.48f, 0.66f, 0.57f, HandShape.TWO_FINGERS, FaceExpression.FIRM),
+                kf(150, 0.62f, 0.39f, 0.63f, 0.52f, HandShape.TWO_FINGERS, FaceExpression.FIRM),
+                kf(300, 0.78f, 0.39f, 0.68f, 0.52f, HandShape.TWO_FINGERS, FaceExpression.FIRM),
+                kf(450, 0.62f, 0.39f, 0.63f, 0.52f, HandShape.TWO_FINGERS, FaceExpression.FIRM),
+                kf(720, 0.72f, 0.48f, 0.66f, 0.57f, HandShape.TWO_FINGERS, FaceExpression.NEUTRAL)
+            )
+            "LIVE" -> listOf(
+                kf(0, 0.72f, 0.62f, 0.67f, 0.64f, HandShape.FLAT_PALM, FaceExpression.FRIENDLY),
+                kf(180, 0.64f, 0.56f, 0.64f, 0.60f, HandShape.FLAT_PALM, FaceExpression.FRIENDLY),
+                kf(400, 0.58f, 0.45f, 0.61f, 0.54f, HandShape.FLAT_PALM, FaceExpression.CONFIRM),
+                kf(720, 0.72f, 0.52f, 0.67f, 0.59f, HandShape.FLAT_PALM, FaceExpression.FRIENDLY)
+            )
+            else -> emptyList()
+        }
+    }
+
+    private fun kf(
+        t: Long,
+        handX: Float,
+        handY: Float,
+        elbowX: Float,
+        elbowY: Float,
+        shape: HandShape,
+        face: FaceExpression
+    ): Keyframe {
+        return Keyframe(t, handX, handY, elbowX, elbowY, shape, face)
     }
 
     private fun startKeyframeAnimation(word: String, frames: List<Keyframe>) {

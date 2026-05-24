@@ -22,6 +22,15 @@ Current known prototype words:
 - THANKYOU
 - WATER
 - EAT
+- WHAT
+- YOUR
+- NAME
+- MY
+- YOU
+- OKAY
+- STUDENT
+- WHERE
+- LIVE
 
 YES and NO may remain as legacy prototype assets, but the current FullSign225
 manual5 UI path focuses on HELLO, THANKYOU, WATER, EAT, and NOTHING.
@@ -65,6 +74,18 @@ Each sign file uses keyframes. A keyframe stores time in milliseconds and rough
 part positions. `AvatarView` interpolates between frames with native Android
 Canvas drawing and `ValueAnimator`; no Lottie dependency is required.
 
+If JSON keyframes are missing for a supported word, Android uses built-in
+Canvas fallback motions so the avatar still visibly signs during demos. Future
+true 3D assets can be added under:
+
+```text
+android_dry_run/app/src/main/assets/avatar/models/voxgest_avatar.glb
+android_dry_run/app/src/main/assets/avatar/animations/<WORD>.glb
+```
+
+The fallback stays active until a GLB/VRM renderer and real animation clips are
+available.
+
 ## Playback Rules
 
 - Known word token: load and play `avatar/signs/<WORD>.json`.
@@ -81,6 +102,14 @@ Canvas drawing and `ValueAnimator`; no Lottie dependency is required.
 - THANKYOU: hand from chin moving outward.
 - WATER: hand near mouth/chin tap indicator.
 - EAT: pinched hand moves to mouth with a small repeated tap.
+- WHAT: questioning hand sweep.
+- YOUR / YOU: point outward toward the viewer.
+- NAME: placeholder two-finger name-sign motion.
+- MY: flat hand to chest.
+- OKAY: pinch/check gesture.
+- STUDENT: learning/student placeholder motion.
+- WHERE: questioning/location sweep.
+- LIVE: upward live/home placeholder motion.
 
 ## Android Runtime Components
 

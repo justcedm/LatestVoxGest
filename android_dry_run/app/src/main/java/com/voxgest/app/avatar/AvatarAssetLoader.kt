@@ -12,7 +12,7 @@ class AvatarAssetLoader(private val context: Context) {
 
     fun hasCanvasAnimation(word: String): Boolean {
         val animation = AvatarAnimationLibrary.resolve(word)
-        val path = animation.assetPath ?: return false
+        val path = animation.assetPath ?: return AvatarMotion.hasBuiltInMotion(word)
         return assetExists(path)
     }
 

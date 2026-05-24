@@ -10,9 +10,23 @@ data class AvatarPhraseResult(
 )
 
 object AvatarPhraseMapper {
-    private val directlyAnimated = setOf("YES", "NO", "HELLO", "THANKYOU", "WATER", "EAT")
+    private val directlyAnimated = setOf(
+        "HELLO",
+        "THANKYOU",
+        "WATER",
+        "EAT",
+        "WHAT",
+        "YOUR",
+        "NAME",
+        "MY",
+        "YOU",
+        "OKAY",
+        "STUDENT",
+        "WHERE",
+        "LIVE"
+    )
     private val controlledFallback = setOf("HELP", "PLEASE", "STOP", "DOCTOR")
-    private val fingerspellOnly = setOf("NAME", "GO", "BATHROOM", "PAIN", "SICK", "MEDICINE", "HOSPITAL", "HURT")
+    private val fingerspellOnly = setOf("GO", "BATHROOM", "PAIN", "SICK", "MEDICINE", "HOSPITAL", "HURT")
 
     fun map(input: String): AvatarPhraseResult {
         val display = input.trim().ifBlank { "Ready" }
@@ -26,7 +40,13 @@ object AvatarPhraseMapper {
                 normalized.contains("thank you") -> listOf("THANKYOU")
             normalized == "water" || normalized.contains("water") -> listOf("WATER")
             normalized == "eat" || normalized.contains("eat") || normalized.contains("food") -> listOf("EAT")
-            normalized.contains("your name") || normalized.contains("name") -> listOf("NAME")
+            normalized.contains("what") && normalized.contains("your") && normalized.contains("name") -> listOf("WHAT", "YOUR", "NAME")
+            normalized.contains("my name") -> listOf("MY", "NAME")
+            normalized.contains("your name") || normalized.contains("name") -> listOf("YOUR", "NAME")
+            normalized.contains("student") && normalized.contains("you") -> listOf("YOU", "STUDENT")
+            normalized.contains("okay") && normalized.contains("you") -> listOf("YOU", "OKAY")
+            normalized.contains("where") && normalized.contains("you") && normalized.contains("live") -> listOf("WHERE", "YOU", "LIVE")
+            normalized.contains("where") && normalized.contains("live") -> listOf("WHERE", "LIVE")
             normalized.contains("help") -> listOf("HELP")
             normalized.contains("please") -> listOf("PLEASE")
             normalized.contains("doctor") -> listOf("DOCTOR")

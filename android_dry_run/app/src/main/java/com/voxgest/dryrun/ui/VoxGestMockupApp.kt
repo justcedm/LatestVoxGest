@@ -43,6 +43,7 @@ import androidx.compose.material3.Typography
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -122,6 +123,8 @@ fun VoxGestMockupApp() {
     var selectedTab by remember { mutableStateOf(VoxTab.Sign) }
     var currentWord by remember { mutableStateOf("HELLO") }
     var sentence by remember { mutableStateOf("HELLO, I NEED WATER") }
+    var pendingAvatarText by remember { mutableStateOf("") }
+    var pendingAvatarRequestId by remember { mutableStateOf(0) }
     val history = remember {
         mutableStateListOf(
             HistoryUiEntry("Today", "Sign", "HELLO, I NEED WATER", "10:45 AM", "Spoken", R.drawable.ic_hand_gesture, PrimaryLight),
@@ -186,6 +189,8 @@ fun VoxGestMockupApp() {
                             }
                         )
                         VoxTab.Listen -> ListenScreen(
+                            pendingAvatarText = pendingAvatarText,
+                            pendingAvatarRequestId = pendingAvatarRequestId,
                             onSpeechSaved = { text ->
                                 history.add(0, HistoryUiEntry("Today", "Speech", text, "Now", "Shown in signs", R.drawable.ic_waveform, Primary))
                             }
@@ -194,6 +199,9 @@ fun VoxGestMockupApp() {
                             onPhrase = { phrase ->
                                 speak(tts, phrase)
                                 history.add(0, HistoryUiEntry("Today", "Phrase", phrase, "Now", "Shown in signs", R.drawable.ic_chat, Amber))
+                                pendingAvatarText = phrase
+                                pendingAvatarRequestId += 1
+                                selectedTab = VoxTab.Listen
                             }
                         )
                         VoxTab.History -> HistoryScreen(entries = history)
@@ -438,7 +446,11 @@ private fun ActionButton(
 }
 
 @Composable
-private fun ListenScreen(onSpeechSaved: (String) -> Unit) {
+private fun ListenScreen(
+    pendingAvatarText: String,
+    pendingAvatarRequestId: Int,
+    onSpeechSaved: (String) -> Unit
+) {
     var listening by remember { mutableStateOf(true) }
     var transcript by remember { mutableStateOf("Hello, how can I help you?") }
     var avatarState by remember { mutableStateOf(AvatarPlaybackState()) }
@@ -446,6 +458,16 @@ private fun ListenScreen(onSpeechSaved: (String) -> Unit) {
 
     DisposableEffect(Unit) {
         onDispose { avatarController.detach() }
+    }
+
+    LaunchedEffect(pendingAvatarRequestId) {
+        val clean = pendingAvatarText.trim()
+        if (pendingAvatarRequestId > 0 && clean.isNotBlank()) {
+            transcript = clean
+            listening = false
+            avatarController.setListening(false)
+            avatarController.playTextAsSigns(clean)
+        }
     }
 
     fun playTranscript() {
@@ -601,13 +623,20 @@ private fun AvatarCard(
         }
     }
     if (BuildConfig.DEBUG) {
+        Text(
+            "Debug avatar tests",
+            color = TextMuted,
+            fontSize = 10.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(start = 22.dp, top = 8.dp)
+        )
         Row(
             modifier = Modifier
                 .padding(horizontal = 20.dp, vertical = 8.dp)
                 .horizontalScroll(rememberScrollState()),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            listOf("HELLO", "THANKYOU", "WATER", "EAT", "NOTHING", "STOP").forEach { word ->
+            listOf("HELLO", "THANKYOU", "WATER", "EAT", "WHAT", "YOUR", "NAME", "MY", "YOU", "OKAY", "STUDENT", "WHERE", "LIVE", "STOP").forEach { word ->
                 Surface(
                     modifier = Modifier
                         .height(32.dp)
@@ -619,7 +648,16 @@ private fun AvatarCard(
                     border = BorderStroke(1.dp, Border)
                 ) {
                     Box(contentAlignment = Alignment.Center, modifier = Modifier.padding(horizontal = 12.dp)) {
-                        Text(if (word == "THANKYOU") "THANK" else word, color = Primary, fontSize = 10.sp, fontWeight = FontWeight.Bold)
+                        Text(
+                            when (word) {
+                                "THANKYOU" -> "THANK"
+                                "STOP" -> "Stop"
+                                else -> word
+                            },
+                            color = Primary,
+                            fontSize = 10.sp,
+                            fontWeight = FontWeight.Bold
+                        )
                     }
                 }
             }
@@ -712,6 +750,11 @@ private fun CategoryChip(label: String, @DrawableRes icon: Int, tint: Color, bg:
 @Composable
 private fun PhraseGrid(onPhrase: (String) -> Unit) {
     val phrases = listOf(
+        PhraseUi("What is your name?", R.drawable.ic_chat, Primary),
+        PhraseUi("My name is...", R.drawable.ic_hand_gesture, PrimaryLight),
+        PhraseUi("Are you okay?", R.drawable.ic_check_circle, Green),
+        PhraseUi("Are you a student?", R.drawable.ic_chat, Blue),
+        PhraseUi("Where do you live?", R.drawable.ic_history, Purple),
         PhraseUi("I need help", R.drawable.ic_warning, Color(0xFFF97316)),
         PhraseUi("Call a doctor", R.drawable.ic_medical, PrimaryLight),
         PhraseUi("I need water", R.drawable.ic_water_drop, Blue),
