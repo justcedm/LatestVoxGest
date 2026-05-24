@@ -19,28 +19,21 @@ echo Words    : EAT WATER HELLO THANKYOU
 echo Output   : %VOXGEST_RECORDER_OUTPUT_ROOT%
 echo.
 
-if not exist recorder_env\Scripts\activate.bat (
-    echo ERROR: recorder_env was not found.
-    echo Run setup_recorder.bat first.
+if not exist recorder_env\Scripts\python.exe (
+    echo ERROR: recorder_env not found. Run setup_recorder.bat first.
     pause
     exit /b 1
 )
 
-call recorder_env\Scripts\activate.bat
+recorder_env\Scripts\python.exe scripts_ml\41_record_manual_fullsign225_words.py EAT WATER HELLO THANKYOU
 if errorlevel 1 (
-    echo ERROR: Could not activate recorder_env.
+    echo.
+    echo ERROR: Recording failed. Screenshot this window and send it to Ced.
     pause
     exit /b 1
 )
-
-python scripts_ml\41_record_manual_fullsign225_words.py EAT WATER HELLO THANKYOU
-set "RUN_STATUS=%ERRORLEVEL%"
 
 echo.
-if "%RUN_STATUS%"=="0" (
-    echo Recording finished. Zip the recorded_features folder and send it to Ced.
-) else (
-    echo Recorder exited with an error code: %RUN_STATUS%
-)
+echo Recording finished. Zip the recorded_features folder and send it to Ced.
 pause
-exit /b %RUN_STATUS%
+exit /b 0

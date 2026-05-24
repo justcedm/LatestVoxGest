@@ -29,6 +29,8 @@ __pycache__/
 external_datasets/
 tools/VoxGest_Recorder_Pack/recorded_features/
 tools/VoxGest_Recorder_Pack/recorder_env/
+tools/VoxGest_Recorder_*_FINAL_LAST/recorded_features/
+tools/VoxGest_Recorder_*_FINAL_LAST/recorder_env/
 dataset_*/
 wlasl_videos/
 phrase_videos/
