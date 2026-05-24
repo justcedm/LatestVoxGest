@@ -48,6 +48,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -75,22 +76,23 @@ import com.voxgest.dryrun.BuildConfig
 import com.voxgest.dryrun.R
 import java.util.Locale
 
-private val Primary = Color(0xFFB8F060)
-private val PrimaryLight = Color(0xFF9ED84A)
-private val AppBg = Color(0xFF09090B)
-private val CardWhite = Color(0xFF17171C)
-private val SoftCyan = Color(0xFF1E1E26)
-private val AccentGreen = Color(0xFFB8F060)
-private val TextMain = Color(0xFFEDEDEA)
-private val TextMuted = Color(0xFF989894)
-private val TextFaint = Color(0xFF55554F)
-private val Border = Color(0x24FFFFFF)
-private val DarkInk = Color(0xFF09090B)
-private val Amber = Color(0xFFF59E0B)
-private val Red = Color(0xFFEF4444)
-private val Blue = Color(0xFF38BDF8)
-private val Purple = Color(0xFF8B5CF6)
-private val Green = Color(0xFF22C55E)
+private val Primary = Color(0xFF006C73)
+private val PrimaryLight = Color(0xFF00AFC1)
+private val AppBg = Color(0xFFF0F7F7)
+private val CardWhite = Color(0xFFFFFFFF)
+private val SoftCyan = Color(0xFFEAF8F8)
+private val AccentGreen = Color(0xFF00C853)
+private val TextMain = Color(0xFF112B3A)
+private val TextMuted = Color(0xFF546E7A)
+private val TextFaint = Color(0xFF90A4AE)
+private val Border = Color(0xFFE1ECEF)
+private val DarkInk = Color(0xFFFFFFFF)
+private val Amber = Color(0xFFFFB300)
+private val Red = Color(0xFFE53935)
+private val Blue = Color(0xFF22A7D8)
+private val Purple = Color(0xFF7C5AA6)
+private val Green = Color(0xFF43A047)
+private const val VOXGEST_DEMO_MODE = true
 
 private enum class VoxTab(
     val label: String,
@@ -120,11 +122,15 @@ private data class PhraseUi(
 
 @Composable
 fun VoxGestMockupApp() {
-    var selectedTab by remember { mutableStateOf(VoxTab.Sign) }
-    var currentWord by remember { mutableStateOf("HELLO") }
-    var sentence by remember { mutableStateOf("HELLO, I NEED WATER") }
-    var pendingAvatarText by remember { mutableStateOf("") }
-    var pendingAvatarRequestId by remember { mutableStateOf(0) }
+    var selectedTab by rememberSaveable { mutableStateOf(VoxTab.Sign) }
+    // TODO acceptedTokenStream: replace mock word updates with accepted recognition tokens only.
+    var currentWord by rememberSaveable { mutableStateOf("HELLO") }
+    // TODO sentenceComposerState: bind this to the real TokenComposer once camera inference is wired.
+    var sentence by rememberSaveable { mutableStateOf("HELLO, I NEED WATER") }
+    // TODO avatarQueue: route accepted listen/phrase/sign tokens through the shared avatar queue.
+    var pendingAvatarText by rememberSaveable { mutableStateOf("") }
+    var pendingAvatarRequestId by rememberSaveable { mutableStateOf(0) }
+    // TODO historyRepository: swap this in-memory history with local persistence after demo UI stabilizes.
     val history = remember {
         mutableStateListOf(
             HistoryUiEntry("Today", "Sign", "HELLO, I NEED WATER", "10:45 AM", "Spoken", R.drawable.ic_hand_gesture, PrimaryLight),
@@ -136,12 +142,17 @@ fun VoxGestMockupApp() {
         )
     }
     val context = LocalContext.current
-    val tts = remember { TextToSpeech(context) { } }
+    var tts by remember { mutableStateOf<TextToSpeech?>(null) }
+    fun speakNow(text: String) {
+        if (!isMeaningfulOutput(text)) return
+        val engine = tts ?: TextToSpeech(context) { }.also { tts = it }
+        speak(engine, text)
+    }
 
     DisposableEffect(Unit) {
         onDispose {
-            tts.stop()
-            tts.shutdown()
+            tts?.stop()
+            tts?.shutdown()
         }
     }
 
@@ -176,9 +187,12 @@ fun VoxGestMockupApp() {
                         VoxTab.Sign -> SignScreen(
                             currentWord = currentWord,
                             sentence = sentence,
+                            demoMode = VOXGEST_DEMO_MODE,
                             onSpeak = {
-                                speak(tts, sentence)
-                                history.add(0, HistoryUiEntry("Today", "Sign", sentence, "Now", "Spoken", R.drawable.ic_hand_gesture, PrimaryLight))
+                                if (isMeaningfulOutput(sentence)) {
+                                    speakNow(sentence)
+                                    history.add(0, HistoryUiEntry("Today", "Sign", sentence, "Now", "Spoken", R.drawable.ic_hand_gesture, PrimaryLight))
+                                }
                             },
                             onDelete = {
                                 sentence = sentence.split(",").dropLast(1).joinToString(", ").ifBlank { currentWord }
@@ -186,22 +200,29 @@ fun VoxGestMockupApp() {
                             onClear = {
                                 currentWord = "READY"
                                 sentence = ""
+                            },
+                            onStartRecognition = {
+                                currentWord = "READY"
                             }
                         )
                         VoxTab.Listen -> ListenScreen(
                             pendingAvatarText = pendingAvatarText,
                             pendingAvatarRequestId = pendingAvatarRequestId,
                             onSpeechSaved = { text ->
-                                history.add(0, HistoryUiEntry("Today", "Speech", text, "Now", "Shown in signs", R.drawable.ic_waveform, Primary))
+                                if (isMeaningfulOutput(text)) {
+                                    history.add(0, HistoryUiEntry("Today", "Speech", text, "Now", "Shown in signs", R.drawable.ic_waveform, Primary))
+                                }
                             }
                         )
                         VoxTab.Phrases -> PhrasesScreen(
                             onPhrase = { phrase ->
-                                speak(tts, phrase)
-                                history.add(0, HistoryUiEntry("Today", "Phrase", phrase, "Now", "Shown in signs", R.drawable.ic_chat, Amber))
-                                pendingAvatarText = phrase
-                                pendingAvatarRequestId += 1
-                                selectedTab = VoxTab.Listen
+                                if (isMeaningfulOutput(phrase)) {
+                                    speakNow(phrase)
+                                    history.add(0, HistoryUiEntry("Today", "Phrase", phrase, "Now", "Shown in signs", R.drawable.ic_chat, Amber))
+                                    pendingAvatarText = phrase
+                                    pendingAvatarRequestId += 1
+                                    selectedTab = VoxTab.Listen
+                                }
                             }
                         )
                         VoxTab.History -> HistoryScreen(entries = history)
@@ -214,9 +235,13 @@ fun VoxGestMockupApp() {
 
 private fun speak(tts: TextToSpeech, text: String) {
     val clean = text.trim()
-    if (clean.isNotBlank()) {
+    if (isMeaningfulOutput(clean)) {
         tts.speak(clean, TextToSpeech.QUEUE_FLUSH, null, "voxgest-speak")
     }
+}
+
+private fun isMeaningfulOutput(text: String): Boolean {
+    return text.trim().isNotBlank() && text.trim().uppercase(Locale.US) != "NOTHING"
 }
 
 @Composable
@@ -267,13 +292,18 @@ private fun ScreenTopBar(title: String, @DrawableRes trailing: Int, secondTraili
 private fun SignScreen(
     currentWord: String,
     sentence: String,
+    demoMode: Boolean,
     onSpeak: () -> Unit,
     onDelete: () -> Unit,
-    onClear: () -> Unit
+    onClear: () -> Unit,
+    onStartRecognition: () -> Unit
 ) {
     ScreenScroll {
         ScreenTopBar("SIGN", R.drawable.ic_settings)
         CameraPreviewCard()
+        if (demoMode) {
+            RecognitionDemoCard(onStartRecognition)
+        }
         CurrentWordCard(currentWord)
         SentenceCard(sentence.ifBlank { "Ready for accepted signs" }, onSpeak)
         Row(
@@ -339,17 +369,13 @@ private fun CameraPreviewCard() {
 
 @Composable
 private fun TrackingBadge() {
-    Row(
-        modifier = Modifier
-            .padding(14.dp)
-            .clip(RoundedCornerShape(999.dp))
-            .background(Color(0xB0000000))
-            .padding(horizontal = 12.dp, vertical = 7.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(7.dp)
-    ) {
-        BlinkDot(AccentGreen)
-        Text("Tracking Hand", color = Color.White, fontSize = 11.sp, fontWeight = FontWeight.SemiBold)
+    Box(modifier = Modifier.padding(14.dp)) {
+        StatusChip(
+            label = "Tracking Hand",
+            dotColor = AccentGreen,
+            containerColor = Color(0xCC0A4B3E),
+            contentColor = Color.White
+        )
     }
 }
 
@@ -372,7 +398,12 @@ private fun TrackingCorners() {
 
 @Composable
 private fun CurrentWordCard(word: String) {
-    VoxCard(modifier = Modifier.padding(horizontal = 20.dp, vertical = 14.dp)) {
+    val displayWord = when (word.trim().uppercase(Locale.US)) {
+        "", "NOTHING" -> "READY"
+        "HELLO" -> "HELLO"
+        else -> word
+    }
+    VoxGestCard(modifier = Modifier.padding(horizontal = 20.dp, vertical = 14.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Label("CURRENT WORD", Modifier.weight(1f))
             VoxIcon(R.drawable.ic_volume_up, "Speak current word", Primary, Modifier.size(17.dp))
@@ -384,16 +415,40 @@ private fun CurrentWordCard(word: String) {
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(word, color = Primary, fontSize = 30.sp, fontWeight = FontWeight.Bold)
-            Spacer(Modifier.width(8.dp))
-            VoxIcon(R.drawable.ic_hand_gesture, "Gesture", Amber, Modifier.size(26.dp))
+            Text(displayWord, color = Primary, fontSize = 30.sp, fontWeight = FontWeight.Bold)
+        }
+    }
+}
+
+@Composable
+private fun RecognitionDemoCard(onStartRecognition: () -> Unit) {
+    VoxGestCard(modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp)) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Column(Modifier.weight(1f)) {
+                Label("DEMO MODE")
+                Text(
+                    "Recognition wiring in progress.",
+                    color = TextMain,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier.padding(top = 5.dp)
+                )
+            }
+            Button(
+                onClick = onStartRecognition,
+                shape = RoundedCornerShape(14.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Primary),
+                modifier = Modifier.height(48.dp)
+            ) {
+                Text("Start Recognition", color = DarkInk, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+            }
         }
     }
 }
 
 @Composable
 private fun SentenceCard(sentence: String, onSpeak: () -> Unit) {
-    VoxCard(modifier = Modifier.padding(horizontal = 20.dp)) {
+    VoxGestCard(modifier = Modifier.padding(horizontal = 20.dp)) {
         Label("SENTENCE")
         Text(
             sentence,
@@ -451,8 +506,9 @@ private fun ListenScreen(
     pendingAvatarRequestId: Int,
     onSpeechSaved: (String) -> Unit
 ) {
-    var listening by remember { mutableStateOf(true) }
-    var transcript by remember { mutableStateOf("Hello, how can I help you?") }
+    var listening by rememberSaveable { mutableStateOf(false) }
+    // TODO speechTranscriptState: replace this mock transcript with SpeechRecognizer partial/final results.
+    var transcript by rememberSaveable { mutableStateOf("Hello, how can I help you?") }
     var avatarState by remember { mutableStateOf(AvatarPlaybackState()) }
     val avatarController = remember { AvatarController { avatarState = it } }
 
@@ -512,7 +568,7 @@ private fun SpeechTranscriptCard(
     listening: Boolean,
     onMicTap: () -> Unit
 ) {
-    VoxCard(modifier = Modifier.padding(horizontal = 20.dp)) {
+    VoxGestCard(modifier = Modifier.padding(horizontal = 20.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Label("SPEECH TRANSCRIPT", Modifier.weight(1f))
             VoxIcon(R.drawable.ic_volume_up, "Speak transcript", TextMuted, Modifier.size(17.dp))
@@ -573,21 +629,12 @@ private fun AvatarCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Label("AVATAR", Modifier.weight(1f))
-                Surface(shape = RoundedCornerShape(999.dp), color = CardWhite.copy(alpha = 0.86f), shadowElevation = 2.dp) {
-                    Row(
-                        modifier = Modifier.padding(horizontal = 11.dp, vertical = 6.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(5.dp)
-                    ) {
-                        BlinkDot(Primary)
-                        Text(
-                            if (avatarState.isPlaying) "Signing..." else "Analyzing...",
-                            color = Primary,
-                            fontSize = 11.sp,
-                            fontWeight = FontWeight.SemiBold
-                        )
-                    }
-                }
+                StatusChip(
+                    label = if (avatarState.isPlaying) "Signing..." else "Analyzing...",
+                    dotColor = PrimaryLight,
+                    containerColor = SoftCyan,
+                    contentColor = Primary
+                )
             }
             AndroidView(
                 factory = { viewContext -> AvatarView(viewContext).also { avatarController.attach(it) } },
@@ -639,7 +686,7 @@ private fun AvatarCard(
             listOf("HELLO", "THANKYOU", "WATER", "EAT", "WHAT", "YOUR", "NAME", "MY", "YOU", "OKAY", "STUDENT", "WHERE", "LIVE", "STOP").forEach { word ->
                 Surface(
                     modifier = Modifier
-                        .height(32.dp)
+                        .height(44.dp)
                         .clickable {
                             if (word == "STOP") onStop() else onDebugWord(word)
                         },
@@ -750,11 +797,6 @@ private fun CategoryChip(label: String, @DrawableRes icon: Int, tint: Color, bg:
 @Composable
 private fun PhraseGrid(onPhrase: (String) -> Unit) {
     val phrases = listOf(
-        PhraseUi("What is your name?", R.drawable.ic_chat, Primary),
-        PhraseUi("My name is...", R.drawable.ic_hand_gesture, PrimaryLight),
-        PhraseUi("Are you okay?", R.drawable.ic_check_circle, Green),
-        PhraseUi("Are you a student?", R.drawable.ic_chat, Blue),
-        PhraseUi("Where do you live?", R.drawable.ic_history, Purple),
         PhraseUi("I need help", R.drawable.ic_warning, Color(0xFFF97316)),
         PhraseUi("Call a doctor", R.drawable.ic_medical, PrimaryLight),
         PhraseUi("I need water", R.drawable.ic_water_drop, Blue),
@@ -891,7 +933,7 @@ private fun HistoryItem(entry: HistoryUiEntry) {
 }
 
 @Composable
-private fun VoxCard(modifier: Modifier = Modifier, content: @Composable ColumnScope.() -> Unit) {
+private fun VoxGestCard(modifier: Modifier = Modifier, content: @Composable ColumnScope.() -> Unit) {
     Card(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(22.dp),
@@ -917,10 +959,31 @@ private fun Label(text: String, modifier: Modifier = Modifier) {
 }
 
 @Composable
+private fun StatusChip(
+    label: String,
+    dotColor: Color,
+    containerColor: Color,
+    contentColor: Color
+) {
+    Row(
+        modifier = Modifier
+            .clip(RoundedCornerShape(999.dp))
+            .background(containerColor)
+            .border(1.dp, contentColor.copy(alpha = 0.08f), RoundedCornerShape(999.dp))
+            .padding(horizontal = 12.dp, vertical = 7.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(7.dp)
+    ) {
+        BlinkDot(dotColor)
+        Text(label, color = contentColor, fontSize = 11.sp, fontWeight = FontWeight.SemiBold)
+    }
+}
+
+@Composable
 private fun OutlinePillButton(label: String, @DrawableRes icon: Int, modifier: Modifier, onClick: () -> Unit) {
     Row(
         modifier = modifier
-            .height(42.dp)
+            .height(48.dp)
             .clip(RoundedCornerShape(14.dp))
             .background(CardWhite)
             .border(1.dp, Border, RoundedCornerShape(14.dp))
@@ -938,7 +1001,7 @@ private fun OutlinePillButton(label: String, @DrawableRes icon: Int, modifier: M
 private fun FilledPillButton(label: String, @DrawableRes icon: Int, modifier: Modifier, onClick: () -> Unit) {
     Row(
         modifier = modifier
-            .height(42.dp)
+            .height(48.dp)
             .clip(RoundedCornerShape(14.dp))
             .background(Primary)
             .clickable { onClick() },
@@ -953,6 +1016,10 @@ private fun FilledPillButton(label: String, @DrawableRes icon: Int, modifier: Mo
 
 @Composable
 private fun Waveform(modifier: Modifier, active: Boolean) {
+    if (!active) {
+        WaveformBars(modifier = modifier, pulse = 0f, active = false)
+        return
+    }
     val transition = rememberInfiniteTransition(label = "wave")
     val pulse by transition.animateFloat(
         initialValue = 0f,
@@ -960,6 +1027,11 @@ private fun Waveform(modifier: Modifier, active: Boolean) {
         animationSpec = infiniteRepeatable(tween(520, easing = FastOutSlowInEasing), RepeatMode.Reverse),
         label = "pulse"
     )
+    WaveformBars(modifier = modifier, pulse = pulse, active = true)
+}
+
+@Composable
+private fun WaveformBars(modifier: Modifier, pulse: Float, active: Boolean) {
     Row(modifier, horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
         val heights = listOf(8, 14, 24, 34, 22, 13, 8)
         heights.forEachIndexed { index, height ->
@@ -992,18 +1064,11 @@ private fun MicPulse() {
 
 @Composable
 private fun BlinkDot(color: Color) {
-    val transition = rememberInfiniteTransition(label = "blink")
-    val alpha by transition.animateFloat(
-        initialValue = 1f,
-        targetValue = 0.35f,
-        animationSpec = infiniteRepeatable(tween(850), RepeatMode.Reverse),
-        label = "alpha"
-    )
     Box(
         modifier = Modifier
             .size(8.dp)
             .clip(CircleShape)
-            .background(color.copy(alpha = alpha))
+            .background(color)
     )
 }
 

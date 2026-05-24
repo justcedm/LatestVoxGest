@@ -13,8 +13,8 @@ import android.graphics.Shader
 import android.graphics.Typeface
 import android.os.Handler
 import android.os.Looper
+import android.os.SystemClock
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.DecelerateInterpolator
@@ -74,13 +74,15 @@ class AvatarView @JvmOverloads constructor(
     private var currentFingerAlpha = 0f
     private var lastLandmarkCount = 0
     private var debugStateText = "Idle"
+    private var viewAttached = false
+    private var drawPosted = false
+    private var lastIdleDrawMs = 0L
 
     init {
         contentDescription = "Avatar signing: Ready"
         textPaint.textSize = 28f.sp
         captionPaint.textSize = 12f.sp
         loadAnimationsInBackground()
-        animateIdleBreathing()
     }
 
     fun signText(text: String) {
@@ -90,7 +92,6 @@ class AvatarView @JvmOverloads constructor(
         }
 
         val cleaned = text.trim().uppercase(Locale.US)
-        Log.d(TAG, "signText called: $cleaned")
         if (cleaned.isBlank() || cleaned == "NOTHING") {
             pendingWord = null
             stopSignAnimation()
@@ -129,6 +130,8 @@ class AvatarView @JvmOverloads constructor(
             mainHandler.post { animateIdleBreathing() }
             return
         }
+        if (!viewAttached) return
+        if (idleAnimator?.isStarted == true) return
         idleAnimator?.cancel()
         if (!MotionSettings.animationsEnabled(context)) {
             breathingPhase = 0f
@@ -136,12 +139,16 @@ class AvatarView @JvmOverloads constructor(
             return
         }
         idleAnimator = ValueAnimator.ofFloat(0f, 1f, 0f).apply {
-            duration = 2400L
+            duration = 3200L
             repeatCount = ValueAnimator.INFINITE
             interpolator = AccelerateDecelerateInterpolator()
             addUpdateListener {
-                breathingPhase = it.animatedFraction * TWO_PI
-                requestDraw()
+                breathingPhase = (it.animatedValue as Float) * TWO_PI
+                val now = SystemClock.uptimeMillis()
+                if (now - lastIdleDrawMs >= IDLE_FRAME_INTERVAL_MS) {
+                    lastIdleDrawMs = now
+                    requestDraw()
+                }
             }
             start()
         }
@@ -212,7 +219,16 @@ class AvatarView @JvmOverloads constructor(
     }
 
     fun setLandmarks(points: FloatArray) {
-        lastLandmarkCount = points.size
+        if (lastLandmarkCount != points.size) {
+            lastLandmarkCount = points.size
+            requestDraw()
+        }
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        viewAttached = true
+        animateIdleBreathing()
         requestDraw()
     }
 
@@ -231,10 +247,13 @@ class AvatarView @JvmOverloads constructor(
     }
 
     override fun onDetachedFromWindow() {
+        viewAttached = false
+        drawPosted = false
         signAnimator?.cancel()
         idleAnimator?.cancel()
         listeningAnimator?.cancel()
         fingerAnimator?.cancel()
+        mainHandler.removeCallbacksAndMessages(null)
         for (runnable in pendingFingerRunnables) {
             mainHandler.removeCallbacks(runnable)
         }
@@ -244,6 +263,7 @@ class AvatarView @JvmOverloads constructor(
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
+        drawPosted = false
         val w = width.toFloat()
         val h = height.toFloat()
         if (w <= 0f || h <= 0f) return
@@ -914,7 +934,14 @@ class AvatarView @JvmOverloads constructor(
     }
 
     private fun requestDraw() {
-        mainHandler.post { invalidate() }
+        if (Looper.myLooper() != Looper.getMainLooper()) {
+            mainHandler.post { requestDraw() }
+            return
+        }
+        if (!viewAttached) return
+        if (drawPosted) return
+        drawPosted = true
+        postInvalidateOnAnimation()
     }
 
     private fun idleState(): FrameState {
@@ -975,7 +1002,7 @@ class AvatarView @JvmOverloads constructor(
         private const val IDLE_ELBOW_Y = 0.58f
         private const val FINGERSPELL_STEP_MS = 300L
         private const val TWO_PI = (Math.PI * 2.0).toFloat()
-        private const val TAG = "VoxGestAvatar"
+        private const val IDLE_FRAME_INTERVAL_MS = 66L
 
         private const val AVATAR_BG = 0xFF1E1E26.toInt()
         private const val SURFACE_WHITE = 0xFF17171C.toInt()

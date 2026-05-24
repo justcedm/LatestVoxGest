@@ -11,11 +11,11 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, true)
-        window.statusBarColor = Color.rgb(9, 9, 11)
-        window.navigationBarColor = Color.rgb(9, 9, 11)
+        window.statusBarColor = Color.rgb(240, 247, 247)
+        window.navigationBarColor = Color.WHITE
         WindowCompat.getInsetsController(window, window.decorView).apply {
-            isAppearanceLightStatusBars = false
-            isAppearanceLightNavigationBars = false
+            isAppearanceLightStatusBars = true
+            isAppearanceLightNavigationBars = true
         }
 
         setContent {

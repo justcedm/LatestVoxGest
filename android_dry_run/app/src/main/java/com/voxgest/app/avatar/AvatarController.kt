@@ -33,6 +33,7 @@ class AvatarController(
 
     fun detach() {
         handler.removeCallbacksAndMessages(null)
+        renderer.stop()
         renderer.detach()
         renderer = MissingAvatarRenderer
     }
