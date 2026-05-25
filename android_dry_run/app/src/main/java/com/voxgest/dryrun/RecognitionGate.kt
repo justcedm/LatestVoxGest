@@ -33,9 +33,20 @@ class RecognitionGate {
     )
 
     companion object {
-        private val BLOCKED_QUALITY = setOf("BAD_SEQUENCE", "UNSTABLE_LANDMARKS", "LOW_HAND_PRESENCE")
-        private val DEFAULT_THRESHOLD = Threshold(confidence = 0.68f, margin = 0.15f, presence = 0.25f)
+        private val BLOCKED_QUALITY = setOf(
+            "BAD_SEQUENCE",
+            "UNSTABLE_LANDMARKS",
+            "LOW_HAND_PRESENCE",
+            "MISSING_LANDMARKS",
+            "WRONG_INPUT_SHAPE",
+            "LANDMARK_PROFILE_NOT_READY"
+        )
+        private val DEFAULT_THRESHOLD = Threshold(confidence = 0.65f, margin = 0.08f, presence = 0.65f)
         private val PROFILE_THRESHOLDS = mapOf(
+            "WHAT" to Threshold(confidence = 0.62f, margin = 0.06f, presence = 0.60f),
+            "YOUR" to Threshold(confidence = 0.62f, margin = 0.06f, presence = 0.60f),
+            "NAME" to Threshold(confidence = 0.60f, margin = 0.05f, presence = 0.60f),
+            "MY" to Threshold(confidence = 0.58f, margin = 0.04f, presence = 0.60f),
             "EAT" to Threshold(confidence = 0.60f, margin = 0.08f, presence = 0.25f),
             "HELLO" to Threshold(confidence = 0.62f, margin = 0.10f, presence = 0.25f),
             "WATER" to Threshold(confidence = 0.62f, margin = 0.10f, presence = 0.25f),

@@ -1,0 +1,140 @@
+{
+  "version": 1,
+  "profile": "onehand162_phrase_v1",
+  "status": "experimental_until_live_tested",
+  "default_model": false,
+  "replaces_demo10": false,
+  "phrase_enabled_default": false,
+  "feature_profile": "onehand162",
+  "model_kind": "basic_tcn",
+  "models": {
+    "tcn": {
+      "file": "model/voxgest_tcn_onehand162_phrase_v1.tflite",
+      "keras_file": "model/voxgest_tcn_onehand162_phrase_v1.h5",
+      "labels_file": "model/class_labels_tcn_onehand162_phrase_v1.json",
+      "training_report": "model/tcn_training_report_onehand162_phrase_v1.json",
+      "input_shape": [
+        1,
+        30,
+        162
+      ],
+      "output_shape": [
+        1,
+        5
+      ],
+      "sequence_length": 30,
+      "feature_size": 162,
+      "labels": [
+        "WHAT",
+        "YOUR",
+        "NAME",
+        "MY",
+        "NOTHING"
+      ],
+      "negative_label": "NOTHING",
+      "nothing_policy": "ignore_no_output"
+    }
+  },
+  "dataset": {
+    "features": "external_datasets/onehand162_phrase_v1_features",
+    "class_stats": {
+      "WHAT": {
+        "sequences": 260,
+        "groups": 260,
+        "minimum": 120,
+        "preferred": 170,
+        "used": true
+      },
+      "YOUR": {
+        "sequences": 310,
+        "groups": 310,
+        "minimum": 120,
+        "preferred": 170,
+        "used": true
+      },
+      "NAME": {
+        "sequences": 310,
+        "groups": 310,
+        "minimum": 120,
+        "preferred": 170,
+        "used": true
+      },
+      "MY": {
+        "sequences": 160,
+        "groups": 160,
+        "minimum": 80,
+        "preferred": 120,
+        "used": true
+      },
+      "NOTHING": {
+        "sequences": 380,
+        "groups": 380,
+        "minimum": 180,
+        "preferred": 240,
+        "used": true
+      }
+    }
+  },
+  "validation": {
+    "best_val_accuracy": 99.64788556098938,
+    "per_class": {
+      "WHAT": {
+        "correct": 52,
+        "total": 52,
+        "accuracy": 100.0
+      },
+      "YOUR": {
+        "correct": 62,
+        "total": 62,
+        "accuracy": 100.0
+      },
+      "NAME": {
+        "correct": 61,
+        "total": 62,
+        "accuracy": 98.38709677419355
+      },
+      "MY": {
+        "correct": 32,
+        "total": 32,
+        "accuracy": 100.0
+      },
+      "NOTHING": {
+        "correct": 76,
+        "total": 76,
+        "accuracy": 100.0
+      }
+    },
+    "split_notes": {
+      "0": {
+        "mode": "grouped",
+        "val_groups": 52,
+        "groups": 260
+      },
+      "1": {
+        "mode": "grouped",
+        "val_groups": 62,
+        "groups": 310
+      },
+      "2": {
+        "mode": "grouped",
+        "val_groups": 62,
+        "groups": 310
+      },
+      "3": {
+        "mode": "grouped",
+        "val_groups": 32,
+        "groups": 160
+      },
+      "4": {
+        "mode": "grouped",
+        "val_groups": 76,
+        "groups": 380
+      }
+    }
+  },
+  "runtime_policy": {
+    "input_policy": "accepted_predictions_only",
+    "raw_prediction_policy": "never_update_sentence_output_directly",
+    "nothing_policy": "NOTHING remains no-output"
+  }
+}

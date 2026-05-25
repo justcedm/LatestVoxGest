@@ -18,10 +18,17 @@ public final class TfliteModelLoader {
     }
 
     public Interpreter loadInterpreter(String... assetCandidates) throws IOException {
+        return loadInterpreterWithOptions(null, assetCandidates);
+    }
+
+    public Interpreter loadInterpreterWithOptions(Interpreter.Options options, String... assetCandidates) throws IOException {
         IOException last = null;
         for (String assetPath : assetCandidates) {
             try {
-                return new Interpreter(loadMappedAsset(assetPath));
+                if (options == null) {
+                    return new Interpreter(loadMappedAsset(assetPath));
+                }
+                return new Interpreter(loadMappedAsset(assetPath), options);
             } catch (IOException exc) {
                 last = exc;
             }

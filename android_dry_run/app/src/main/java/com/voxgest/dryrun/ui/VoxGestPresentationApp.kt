@@ -8,6 +8,7 @@ import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
 import android.speech.tts.TextToSpeech
+import androidx.camera.view.PreviewView
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.DrawableRes
@@ -57,7 +58,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -74,11 +74,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.LifecycleOwner
 import com.voxgest.app.avatar.AvatarController
 import com.voxgest.app.avatar.AvatarPlaybackState
 import com.voxgest.app.avatar.AvatarView
 import com.voxgest.dryrun.BuildConfig
 import com.voxgest.dryrun.R
+import com.voxgest.dryrun.RecognitionResult
+import com.voxgest.dryrun.VoxGestCameraRecognitionController
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -145,14 +148,15 @@ private val DemoTokenWords = listOf(
 
 @Composable
 fun VoxGestPresentationApp() {
-    var selectedTab by rememberSaveable { mutableStateOf(VoxTab.Sign) }
-    var currentWord by rememberSaveable { mutableStateOf("") }
-    var sentence by rememberSaveable { mutableStateOf("") }
-    var demoTokenBuffer by rememberSaveable { mutableStateOf("") }
-    var recognitionRunning by rememberSaveable { mutableStateOf(false) }
-    var pendingAvatarText by rememberSaveable { mutableStateOf("") }
-    var pendingAvatarRequestId by rememberSaveable { mutableStateOf(0) }
-    var selectedPhrase by rememberSaveable { mutableStateOf("") }
+    var selectedTab by remember { mutableStateOf(VoxTab.Sign) }
+    var currentWord by remember { mutableStateOf("") }
+    var sentence by remember { mutableStateOf("") }
+    var demoTokenBuffer by remember { mutableStateOf("") }
+    var recognitionRunning by remember { mutableStateOf(false) }
+    var recognitionStatus by remember { mutableStateOf("Tap Start Recognition") }
+    var pendingAvatarText by remember { mutableStateOf("") }
+    var pendingAvatarRequestId by remember { mutableStateOf(0) }
+    var selectedPhrase by remember { mutableStateOf("") }
     val history = remember { mutableStateListOf<HistoryUiEntry>() }
     val context = LocalContext.current
     val ttsRef = remember { mutableStateOf<TextToSpeech?>(null) }
@@ -194,6 +198,7 @@ fun VoxGestPresentationApp() {
         val tokens = (demoTokenBuffer.toDemoTokens() + clean).takeLast(4)
         demoTokenBuffer = tokens.joinToString("|")
         currentWord = clean
+        history.add(0, HistoryUiEntry("Today", "Sign", clean, nowLabel(), "Accepted sign", R.drawable.ic_hand_gesture, PrimaryLight))
 
         val finalized = demoSentenceForTokens(tokens)
         if (finalized == null) {
@@ -251,6 +256,7 @@ fun VoxGestPresentationApp() {
                             currentWord = currentWord,
                             sentence = sentence,
                             recognitionRunning = recognitionRunning,
+                            recognitionStatus = recognitionStatus,
                             presentationMode = PRESENTATION_MODE,
                             onSpeak = {
                                 if (isMeaningfulOutput(sentence)) {
@@ -274,12 +280,15 @@ fun VoxGestPresentationApp() {
                             },
                             onStartRecognition = {
                                 recognitionRunning = true
+                                recognitionStatus = "Starting Camera"
                                 currentWord = ""
                             },
                             onStopRecognition = {
                                 recognitionRunning = false
-                                currentWord = ""
+                                recognitionStatus = "Recognition Paused"
                             },
+                            onRecognitionStatus = { recognitionStatus = it },
+                            onAcceptedRecognition = { result -> addDemoToken(result.label) },
                             demoTokens = demoTokenBuffer.toDemoTokens(),
                             onDemoToken = { addDemoToken(it) }
                         )
@@ -385,12 +394,15 @@ private fun SignScreen(
     currentWord: String,
     sentence: String,
     recognitionRunning: Boolean,
+    recognitionStatus: String,
     presentationMode: Boolean,
     onSpeak: () -> Unit,
     onDelete: () -> Unit,
     onClear: () -> Unit,
     onStartRecognition: () -> Unit,
     onStopRecognition: () -> Unit,
+    onRecognitionStatus: (String) -> Unit,
+    onAcceptedRecognition: (RecognitionResult) -> Unit,
     demoTokens: List<String>,
     onDemoToken: (String) -> Unit
 ) {
@@ -398,9 +410,12 @@ private fun SignScreen(
         ScreenTopBar("SIGN", R.drawable.ic_settings)
         RecognitionAreaCard(
             recognitionRunning = recognitionRunning,
+            recognitionStatus = recognitionStatus,
             presentationMode = presentationMode,
             onStartRecognition = onStartRecognition,
-            onStopRecognition = onStopRecognition
+            onStopRecognition = onStopRecognition,
+            onRecognitionStatus = onRecognitionStatus,
+            onAcceptedRecognition = onAcceptedRecognition
         )
         CurrentWordCard(currentWord)
         SentenceCard(sentence, onSpeak)
@@ -426,21 +441,114 @@ private fun SignScreen(
 @Composable
 private fun RecognitionAreaCard(
     recognitionRunning: Boolean,
+    recognitionStatus: String,
     presentationMode: Boolean,
     onStartRecognition: () -> Unit,
-    onStopRecognition: () -> Unit
+    onStopRecognition: () -> Unit,
+    onRecognitionStatus: (String) -> Unit,
+    onAcceptedRecognition: (RecognitionResult) -> Unit
 ) {
+    val context = LocalContext.current
+    val lifecycleOwner = context as LifecycleOwner
+    val previewView = remember {
+        PreviewView(context).apply {
+            scaleType = PreviewView.ScaleType.FILL_CENTER
+            implementationMode = PreviewView.ImplementationMode.COMPATIBLE
+        }
+    }
+    val controllerRef = remember { mutableStateOf<VoxGestCameraRecognitionController?>(null) }
+    var hasCameraPermission by remember {
+        mutableStateOf(
+            ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
+        )
+    }
+    val permissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        hasCameraPermission = granted
+        if (granted) {
+            onRecognitionStatus("Starting Camera")
+        } else {
+            onRecognitionStatus("Camera permission denied.")
+            onStopRecognition()
+        }
+    }
+
+    LaunchedEffect(recognitionRunning, hasCameraPermission, previewView) {
+        if (!recognitionRunning) {
+            controllerRef.value?.stop()
+            return@LaunchedEffect
+        }
+        if (!hasCameraPermission) {
+            onRecognitionStatus("Requesting Camera Permission")
+            permissionLauncher.launch(Manifest.permission.CAMERA)
+            return@LaunchedEffect
+        }
+        controllerRef.value?.release()
+        controllerRef.value = VoxGestCameraRecognitionController(
+            context = context,
+            lifecycleOwner = lifecycleOwner,
+            onStatus = onRecognitionStatus,
+            onAcceptedResult = onAcceptedRecognition
+        ).also { it.start(previewView) }
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            controllerRef.value?.release()
+            controllerRef.value = null
+        }
+    }
+
     VoxGestCard(modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp)) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(256.dp)
                 .clip(RoundedCornerShape(22.dp))
-                .background(if (recognitionRunning) Color(0xFFE7F8F5) else SoftCyan)
+                .background(Color.Black)
                 .border(1.dp, Border, RoundedCornerShape(22.dp))
         ) {
+            AndroidView(
+                factory = { previewView },
+                modifier = Modifier.fillMaxSize()
+            )
+            if (!recognitionRunning || !hasCameraPermission) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(SoftCyan),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        VoxIcon(
+                            R.drawable.ic_camera_off,
+                            "Recognition status",
+                            TextMuted,
+                            Modifier.size(46.dp)
+                        )
+                        Text(
+                            if (hasCameraPermission) "Camera preview appears here" else "Camera permission needed",
+                            color = TextMain,
+                            fontSize = 18.sp,
+                            lineHeight = 23.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(top = 14.dp)
+                        )
+                        Text(
+                            recognitionStatus,
+                            color = TextMuted,
+                            fontSize = 13.sp,
+                            lineHeight = 18.sp,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(top = 7.dp, start = 24.dp, end = 24.dp)
+                        )
+                    }
+                }
+            }
             StatusChip(
-                label = if (recognitionRunning) "Recognition Experimental" else "Tap Start Recognition",
+                label = recognitionStatus,
                 dotColor = if (recognitionRunning) AccentGreen else Amber,
                 containerColor = if (recognitionRunning) Color(0xFFE8F7EE) else Color(0xFFFFF7ED),
                 contentColor = if (recognitionRunning) Green else Amber,
@@ -448,46 +556,45 @@ private fun RecognitionAreaCard(
                     .align(Alignment.TopStart)
                     .padding(14.dp)
             )
-            Column(
-                modifier = Modifier.align(Alignment.Center),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                VoxIcon(
-                    if (recognitionRunning) R.drawable.ic_hand_gesture else R.drawable.ic_camera_off,
-                    "Recognition status",
-                    if (recognitionRunning) Primary else TextMuted,
-                    Modifier.size(46.dp)
-                )
-                Text(
-                    if (recognitionRunning) "Tracking Hand" else "Camera preview appears here",
-                    color = TextMain,
-                    fontSize = 18.sp,
-                    lineHeight = 23.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(top = 14.dp)
-                )
-                Text(
-                    if (recognitionRunning) {
-                        "Recognition is experimental and calibration-gated."
-                    } else {
-                        "Tap Start Recognition"
-                    },
-                    color = TextMuted,
-                    fontSize = 13.sp,
-                    lineHeight = 18.sp,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(top = 7.dp, start = 24.dp, end = 24.dp)
-                )
-            }
         }
         if (presentationMode) {
             Row(
                 modifier = Modifier.padding(top = 14.dp),
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                FilledPillButton("Start Recognition", R.drawable.ic_play_arrow, Modifier.weight(1f), onStartRecognition)
-                OutlinePillButton("Stop Recognition", R.drawable.ic_cancel, Modifier.weight(1f), onStopRecognition)
+                Button(
+                    onClick = {
+                        if (!hasCameraPermission) {
+                            onRecognitionStatus("Requesting Camera Permission")
+                        }
+                        onStartRecognition()
+                    },
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(48.dp),
+                    shape = RoundedCornerShape(14.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Primary)
+                ) {
+                    VoxIcon(R.drawable.ic_play_arrow, "Start Recognition", DarkInk, Modifier.size(18.dp))
+                    Spacer(Modifier.width(7.dp))
+                    Text("Start Recognition", color = DarkInk, fontSize = 12.sp, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                }
+                Button(
+                    onClick = {
+                        controllerRef.value?.stop()
+                        onStopRecognition()
+                    },
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(48.dp),
+                    shape = RoundedCornerShape(14.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = CardWhite, contentColor = Primary),
+                    border = BorderStroke(1.dp, Border)
+                ) {
+                    VoxIcon(R.drawable.ic_cancel, "Stop Recognition", Primary, Modifier.size(18.dp))
+                    Spacer(Modifier.width(7.dp))
+                    Text("Stop Recognition", color = Primary, fontSize = 12.sp, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                }
             }
         }
     }
@@ -665,9 +772,9 @@ private fun ListenScreen(
     onSpeechSaved: (String) -> Unit
 ) {
     val context = LocalContext.current
-    var listening by rememberSaveable { mutableStateOf(false) }
-    var transcript by rememberSaveable { mutableStateOf("") }
-    var speechStatus by rememberSaveable { mutableStateOf("Tap the microphone and speak.") }
+    var listening by remember { mutableStateOf(false) }
+    var transcript by remember { mutableStateOf("") }
+    var speechStatus by remember { mutableStateOf("Tap the microphone and speak.") }
     var avatarState by remember { mutableStateOf(AvatarPlaybackState()) }
     val avatarController = remember { AvatarController { avatarState = it } }
     val recognizerState = remember { mutableStateOf<SpeechRecognizer?>(null) }
