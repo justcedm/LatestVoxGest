@@ -1,0 +1,404 @@
+{
+  "generated_at": "2026-05-25T11:29:39",
+  "logs_analyzed": [
+    "reports\\live_word_test_log_20260525_111019.json",
+    "reports\\live_word_test_log_20260525_111332.json"
+  ],
+  "recommended_runtime": {
+    "VOXGEST_GATE_PROFILE": "demo",
+    "VOXGEST_LIVE_TEST_CAPTURE_MODE": "manual_capture",
+    "VOXGEST_HAND_READY_FRAMES": "10",
+    "VOXGEST_CAPTURE_FRAMES": "30",
+    "notes": [
+      "Keep strict gate profile as default.",
+      "Demo profile lowers low-motion label thresholds.",
+      "Manual capture waits for stable hands before recording one gesture window.",
+      "NOTHING remains no-output and is never accepted as spoken output."
+    ]
+  },
+  "profiles": {
+    "onehand162": {
+      "logs": [
+        "reports\\live_word_test_log_20260525_111019.json"
+      ],
+      "model_paths": {
+        "C:\\BSIT 3RD YEAR\\New VovGest\\model\\voxgest_tcn_onehand162_phrase_v1.h5": 1
+      },
+      "input_shapes": {
+        "[1, 30, 162]": 1
+      },
+      "categories": {
+        "stable_labels": [
+          "MY",
+          "NOTHING"
+        ],
+        "partially_stable_labels": [
+          "WHAT"
+        ],
+        "unstable_labels": [
+          "NAME",
+          "YOUR"
+        ],
+        "gate_blocked_labels": [
+          "WHAT"
+        ],
+        "capture_blocked_labels": [
+          "MY",
+          "NAME",
+          "NOTHING",
+          "WHAT"
+        ]
+      },
+      "labels": {
+        "WHAT": {
+          "trials": 7,
+          "matched": 3,
+          "accepted_correct": 2,
+          "false_accepts": 0,
+          "gate_blocked": 1,
+          "capture_blocked": 3,
+          "inference_blocked": 3,
+          "match_rate": 0.4286,
+          "accepted_correct_rate": 0.2857,
+          "false_accept_rate": 0.0,
+          "gate_block_rate": 0.1429,
+          "capture_block_rate": 0.4286,
+          "top_confusions": {
+            "(blocked)": 3,
+            "MY": 1
+          },
+          "top_failure_reasons": {
+            "quality:UNSTABLE_LANDMARKS": 3,
+            "wrong_label:": 3,
+            "low_conf<0.65": 2,
+            "low_margin<0.12": 1,
+            "wrong_label:MY": 1
+          }
+        },
+        "YOUR": {
+          "trials": 8,
+          "matched": 0,
+          "accepted_correct": 0,
+          "false_accepts": 8,
+          "gate_blocked": 0,
+          "capture_blocked": 0,
+          "inference_blocked": 0,
+          "match_rate": 0.0,
+          "accepted_correct_rate": 0.0,
+          "false_accept_rate": 1.0,
+          "gate_block_rate": 0.0,
+          "capture_block_rate": 0.0,
+          "top_confusions": {
+            "NOTHING": 8
+          },
+          "top_failure_reasons": {
+            "wrong_label:NOTHING": 8
+          }
+        },
+        "NAME": {
+          "trials": 8,
+          "matched": 0,
+          "accepted_correct": 0,
+          "false_accepts": 6,
+          "gate_blocked": 0,
+          "capture_blocked": 2,
+          "inference_blocked": 2,
+          "match_rate": 0.0,
+          "accepted_correct_rate": 0.0,
+          "false_accept_rate": 0.75,
+          "gate_block_rate": 0.0,
+          "capture_block_rate": 0.25,
+          "top_confusions": {
+            "NOTHING": 6,
+            "(blocked)": 2
+          },
+          "top_failure_reasons": {
+            "wrong_label:NOTHING": 6,
+            "wrong_label:": 2,
+            "quality:LOW_HAND_PRESENCE": 1,
+            "quality:UNSTABLE_LANDMARKS": 1
+          }
+        },
+        "MY": {
+          "trials": 7,
+          "matched": 5,
+          "accepted_correct": 5,
+          "false_accepts": 0,
+          "gate_blocked": 0,
+          "capture_blocked": 2,
+          "inference_blocked": 2,
+          "match_rate": 0.7143,
+          "accepted_correct_rate": 0.7143,
+          "false_accept_rate": 0.0,
+          "gate_block_rate": 0.0,
+          "capture_block_rate": 0.2857,
+          "top_confusions": {
+            "(blocked)": 2
+          },
+          "top_failure_reasons": {
+            "quality:UNSTABLE_LANDMARKS": 2,
+            "wrong_label:": 2
+          }
+        },
+        "NOTHING": {
+          "trials": 5,
+          "matched": 5,
+          "accepted_correct": 0,
+          "false_accepts": 0,
+          "gate_blocked": 0,
+          "capture_blocked": 5,
+          "inference_blocked": 5,
+          "match_rate": 1.0,
+          "accepted_correct_rate": 0.0,
+          "false_accept_rate": 0.0,
+          "gate_block_rate": 0.0,
+          "capture_block_rate": 1.0,
+          "top_confusions": {
+            "(blocked)": 5
+          },
+          "top_failure_reasons": {
+            "quality:BAD_SEQUENCE": 3,
+            "quality:UNSTABLE_LANDMARKS": 2
+          }
+        }
+      }
+    },
+    "fullsign225": {
+      "logs": [
+        "reports\\live_word_test_log_20260525_111332.json"
+      ],
+      "model_paths": {
+        "C:\\BSIT 3RD YEAR\\New VovGest\\model\\voxgest_tcn_fullsign225_phrase_v1.h5": 1
+      },
+      "input_shapes": {
+        "[1, 30, 225]": 1
+      },
+      "categories": {
+        "stable_labels": [
+          "LIVE",
+          "MY",
+          "NOTHING"
+        ],
+        "partially_stable_labels": [
+          "OKAY"
+        ],
+        "unstable_labels": [
+          "NAME",
+          "STUDENT",
+          "WHAT",
+          "WHERE",
+          "YOU",
+          "YOUR"
+        ],
+        "gate_blocked_labels": [
+          "OKAY"
+        ],
+        "capture_blocked_labels": [
+          "NAME",
+          "STUDENT",
+          "WHAT",
+          "WHERE"
+        ]
+      },
+      "labels": {
+        "WHAT": {
+          "trials": 1,
+          "matched": 0,
+          "accepted_correct": 0,
+          "false_accepts": 0,
+          "gate_blocked": 0,
+          "capture_blocked": 1,
+          "inference_blocked": 1,
+          "match_rate": 0.0,
+          "accepted_correct_rate": 0.0,
+          "false_accept_rate": 0.0,
+          "gate_block_rate": 0.0,
+          "capture_block_rate": 1.0,
+          "top_confusions": {
+            "(blocked)": 1
+          },
+          "top_failure_reasons": {
+            "quality:BAD_SEQUENCE": 1,
+            "wrong_label:": 1
+          }
+        },
+        "YOUR": {
+          "trials": 1,
+          "matched": 0,
+          "accepted_correct": 0,
+          "false_accepts": 1,
+          "gate_blocked": 0,
+          "capture_blocked": 0,
+          "inference_blocked": 0,
+          "match_rate": 0.0,
+          "accepted_correct_rate": 0.0,
+          "false_accept_rate": 1.0,
+          "gate_block_rate": 0.0,
+          "capture_block_rate": 0.0,
+          "top_confusions": {
+            "WHAT": 1
+          },
+          "top_failure_reasons": {
+            "wrong_label:WHAT": 1
+          }
+        },
+        "NAME": {
+          "trials": 1,
+          "matched": 0,
+          "accepted_correct": 0,
+          "false_accepts": 0,
+          "gate_blocked": 0,
+          "capture_blocked": 1,
+          "inference_blocked": 1,
+          "match_rate": 0.0,
+          "accepted_correct_rate": 0.0,
+          "false_accept_rate": 0.0,
+          "gate_block_rate": 0.0,
+          "capture_block_rate": 1.0,
+          "top_confusions": {
+            "(blocked)": 1
+          },
+          "top_failure_reasons": {
+            "quality:UNSTABLE_LANDMARKS": 1,
+            "wrong_label:": 1
+          }
+        },
+        "MY": {
+          "trials": 1,
+          "matched": 1,
+          "accepted_correct": 1,
+          "false_accepts": 0,
+          "gate_blocked": 0,
+          "capture_blocked": 0,
+          "inference_blocked": 0,
+          "match_rate": 1.0,
+          "accepted_correct_rate": 1.0,
+          "false_accept_rate": 0.0,
+          "gate_block_rate": 0.0,
+          "capture_block_rate": 0.0,
+          "top_confusions": {},
+          "top_failure_reasons": {}
+        },
+        "YOU": {
+          "trials": 1,
+          "matched": 0,
+          "accepted_correct": 0,
+          "false_accepts": 0,
+          "gate_blocked": 0,
+          "capture_blocked": 0,
+          "inference_blocked": 0,
+          "match_rate": 0.0,
+          "accepted_correct_rate": 0.0,
+          "false_accept_rate": 0.0,
+          "gate_block_rate": 0.0,
+          "capture_block_rate": 0.0,
+          "top_confusions": {
+            "MY": 1
+          },
+          "top_failure_reasons": {
+            "low_motion<0.030": 1,
+            "wrong_label:MY": 1
+          }
+        },
+        "OKAY": {
+          "trials": 1,
+          "matched": 1,
+          "accepted_correct": 0,
+          "false_accepts": 0,
+          "gate_blocked": 1,
+          "capture_blocked": 0,
+          "inference_blocked": 0,
+          "match_rate": 1.0,
+          "accepted_correct_rate": 0.0,
+          "false_accept_rate": 0.0,
+          "gate_block_rate": 1.0,
+          "capture_block_rate": 0.0,
+          "top_confusions": {},
+          "top_failure_reasons": {
+            "low_conf<0.65": 1,
+            "low_motion<0.030": 1
+          }
+        },
+        "STUDENT": {
+          "trials": 1,
+          "matched": 0,
+          "accepted_correct": 0,
+          "false_accepts": 0,
+          "gate_blocked": 0,
+          "capture_blocked": 1,
+          "inference_blocked": 1,
+          "match_rate": 0.0,
+          "accepted_correct_rate": 0.0,
+          "false_accept_rate": 0.0,
+          "gate_block_rate": 0.0,
+          "capture_block_rate": 1.0,
+          "top_confusions": {
+            "(blocked)": 1
+          },
+          "top_failure_reasons": {
+            "quality:LOW_HAND_PRESENCE": 1,
+            "wrong_label:": 1
+          }
+        },
+        "WHERE": {
+          "trials": 1,
+          "matched": 0,
+          "accepted_correct": 0,
+          "false_accepts": 0,
+          "gate_blocked": 0,
+          "capture_blocked": 1,
+          "inference_blocked": 1,
+          "match_rate": 0.0,
+          "accepted_correct_rate": 0.0,
+          "false_accept_rate": 0.0,
+          "gate_block_rate": 0.0,
+          "capture_block_rate": 1.0,
+          "top_confusions": {
+            "(blocked)": 1
+          },
+          "top_failure_reasons": {
+            "quality:LOW_HAND_PRESENCE": 1,
+            "wrong_label:": 1
+          }
+        },
+        "LIVE": {
+          "trials": 1,
+          "matched": 1,
+          "accepted_correct": 1,
+          "false_accepts": 0,
+          "gate_blocked": 0,
+          "capture_blocked": 0,
+          "inference_blocked": 0,
+          "match_rate": 1.0,
+          "accepted_correct_rate": 1.0,
+          "false_accept_rate": 0.0,
+          "gate_block_rate": 0.0,
+          "capture_block_rate": 0.0,
+          "top_confusions": {},
+          "top_failure_reasons": {}
+        },
+        "NOTHING": {
+          "trials": 1,
+          "matched": 1,
+          "accepted_correct": 0,
+          "false_accepts": 0,
+          "gate_blocked": 0,
+          "capture_blocked": 0,
+          "inference_blocked": 0,
+          "match_rate": 1.0,
+          "accepted_correct_rate": 0.0,
+          "false_accept_rate": 0.0,
+          "gate_block_rate": 0.0,
+          "capture_block_rate": 0.0,
+          "top_confusions": {
+            "LIVE": 1
+          },
+          "top_failure_reasons": {
+            "low_conf<0.65": 1,
+            "low_margin<0.12": 1
+          }
+        }
+      }
+    }
+  }
+}

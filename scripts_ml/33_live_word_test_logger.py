@@ -1,8 +1,8 @@
 """Live dynamic-word test logger for VoxGest.
 
-Manual mode keeps the original SPACE-to-log flow. FullSign225 defaults to a
-hands-free state machine so a two-hand signer can run trials without touching
-the keyboard between signs.
+Manual mode keeps the original SPACE-to-log flow. Demo gate mode defaults to
+a one-word capture flow: press SPACE/C, wait for stable hands, then record one
+30-frame gesture window.
 """
 
 import csv
@@ -35,8 +35,14 @@ from lstm_features import (
     top_prediction,
 )
 from frame_quality_gate import (
+    BAD_SEQUENCE,
     GOOD,
     HANDS_OVERLAPPING,
+    LOW_HAND_PRESENCE,
+    LOW_MOTION,
+    LOW_WRIST_PATH,
+    NO_HAND,
+    UNSTABLE_LANDMARKS,
     WARNING_HANDS_CLOSE,
     capture_frame_quality,
     evaluate_sequence_quality,
@@ -75,6 +81,14 @@ def _bool_env(name, default):
     return raw.strip().lower() in TRUTHY
 
 
+def _gate_profile():
+    profile = os.environ.get("VOXGEST_GATE_PROFILE", "strict").strip().lower()
+    return profile if profile in {"strict", "demo"} else "strict"
+
+
+GATE_PROFILE = _gate_profile()
+
+
 def _labels_from_env():
     raw = os.environ.get("VOXGEST_LIVE_TEST_LABELS", "").strip()
     if not raw:
@@ -93,9 +107,12 @@ def _unique_labels(labels):
 
 
 def _capture_mode():
-    default = "hand_trigger_auto" if FEATURE_PROFILE == "fullsign225" else "manual"
+    if GATE_PROFILE == "demo":
+        default = "manual_capture"
+    else:
+        default = "hand_trigger_auto" if FEATURE_PROFILE == "fullsign225" else "manual"
     mode = os.environ.get("VOXGEST_LIVE_TEST_CAPTURE_MODE", default).strip().lower()
-    return mode if mode in {"manual", "hand_trigger_auto"} else default
+    return mode if mode in {"manual", "hand_trigger_auto", "manual_capture"} else default
 
 
 def artifact_suffix():
@@ -152,12 +169,13 @@ FULLSIGN_ALLOW_HAND_OVERLAP = _bool_env(
     FEATURE_PROFILE == "fullsign225",
 )
 
-WAITING_FOR_HANDS = "WAITING_FOR_HANDS"
-READY = "READY"
-CAPTURING = "CAPTURING"
+WAITING = "WAITING"
+STABILIZING = "STABILIZING"
+RECORDING = "RECORDING"
 CLASSIFYING = "CLASSIFYING"
 RESULT = "RESULT"
 REST = "REST"
+MANUAL = "MANUAL"
 
 THRESHOLDS = {
     "YES": {"conf": 0.56, "margin": 0.07, "motion": 0.008, "path": 0.05, "presence": 0.25},
@@ -173,6 +191,21 @@ THRESHOLDS = {
     "NOTHING": {"conf": 0.55, "margin": 0.05, "motion": 0.0, "path": 0.0, "presence": 0.0},
 }
 DEFAULT_THRESHOLD = {"conf": 0.65, "margin": 0.12, "motion": 0.03, "path": 0.35, "presence": 0.25}
+DEMO_LOW_MOTION_LABELS = {"MY", "OKAY", "YOU", "YOUR"}
+DEMO_ALLOWED_QUALITY = {
+    GOOD,
+    WARNING_HANDS_CLOSE,
+    UNSTABLE_LANDMARKS,
+    LOW_MOTION,
+    LOW_WRIST_PATH,
+}
+DEMO_SEVERE_QUALITY_BLOCKS = {BAD_SEQUENCE, LOW_HAND_PRESENCE, NO_HAND}
+DEMO_THRESHOLD_OVERRIDES = {
+    "MY": {"conf": 0.50, "margin": 0.07, "motion": 0.006, "path": 0.05, "presence": 0.25},
+    "OKAY": {"conf": 0.50, "margin": 0.07, "motion": 0.006, "path": 0.05, "presence": 0.25},
+    "YOU": {"conf": 0.50, "margin": 0.07, "motion": 0.006, "path": 0.05, "presence": 0.25},
+    "YOUR": {"conf": 0.50, "margin": 0.07, "motion": 0.006, "path": 0.05, "presence": 0.25},
+}
 PROFILE_THRESHOLDS = {
     "fullsign225_manual5": {
         "EAT": {"conf": 0.60, "margin": 0.08, "motion": 0.015, "path": 0.20, "presence": 0.25},
@@ -191,7 +224,19 @@ def threshold_for(label):
     profile_rule = PROFILE_THRESHOLDS.get(WORD_PROFILE, {}).get(label)
     if profile_rule:
         rule.update(profile_rule)
+    if GATE_PROFILE == "demo":
+        demo_rule = DEMO_THRESHOLD_OVERRIDES.get(label)
+        if demo_rule:
+            rule.update(demo_rule)
     return rule
+
+
+def live_quality_allows_inference(status):
+    if GATE_PROFILE == "demo":
+        if status in DEMO_SEVERE_QUALITY_BLOCKS:
+            return False
+        return status in DEMO_ALLOWED_QUALITY
+    return quality_allows_inference(status)
 
 
 def load_label_maps(path):
@@ -212,6 +257,15 @@ def report_score(path):
             return float(json.load(f).get("best_grouped_val_accuracy", -1.0))
     except Exception:
         return -1.0
+
+
+def model_input_shape(model):
+    shape = getattr(model, "input_shape", None)
+    if isinstance(shape, (list, tuple)) and shape and isinstance(shape[0], (list, tuple)):
+        shape = shape[0]
+    if isinstance(shape, (list, tuple)):
+        return [1 if value is None else int(value) for value in shape]
+    return [1, SEQ_LEN, FEAT_SIZE]
 
 
 def dynamic_candidates():
@@ -243,6 +297,13 @@ def load_dynamic_model():
             errors.append(f"{name}: skipped extra labels {extra}")
             continue
         model = tf.keras.models.load_model(model_path)
+        input_shape = model_input_shape(model)
+        if len(input_shape) >= 3 and input_shape[-1] != FEAT_SIZE:
+            errors.append(
+                f"{name}: input feature mismatch, model expects {input_shape[-1]} "
+                f"but {FEATURE_PROFILE} provides {FEAT_SIZE}"
+            )
+            continue
         return name, str(model_path), model, idx_to_label
     raise RuntimeError("No usable dynamic model. " + " | ".join(errors))
 
@@ -259,8 +320,10 @@ def normalize_quality_for_live(quality):
 
 
 def gate_failure(label, conf, margin, motion, wrist_path, hand_presence, quality_status=GOOD):
-    if not quality_allows_inference(quality_status):
+    if not live_quality_allows_inference(quality_status):
         return [f"quality:{quality_status}"]
+    if label in NEGATIVE_WORDS:
+        return ["noop_label"]
 
     rule = threshold_for(label)
     failures = []
@@ -282,6 +345,7 @@ def gate_failure(label, conf, margin, motion, wrist_path, hand_presence, quality
 def default_prediction(reason="waiting"):
     return {
         "label": "",
+        "top3_predictions": [],
         "confidence": 0.0,
         "margin": 0.0,
         "motion": 0.0,
@@ -339,18 +403,28 @@ def classify_sequence(frames, quality_records, model, idx_to_label):
     motion = sequence_motion_energy(seq)
     wrist_path = sequence_wrist_path(seq)
     hand_presence = sequence_hand_presence_ratio(seq)
-    inference_allowed = quality.inference_allowed
+    inference_allowed = live_quality_allows_inference(quality.status)
     if inference_allowed:
         probs = model.predict(seq[np.newaxis, ...], verbose=0)[0]
         pred_idx, conf, margin = top_prediction(probs)
         label = idx_to_label.get(pred_idx, "?")
+        order = np.argsort(probs)[::-1][:3]
+        top3 = [
+            {
+                "label": idx_to_label.get(int(idx), "?"),
+                "confidence": round(float(probs[int(idx)]), 6),
+            }
+            for idx in order
+        ]
     else:
         label = ""
         conf = 0.0
         margin = 0.0
+        top3 = []
 
     return {
         "label": label,
+        "top3_predictions": top3,
         "confidence": float(conf),
         "margin": float(margin),
         "motion": float(motion),
@@ -379,14 +453,21 @@ def build_trial_row(model_name, model_path, expected, prediction, state):
     if not matched:
         failures.append(f"wrong_label:{pred}")
 
+    accepted = bool(accepted and pred not in NEGATIVE_WORDS)
+    failure_reason = "ok" if not failures else ";".join(failures)
+    if negative_expected and pred in NEGATIVE_WORDS and not accepted:
+        failure_reason = "ok_no_output"
     return {
         "timestamp": datetime.now().isoformat(timespec="seconds"),
         "model_name": model_name,
         "model_path": model_path,
+        "gate_profile": GATE_PROFILE,
         "capture_mode": CAPTURE_MODE,
         "state": state,
+        "input_shape": [1, SEQ_LEN, FEAT_SIZE],
         "expected_label": expected,
         "predicted_label": pred,
+        "top3_predictions": prediction.get("top3_predictions", []),
         "confidence": round(float(prediction.get("confidence", 0.0)), 6),
         "margin": round(float(prediction.get("margin", 0.0)), 6),
         "motion": round(float(prediction.get("motion", 0.0)), 6),
@@ -396,8 +477,9 @@ def build_trial_row(model_name, model_path, expected, prediction, state):
         "quality_reason": prediction.get("quality_reason", "ok"),
         "inference_allowed": bool(prediction.get("inference_allowed", False)),
         "accepted_by_gate": accepted,
+        "gate_decision": "accept" if accepted else "reject",
         "matched_expected": matched,
-        "failure_reason": "ok" if not failures else ";".join(failures),
+        "failure_reason": failure_reason,
         "dominant_hand": configured_hand_preference(),
         "feature_profile": FEATURE_PROFILE,
         "single_hand_pose": single_hand_pose_enabled(),
@@ -407,10 +489,29 @@ def build_trial_row(model_name, model_path, expected, prediction, state):
 
 def print_trial_result(label, trial_no, state, row):
     verdict = "ACCEPTED" if row["accepted_by_gate"] else "REJECTED"
+    top3 = row.get("top3_predictions") or []
+    top3_text = ", ".join(
+        f"{item.get('label', '?')}:{float(item.get('confidence', 0.0)):.0%}"
+        for item in top3
+    ) or "-"
     print(
-        f"{label} trial {trial_no} | {state} | pred={row['predicted_label'] or '-'} "
-        f"conf={float(row['confidence']):.0%} quality={row['quality_status']} "
-        f"{verdict} matched={row['matched_expected']} reason={row['failure_reason']}",
+        "\n".join(
+            [
+                f"{label} trial {trial_no} | {state} | {verdict}",
+                f"  model={row['model_path']}",
+                f"  feature={row['feature_profile']} input_shape={row['input_shape']} gate_profile={row['gate_profile']}",
+                f"  expected={row['expected_label']} predicted={row['predicted_label'] or '-'} top3={top3_text}",
+                (
+                    f"  conf={float(row['confidence']):.0%} margin={float(row['margin']):.0%} "
+                    f"motion={float(row['motion']):.3f} path={float(row['wrist_path']):.2f} "
+                    f"hand={float(row['hand_presence']):.0%}"
+                ),
+                (
+                    f"  quality={row['quality_status']} gate={row['gate_decision']} "
+                    f"matched={row['matched_expected']} reason={row['failure_reason']}"
+                ),
+            ]
+        ),
         flush=True,
     )
 
@@ -421,10 +522,13 @@ def write_header(path):
         "timestamp",
         "model_name",
         "model_path",
+        "gate_profile",
         "capture_mode",
         "state",
+        "input_shape",
         "expected_label",
         "predicted_label",
+        "top3_predictions",
         "confidence",
         "margin",
         "motion",
@@ -434,6 +538,7 @@ def write_header(path):
         "quality_reason",
         "inference_allowed",
         "accepted_by_gate",
+        "gate_decision",
         "matched_expected",
         "failure_reason",
         "dominant_hand",
@@ -449,6 +554,101 @@ def write_header(path):
 def append_row(path, fields, row):
     with open(path, "a", encoding="utf-8", newline="") as f:
         csv.DictWriter(f, fieldnames=fields).writerow(row)
+
+
+def build_demo_label_ranking(rows):
+    buckets = {}
+    for row in rows:
+        label = row["expected_label"]
+        bucket = buckets.setdefault(
+            label,
+            {
+                "trials": 0,
+                "matched": 0,
+                "accepted_correct": 0,
+                "false_accepts": 0,
+                "gate_blocked": 0,
+                "capture_blocked": 0,
+            },
+        )
+        bucket["trials"] += 1
+        if row.get("matched_expected"):
+            bucket["matched"] += 1
+        if (
+            row.get("accepted_by_gate")
+            and row.get("predicted_label") == label
+            and label not in NEGATIVE_WORDS
+        ):
+            bucket["accepted_correct"] += 1
+        if row.get("accepted_by_gate") and not row.get("matched_expected"):
+            bucket["false_accepts"] += 1
+        reason = str(row.get("failure_reason", ""))
+        predicted_expected = row.get("predicted_label") == label and label not in NEGATIVE_WORDS
+        if predicted_expected and not row.get("accepted_by_gate"):
+            if any(part in reason for part in ("low_conf", "low_margin", "low_motion", "low_path", "low_hand")):
+                bucket["gate_blocked"] += 1
+        if not row.get("inference_allowed", True) or any(
+            part in reason
+            for part in (
+                "quality:BAD_SEQUENCE",
+                "quality:LOW_HAND_PRESENCE",
+                "quality:UNSTABLE_LANDMARKS",
+                "quality:NO_HAND",
+            )
+        ):
+            bucket["capture_blocked"] += 1
+
+    ranking = {
+        "stable_labels": [],
+        "partially_stable_labels": [],
+        "unstable_labels": [],
+        "gate_blocked_labels": [],
+        "capture_blocked_labels": [],
+        "per_label": {},
+    }
+    for label, bucket in buckets.items():
+        trials = max(1, bucket["trials"])
+        match_rate = bucket["matched"] / trials
+        accepted_correct_rate = bucket["accepted_correct"] / trials
+        false_accept_rate = bucket["false_accepts"] / trials
+        gate_block_rate = bucket["gate_blocked"] / trials
+        capture_block_rate = bucket["capture_blocked"] / trials
+        row = {
+            **bucket,
+            "match_rate": round(match_rate, 4),
+            "accepted_correct_rate": round(accepted_correct_rate, 4),
+            "false_accept_rate": round(false_accept_rate, 4),
+            "gate_block_rate": round(gate_block_rate, 4),
+            "capture_block_rate": round(capture_block_rate, 4),
+        }
+        ranking["per_label"][label] = row
+
+        if label in NEGATIVE_WORDS:
+            if bucket["false_accepts"] == 0 and bucket["accepted_correct"] == 0:
+                ranking["stable_labels"].append(label)
+            else:
+                ranking["unstable_labels"].append(label)
+        elif accepted_correct_rate >= 0.70 and false_accept_rate == 0:
+            ranking["stable_labels"].append(label)
+        elif match_rate > 0.0 or bucket["accepted_correct"] > 0 or bucket["gate_blocked"] > 0:
+            ranking["partially_stable_labels"].append(label)
+        else:
+            ranking["unstable_labels"].append(label)
+
+        if bucket["gate_blocked"]:
+            ranking["gate_blocked_labels"].append(label)
+        if bucket["capture_blocked"]:
+            ranking["capture_blocked_labels"].append(label)
+
+    for key in (
+        "stable_labels",
+        "partially_stable_labels",
+        "unstable_labels",
+        "gate_blocked_labels",
+        "capture_blocked_labels",
+    ):
+        ranking[key] = sorted(ranking[key])
+    return ranking
 
 
 def write_json_summary(path, rows, model_name, model_path):
@@ -495,14 +695,17 @@ def write_json_summary(path, rows, model_name, model_path):
         "generated_at": datetime.now().isoformat(timespec="seconds"),
         "model_name": model_name,
         "model_path": model_path,
+        "gate_profile": GATE_PROFILE,
         "capture_mode": CAPTURE_MODE,
         "feature_profile": FEATURE_PROFILE,
         "input_shape": [1, SEQ_LEN, FEAT_SIZE],
+        "capture_warmup_frames": HAND_READY_FRAMES,
         "dominant_hand": configured_hand_preference(),
         "single_hand_pose": single_hand_pose_enabled(),
         "mirrored_input": configured_mirror_input(MIRROR_INPUT),
         "expected_labels": EXPECTED_LABELS,
         "trials_per_label": TRIALS_PER_LABEL if CAPTURE_MODE == "hand_trigger_auto" else None,
+        "demo_label_ranking": build_demo_label_ranking(rows),
         "summary": totals,
         "records": rows,
     }
@@ -571,6 +774,8 @@ def draw(frame, model_name, expected, state, trial_text, last_row, last_predicti
     controls = "Q/ESC quit  R retry  N skip  P pause"
     if CAPTURE_MODE == "manual":
         controls = "SPACE log  N next  B previous  Q/ESC quit"
+    elif CAPTURE_MODE == "manual_capture":
+        controls = "SPACE/C start capture  N next  B previous  R retry  Q/ESC quit"
     cv2.putText(frame, controls, (15, h - 18), cv2.FONT_HERSHEY_SIMPLEX, 0.48, (210, 210, 210), 1)
 
 
@@ -609,9 +814,15 @@ def main():
     print(f"Model   : {model_name} ({model_path})")
     print(f"Profile : {WORD_PROFILE}")
     print(f"Feature : {FEATURE_PROFILE} ({FEAT_SIZE} floats/frame)")
+    print(f"Gate    : {GATE_PROFILE}")
     print(f"Capture : {CAPTURE_MODE}")
     print(f"Labels  : {EXPECTED_LABELS}")
-    print(f"Trials  : {TRIALS_PER_LABEL} per label" if CAPTURE_MODE == "hand_trigger_auto" else "Trials  : manual SPACE logging")
+    if CAPTURE_MODE == "hand_trigger_auto":
+        print(f"Trials  : {TRIALS_PER_LABEL} per label")
+    elif CAPTURE_MODE == "manual_capture":
+        print("Trials  : manual one-word capture; SPACE/C starts each 30-frame window")
+    else:
+        print("Trials  : manual SPACE logging")
     print(f"CSV     : {out_path}")
     print(f"JSON    : {json_path}")
     print(f"Hand    : {configured_hand_preference()}")
@@ -629,7 +840,7 @@ def main():
     capture_missing_frames = 0
     previous_vec = None
     current_motion = 0.0
-    state = WAITING_FOR_HANDS if CAPTURE_MODE == "hand_trigger_auto" else "MANUAL"
+    state = MANUAL if CAPTURE_MODE == "manual" else WAITING
     last_state_print = None
     last_row = None
     last_prediction = default_prediction("waiting for a complete sequence")
@@ -697,6 +908,88 @@ def main():
 
                     expected = EXPECTED_LABELS[expected_idx]
                     trial_text = str(manual_trial_count)
+                elif CAPTURE_MODE == "manual_capture":
+                    expected = EXPECTED_LABELS[expected_idx]
+                    trial_text = str(manual_trial_count)
+                    trial_in_label = manual_trial_count + 1
+
+                    if not paused:
+                        if state == WAITING:
+                            last_prediction = {
+                                **last_prediction,
+                                "motion": current_motion,
+                                "hand_presence": 1.0 if record and record.get("selected_hand_present") else 0.0,
+                                "quality_status": "GOOD" if ready_from_frame(vec, record) else "LOW_HAND_PRESENCE",
+                                "quality_reason": "press SPACE/C to start capture",
+                                "inference_allowed": False,
+                            }
+                        elif state == STABILIZING:
+                            if ready_from_frame(vec, record):
+                                ready_count += 1
+                            else:
+                                ready_count = 0
+                            last_prediction = {
+                                **last_prediction,
+                                "motion": current_motion,
+                                "hand_presence": 1.0 if record and record.get("selected_hand_present") else 0.0,
+                                "quality_status": "GOOD" if ready_count else "LOW_HAND_PRESENCE",
+                                "quality_reason": f"stabilizing {ready_count}/{HAND_READY_FRAMES}",
+                                "inference_allowed": False,
+                            }
+                            if ready_count >= HAND_READY_FRAMES:
+                                state = RECORDING
+                                capture_frames = []
+                                capture_quality = []
+                                capture_missing_frames = 0
+                                print(f"{expected} trial {trial_in_label} | RECORDING", flush=True)
+                        elif state == RECORDING:
+                            if vec is None:
+                                capture_missing_frames += 1
+                                if capture_missing_frames >= NO_POSE_RESET_FRAMES:
+                                    state = WAITING
+                                    ready_count = 0
+                                    capture_frames = []
+                                    capture_quality = []
+                                    last_prediction = {
+                                        **default_prediction("capture cancelled: pose missing"),
+                                        "quality_status": "BAD_SEQUENCE",
+                                        "quality_reason": "capture cancelled: pose missing",
+                                    }
+                                    print(f"{expected} trial {trial_in_label} | WAITING | capture cancelled: pose missing", flush=True)
+                            else:
+                                capture_frames.append(vec)
+                                capture_quality.append(record)
+                                last_prediction = {
+                                    **last_prediction,
+                                    "motion": current_motion,
+                                    "hand_presence": 1.0 if record and record.get("selected_hand_present") else 0.0,
+                                    "quality_status": "GOOD",
+                                    "quality_reason": f"recording {len(capture_frames)}/{CAPTURE_FRAMES}",
+                                    "inference_allowed": False,
+                                }
+                                if len(capture_frames) >= CAPTURE_FRAMES:
+                                    state = CLASSIFYING
+                        elif state == CLASSIFYING:
+                            last_prediction = classify_sequence(capture_frames, capture_quality, model, idx_to_label)
+                            row = build_trial_row(model_name, model_path, expected, last_prediction, state)
+                            append_row(out_path, fields, row)
+                            rows.append(row)
+                            last_row = row
+                            manual_trial_count += 1
+                            print_trial_result(expected, manual_trial_count, state, row)
+                            state = RESULT
+                            result_until = now + RESULT_SECONDS
+                        elif state == RESULT:
+                            if now >= result_until:
+                                state = WAITING
+                                ready_count = 0
+                                capture_frames = []
+                                capture_quality = []
+                                capture_missing_frames = 0
+
+                    if state != last_state_print:
+                        print(f"{expected} trial {trial_in_label} | {state}", flush=True)
+                        last_state_print = state
                 else:
                     expected, trial_in_label, label_idx = current_auto_label(auto_trial_idx)
                     if expected is None:
@@ -705,8 +998,9 @@ def main():
 
                     if paused:
                         trial_text = f"{auto_trial_idx + 1}/{total_auto_trials}"
-                    elif state == WAITING_FOR_HANDS:
+                    elif state == WAITING:
                         if ready_from_frame(vec, record):
+                            state = STABILIZING
                             ready_count += 1
                         else:
                             ready_count = 0
@@ -715,27 +1009,34 @@ def main():
                             "motion": current_motion,
                             "hand_presence": 1.0 if record and record.get("selected_hand_present") else 0.0,
                             "quality_status": "GOOD" if ready_count else "LOW_HAND_PRESENCE",
-                            "quality_reason": "hands visible" if ready_count else "Waiting for hands",
+                            "quality_reason": "hands visible" if ready_count else "waiting for hands",
                             "inference_allowed": False,
                         }
-                        if ready_count >= HAND_READY_FRAMES:
-                            state = READY
-                            print(f"{expected} trial {trial_in_label} | READY | Start signing.", flush=True)
-                    elif state == READY:
+                    elif state == STABILIZING:
                         if not ready_from_frame(vec, record):
-                            state = WAITING_FOR_HANDS
+                            state = WAITING
                             ready_count = 0
-                        elif current_motion >= MOTION_START_THRESHOLD:
-                            state = CAPTURING
+                        else:
+                            ready_count += 1
+                        last_prediction = {
+                            **last_prediction,
+                            "motion": current_motion,
+                            "hand_presence": 1.0 if record and record.get("selected_hand_present") else 0.0,
+                            "quality_status": "GOOD" if ready_count else "LOW_HAND_PRESENCE",
+                            "quality_reason": f"stabilizing {ready_count}/{HAND_READY_FRAMES}",
+                            "inference_allowed": False,
+                        }
+                        if ready_count >= HAND_READY_FRAMES and current_motion >= MOTION_START_THRESHOLD:
+                            state = RECORDING
                             capture_frames = []
                             capture_quality = []
                             capture_missing_frames = 0
-                            print(f"{expected} trial {trial_in_label} | CAPTURING", flush=True)
-                    elif state == CAPTURING:
+                            print(f"{expected} trial {trial_in_label} | RECORDING", flush=True)
+                    elif state == RECORDING:
                         if vec is None:
                             capture_missing_frames += 1
                             if capture_missing_frames >= NO_POSE_RESET_FRAMES:
-                                state = WAITING_FOR_HANDS
+                                state = WAITING
                                 ready_count = 0
                                 capture_frames = []
                                 capture_quality = []
@@ -744,7 +1045,7 @@ def main():
                                     "quality_status": "BAD_SEQUENCE",
                                     "quality_reason": "capture cancelled: pose missing",
                                 }
-                                print(f"{expected} trial {trial_in_label} | WAITING_FOR_HANDS | capture cancelled: pose missing", flush=True)
+                                print(f"{expected} trial {trial_in_label} | WAITING | capture cancelled: pose missing", flush=True)
                         else:
                             capture_frames.append(vec)
                             capture_quality.append(record)
@@ -753,7 +1054,7 @@ def main():
                                 "motion": current_motion,
                                 "hand_presence": 1.0 if record and record.get("selected_hand_present") else 0.0,
                                 "quality_status": "GOOD",
-                                "quality_reason": f"capturing {len(capture_frames)}/{CAPTURE_FRAMES}",
+                                "quality_reason": f"recording {len(capture_frames)}/{CAPTURE_FRAMES}",
                                 "inference_allowed": False,
                             }
                             if len(capture_frames) >= CAPTURE_FRAMES:
@@ -778,7 +1079,7 @@ def main():
                             capture_frames = []
                             capture_quality = []
                             capture_missing_frames = 0
-                            state = WAITING_FOR_HANDS
+                            state = WAITING
 
                     if state != last_state_print:
                         print(f"{expected} trial {trial_in_label} | {state}", flush=True)
@@ -808,13 +1109,43 @@ def main():
                         last_row = row
                         manual_trial_count += 1
                         print_trial_result(expected, manual_trial_count, "MANUAL", row)
+                elif CAPTURE_MODE == "manual_capture":
+                    if key in {ord("n"), ord("N")}:
+                        expected_idx = (expected_idx + 1) % len(EXPECTED_LABELS)
+                        state = WAITING
+                        ready_count = 0
+                        capture_frames = []
+                        capture_quality = []
+                        capture_missing_frames = 0
+                    elif key in {ord("b"), ord("B")}:
+                        expected_idx = (expected_idx - 1) % len(EXPECTED_LABELS)
+                        state = WAITING
+                        ready_count = 0
+                        capture_frames = []
+                        capture_quality = []
+                        capture_missing_frames = 0
+                    elif key in {ord("r"), ord("R")}:
+                        state = WAITING
+                        ready_count = 0
+                        capture_frames = []
+                        capture_quality = []
+                        capture_missing_frames = 0
+                        print("Retrying current manual-capture trial.", flush=True)
+                    elif key in {ord(" "), ord("c"), ord("C")} and state in {WAITING, RESULT}:
+                        state = STABILIZING
+                        ready_count = 0
+                        capture_frames = []
+                        capture_quality = []
+                        capture_missing_frames = 0
+                        expected = EXPECTED_LABELS[expected_idx]
+                        print(f"{expected} trial {manual_trial_count + 1} | START CAPTURE", flush=True)
                 else:
                     if key in {ord("r"), ord("R")}:
                         ready_count = 0
                         capture_frames = []
                         capture_quality = []
                         capture_missing_frames = 0
-                        state = WAITING_FOR_HANDS
+                        state = WAITING
                         print("Retrying current trial.", flush=True)
                     elif key in {ord("n"), ord("N")}:
                         print("Skipping current trial.", flush=True)
@@ -823,7 +1154,7 @@ def main():
                         capture_frames = []
                         capture_quality = []
                         capture_missing_frames = 0
-                        state = WAITING_FOR_HANDS
+                        state = WAITING
 
     except KeyboardInterrupt:
         print("\nInterrupted by CTRL+C. Writing partial logs.", flush=True)
