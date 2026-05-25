@@ -13,7 +13,6 @@ import android.graphics.Shader
 import android.graphics.Typeface
 import android.os.Handler
 import android.os.Looper
-import android.os.SystemClock
 import android.util.AttributeSet
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
@@ -76,7 +75,6 @@ class AvatarView @JvmOverloads constructor(
     private var debugStateText = "Idle"
     private var viewAttached = false
     private var drawPosted = false
-    private var lastIdleDrawMs = 0L
 
     init {
         contentDescription = "Avatar signing: Ready"
@@ -106,7 +104,7 @@ class AvatarView @JvmOverloads constructor(
 
         val word = cleaned.split(Regex("[^A-Z]+")).firstOrNull().orEmpty().ifBlank { cleaned }
         val frames = synchronized(cacheLock) { keyframeCache[word] } ?: builtInFrames(word)
-        if (frames != null && frames.isNotEmpty()) {
+        if (frames.isNotEmpty()) {
             pendingWord = null
             contentDescription = "Avatar signing: $word"
             startKeyframeAnimation(word, frames)
@@ -131,27 +129,9 @@ class AvatarView @JvmOverloads constructor(
             return
         }
         if (!viewAttached) return
-        if (idleAnimator?.isStarted == true) return
         idleAnimator?.cancel()
-        if (!MotionSettings.animationsEnabled(context)) {
-            breathingPhase = 0f
-            requestDraw()
-            return
-        }
-        idleAnimator = ValueAnimator.ofFloat(0f, 1f, 0f).apply {
-            duration = 3200L
-            repeatCount = ValueAnimator.INFINITE
-            interpolator = AccelerateDecelerateInterpolator()
-            addUpdateListener {
-                breathingPhase = (it.animatedValue as Float) * TWO_PI
-                val now = SystemClock.uptimeMillis()
-                if (now - lastIdleDrawMs >= IDLE_FRAME_INTERVAL_MS) {
-                    lastIdleDrawMs = now
-                    requestDraw()
-                }
-            }
-            start()
-        }
+        breathingPhase = 0f
+        requestDraw()
     }
 
     fun setListening(active: Boolean) {
@@ -1002,7 +982,6 @@ class AvatarView @JvmOverloads constructor(
         private const val IDLE_ELBOW_Y = 0.58f
         private const val FINGERSPELL_STEP_MS = 300L
         private const val TWO_PI = (Math.PI * 2.0).toFloat()
-        private const val IDLE_FRAME_INTERVAL_MS = 66L
 
         private const val AVATAR_BG = 0xFF1E1E26.toInt()
         private const val SURFACE_WHITE = 0xFF17171C.toInt()

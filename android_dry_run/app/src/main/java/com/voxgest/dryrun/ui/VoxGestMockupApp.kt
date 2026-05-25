@@ -120,6 +120,8 @@ private data class PhraseUi(
     val color: Color
 )
 
+private val DemoTokenWords = listOf("WHAT", "YOUR", "NAME", "MY", "YOU", "OKAY", "STUDENT", "WHERE", "LIVE", "NOTHING")
+
 @Composable
 fun VoxGestMockupApp() {
     var selectedTab by rememberSaveable { mutableStateOf(VoxTab.Sign) }
@@ -127,6 +129,7 @@ fun VoxGestMockupApp() {
     var currentWord by rememberSaveable { mutableStateOf("HELLO") }
     // TODO sentenceComposerState: bind this to the real TokenComposer once camera inference is wired.
     var sentence by rememberSaveable { mutableStateOf("HELLO, I NEED WATER") }
+    var demoTokenBuffer by rememberSaveable { mutableStateOf("") }
     // TODO avatarQueue: route accepted listen/phrase/sign tokens through the shared avatar queue.
     var pendingAvatarText by rememberSaveable { mutableStateOf("") }
     var pendingAvatarRequestId by rememberSaveable { mutableStateOf(0) }
@@ -147,6 +150,38 @@ fun VoxGestMockupApp() {
         if (!isMeaningfulOutput(text)) return
         val engine = tts ?: TextToSpeech(context) { }.also { tts = it }
         speak(engine, text)
+    }
+
+    fun queueAvatarPhrase(text: String) {
+        if (!isMeaningfulOutput(text)) return
+        pendingAvatarText = text
+        pendingAvatarRequestId += 1
+        selectedTab = VoxTab.Listen
+    }
+
+    fun clearDemoTokens() {
+        demoTokenBuffer = ""
+        currentWord = "READY"
+        sentence = ""
+    }
+
+    fun addDemoToken(token: String) {
+        val clean = token.trim().uppercase(Locale.US)
+        if (clean.isBlank() || clean == "NOTHING") return
+
+        val tokens = (demoTokenBuffer.toDemoTokens() + clean).takeLast(4)
+        demoTokenBuffer = tokens.joinToString("|")
+        currentWord = clean
+
+        val finalized = demoSentenceForTokens(tokens)
+        if (finalized == null) {
+            sentence = tokens.joinToString(" ")
+            return
+        }
+
+        sentence = finalized
+        history.add(0, HistoryUiEntry("Today", "Sign", finalized, "Now", "Shown in signs", R.drawable.ic_hand_gesture, PrimaryLight))
+        queueAvatarPhrase(finalized)
     }
 
     DisposableEffect(Unit) {
@@ -195,14 +230,27 @@ fun VoxGestMockupApp() {
                                 }
                             },
                             onDelete = {
-                                sentence = sentence.split(",").dropLast(1).joinToString(", ").ifBlank { currentWord }
+                                val tokens = demoTokenBuffer.toDemoTokens()
+                                if (tokens.isNotEmpty()) {
+                                    val nextTokens = tokens.dropLast(1)
+                                    demoTokenBuffer = nextTokens.joinToString("|")
+                                    currentWord = nextTokens.lastOrNull() ?: "READY"
+                                    sentence = demoSentenceForTokens(nextTokens) ?: nextTokens.joinToString(" ")
+                                } else {
+                                    sentence = sentence.split(",").dropLast(1).joinToString(", ").ifBlank { currentWord }
+                                }
                             },
                             onClear = {
-                                currentWord = "READY"
-                                sentence = ""
+                                clearDemoTokens()
                             },
                             onStartRecognition = {
                                 currentWord = "READY"
+                            },
+                            demoTokens = demoTokenBuffer.toDemoTokens(),
+                            onDemoToken = { addDemoToken(it) },
+                            onDemoClear = { clearDemoTokens() },
+                            onDemoSpeak = {
+                                if (isMeaningfulOutput(sentence)) speakNow(sentence)
                             }
                         )
                         VoxTab.Listen -> ListenScreen(
@@ -219,9 +267,7 @@ fun VoxGestMockupApp() {
                                 if (isMeaningfulOutput(phrase)) {
                                     speakNow(phrase)
                                     history.add(0, HistoryUiEntry("Today", "Phrase", phrase, "Now", "Shown in signs", R.drawable.ic_chat, Amber))
-                                    pendingAvatarText = phrase
-                                    pendingAvatarRequestId += 1
-                                    selectedTab = VoxTab.Listen
+                                    queueAvatarPhrase(phrase)
                                 }
                             }
                         )
@@ -242,6 +288,25 @@ private fun speak(tts: TextToSpeech, text: String) {
 
 private fun isMeaningfulOutput(text: String): Boolean {
     return text.trim().isNotBlank() && text.trim().uppercase(Locale.US) != "NOTHING"
+}
+
+private fun String.toDemoTokens(): List<String> {
+    return split("|").map { it.trim() }.filter { it.isNotBlank() && it != "NOTHING" }
+}
+
+private fun demoSentenceForTokens(tokens: List<String>): String? {
+    return when (tokens) {
+        listOf("WHAT", "YOUR", "NAME"),
+        listOf("YOUR", "NAME", "WHAT") -> "What is your name?"
+        listOf("MY", "NAME") -> "My name is [letters from alphabet recognizer]."
+        listOf("YOU", "OKAY"),
+        listOf("OKAY", "YOU") -> "Are you okay?"
+        listOf("YOU", "STUDENT"),
+        listOf("STUDENT", "YOU") -> "Are you a student?"
+        listOf("WHERE", "YOU", "LIVE"),
+        listOf("YOU", "LIVE", "WHERE") -> "Where do you live?"
+        else -> null
+    }
 }
 
 @Composable
@@ -296,7 +361,11 @@ private fun SignScreen(
     onSpeak: () -> Unit,
     onDelete: () -> Unit,
     onClear: () -> Unit,
-    onStartRecognition: () -> Unit
+    onStartRecognition: () -> Unit,
+    demoTokens: List<String>,
+    onDemoToken: (String) -> Unit,
+    onDemoClear: () -> Unit,
+    onDemoSpeak: () -> Unit
 ) {
     ScreenScroll {
         ScreenTopBar("SIGN", R.drawable.ic_settings)
@@ -306,6 +375,12 @@ private fun SignScreen(
         }
         CurrentWordCard(currentWord)
         SentenceCard(sentence.ifBlank { "Ready for accepted signs" }, onSpeak)
+        DemoTokenPanel(
+            tokens = demoTokens,
+            onToken = onDemoToken,
+            onClear = onDemoClear,
+            onSpeak = onDemoSpeak
+        )
         Row(
             modifier = Modifier.padding(horizontal = 20.dp, vertical = 10.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -427,21 +502,103 @@ private fun RecognitionDemoCard(onStartRecognition: () -> Unit) {
             Column(Modifier.weight(1f)) {
                 Label("DEMO MODE")
                 Text(
-                    "Recognition wiring in progress.",
+                    "Demo Mode: recognition is paused. Use phrase buttons or token demo buttons.",
                     color = TextMain,
                     fontSize = 14.sp,
+                    lineHeight = 19.sp,
                     fontWeight = FontWeight.SemiBold,
                     modifier = Modifier.padding(top = 5.dp)
                 )
             }
             Button(
                 onClick = onStartRecognition,
+                enabled = false,
                 shape = RoundedCornerShape(14.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Primary),
                 modifier = Modifier.height(48.dp)
             ) {
-                Text("Start Recognition", color = DarkInk, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                Text("Experimental", color = DarkInk, fontSize = 12.sp, fontWeight = FontWeight.Bold)
             }
+        }
+    }
+}
+
+@Composable
+private fun DemoTokenPanel(
+    tokens: List<String>,
+    onToken: (String) -> Unit,
+    onClear: () -> Unit,
+    onSpeak: () -> Unit
+) {
+    VoxGestCard(modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp)) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Column(Modifier.weight(1f)) {
+                Label("TOKEN DEMO")
+                Text(
+                    if (tokens.isEmpty()) "Tap tokens to build a phrase." else tokens.joinToString(" + "),
+                    color = TextMain,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.padding(top = 5.dp)
+                )
+            }
+            StatusChip(
+                label = "Paused",
+                dotColor = Amber,
+                containerColor = Color(0xFFFFF7ED),
+                contentColor = Amber
+            )
+        }
+        Column(
+            modifier = Modifier.padding(top = 14.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            DemoTokenWords.chunked(3).forEach { row ->
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    row.forEach { token ->
+                        DemoTokenButton(
+                            label = token,
+                            tint = if (token == "NOTHING") TextFaint else Primary,
+                            modifier = Modifier.weight(1f),
+                            onClick = { onToken(token) }
+                        )
+                    }
+                    repeat(3 - row.size) {
+                        Spacer(Modifier.weight(1f))
+                    }
+                }
+            }
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                DemoTokenButton("Clear", Red, Modifier.weight(1f), onClear)
+                DemoTokenButton("Speak", Primary, Modifier.weight(1f), onSpeak)
+            }
+        }
+    }
+}
+
+@Composable
+private fun DemoTokenButton(label: String, tint: Color, modifier: Modifier, onClick: () -> Unit) {
+    Surface(
+        modifier = modifier
+            .height(46.dp)
+            .clip(RoundedCornerShape(14.dp))
+            .clickable { onClick() },
+        shape = RoundedCornerShape(14.dp),
+        color = if (label == "Speak") Primary else CardWhite,
+        border = BorderStroke(1.dp, if (label == "Speak") Primary else Border),
+        shadowElevation = 1.dp
+    ) {
+        Box(contentAlignment = Alignment.Center, modifier = Modifier.padding(horizontal = 8.dp)) {
+            Text(
+                label,
+                color = if (label == "Speak") DarkInk else tint,
+                fontSize = 11.sp,
+                fontWeight = FontWeight.Bold,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
         }
     }
 }
@@ -797,6 +954,11 @@ private fun CategoryChip(label: String, @DrawableRes icon: Int, tint: Color, bg:
 @Composable
 private fun PhraseGrid(onPhrase: (String) -> Unit) {
     val phrases = listOf(
+        PhraseUi("What is your name?", R.drawable.ic_chat, Primary),
+        PhraseUi("My name is...", R.drawable.ic_hand_gesture, PrimaryLight),
+        PhraseUi("Are you okay?", R.drawable.ic_check_circle, Green),
+        PhraseUi("Are you a student?", R.drawable.ic_chat, Blue),
+        PhraseUi("Where do you live?", R.drawable.ic_history, Purple),
         PhraseUi("I need help", R.drawable.ic_warning, Color(0xFFF97316)),
         PhraseUi("Call a doctor", R.drawable.ic_medical, PrimaryLight),
         PhraseUi("I need water", R.drawable.ic_water_drop, Blue),
