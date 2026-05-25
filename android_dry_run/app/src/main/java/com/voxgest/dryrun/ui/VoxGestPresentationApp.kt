@@ -53,13 +53,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.CornerRadius
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
@@ -92,7 +87,7 @@ private val Red = Color(0xFFE53935)
 private val Blue = Color(0xFF22A7D8)
 private val Purple = Color(0xFF7C5AA6)
 private val Green = Color(0xFF43A047)
-private const val VOXGEST_DEMO_MODE = true
+private const val PRESENTATION_MODE = true
 
 private enum class VoxTab(
     val label: String,
@@ -120,30 +115,31 @@ private data class PhraseUi(
     val color: Color
 )
 
-private val DemoTokenWords = listOf("WHAT", "YOUR", "NAME", "MY", "YOU", "OKAY", "STUDENT", "WHERE", "LIVE", "NOTHING")
+private val DemoTokenWords = listOf(
+    "WHAT",
+    "YOUR",
+    "NAME",
+    "MY",
+    "YOU",
+    "OKAY",
+    "STUDENT",
+    "WHERE",
+    "LIVE",
+    "NOTHING",
+    "CLEAR",
+    "SPEAK"
+)
 
 @Composable
-fun VoxGestMockupApp() {
+fun VoxGestPresentationApp() {
     var selectedTab by rememberSaveable { mutableStateOf(VoxTab.Sign) }
-    // TODO acceptedTokenStream: replace mock word updates with accepted recognition tokens only.
-    var currentWord by rememberSaveable { mutableStateOf("HELLO") }
-    // TODO sentenceComposerState: bind this to the real TokenComposer once camera inference is wired.
-    var sentence by rememberSaveable { mutableStateOf("HELLO, I NEED WATER") }
+    var currentWord by rememberSaveable { mutableStateOf("READY") }
+    var sentence by rememberSaveable { mutableStateOf("") }
     var demoTokenBuffer by rememberSaveable { mutableStateOf("") }
-    // TODO avatarQueue: route accepted listen/phrase/sign tokens through the shared avatar queue.
+    var recognitionRunning by rememberSaveable { mutableStateOf(false) }
     var pendingAvatarText by rememberSaveable { mutableStateOf("") }
     var pendingAvatarRequestId by rememberSaveable { mutableStateOf(0) }
-    // TODO historyRepository: swap this in-memory history with local persistence after demo UI stabilizes.
-    val history = remember {
-        mutableStateListOf(
-            HistoryUiEntry("Today", "Sign", "HELLO, I NEED WATER", "10:45 AM", "Spoken", R.drawable.ic_hand_gesture, PrimaryLight),
-            HistoryUiEntry("Today", "Speech", "Hello, how can I help you?", "10:42 AM", "Shown in signs", R.drawable.ic_waveform, Primary),
-            HistoryUiEntry("Today", "Phrase", "I need help", "10:40 AM", "Shown in signs", R.drawable.ic_chat, Amber),
-            HistoryUiEntry("Yesterday", "Sign", "THANK YOU", "08:15 PM", "Spoken", R.drawable.ic_hand_gesture, PrimaryLight),
-            HistoryUiEntry("Yesterday", "Speech", "Please wait a moment.", "07:50 PM", "Shown in signs", R.drawable.ic_waveform, Primary),
-            HistoryUiEntry("Yesterday", "Phrase", "Call a doctor", "07:30 PM", "Shown in signs", R.drawable.ic_chat, Amber)
-        )
-    }
+    val history = remember { mutableStateListOf<HistoryUiEntry>() }
     val context = LocalContext.current
     var tts by remember { mutableStateOf<TextToSpeech?>(null) }
     fun speakNow(text: String) {
@@ -167,7 +163,20 @@ fun VoxGestMockupApp() {
 
     fun addDemoToken(token: String) {
         val clean = token.trim().uppercase(Locale.US)
-        if (clean.isBlank() || clean == "NOTHING") return
+        when (clean) {
+            "", "NOTHING" -> return
+            "CLEAR" -> {
+                clearDemoTokens()
+                return
+            }
+            "SPEAK" -> {
+                if (isMeaningfulOutput(sentence)) {
+                    speakNow(sentence)
+                    history.add(0, HistoryUiEntry("Today", "Sign", sentence, "Now", "Spoken", R.drawable.ic_hand_gesture, PrimaryLight))
+                }
+                return
+            }
+        }
 
         val tokens = (demoTokenBuffer.toDemoTokens() + clean).takeLast(4)
         demoTokenBuffer = tokens.joinToString("|")
@@ -216,13 +225,13 @@ fun VoxGestMockupApp() {
                     .background(AppBg)
                     .padding(innerPadding)
             ) {
-                FakeStatusBar()
                 Box(modifier = Modifier.weight(1f)) {
                     when (selectedTab) {
                         VoxTab.Sign -> SignScreen(
                             currentWord = currentWord,
                             sentence = sentence,
-                            demoMode = VOXGEST_DEMO_MODE,
+                            recognitionRunning = recognitionRunning,
+                            presentationMode = PRESENTATION_MODE,
                             onSpeak = {
                                 if (isMeaningfulOutput(sentence)) {
                                     speakNow(sentence)
@@ -244,14 +253,15 @@ fun VoxGestMockupApp() {
                                 clearDemoTokens()
                             },
                             onStartRecognition = {
+                                recognitionRunning = true
+                                currentWord = "READY"
+                            },
+                            onStopRecognition = {
+                                recognitionRunning = false
                                 currentWord = "READY"
                             },
                             demoTokens = demoTokenBuffer.toDemoTokens(),
-                            onDemoToken = { addDemoToken(it) },
-                            onDemoClear = { clearDemoTokens() },
-                            onDemoSpeak = {
-                                if (isMeaningfulOutput(sentence)) speakNow(sentence)
-                            }
+                            onDemoToken = { addDemoToken(it) }
                         )
                         VoxTab.Listen -> ListenScreen(
                             pendingAvatarText = pendingAvatarText,
@@ -295,37 +305,19 @@ private fun String.toDemoTokens(): List<String> {
 }
 
 private fun demoSentenceForTokens(tokens: List<String>): String? {
-    return when (tokens) {
-        listOf("WHAT", "YOUR", "NAME"),
-        listOf("YOUR", "NAME", "WHAT") -> "What is your name?"
-        listOf("MY", "NAME") -> "My name is [letters from alphabet recognizer]."
-        listOf("YOU", "OKAY"),
-        listOf("OKAY", "YOU") -> "Are you okay?"
-        listOf("YOU", "STUDENT"),
-        listOf("STUDENT", "YOU") -> "Are you a student?"
-        listOf("WHERE", "YOU", "LIVE"),
-        listOf("YOU", "LIVE", "WHERE") -> "Where do you live?"
+    val clean = tokens.map { it.uppercase(Locale.US) }.filter { it.isNotBlank() && it != "NOTHING" }
+    return when {
+        clean.endsWithTokens("WHAT", "YOUR", "NAME") -> "What is your name?"
+        clean.endsWithTokens("MY", "NAME") -> "My name is [letters from alphabet recognizer]."
+        clean.endsWithTokens("YOU", "OKAY") -> "Are you okay?"
+        clean.endsWithTokens("YOU", "STUDENT") -> "Are you a student?"
+        clean.endsWithTokens("WHERE", "YOU", "LIVE") -> "Where do you live?"
         else -> null
     }
 }
 
-@Composable
-private fun FakeStatusBar() {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(30.dp)
-            .padding(start = 20.dp, end = 20.dp, top = 8.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text("9:30", color = TextMain, fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
-        Row(horizontalArrangement = Arrangement.spacedBy(4.dp), verticalAlignment = Alignment.CenterVertically) {
-            SignalIcon()
-            WifiDot()
-            BatteryIcon()
-        }
-    }
+private fun List<String>.endsWithTokens(vararg expected: String): Boolean {
+    return size >= expected.size && takeLast(expected.size) == expected.toList()
 }
 
 @Composable
@@ -343,7 +335,7 @@ private fun ScreenTopBar(title: String, @DrawableRes trailing: Int, secondTraili
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center,
-            letterSpacing = 0.7.sp,
+            letterSpacing = 0.sp,
             modifier = Modifier.weight(1f)
         )
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -357,29 +349,29 @@ private fun ScreenTopBar(title: String, @DrawableRes trailing: Int, secondTraili
 private fun SignScreen(
     currentWord: String,
     sentence: String,
-    demoMode: Boolean,
+    recognitionRunning: Boolean,
+    presentationMode: Boolean,
     onSpeak: () -> Unit,
     onDelete: () -> Unit,
     onClear: () -> Unit,
     onStartRecognition: () -> Unit,
+    onStopRecognition: () -> Unit,
     demoTokens: List<String>,
-    onDemoToken: (String) -> Unit,
-    onDemoClear: () -> Unit,
-    onDemoSpeak: () -> Unit
+    onDemoToken: (String) -> Unit
 ) {
     ScreenScroll {
         ScreenTopBar("SIGN", R.drawable.ic_settings)
-        CameraPreviewCard()
-        if (demoMode) {
-            RecognitionDemoCard(onStartRecognition)
-        }
+        RecognitionAreaCard(
+            recognitionRunning = recognitionRunning,
+            presentationMode = presentationMode,
+            onStartRecognition = onStartRecognition,
+            onStopRecognition = onStopRecognition
+        )
         CurrentWordCard(currentWord)
         SentenceCard(sentence.ifBlank { "Ready for accepted signs" }, onSpeak)
         DemoTokenPanel(
             tokens = demoTokens,
-            onToken = onDemoToken,
-            onClear = onDemoClear,
-            onSpeak = onDemoSpeak
+            onToken = onDemoToken
         )
         Row(
             modifier = Modifier.padding(horizontal = 20.dp, vertical = 10.dp),
@@ -389,85 +381,74 @@ private fun SignScreen(
             ActionButton(R.drawable.ic_delete_outline, "Delete", TextMuted, Modifier.weight(1f), onDelete)
             ActionButton(R.drawable.ic_cancel, "Clear", Red, Modifier.weight(1f), onClear)
         }
+        PresentationBuildFooter()
         Spacer(Modifier.height(12.dp))
     }
 }
 
 @Composable
-private fun CameraPreviewCard() {
-    Box(
-        modifier = Modifier
-            .padding(horizontal = 20.dp)
-            .fillMaxWidth()
-            .height(320.dp)
-            .clip(RoundedCornerShape(24.dp))
-            .background(Color(0xFFD1D5DB))
-    ) {
-        Canvas(Modifier.fillMaxSize()) {
-            val w = size.width
-            val h = size.height
-            drawRect(Brush.verticalGradient(listOf(Color(0xFFE5E7EB), Color(0xFF9CA3AF))))
-            val cx = w * 0.52f
-            val headR = w * 0.13f
-            drawCircle(Color(0xFFF1C9A8), headR, Offset(cx, h * 0.28f))
-            drawOval(Color(0xFF3B2418), Offset(cx - headR * 1.05f, h * 0.16f), Size(headR * 2.1f, headR * 1.0f))
-            drawRoundRect(Color(0xFF111827), Offset(cx - w * 0.22f, h * 0.44f), Size(w * 0.44f, h * 0.32f), CornerRadius(28.dp.toPx(), 28.dp.toPx()))
-            drawCircle(Color(0xFF111827), w * 0.20f, Offset(cx, h * 0.60f))
-            drawLine(Color(0xFFF1C9A8), Offset(w * 0.30f, h * 0.73f), Offset(w * 0.35f, h * 0.44f), strokeWidth = 16.dp.toPx(), cap = StrokeCap.Round)
-            drawLine(Color(0xFFF1C9A8), Offset(w * 0.35f, h * 0.44f), Offset(w * 0.30f, h * 0.32f), strokeWidth = 14.dp.toPx(), cap = StrokeCap.Round)
-            drawRoundRect(Color(0xFFF1C9A8), Offset(w * 0.25f, h * 0.27f), Size(42.dp.toPx(), 58.dp.toPx()), CornerRadius(14.dp.toPx(), 14.dp.toPx()))
-            val palm = Offset(w * 0.31f, h * 0.34f)
-            val fingerXs = listOf(-18, -8, 2, 12, 22)
-            fingerXs.forEachIndexed { index, dx ->
-                val tip = Offset(palm.x + dx.dp.toPx(), h * (0.16f + index * 0.015f))
-                drawLine(AccentGreen.copy(alpha = 0.75f), palm, tip, strokeWidth = 2.dp.toPx(), cap = StrokeCap.Round)
-                drawCircle(AccentGreen.copy(alpha = 0.75f), 3.5.dp.toPx(), tip)
-            }
-            drawLine(AccentGreen.copy(alpha = 0.65f), Offset(w * 0.31f, h * 0.50f), palm, strokeWidth = 2.dp.toPx(), cap = StrokeCap.Round)
+private fun RecognitionAreaCard(
+    recognitionRunning: Boolean,
+    presentationMode: Boolean,
+    onStartRecognition: () -> Unit,
+    onStopRecognition: () -> Unit
+) {
+    VoxGestCard(modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp)) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Label("RECOGNITION AREA", Modifier.weight(1f))
+            StatusChip(
+                label = if (recognitionRunning) "Calibration" else "Paused",
+                dotColor = if (recognitionRunning) AccentGreen else Amber,
+                containerColor = if (recognitionRunning) Color(0xFFE8F7EE) else Color(0xFFFFF7ED),
+                contentColor = if (recognitionRunning) Green else Amber
+            )
         }
-        TrackingBadge()
-        Surface(
+        Box(
             modifier = Modifier
-                .align(Alignment.TopEnd)
-                .padding(14.dp)
-                .size(36.dp),
-            shape = CircleShape,
-            color = Color.White.copy(alpha = 0.86f)
+                .padding(top = 14.dp)
+                .fillMaxWidth()
+                .height(152.dp)
+                .clip(RoundedCornerShape(18.dp))
+                .background(if (recognitionRunning) Color(0xFFE7F8F5) else SoftCyan)
+                .border(1.dp, Border, RoundedCornerShape(18.dp))
+                .padding(18.dp),
+            contentAlignment = Alignment.Center
         ) {
-            Box(contentAlignment = Alignment.Center) {
-                VoxIcon(R.drawable.ic_wb_sunny, "Light", TextMuted, Modifier.size(17.dp))
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                VoxIcon(
+                    if (recognitionRunning) R.drawable.ic_hand_gesture else R.drawable.ic_camera_off,
+                    "Recognition status",
+                    if (recognitionRunning) Primary else TextMuted,
+                    Modifier.size(34.dp)
+                )
+                Text(
+                    "Recognition mode is available for testing but still under calibration.",
+                    color = TextMain,
+                    fontSize = 14.sp,
+                    lineHeight = 19.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(top = 12.dp)
+                )
+                Text(
+                    if (recognitionRunning) "Manual start is active; camera inference remains gated." else "Tap Start Recognition when panelists want to try calibration mode.",
+                    color = TextMuted,
+                    fontSize = 12.sp,
+                    lineHeight = 17.sp,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(top = 6.dp)
+                )
             }
         }
-        TrackingCorners()
-    }
-}
-
-@Composable
-private fun TrackingBadge() {
-    Box(modifier = Modifier.padding(14.dp)) {
-        StatusChip(
-            label = "Tracking Hand",
-            dotColor = AccentGreen,
-            containerColor = Color(0xCC0A4B3E),
-            contentColor = Color.White
-        )
-    }
-}
-
-@Composable
-private fun TrackingCorners() {
-    Canvas(Modifier.fillMaxSize().padding(18.dp)) {
-        val stroke = 3.dp.toPx()
-        val len = 28.dp.toPx()
-        val color = AccentGreen.copy(alpha = 0.82f)
-        drawLine(color, Offset(0f, 0f), Offset(len, 0f), stroke, StrokeCap.Round)
-        drawLine(color, Offset(0f, 0f), Offset(0f, len), stroke, StrokeCap.Round)
-        drawLine(color, Offset(size.width, 0f), Offset(size.width - len, 0f), stroke, StrokeCap.Round)
-        drawLine(color, Offset(size.width, 0f), Offset(size.width, len), stroke, StrokeCap.Round)
-        drawLine(color, Offset(0f, size.height), Offset(len, size.height), stroke, StrokeCap.Round)
-        drawLine(color, Offset(0f, size.height), Offset(0f, size.height - len), stroke, StrokeCap.Round)
-        drawLine(color, Offset(size.width, size.height), Offset(size.width - len, size.height), stroke, StrokeCap.Round)
-        drawLine(color, Offset(size.width, size.height), Offset(size.width, size.height - len), stroke, StrokeCap.Round)
+        if (presentationMode) {
+            Row(
+                modifier = Modifier.padding(top = 14.dp),
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                FilledPillButton("Start Recognition", R.drawable.ic_play_arrow, Modifier.weight(1f), onStartRecognition)
+                OutlinePillButton("Stop Recognition", R.drawable.ic_cancel, Modifier.weight(1f), onStopRecognition)
+            }
+        }
     }
 }
 
@@ -496,44 +477,14 @@ private fun CurrentWordCard(word: String) {
 }
 
 @Composable
-private fun RecognitionDemoCard(onStartRecognition: () -> Unit) {
-    VoxGestCard(modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp)) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Column(Modifier.weight(1f)) {
-                Label("DEMO MODE")
-                Text(
-                    "Demo Mode: recognition is paused. Use phrase buttons or token demo buttons.",
-                    color = TextMain,
-                    fontSize = 14.sp,
-                    lineHeight = 19.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    modifier = Modifier.padding(top = 5.dp)
-                )
-            }
-            Button(
-                onClick = onStartRecognition,
-                enabled = false,
-                shape = RoundedCornerShape(14.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Primary),
-                modifier = Modifier.height(48.dp)
-            ) {
-                Text("Experimental", color = DarkInk, fontSize = 12.sp, fontWeight = FontWeight.Bold)
-            }
-        }
-    }
-}
-
-@Composable
 private fun DemoTokenPanel(
     tokens: List<String>,
-    onToken: (String) -> Unit,
-    onClear: () -> Unit,
-    onSpeak: () -> Unit
+    onToken: (String) -> Unit
 ) {
     VoxGestCard(modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f)) {
-                Label("TOKEN DEMO")
+                Label("DEMO TOKEN AREA")
                 Text(
                     if (tokens.isEmpty()) "Tap tokens to build a phrase." else tokens.joinToString(" + "),
                     color = TextMain,
@@ -545,7 +496,7 @@ private fun DemoTokenPanel(
                 )
             }
             StatusChip(
-                label = "Paused",
+                label = "Phrase Demo",
                 dotColor = Amber,
                 containerColor = Color(0xFFFFF7ED),
                 contentColor = Amber
@@ -560,7 +511,11 @@ private fun DemoTokenPanel(
                     row.forEach { token ->
                         DemoTokenButton(
                             label = token,
-                            tint = if (token == "NOTHING") TextFaint else Primary,
+                            tint = when (token) {
+                                "NOTHING" -> TextFaint
+                                "CLEAR" -> Red
+                                else -> Primary
+                            },
                             modifier = Modifier.weight(1f),
                             onClick = { onToken(token) }
                         )
@@ -570,30 +525,27 @@ private fun DemoTokenPanel(
                     }
                 }
             }
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                DemoTokenButton("Clear", Red, Modifier.weight(1f), onClear)
-                DemoTokenButton("Speak", Primary, Modifier.weight(1f), onSpeak)
-            }
         }
     }
 }
 
 @Composable
 private fun DemoTokenButton(label: String, tint: Color, modifier: Modifier, onClick: () -> Unit) {
+    val isSpeak = label == "SPEAK"
     Surface(
         modifier = modifier
             .height(46.dp)
             .clip(RoundedCornerShape(14.dp))
             .clickable { onClick() },
         shape = RoundedCornerShape(14.dp),
-        color = if (label == "Speak") Primary else CardWhite,
-        border = BorderStroke(1.dp, if (label == "Speak") Primary else Border),
+        color = if (isSpeak) Primary else CardWhite,
+        border = BorderStroke(1.dp, if (isSpeak) Primary else Border),
         shadowElevation = 1.dp
     ) {
         Box(contentAlignment = Alignment.Center, modifier = Modifier.padding(horizontal = 8.dp)) {
             Text(
                 label,
-                color = if (label == "Speak") DarkInk else tint,
+                color = if (isSpeak) DarkInk else tint,
                 fontSize = 11.sp,
                 fontWeight = FontWeight.Bold,
                 maxLines = 1,
@@ -664,8 +616,7 @@ private fun ListenScreen(
     onSpeechSaved: (String) -> Unit
 ) {
     var listening by rememberSaveable { mutableStateOf(false) }
-    // TODO speechTranscriptState: replace this mock transcript with SpeechRecognizer partial/final results.
-    var transcript by rememberSaveable { mutableStateOf("Hello, how can I help you?") }
+    var transcript by rememberSaveable { mutableStateOf("What is your name?") }
     var avatarState by remember { mutableStateOf(AvatarPlaybackState()) }
     val avatarController = remember { AvatarController { avatarState = it } }
 
@@ -696,7 +647,6 @@ private fun ListenScreen(
             onMicTap = {
                 listening = !listening
                 avatarController.setListening(listening)
-                if (listening) transcript = "Hello, how can I help you?"
             }
         )
         Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth().padding(top = 2.dp, bottom = 14.dp)) {
@@ -715,6 +665,7 @@ private fun ListenScreen(
                 }
             }
         )
+        PresentationBuildFooter()
         Spacer(Modifier.height(12.dp))
     }
 }
@@ -876,6 +827,7 @@ private fun PhrasesScreen(onPhrase: (String) -> Unit) {
         QuickPhraseHero()
         CategoryChips()
         PhraseGrid(onPhrase)
+        PresentationBuildFooter()
         Spacer(Modifier.height(16.dp))
     }
 }
@@ -1024,6 +976,7 @@ private fun HistoryScreen(entries: List<HistoryUiEntry>) {
             Spacer(Modifier.width(8.dp))
             Text("Clear All History", color = DarkInk, fontSize = 14.sp, fontWeight = FontWeight.Bold)
         }
+        PresentationBuildFooter()
         Spacer(Modifier.height(12.dp))
     }
 }
@@ -1114,10 +1067,24 @@ private fun Label(text: String, modifier: Modifier = Modifier) {
         color = TextMuted,
         fontSize = 11.sp,
         fontWeight = FontWeight.Bold,
-        letterSpacing = 1.0.sp,
+        letterSpacing = 0.sp,
         maxLines = 1,
         modifier = modifier
     )
+}
+
+@Composable
+private fun PresentationBuildFooter() {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp, vertical = 14.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text("VoxGest Presentation Build", color = TextMuted, fontSize = 11.sp, fontWeight = FontWeight.Bold)
+        Text("Recognition: Experimental / Calibration", color = TextFaint, fontSize = 10.sp)
+        Text("Avatar: Prototype Visual Response", color = TextFaint, fontSize = 10.sp)
+    }
 }
 
 @Composable
@@ -1155,7 +1122,7 @@ private fun OutlinePillButton(label: String, @DrawableRes icon: Int, modifier: M
     ) {
         VoxIcon(icon, label, Primary, Modifier.size(18.dp))
         Spacer(Modifier.width(7.dp))
-        Text(label, color = Primary, fontSize = 13.sp, fontWeight = FontWeight.Bold)
+        Text(label, color = Primary, fontSize = 12.sp, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis)
     }
 }
 
@@ -1172,7 +1139,7 @@ private fun FilledPillButton(label: String, @DrawableRes icon: Int, modifier: Mo
     ) {
         VoxIcon(icon, label, DarkInk, Modifier.size(18.dp))
         Spacer(Modifier.width(7.dp))
-        Text(label, color = DarkInk, fontSize = 13.sp, fontWeight = FontWeight.Bold)
+        Text(label, color = DarkInk, fontSize = 12.sp, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis)
     }
 }
 
@@ -1232,39 +1199,6 @@ private fun BlinkDot(color: Color) {
             .clip(CircleShape)
             .background(color)
     )
-}
-
-@Composable
-private fun SignalIcon() {
-    Canvas(Modifier.size(17.dp)) {
-        val barW = 2.7.dp.toPx()
-        listOf(5, 8, 11, 14).forEachIndexed { index, h ->
-            drawRoundRect(
-                color = TextMain,
-                topLeft = Offset(index * 4.dp.toPx(), size.height - h.dp.toPx()),
-                size = Size(barW, h.dp.toPx()),
-                cornerRadius = CornerRadius(1.dp.toPx(), 1.dp.toPx())
-            )
-        }
-    }
-}
-
-@Composable
-private fun WifiDot() {
-    Canvas(Modifier.size(15.dp)) {
-        drawArc(TextMain, 205f, 130f, false, topLeft = Offset(size.width * 0.10f, size.height * 0.10f), size = Size(size.width * 0.80f, size.height * 0.80f), style = Stroke(2.dp.toPx(), cap = StrokeCap.Round))
-        drawArc(TextMain, 215f, 110f, false, topLeft = Offset(size.width * 0.25f, size.height * 0.32f), size = Size(size.width * 0.50f, size.height * 0.50f), style = Stroke(2.dp.toPx(), cap = StrokeCap.Round))
-        drawCircle(TextMain, 1.8.dp.toPx(), Offset(size.width * 0.5f, size.height * 0.76f))
-    }
-}
-
-@Composable
-private fun BatteryIcon() {
-    Canvas(Modifier.size(18.dp, 13.dp)) {
-        drawRoundRect(TextMain, Offset(0f, 2.dp.toPx()), Size(15.dp.toPx(), 9.dp.toPx()), CornerRadius(2.dp.toPx(), 2.dp.toPx()), style = Stroke(1.5.dp.toPx()))
-        drawRoundRect(TextMain, Offset(3.dp.toPx(), 4.dp.toPx()), Size(9.dp.toPx(), 5.dp.toPx()), CornerRadius(1.dp.toPx(), 1.dp.toPx()))
-        drawRoundRect(TextMain, Offset(16.dp.toPx(), 5.dp.toPx()), Size(2.dp.toPx(), 4.dp.toPx()), CornerRadius(1.dp.toPx(), 1.dp.toPx()))
-    }
 }
 
 @Composable
