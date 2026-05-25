@@ -1,0 +1,208 @@
+{
+  "generated_at": "2026-05-25T10:18:46",
+  "zip_files_found": [
+    {
+      "zip": "C:\\BSIT 3RD YEAR\\New VovGest\\external_datasets\\_recorded_packs_unzipped\\external_datasets_anastacia\\external_datasets\\fullsign225_manual16_features.zip",
+      "zip_rel": "external_datasets\\_recorded_packs_unzipped\\external_datasets_anastacia\\external_datasets\\fullsign225_manual16_features.zip",
+      "signer": "ANASTACIA",
+      "length": 11407898,
+      "last_write_time": "2026-05-24T23:02:56",
+      "selected": false
+    },
+    {
+      "zip": "C:\\BSIT 3RD YEAR\\New VovGest\\external_datasets\\external_datasets_anastacia.zip",
+      "zip_rel": "external_datasets\\external_datasets_anastacia.zip",
+      "signer": "ANASTACIA",
+      "length": 22714595,
+      "last_write_time": "2026-05-24T21:47:32",
+      "selected": false
+    },
+    {
+      "zip": "C:\\BSIT 3RD YEAR\\New VovGest\\external_datasets\\recorded_features_anas.zip",
+      "zip_rel": "external_datasets\\recorded_features_anas.zip",
+      "signer": "ANASTACIA",
+      "length": 11431524,
+      "last_write_time": "2026-05-24T09:39:01",
+      "selected": false
+    },
+    {
+      "zip": "C:\\BSIT 3RD YEAR\\New VovGest\\external_datasets\\recorded_features_anastacia.zip",
+      "zip_rel": "external_datasets\\recorded_features_anastacia.zip",
+      "signer": "ANASTACIA",
+      "length": 20485134,
+      "last_write_time": "2026-05-25T09:13:00",
+      "selected": true
+    },
+    {
+      "zip": "C:\\BSIT 3RD YEAR\\New VovGest\\external_datasets\\recorded_features_mariella_final.zip",
+      "zip_rel": "external_datasets\\recorded_features_mariella_final.zip",
+      "signer": "MARIELLA",
+      "length": 17370573,
+      "last_write_time": "2026-05-25T09:12:49",
+      "selected": true
+    }
+  ],
+  "extracted": [
+    {
+      "zip": "C:\\BSIT 3RD YEAR\\New VovGest\\external_datasets\\recorded_features_anastacia.zip",
+      "zip_rel": "external_datasets\\recorded_features_anastacia.zip",
+      "signer": "ANASTACIA",
+      "extracted_at": "2026-05-25T10:16:43",
+      "extracted_files": 1112,
+      "skipped_existing": 0,
+      "blocked_members": [],
+      "extract_dir": "C:\\BSIT 3RD YEAR\\New VovGest\\external_datasets\\team_incoming_recorded_features\\ANASTACIA\\RECORDED_FEATURES_ANASTACIA",
+      "extract_dir_rel": "external_datasets\\team_incoming_recorded_features\\ANASTACIA\\RECORDED_FEATURES_ANASTACIA"
+    },
+    {
+      "zip": "C:\\BSIT 3RD YEAR\\New VovGest\\external_datasets\\recorded_features_mariella_final.zip",
+      "zip_rel": "external_datasets\\recorded_features_mariella_final.zip",
+      "signer": "MARIELLA",
+      "extracted_at": "2026-05-25T10:16:45",
+      "extracted_files": 847,
+      "skipped_existing": 0,
+      "blocked_members": [],
+      "extract_dir": "C:\\BSIT 3RD YEAR\\New VovGest\\external_datasets\\team_incoming_recorded_features\\MARIELLA\\RECORDED_FEATURES_MARIELLA_FINAL",
+      "extract_dir_rel": "external_datasets\\team_incoming_recorded_features\\MARIELLA\\RECORDED_FEATURES_MARIELLA_FINAL"
+    }
+  ],
+  "merge_summaries": {
+    "onehand162_phrase_v1": {
+      "generated_at": "2026-05-25T10:17:35",
+      "profile": "onehand162_phrase_v1",
+      "output_root": "C:\\BSIT 3RD YEAR\\New VovGest\\external_datasets\\onehand162_phrase_v1_features",
+      "output_root_rel": "external_datasets\\onehand162_phrase_v1_features",
+      "expected_shape": [
+        30,
+        162
+      ],
+      "labels": [
+        "WHAT",
+        "YOUR",
+        "NAME",
+        "MY",
+        "NOTHING"
+      ],
+      "status_counts": {
+        "rejected": 1473,
+        "copied": 480
+      },
+      "reason_counts": {
+        "wrong_shape": 1473,
+        "accepted": 480
+      },
+      "copied_per_label": {
+        "WHAT": 80,
+        "YOUR": 80,
+        "NAME": 80,
+        "MY": 80,
+        "NOTHING": 160
+      },
+      "copied_total": 480,
+      "duplicate_count": 0,
+      "ignored_labels": {},
+      "unknown_labels": {},
+      "wrong_shape_count": 1473,
+      "unreadable_count": 0
+    },
+    "fullsign225_phrase_v1": {
+      "generated_at": "2026-05-25T10:18:24",
+      "profile": "fullsign225_phrase_v1",
+      "output_root": "C:\\BSIT 3RD YEAR\\New VovGest\\external_datasets\\fullsign225_phrase_v1_features",
+      "output_root_rel": "external_datasets\\fullsign225_phrase_v1_features",
+      "expected_shape": [
+        30,
+        225
+      ],
+      "labels": [
+        "WHAT",
+        "YOUR",
+        "NAME",
+        "MY",
+        "YOU",
+        "OKAY",
+        "STUDENT",
+        "WHERE",
+        "LIVE",
+        "NOTHING"
+      ],
+      "status_counts": {
+        "copied": 1473,
+        "rejected": 480
+      },
+      "reason_counts": {
+        "accepted": 1473,
+        "wrong_shape": 480
+      },
+      "copied_per_label": {
+        "WHAT": 118,
+        "YOUR": 88,
+        "NAME": 65,
+        "MY": 76,
+        "YOU": 150,
+        "OKAY": 95,
+        "STUDENT": 92,
+        "WHERE": 70,
+        "LIVE": 127,
+        "NOTHING": 592
+      },
+      "copied_total": 1473,
+      "duplicate_count": 0,
+      "ignored_labels": {},
+      "unknown_labels": {},
+      "wrong_shape_count": 480,
+      "unreadable_count": 0
+    }
+  },
+  "audit_summaries": {
+    "onehand162_phrase_v1": {
+      "per_label": {
+        "WHAT": 260,
+        "YOUR": 310,
+        "NAME": 310,
+        "MY": 160,
+        "NOTHING": 380
+      },
+      "per_signer": {
+        "ANASTACIA": 240,
+        "EARLE": 550,
+        "MARIELLA": 630
+      },
+      "missing_minimum": {},
+      "missing_preferred": {},
+      "ready_min": true,
+      "ready_preferred": true,
+      "wrong_shape_count": 0,
+      "unreadable_count": 0,
+      "ignored_labels": {},
+      "unknown_labels": {}
+    },
+    "fullsign225_phrase_v1": {
+      "per_label": {
+        "WHAT": 298,
+        "YOUR": 268,
+        "NAME": 245,
+        "MY": 256,
+        "YOU": 330,
+        "OKAY": 275,
+        "STUDENT": 272,
+        "WHERE": 250,
+        "LIVE": 307,
+        "NOTHING": 892
+      },
+      "per_signer": {
+        "ANASTACIA": 1509,
+        "EARLE": 640,
+        "MARIELLA": 1244
+      },
+      "missing_minimum": {},
+      "missing_preferred": {},
+      "ready_min": true,
+      "ready_preferred": true,
+      "wrong_shape_count": 0,
+      "unreadable_count": 0,
+      "ignored_labels": {},
+      "unknown_labels": {}
+    }
+  }
+}

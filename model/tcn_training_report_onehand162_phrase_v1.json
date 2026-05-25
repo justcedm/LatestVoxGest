@@ -1,0 +1,144 @@
+{
+  "profile": "onehand162_phrase_v1",
+  "dataset": "C:\\BSIT 3RD YEAR\\New VovGest\\external_datasets\\onehand162_phrase_v1_features",
+  "model": "C:\\BSIT 3RD YEAR\\New VovGest\\model\\voxgest_tcn_onehand162_phrase_v1.h5",
+  "tflite": "C:\\BSIT 3RD YEAR\\New VovGest\\model\\voxgest_tcn_onehand162_phrase_v1.tflite",
+  "labels": "C:\\BSIT 3RD YEAR\\New VovGest\\model\\class_labels_tcn_onehand162_phrase_v1.json",
+  "seq_len": 30,
+  "feature_size": 162,
+  "input_shape": [
+    1,
+    30,
+    162
+  ],
+  "output_shape": [
+    1,
+    5
+  ],
+  "classes": [
+    "WHAT",
+    "YOUR",
+    "NAME",
+    "MY",
+    "NOTHING"
+  ],
+  "class_stats": {
+    "WHAT": {
+      "sequences": 260,
+      "groups": 260,
+      "minimum": 120,
+      "preferred": 170,
+      "used": true
+    },
+    "YOUR": {
+      "sequences": 310,
+      "groups": 310,
+      "minimum": 120,
+      "preferred": 170,
+      "used": true
+    },
+    "NAME": {
+      "sequences": 310,
+      "groups": 310,
+      "minimum": 120,
+      "preferred": 170,
+      "used": true
+    },
+    "MY": {
+      "sequences": 160,
+      "groups": 160,
+      "minimum": 80,
+      "preferred": 120,
+      "used": true
+    },
+    "NOTHING": {
+      "sequences": 380,
+      "groups": 380,
+      "minimum": 180,
+      "preferred": 240,
+      "used": true
+    }
+  },
+  "minimums": {
+    "WHAT": 120,
+    "YOUR": 120,
+    "NAME": 120,
+    "MY": 80,
+    "NOTHING": 180
+  },
+  "preferred": {
+    "WHAT": 170,
+    "YOUR": 170,
+    "NAME": 170,
+    "MY": 120,
+    "NOTHING": 240
+  },
+  "train_sequences": 1136,
+  "val_sequences": 284,
+  "split_notes": {
+    "0": {
+      "mode": "grouped",
+      "val_groups": 52,
+      "groups": 260
+    },
+    "1": {
+      "mode": "grouped",
+      "val_groups": 62,
+      "groups": 310
+    },
+    "2": {
+      "mode": "grouped",
+      "val_groups": 62,
+      "groups": 310
+    },
+    "3": {
+      "mode": "grouped",
+      "val_groups": 32,
+      "groups": 160
+    },
+    "4": {
+      "mode": "grouped",
+      "val_groups": 76,
+      "groups": 380
+    }
+  },
+  "best_val_accuracy": 99.64788556098938,
+  "per_class": {
+    "WHAT": {
+      "correct": 52,
+      "total": 52,
+      "accuracy": 100.0
+    },
+    "YOUR": {
+      "correct": 62,
+      "total": 62,
+      "accuracy": 100.0
+    },
+    "NAME": {
+      "correct": 61,
+      "total": 62,
+      "accuracy": 98.38709677419355
+    },
+    "MY": {
+      "correct": 32,
+      "total": 32,
+      "accuracy": 100.0
+    },
+    "NOTHING": {
+      "correct": 76,
+      "total": 76,
+      "accuracy": 100.0
+    }
+  },
+  "top_miss": {
+    "WHAT": "-",
+    "YOUR": "-",
+    "NAME": "MY",
+    "MY": "-",
+    "NOTHING": "-"
+  },
+  "skipped_wrong_shape": 0,
+  "unreadable_files": [],
+  "training_seconds": 71.37280464172363,
+  "tflite_smoke_class": 1
+}

@@ -1,0 +1,249 @@
+{
+  "profile": "fullsign225_phrase_v1",
+  "dataset": "C:\\BSIT 3RD YEAR\\New VovGest\\external_datasets\\fullsign225_phrase_v1_features",
+  "model": "C:\\BSIT 3RD YEAR\\New VovGest\\model\\voxgest_tcn_fullsign225_phrase_v1.h5",
+  "tflite": "C:\\BSIT 3RD YEAR\\New VovGest\\model\\voxgest_tcn_fullsign225_phrase_v1.tflite",
+  "labels": "C:\\BSIT 3RD YEAR\\New VovGest\\model\\class_labels_tcn_fullsign225_phrase_v1.json",
+  "seq_len": 30,
+  "feature_size": 225,
+  "input_shape": [
+    1,
+    30,
+    225
+  ],
+  "output_shape": [
+    1,
+    10
+  ],
+  "classes": [
+    "WHAT",
+    "YOUR",
+    "NAME",
+    "MY",
+    "YOU",
+    "OKAY",
+    "STUDENT",
+    "WHERE",
+    "LIVE",
+    "NOTHING"
+  ],
+  "class_stats": {
+    "WHAT": {
+      "sequences": 298,
+      "groups": 298,
+      "minimum": 120,
+      "preferred": 150,
+      "used": true
+    },
+    "YOUR": {
+      "sequences": 268,
+      "groups": 268,
+      "minimum": 120,
+      "preferred": 150,
+      "used": true
+    },
+    "NAME": {
+      "sequences": 245,
+      "groups": 245,
+      "minimum": 120,
+      "preferred": 150,
+      "used": true
+    },
+    "MY": {
+      "sequences": 256,
+      "groups": 256,
+      "minimum": 120,
+      "preferred": 150,
+      "used": true
+    },
+    "YOU": {
+      "sequences": 330,
+      "groups": 330,
+      "minimum": 120,
+      "preferred": 150,
+      "used": true
+    },
+    "OKAY": {
+      "sequences": 275,
+      "groups": 275,
+      "minimum": 120,
+      "preferred": 150,
+      "used": true
+    },
+    "STUDENT": {
+      "sequences": 272,
+      "groups": 272,
+      "minimum": 120,
+      "preferred": 150,
+      "used": true
+    },
+    "WHERE": {
+      "sequences": 250,
+      "groups": 250,
+      "minimum": 120,
+      "preferred": 150,
+      "used": true
+    },
+    "LIVE": {
+      "sequences": 307,
+      "groups": 307,
+      "minimum": 120,
+      "preferred": 150,
+      "used": true
+    },
+    "NOTHING": {
+      "sequences": 892,
+      "groups": 892,
+      "minimum": 240,
+      "preferred": 300,
+      "used": true
+    }
+  },
+  "minimums": {
+    "WHAT": 120,
+    "YOUR": 120,
+    "NAME": 120,
+    "MY": 120,
+    "YOU": 120,
+    "OKAY": 120,
+    "STUDENT": 120,
+    "WHERE": 120,
+    "LIVE": 120,
+    "NOTHING": 240
+  },
+  "preferred": {
+    "WHAT": 150,
+    "YOUR": 150,
+    "NAME": 150,
+    "MY": 150,
+    "YOU": 150,
+    "OKAY": 150,
+    "STUDENT": 150,
+    "WHERE": 150,
+    "LIVE": 150,
+    "NOTHING": 300
+  },
+  "train_sequences": 2715,
+  "val_sequences": 678,
+  "split_notes": {
+    "0": {
+      "mode": "grouped",
+      "val_groups": 60,
+      "groups": 298
+    },
+    "1": {
+      "mode": "grouped",
+      "val_groups": 54,
+      "groups": 268
+    },
+    "2": {
+      "mode": "grouped",
+      "val_groups": 49,
+      "groups": 245
+    },
+    "3": {
+      "mode": "grouped",
+      "val_groups": 51,
+      "groups": 256
+    },
+    "4": {
+      "mode": "grouped",
+      "val_groups": 66,
+      "groups": 330
+    },
+    "5": {
+      "mode": "grouped",
+      "val_groups": 55,
+      "groups": 275
+    },
+    "6": {
+      "mode": "grouped",
+      "val_groups": 54,
+      "groups": 272
+    },
+    "7": {
+      "mode": "grouped",
+      "val_groups": 50,
+      "groups": 250
+    },
+    "8": {
+      "mode": "grouped",
+      "val_groups": 61,
+      "groups": 307
+    },
+    "9": {
+      "mode": "grouped",
+      "val_groups": 178,
+      "groups": 892
+    }
+  },
+  "best_val_accuracy": 94.54277157783508,
+  "per_class": {
+    "WHAT": {
+      "correct": 56,
+      "total": 60,
+      "accuracy": 93.33333333333333
+    },
+    "YOUR": {
+      "correct": 52,
+      "total": 54,
+      "accuracy": 96.29629629629629
+    },
+    "NAME": {
+      "correct": 47,
+      "total": 49,
+      "accuracy": 95.91836734693877
+    },
+    "MY": {
+      "correct": 50,
+      "total": 51,
+      "accuracy": 98.0392156862745
+    },
+    "YOU": {
+      "correct": 63,
+      "total": 66,
+      "accuracy": 95.45454545454545
+    },
+    "OKAY": {
+      "correct": 51,
+      "total": 55,
+      "accuracy": 92.72727272727272
+    },
+    "STUDENT": {
+      "correct": 48,
+      "total": 54,
+      "accuracy": 88.88888888888889
+    },
+    "WHERE": {
+      "correct": 46,
+      "total": 50,
+      "accuracy": 92.0
+    },
+    "LIVE": {
+      "correct": 58,
+      "total": 61,
+      "accuracy": 95.08196721311475
+    },
+    "NOTHING": {
+      "correct": 170,
+      "total": 178,
+      "accuracy": 95.50561797752809
+    }
+  },
+  "top_miss": {
+    "WHAT": "OKAY",
+    "YOUR": "NAME",
+    "NAME": "YOU",
+    "MY": "STUDENT",
+    "YOU": "WHAT",
+    "OKAY": "YOUR",
+    "STUDENT": "NOTHING",
+    "WHERE": "STUDENT",
+    "LIVE": "WHAT",
+    "NOTHING": "YOUR"
+  },
+  "skipped_wrong_shape": 0,
+  "unreadable_files": [],
+  "training_seconds": 158.74528431892395,
+  "tflite_smoke_class": 4
+}

@@ -1,0 +1,253 @@
+{
+  "generated_at": "2026-05-25T10:26:47",
+  "profile": "onehand162_phrase_v1",
+  "dataset_root": "C:\\BSIT 3RD YEAR\\New VovGest\\external_datasets\\onehand162_phrase_v1_features",
+  "dataset_root_rel": "external_datasets\\onehand162_phrase_v1_features",
+  "expected_shape": [
+    30,
+    162
+  ],
+  "labels": [
+    "WHAT",
+    "YOUR",
+    "NAME",
+    "MY",
+    "NOTHING"
+  ],
+  "zip_files_found": [
+    {
+      "zip": "C:\\BSIT 3RD YEAR\\New VovGest\\external_datasets\\_recorded_packs_unzipped\\external_datasets_anastacia\\external_datasets\\fullsign225_manual16_features.zip",
+      "zip_rel": "external_datasets\\_recorded_packs_unzipped\\external_datasets_anastacia\\external_datasets\\fullsign225_manual16_features.zip",
+      "signer": "ANASTACIA",
+      "length": 11407898,
+      "last_write_time": "2026-05-24T23:02:56",
+      "selected": false
+    },
+    {
+      "zip": "C:\\BSIT 3RD YEAR\\New VovGest\\external_datasets\\external_datasets_anastacia.zip",
+      "zip_rel": "external_datasets\\external_datasets_anastacia.zip",
+      "signer": "ANASTACIA",
+      "length": 22714595,
+      "last_write_time": "2026-05-24T21:47:32",
+      "selected": false
+    },
+    {
+      "zip": "C:\\BSIT 3RD YEAR\\New VovGest\\external_datasets\\recorded_features_anas.zip",
+      "zip_rel": "external_datasets\\recorded_features_anas.zip",
+      "signer": "ANASTACIA",
+      "length": 11431524,
+      "last_write_time": "2026-05-24T09:39:01",
+      "selected": false
+    },
+    {
+      "zip": "C:\\BSIT 3RD YEAR\\New VovGest\\external_datasets\\recorded_features_anastacia.zip",
+      "zip_rel": "external_datasets\\recorded_features_anastacia.zip",
+      "signer": "ANASTACIA",
+      "length": 20485134,
+      "last_write_time": "2026-05-25T09:13:00",
+      "selected": true
+    },
+    {
+      "zip": "C:\\BSIT 3RD YEAR\\New VovGest\\external_datasets\\recorded_features_mariella_final.zip",
+      "zip_rel": "external_datasets\\recorded_features_mariella_final.zip",
+      "signer": "MARIELLA",
+      "length": 17370573,
+      "last_write_time": "2026-05-25T09:12:49",
+      "selected": true
+    }
+  ],
+  "extracted": [
+    {
+      "zip": "C:\\BSIT 3RD YEAR\\New VovGest\\external_datasets\\recorded_features_anastacia.zip",
+      "zip_rel": "external_datasets\\recorded_features_anastacia.zip",
+      "signer": "ANASTACIA",
+      "extracted_at": "2026-05-25T10:16:43",
+      "extracted_files": 1112,
+      "skipped_existing": 0,
+      "blocked_members": [],
+      "extract_dir": "C:\\BSIT 3RD YEAR\\New VovGest\\external_datasets\\team_incoming_recorded_features\\ANASTACIA\\RECORDED_FEATURES_ANASTACIA",
+      "extract_dir_rel": "external_datasets\\team_incoming_recorded_features\\ANASTACIA\\RECORDED_FEATURES_ANASTACIA"
+    },
+    {
+      "zip": "C:\\BSIT 3RD YEAR\\New VovGest\\external_datasets\\recorded_features_mariella_final.zip",
+      "zip_rel": "external_datasets\\recorded_features_mariella_final.zip",
+      "signer": "MARIELLA",
+      "extracted_at": "2026-05-25T10:16:45",
+      "extracted_files": 847,
+      "skipped_existing": 0,
+      "blocked_members": [],
+      "extract_dir": "C:\\BSIT 3RD YEAR\\New VovGest\\external_datasets\\team_incoming_recorded_features\\MARIELLA\\RECORDED_FEATURES_MARIELLA_FINAL",
+      "extract_dir_rel": "external_datasets\\team_incoming_recorded_features\\MARIELLA\\RECORDED_FEATURES_MARIELLA_FINAL"
+    }
+  ],
+  "merge_summary": {
+    "generated_at": "2026-05-25T10:17:35",
+    "profile": "onehand162_phrase_v1",
+    "output_root": "C:\\BSIT 3RD YEAR\\New VovGest\\external_datasets\\onehand162_phrase_v1_features",
+    "output_root_rel": "external_datasets\\onehand162_phrase_v1_features",
+    "expected_shape": [
+      30,
+      162
+    ],
+    "labels": [
+      "WHAT",
+      "YOUR",
+      "NAME",
+      "MY",
+      "NOTHING"
+    ],
+    "status_counts": {
+      "rejected": 1473,
+      "copied": 480
+    },
+    "reason_counts": {
+      "wrong_shape": 1473,
+      "accepted": 480
+    },
+    "copied_per_label": {
+      "WHAT": 80,
+      "YOUR": 80,
+      "NAME": 80,
+      "MY": 80,
+      "NOTHING": 160
+    },
+    "copied_total": 480,
+    "duplicate_count": 0,
+    "ignored_labels": {},
+    "unknown_labels": {},
+    "wrong_shape_count": 1473,
+    "unreadable_count": 0
+  },
+  "files_checked": 1420,
+  "per_label": {
+    "WHAT": 260,
+    "YOUR": 310,
+    "NAME": 310,
+    "MY": 160,
+    "NOTHING": 380
+  },
+  "per_signer": {
+    "ANASTACIA": 240,
+    "EARLE": 550,
+    "MARIELLA": 630
+  },
+  "per_source": {
+    "DATASET_WORDS_EARLE_FINAL_SAFE": 240,
+    "DATASET_WORDS_EARLE_PHRASEV1_FIXED2": 310,
+    "DATASET_WORDS_LSTM_TEOFILO": 150,
+    "RECORDED_FEATURES_ANASTACIA": 240,
+    "RECORDED_FEATURES_MARIELLA_FINAL": 240,
+    "TEOFILE_PHRASEV1_FIXED2_DATASET_WORDS_LSTM_TEOFILO_20260524T1457": 240
+  },
+  "per_signer_per_label": {
+    "ANASTACIA": {
+      "WHAT": 40,
+      "YOUR": 40,
+      "NAME": 40,
+      "MY": 40,
+      "NOTHING": 80
+    },
+    "EARLE": {
+      "WHAT": 90,
+      "YOUR": 140,
+      "NAME": 140,
+      "MY": 40,
+      "NOTHING": 140
+    },
+    "MARIELLA": {
+      "WHAT": 130,
+      "YOUR": 130,
+      "NAME": 130,
+      "MY": 80,
+      "NOTHING": 160
+    }
+  },
+  "per_signer_per_source": {
+    "ANASTACIA": {
+      "RECORDED_FEATURES_ANASTACIA": 240
+    },
+    "EARLE": {
+      "DATASET_WORDS_EARLE_FINAL_SAFE": 240,
+      "DATASET_WORDS_EARLE_PHRASEV1_FIXED2": 310
+    },
+    "MARIELLA": {
+      "DATASET_WORDS_LSTM_TEOFILO": 150,
+      "RECORDED_FEATURES_MARIELLA_FINAL": 240,
+      "TEOFILE_PHRASEV1_FIXED2_DATASET_WORDS_LSTM_TEOFILO_20260524T1457": 240
+    }
+  },
+  "ignored_labels": {},
+  "unknown_labels": {},
+  "wrong_shape_count": 0,
+  "wrong_shape_files": [],
+  "unreadable_count": 0,
+  "unreadable_files": [],
+  "minimum_status": {
+    "WHAT": {
+      "count": 260,
+      "minimum": 120,
+      "missing": 0,
+      "ready": true
+    },
+    "YOUR": {
+      "count": 310,
+      "minimum": 120,
+      "missing": 0,
+      "ready": true
+    },
+    "NAME": {
+      "count": 310,
+      "minimum": 120,
+      "missing": 0,
+      "ready": true
+    },
+    "MY": {
+      "count": 160,
+      "minimum": 80,
+      "missing": 0,
+      "ready": true
+    },
+    "NOTHING": {
+      "count": 380,
+      "minimum": 180,
+      "missing": 0,
+      "ready": true
+    }
+  },
+  "preferred_status": {
+    "WHAT": {
+      "count": 260,
+      "preferred": 170,
+      "missing": 0,
+      "ready": true
+    },
+    "YOUR": {
+      "count": 310,
+      "preferred": 170,
+      "missing": 0,
+      "ready": true
+    },
+    "NAME": {
+      "count": 310,
+      "preferred": 170,
+      "missing": 0,
+      "ready": true
+    },
+    "MY": {
+      "count": 160,
+      "preferred": 120,
+      "missing": 0,
+      "ready": true
+    },
+    "NOTHING": {
+      "count": 380,
+      "preferred": 240,
+      "missing": 0,
+      "ready": true
+    }
+  },
+  "ready_min": true,
+  "ready_preferred": true,
+  "missing_minimum": {},
+  "missing_preferred": {}
+}

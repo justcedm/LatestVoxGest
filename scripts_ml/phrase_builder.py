@@ -15,12 +15,16 @@ CONTROL_SPACE = {"SPACE", "_"}
 ALPHABET = set("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
 STATIC_PATTERNS = {
-    ("WHAT", "IS", "YOUR", "NAME"): "What is your name?",
-    ("ARE", "YOU", "A", "STUDENT"): "Are you a student?",
-    ("ARE", "YOU", "OKAY"): "Are you okay?",
-    ("WHERE", "DO", "YOU", "LIVE"): "Where do you live?",
+    ("WHAT", "YOUR", "NAME"): "What is your name?",
+    ("YOUR", "NAME", "WHAT"): "What is your name?",
+    ("YOU", "STUDENT"): "Are you a student?",
+    ("STUDENT", "YOU"): "Are you a student?",
+    ("YOU", "OKAY"): "Are you okay?",
+    ("OKAY", "YOU"): "Are you okay?",
+    ("WHERE", "YOU", "LIVE"): "Where do you live?",
+    ("YOU", "LIVE", "WHERE"): "Where do you live?",
 }
-NAME_PREFIX = ("MY", "NAME", "IS")
+NAME_PREFIX = ("MY", "NAME")
 KNOWN_PREFIXES = set()
 for pattern in STATIC_PATTERNS:
     for idx in range(1, len(pattern) + 1):
@@ -140,8 +144,9 @@ class PhraseBuilder:
         key = tuple(self.tokens)
         if key in STATIC_PATTERNS:
             return STATIC_PATTERNS[key]
-        if len(self.tokens) > len(NAME_PREFIX) and tuple(self.tokens[:3]) == NAME_PREFIX:
-            letters = self.tokens[3:]
+        prefix_len = len(NAME_PREFIX)
+        if len(self.tokens) > prefix_len and tuple(self.tokens[:prefix_len]) == NAME_PREFIX:
+            letters = self.tokens[prefix_len:]
             if letters and all(token in ALPHABET for token in letters):
                 return f"My name is {''.join(letters)}."
         return ""

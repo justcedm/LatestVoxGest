@@ -1,0 +1,12 @@
+{
+  "WHAT": 0,
+  "YOUR": 1,
+  "NAME": 2,
+  "MY": 3,
+  "YOU": 4,
+  "OKAY": 5,
+  "STUDENT": 6,
+  "WHERE": 7,
+  "LIVE": 8,
+  "NOTHING": 9
+}

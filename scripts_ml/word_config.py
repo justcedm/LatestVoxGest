@@ -202,6 +202,27 @@ WORD_TOKEN_PHRASE_WORDS = [
     "NOTHING",
 ]
 
+FULLSIGN225_PHRASE_V1_WORDS = [
+    "WHAT",
+    "YOUR",
+    "NAME",
+    "MY",
+    "YOU",
+    "OKAY",
+    "STUDENT",
+    "WHERE",
+    "LIVE",
+    "NOTHING",
+]
+
+ONEHAND162_PHRASE_V1_WORDS = [
+    "WHAT",
+    "YOUR",
+    "NAME",
+    "MY",
+    "NOTHING",
+]
+
 EXTENDED_WORDS = [
     "EMERGENCY",
     "HURT",
@@ -263,6 +284,8 @@ WORD_PROFILES = {
     "fullsign225_manual5_team_v2": FULLSIGN225_MANUAL5_TEAM_V2_WORDS,
     "fullsign225_phrase_words": WORD_TOKEN_PHRASE_WORDS,
     "onehand162_phrase_words": WORD_TOKEN_PHRASE_WORDS,
+    "fullsign225_phrase_v1": FULLSIGN225_PHRASE_V1_WORDS,
+    "onehand162_phrase_v1": ONEHAND162_PHRASE_V1_WORDS,
     "focus": FOCUS_WORDS,
     "core": CORE_WORDS,
     "full": FULL_WORDS,
