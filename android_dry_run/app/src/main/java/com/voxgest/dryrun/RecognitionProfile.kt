@@ -35,7 +35,7 @@ data class RecognitionProfile(
     }
 
     companion object {
-        const val ACTIVE_RECOGNITION_PROFILE = "onehand162_phrase_v1"
+        const val ACTIVE_RECOGNITION_PROFILE = "fullsign225_phrase_v1"
 
         fun loadDefault(context: Context): RecognitionProfile {
             return load(context, ACTIVE_RECOGNITION_PROFILE)

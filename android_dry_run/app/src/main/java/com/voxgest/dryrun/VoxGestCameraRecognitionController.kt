@@ -171,6 +171,10 @@ class VoxGestCameraRecognitionController(
             }
 
             val raw = loadedRecognizer.recognize(snapshot)
+            if (raw.label.uppercase(Locale.US) !in DEMO_ACCEPTED_LABELS) {
+                postStatus("Waiting for clearer hand")
+                return
+            }
             val quality = when {
                 raw.note.startsWith("Wrong input shape", ignoreCase = true) -> "WRONG_INPUT_SHAPE"
                 raw.label.isBlank() -> "BAD_SEQUENCE"
@@ -253,5 +257,6 @@ class VoxGestCameraRecognitionController(
         private const val ANALYZE_INTERVAL_MS = 90L
         private const val ACCEPTED_COOLDOWN_MS = 1600L
         private const val STATUS_MIN_INTERVAL_MS = 220L
+        private val DEMO_ACCEPTED_LABELS = setOf("WHAT", "YOUR", "NAME", "MY", "YOU", "OKAY", "NOTHING")
     }
 }
