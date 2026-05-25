@@ -97,7 +97,7 @@ class AvatarController(
         return when {
             lastSequence.isNotEmpty() -> playTextAsSigns(lastSequence.joinToString(" "))
             lastText.isNotBlank() -> playTextAsSigns(lastText)
-            else -> playWord("HELLO")
+            else -> false
         }
     }
 

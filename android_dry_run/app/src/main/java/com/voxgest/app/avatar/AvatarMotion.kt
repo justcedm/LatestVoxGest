@@ -79,6 +79,15 @@ object AvatarMotion {
                 listOf("WHERE", "YOU", "LIVE")
             normalized.contains("where") && normalized.contains("live") ->
                 listOf("WHERE", "LIVE")
+            normalized == "yes" -> listOf("YES")
+            normalized == "no" -> listOf("NO")
+            normalized.contains("water") -> listOf("WATER")
+            normalized.contains("thankyou") -> listOf("THANKYOU")
+            normalized.contains("thank you") -> listOf("THANKYOU")
+            normalized.contains("doctor") -> listOf("DOCTOR")
+            normalized.contains("help") -> listOf("HELP")
+            normalized.contains("please") -> listOf("PLEASE")
+            normalized.contains("stop") -> listOf("STOP")
             else -> emptyList()
         }
     }

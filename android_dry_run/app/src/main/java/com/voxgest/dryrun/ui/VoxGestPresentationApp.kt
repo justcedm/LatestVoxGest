@@ -1,6 +1,15 @@
 package com.voxgest.dryrun.ui
 
+import android.Manifest
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Bundle
+import android.speech.RecognitionListener
+import android.speech.RecognizerIntent
+import android.speech.SpeechRecognizer
 import android.speech.tts.TextToSpeech
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.DrawableRes
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
@@ -64,11 +73,14 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.content.ContextCompat
 import com.voxgest.app.avatar.AvatarController
 import com.voxgest.app.avatar.AvatarPlaybackState
 import com.voxgest.app.avatar.AvatarView
 import com.voxgest.dryrun.BuildConfig
 import com.voxgest.dryrun.R
+import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.Locale
 
 private val Primary = Color(0xFF006C73)
@@ -88,6 +100,7 @@ private val Blue = Color(0xFF22A7D8)
 private val Purple = Color(0xFF7C5AA6)
 private val Green = Color(0xFF43A047)
 private const val PRESENTATION_MODE = true
+private const val SHOW_DEBUG_TOOLS = false
 
 private enum class VoxTab(
     val label: String,
@@ -133,19 +146,19 @@ private val DemoTokenWords = listOf(
 @Composable
 fun VoxGestPresentationApp() {
     var selectedTab by rememberSaveable { mutableStateOf(VoxTab.Sign) }
-    var currentWord by rememberSaveable { mutableStateOf("READY") }
+    var currentWord by rememberSaveable { mutableStateOf("") }
     var sentence by rememberSaveable { mutableStateOf("") }
     var demoTokenBuffer by rememberSaveable { mutableStateOf("") }
     var recognitionRunning by rememberSaveable { mutableStateOf(false) }
     var pendingAvatarText by rememberSaveable { mutableStateOf("") }
     var pendingAvatarRequestId by rememberSaveable { mutableStateOf(0) }
+    var selectedPhrase by rememberSaveable { mutableStateOf("") }
     val history = remember { mutableStateListOf<HistoryUiEntry>() }
     val context = LocalContext.current
-    var tts by remember { mutableStateOf<TextToSpeech?>(null) }
+    val ttsRef = remember { mutableStateOf<TextToSpeech?>(null) }
     fun speakNow(text: String) {
         if (!isMeaningfulOutput(text)) return
-        val engine = tts ?: TextToSpeech(context) { }.also { tts = it }
-        speak(engine, text)
+        ttsRef.value?.let { speak(it, text) }
     }
 
     fun queueAvatarPhrase(text: String) {
@@ -157,7 +170,7 @@ fun VoxGestPresentationApp() {
 
     fun clearDemoTokens() {
         demoTokenBuffer = ""
-        currentWord = "READY"
+        currentWord = ""
         sentence = ""
     }
 
@@ -172,7 +185,7 @@ fun VoxGestPresentationApp() {
             "SPEAK" -> {
                 if (isMeaningfulOutput(sentence)) {
                     speakNow(sentence)
-                    history.add(0, HistoryUiEntry("Today", "Sign", sentence, "Now", "Spoken", R.drawable.ic_hand_gesture, PrimaryLight))
+                    history.add(0, HistoryUiEntry("Today", "Sign", sentence, nowLabel(), "Spoken", R.drawable.ic_hand_gesture, PrimaryLight))
                 }
                 return
             }
@@ -189,14 +202,21 @@ fun VoxGestPresentationApp() {
         }
 
         sentence = finalized
-        history.add(0, HistoryUiEntry("Today", "Sign", finalized, "Now", "Shown in signs", R.drawable.ic_hand_gesture, PrimaryLight))
+        history.add(0, HistoryUiEntry("Today", "Sign", finalized, nowLabel(), "From recognition", R.drawable.ic_hand_gesture, PrimaryLight))
         queueAvatarPhrase(finalized)
     }
 
     DisposableEffect(Unit) {
+        val engine = TextToSpeech(context) { status ->
+            if (status == TextToSpeech.SUCCESS) {
+                ttsRef.value?.language = Locale.US
+            }
+        }
+        ttsRef.value = engine
         onDispose {
-            tts?.stop()
-            tts?.shutdown()
+            engine.stop()
+            engine.shutdown()
+            ttsRef.value = null
         }
     }
 
@@ -235,7 +255,7 @@ fun VoxGestPresentationApp() {
                             onSpeak = {
                                 if (isMeaningfulOutput(sentence)) {
                                     speakNow(sentence)
-                                    history.add(0, HistoryUiEntry("Today", "Sign", sentence, "Now", "Spoken", R.drawable.ic_hand_gesture, PrimaryLight))
+                                    history.add(0, HistoryUiEntry("Today", "Sign", sentence, nowLabel(), "Spoken", R.drawable.ic_hand_gesture, PrimaryLight))
                                 }
                             },
                             onDelete = {
@@ -243,10 +263,10 @@ fun VoxGestPresentationApp() {
                                 if (tokens.isNotEmpty()) {
                                     val nextTokens = tokens.dropLast(1)
                                     demoTokenBuffer = nextTokens.joinToString("|")
-                                    currentWord = nextTokens.lastOrNull() ?: "READY"
+                                    currentWord = nextTokens.lastOrNull() ?: ""
                                     sentence = demoSentenceForTokens(nextTokens) ?: nextTokens.joinToString(" ")
                                 } else {
-                                    sentence = sentence.split(",").dropLast(1).joinToString(", ").ifBlank { currentWord }
+                                    sentence = sentence.split(",").dropLast(1).joinToString(", ")
                                 }
                             },
                             onClear = {
@@ -254,11 +274,11 @@ fun VoxGestPresentationApp() {
                             },
                             onStartRecognition = {
                                 recognitionRunning = true
-                                currentWord = "READY"
+                                currentWord = ""
                             },
                             onStopRecognition = {
                                 recognitionRunning = false
-                                currentWord = "READY"
+                                currentWord = ""
                             },
                             demoTokens = demoTokenBuffer.toDemoTokens(),
                             onDemoToken = { addDemoToken(it) }
@@ -268,20 +288,31 @@ fun VoxGestPresentationApp() {
                             pendingAvatarRequestId = pendingAvatarRequestId,
                             onSpeechSaved = { text ->
                                 if (isMeaningfulOutput(text)) {
-                                    history.add(0, HistoryUiEntry("Today", "Speech", text, "Now", "Shown in signs", R.drawable.ic_waveform, Primary))
+                                    history.add(0, HistoryUiEntry("Today", "Speech", text, nowLabel(), "Shown in signs", R.drawable.ic_waveform, Primary))
                                 }
                             }
                         )
                         VoxTab.Phrases -> PhrasesScreen(
+                            selectedPhrase = selectedPhrase,
                             onPhrase = { phrase ->
                                 if (isMeaningfulOutput(phrase)) {
+                                    selectedPhrase = phrase
                                     speakNow(phrase)
-                                    history.add(0, HistoryUiEntry("Today", "Phrase", phrase, "Now", "Shown in signs", R.drawable.ic_chat, Amber))
+                                    history.add(0, HistoryUiEntry("Today", "Phrase", phrase, nowLabel(), "From quick phrase", R.drawable.ic_chat, Amber))
                                     queueAvatarPhrase(phrase)
                                 }
                             }
                         )
-                        VoxTab.History -> HistoryScreen(entries = history)
+                        VoxTab.History -> HistoryScreen(
+                            entries = history,
+                            onClearAll = { history.clear() },
+                            onReplay = { entry ->
+                                if (isMeaningfulOutput(entry.text)) {
+                                    speakNow(entry.text)
+                                    queueAvatarPhrase(entry.text)
+                                }
+                            }
+                        )
                     }
                 }
             }
@@ -294,6 +325,10 @@ private fun speak(tts: TextToSpeech, text: String) {
     if (isMeaningfulOutput(clean)) {
         tts.speak(clean, TextToSpeech.QUEUE_FLUSH, null, "voxgest-speak")
     }
+}
+
+private fun nowLabel(): String {
+    return SimpleDateFormat("hh:mm a", Locale.US).format(Date())
 }
 
 private fun isMeaningfulOutput(text: String): Boolean {
@@ -368,11 +403,13 @@ private fun SignScreen(
             onStopRecognition = onStopRecognition
         )
         CurrentWordCard(currentWord)
-        SentenceCard(sentence.ifBlank { "Ready for accepted signs" }, onSpeak)
-        DemoTokenPanel(
-            tokens = demoTokens,
-            onToken = onDemoToken
-        )
+        SentenceCard(sentence, onSpeak)
+        if (SHOW_DEBUG_TOOLS) {
+            DemoTokenPanel(
+                tokens = demoTokens,
+                onToken = onDemoToken
+            )
+        }
         Row(
             modifier = Modifier.padding(horizontal = 20.dp, vertical = 10.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -393,50 +430,54 @@ private fun RecognitionAreaCard(
     onStartRecognition: () -> Unit,
     onStopRecognition: () -> Unit
 ) {
-    VoxGestCard(modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp)) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Label("RECOGNITION AREA", Modifier.weight(1f))
-            StatusChip(
-                label = if (recognitionRunning) "Calibration" else "Paused",
-                dotColor = if (recognitionRunning) AccentGreen else Amber,
-                containerColor = if (recognitionRunning) Color(0xFFE8F7EE) else Color(0xFFFFF7ED),
-                contentColor = if (recognitionRunning) Green else Amber
-            )
-        }
+    VoxGestCard(modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp)) {
         Box(
             modifier = Modifier
-                .padding(top = 14.dp)
                 .fillMaxWidth()
-                .height(152.dp)
-                .clip(RoundedCornerShape(18.dp))
+                .height(256.dp)
+                .clip(RoundedCornerShape(22.dp))
                 .background(if (recognitionRunning) Color(0xFFE7F8F5) else SoftCyan)
-                .border(1.dp, Border, RoundedCornerShape(18.dp))
-                .padding(18.dp),
-            contentAlignment = Alignment.Center
+                .border(1.dp, Border, RoundedCornerShape(22.dp))
         ) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            StatusChip(
+                label = if (recognitionRunning) "Recognition Experimental" else "Tap Start Recognition",
+                dotColor = if (recognitionRunning) AccentGreen else Amber,
+                containerColor = if (recognitionRunning) Color(0xFFE8F7EE) else Color(0xFFFFF7ED),
+                contentColor = if (recognitionRunning) Green else Amber,
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+                    .padding(14.dp)
+            )
+            Column(
+                modifier = Modifier.align(Alignment.Center),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
                 VoxIcon(
                     if (recognitionRunning) R.drawable.ic_hand_gesture else R.drawable.ic_camera_off,
                     "Recognition status",
                     if (recognitionRunning) Primary else TextMuted,
-                    Modifier.size(34.dp)
+                    Modifier.size(46.dp)
                 )
                 Text(
-                    "Recognition mode is available for testing but still under calibration.",
+                    if (recognitionRunning) "Tracking Hand" else "Camera preview appears here",
                     color = TextMain,
-                    fontSize = 14.sp,
-                    lineHeight = 19.sp,
+                    fontSize = 18.sp,
+                    lineHeight = 23.sp,
                     fontWeight = FontWeight.SemiBold,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(top = 12.dp)
+                    modifier = Modifier.padding(top = 14.dp)
                 )
                 Text(
-                    if (recognitionRunning) "Manual start is active; camera inference remains gated." else "Tap Start Recognition when panelists want to try calibration mode.",
+                    if (recognitionRunning) {
+                        "Recognition is experimental and calibration-gated."
+                    } else {
+                        "Tap Start Recognition"
+                    },
                     color = TextMuted,
-                    fontSize = 12.sp,
-                    lineHeight = 17.sp,
+                    fontSize = 13.sp,
+                    lineHeight = 18.sp,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(top = 6.dp)
+                    modifier = Modifier.padding(top = 7.dp, start = 24.dp, end = 24.dp)
                 )
             }
         }
@@ -454,15 +495,12 @@ private fun RecognitionAreaCard(
 
 @Composable
 private fun CurrentWordCard(word: String) {
-    val displayWord = when (word.trim().uppercase(Locale.US)) {
-        "", "NOTHING" -> "READY"
-        "HELLO" -> "HELLO"
-        else -> word
-    }
+    val clean = word.trim()
+    val hasWord = isMeaningfulOutput(clean)
+    val displayWord = if (hasWord) clean.uppercase(Locale.US) else "No word yet"
     VoxGestCard(modifier = Modifier.padding(horizontal = 20.dp, vertical = 14.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Label("CURRENT WORD", Modifier.weight(1f))
-            VoxIcon(R.drawable.ic_volume_up, "Speak current word", Primary, Modifier.size(17.dp))
         }
         Row(
             modifier = Modifier
@@ -471,7 +509,12 @@ private fun CurrentWordCard(word: String) {
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(displayWord, color = Primary, fontSize = 30.sp, fontWeight = FontWeight.Bold)
+            Text(
+                displayWord,
+                color = if (hasWord) Primary else TextFaint,
+                fontSize = if (hasWord) 30.sp else 18.sp,
+                fontWeight = if (hasWord) FontWeight.Bold else FontWeight.SemiBold
+            )
         }
     }
 }
@@ -557,14 +600,15 @@ private fun DemoTokenButton(label: String, tint: Color, modifier: Modifier, onCl
 
 @Composable
 private fun SentenceCard(sentence: String, onSpeak: () -> Unit) {
+    val hasSentence = isMeaningfulOutput(sentence)
     VoxGestCard(modifier = Modifier.padding(horizontal = 20.dp)) {
         Label("SENTENCE")
         Text(
-            sentence,
-            color = Primary,
-            fontSize = 20.sp,
+            if (hasSentence) sentence else "No sentence yet.",
+            color = if (hasSentence) Primary else TextFaint,
+            fontSize = if (hasSentence) 20.sp else 16.sp,
             lineHeight = 27.sp,
-            fontWeight = FontWeight.Bold,
+            fontWeight = if (hasSentence) FontWeight.Bold else FontWeight.SemiBold,
             modifier = Modifier.padding(top = 10.dp)
         )
         Row(
@@ -579,7 +623,12 @@ private fun SentenceCard(sentence: String, onSpeak: () -> Unit) {
                 }
             }
             Spacer(Modifier.width(8.dp))
-            Text("Tap to speak", color = Amber, fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
+            Text(
+                if (hasSentence) "Tap to speak" else "No sentence yet.",
+                color = Amber,
+                fontSize = 13.sp,
+                fontWeight = FontWeight.SemiBold
+            )
         }
     }
 }
@@ -615,13 +664,112 @@ private fun ListenScreen(
     pendingAvatarRequestId: Int,
     onSpeechSaved: (String) -> Unit
 ) {
+    val context = LocalContext.current
     var listening by rememberSaveable { mutableStateOf(false) }
-    var transcript by rememberSaveable { mutableStateOf("What is your name?") }
+    var transcript by rememberSaveable { mutableStateOf("") }
+    var speechStatus by rememberSaveable { mutableStateOf("Tap the microphone and speak.") }
     var avatarState by remember { mutableStateOf(AvatarPlaybackState()) }
     val avatarController = remember { AvatarController { avatarState = it } }
+    val recognizerState = remember { mutableStateOf<SpeechRecognizer?>(null) }
+    val speechAvailable = remember { SpeechRecognizer.isRecognitionAvailable(context) }
+    var hasMicPermission by remember {
+        mutableStateOf(
+            ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED
+        )
+    }
+    val permissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        hasMicPermission = granted
+        speechStatus = if (granted) "Tap the microphone and speak." else "Microphone permission is needed."
+    }
+
+    fun stopListening() {
+        recognizerState.value?.stopListening()
+        recognizerState.value?.destroy()
+        recognizerState.value = null
+        listening = false
+        avatarController.setListening(false)
+    }
+
+    fun startListening() {
+        if (!speechAvailable) {
+            speechStatus = "Speech recognition is unavailable on this device."
+            return
+        }
+        if (!hasMicPermission) {
+            permissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
+            return
+        }
+        recognizerState.value?.destroy()
+        val recognizer = SpeechRecognizer.createSpeechRecognizer(context)
+        recognizerState.value = recognizer
+        recognizer.setRecognitionListener(object : RecognitionListener {
+            override fun onReadyForSpeech(params: Bundle?) {
+                speechStatus = "Listening..."
+            }
+
+            override fun onBeginningOfSpeech() {
+                speechStatus = "Listening..."
+            }
+
+            override fun onRmsChanged(rmsdB: Float) = Unit
+            override fun onBufferReceived(buffer: ByteArray?) = Unit
+
+            override fun onEndOfSpeech() {
+                speechStatus = "Processing speech..."
+            }
+
+            override fun onError(error: Int) {
+                listening = false
+                avatarController.setListening(false)
+                speechStatus = "Tap the microphone and speak."
+                recognizerState.value?.destroy()
+                recognizerState.value = null
+            }
+
+            override fun onResults(results: Bundle?) {
+                val text = results
+                    ?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
+                    ?.firstOrNull()
+                    ?.trim()
+                    .orEmpty()
+                listening = false
+                avatarController.setListening(false)
+                recognizerState.value?.destroy()
+                recognizerState.value = null
+                if (isMeaningfulOutput(text)) {
+                    transcript = text
+                    speechStatus = "Transcript ready"
+                    onSpeechSaved(text)
+                    avatarController.playTextAsSigns(text)
+                } else {
+                    speechStatus = "No speech recognized."
+                }
+            }
+
+            override fun onPartialResults(partialResults: Bundle?) {
+                speechStatus = "Listening..."
+            }
+
+            override fun onEvent(eventType: Int, params: Bundle?) = Unit
+        })
+        val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
+            putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+            putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.US.toString())
+            putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true)
+        }
+        listening = true
+        speechStatus = "Listening..."
+        avatarController.setListening(true)
+        recognizer.startListening(intent)
+    }
 
     DisposableEffect(Unit) {
-        onDispose { avatarController.detach() }
+        onDispose {
+            recognizerState.value?.destroy()
+            avatarController.detach()
+        }
     }
 
     LaunchedEffect(pendingAvatarRequestId) {
@@ -629,14 +777,16 @@ private fun ListenScreen(
         if (pendingAvatarRequestId > 0 && clean.isNotBlank()) {
             transcript = clean
             listening = false
+            speechStatus = "Transcript ready"
             avatarController.setListening(false)
             avatarController.playTextAsSigns(clean)
         }
     }
 
     fun playTranscript() {
-        avatarController.playTextAsSigns(transcript)
-        onSpeechSaved(transcript)
+        if (isMeaningfulOutput(transcript)) {
+            avatarController.playTextAsSigns(transcript)
+        }
     }
 
     ScreenScroll {
@@ -644,9 +794,9 @@ private fun ListenScreen(
         SpeechTranscriptCard(
             transcript = transcript,
             listening = listening,
+            speechStatus = speechStatus,
             onMicTap = {
-                listening = !listening
-                avatarController.setListening(listening)
+                if (listening) stopListening() else startListening()
             }
         )
         Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth().padding(top = 2.dp, bottom = 14.dp)) {
@@ -674,19 +824,21 @@ private fun ListenScreen(
 private fun SpeechTranscriptCard(
     transcript: String,
     listening: Boolean,
+    speechStatus: String,
     onMicTap: () -> Unit
 ) {
+    val hasTranscript = isMeaningfulOutput(transcript)
     VoxGestCard(modifier = Modifier.padding(horizontal = 20.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Label("SPEECH TRANSCRIPT", Modifier.weight(1f))
             VoxIcon(R.drawable.ic_volume_up, "Speak transcript", TextMuted, Modifier.size(17.dp))
         }
         Text(
-            transcript,
-            color = Primary,
-            fontSize = 27.sp,
-            lineHeight = 35.sp,
-            fontWeight = FontWeight.Bold,
+            if (hasTranscript) transcript else "Tap the microphone and speak.",
+            color = if (hasTranscript) Primary else TextMuted,
+            fontSize = if (hasTranscript) 27.sp else 20.sp,
+            lineHeight = 31.sp,
+            fontWeight = if (hasTranscript) FontWeight.Bold else FontWeight.SemiBold,
             modifier = Modifier.padding(top = 14.dp, bottom = 18.dp)
         )
         Row(
@@ -710,6 +862,15 @@ private fun SpeechTranscriptCard(
             }
             Waveform(Modifier.weight(1f), listening)
         }
+        Text(
+            speechStatus,
+            color = TextFaint,
+            fontSize = 12.sp,
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 12.dp)
+        )
     }
 }
 
@@ -738,7 +899,11 @@ private fun AvatarCard(
             ) {
                 Label("AVATAR", Modifier.weight(1f))
                 StatusChip(
-                    label = if (avatarState.isPlaying) "Signing..." else "Analyzing...",
+                    label = when {
+                        avatarState.isPlaying -> "Signing..."
+                        avatarState.isListening -> "Listening..."
+                        else -> "Ready"
+                    },
                     dotColor = PrimaryLight,
                     containerColor = SoftCyan,
                     contentColor = Primary
@@ -777,7 +942,7 @@ private fun AvatarCard(
             }
         }
     }
-    if (BuildConfig.DEBUG) {
+    if (SHOW_DEBUG_TOOLS && BuildConfig.DEBUG) {
         Text(
             "Debug avatar tests",
             color = TextMuted,
@@ -821,14 +986,31 @@ private fun AvatarCard(
 }
 
 @Composable
-private fun PhrasesScreen(onPhrase: (String) -> Unit) {
+private fun PhrasesScreen(selectedPhrase: String, onPhrase: (String) -> Unit) {
     ScreenScroll {
         ScreenTopBar("PHRASES", R.drawable.ic_search)
         QuickPhraseHero()
+        SelectedPhraseCard(selectedPhrase)
         CategoryChips()
         PhraseGrid(onPhrase)
         PresentationBuildFooter()
         Spacer(Modifier.height(16.dp))
+    }
+}
+
+@Composable
+private fun SelectedPhraseCard(selectedPhrase: String) {
+    if (!isMeaningfulOutput(selectedPhrase)) return
+    VoxGestCard(modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp)) {
+        Label("SELECTED PHRASE")
+        Text(
+            selectedPhrase,
+            color = Primary,
+            fontSize = 20.sp,
+            lineHeight = 27.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(top = 8.dp)
+        )
     }
 }
 
@@ -906,11 +1088,6 @@ private fun CategoryChip(label: String, @DrawableRes icon: Int, tint: Color, bg:
 @Composable
 private fun PhraseGrid(onPhrase: (String) -> Unit) {
     val phrases = listOf(
-        PhraseUi("What is your name?", R.drawable.ic_chat, Primary),
-        PhraseUi("My name is...", R.drawable.ic_hand_gesture, PrimaryLight),
-        PhraseUi("Are you okay?", R.drawable.ic_check_circle, Green),
-        PhraseUi("Are you a student?", R.drawable.ic_chat, Blue),
-        PhraseUi("Where do you live?", R.drawable.ic_history, Purple),
         PhraseUi("I need help", R.drawable.ic_warning, Color(0xFFF97316)),
         PhraseUi("Call a doctor", R.drawable.ic_medical, PrimaryLight),
         PhraseUi("I need water", R.drawable.ic_water_drop, Blue),
@@ -918,7 +1095,11 @@ private fun PhraseGrid(onPhrase: (String) -> Unit) {
         PhraseUi("Please wait", R.drawable.ic_clock, Amber),
         PhraseUi("Thank you", R.drawable.ic_hand_gesture, Purple),
         PhraseUi("Yes", R.drawable.ic_check_circle, Green),
-        PhraseUi("No", R.drawable.ic_no_circle, Red)
+        PhraseUi("No", R.drawable.ic_no_circle, Red),
+        PhraseUi("What is your name?", R.drawable.ic_chat, Primary),
+        PhraseUi("Are you okay?", R.drawable.ic_check_circle, Green),
+        PhraseUi("Are you a student?", R.drawable.ic_chat, Blue),
+        PhraseUi("Where do you live?", R.drawable.ic_history, Purple)
     )
     Column(
         modifier = Modifier.padding(horizontal = 20.dp),
@@ -958,13 +1139,21 @@ private fun PhraseCard(phrase: PhraseUi, modifier: Modifier, onClick: () -> Unit
 }
 
 @Composable
-private fun HistoryScreen(entries: List<HistoryUiEntry>) {
+private fun HistoryScreen(
+    entries: List<HistoryUiEntry>,
+    onClearAll: () -> Unit,
+    onReplay: (HistoryUiEntry) -> Unit
+) {
     ScreenScroll {
         ScreenTopBar("HISTORY", R.drawable.ic_filter_list, R.drawable.ic_search)
-        HistorySection("Today", entries.filter { it.section == "Today" })
-        HistorySection("Yesterday", entries.filter { it.section == "Yesterday" })
+        if (entries.isEmpty()) {
+            EmptyHistoryCard()
+        } else {
+            HistorySection("Today", entries.filter { it.section == "Today" }, onReplay)
+            HistorySection("Yesterday", entries.filter { it.section == "Yesterday" }, onReplay)
+        }
         Button(
-            onClick = {},
+            onClick = onClearAll,
             modifier = Modifier
                 .padding(horizontal = 20.dp, vertical = 12.dp)
                 .fillMaxWidth()
@@ -982,7 +1171,21 @@ private fun HistoryScreen(entries: List<HistoryUiEntry>) {
 }
 
 @Composable
-private fun HistorySection(title: String, entries: List<HistoryUiEntry>) {
+private fun EmptyHistoryCard() {
+    VoxGestCard(modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp)) {
+        Label("TODAY")
+        Text(
+            "No history yet.",
+            color = TextFaint,
+            fontSize = 16.sp,
+            fontWeight = FontWeight.SemiBold,
+            modifier = Modifier.padding(top = 10.dp)
+        )
+    }
+}
+
+@Composable
+private fun HistorySection(title: String, entries: List<HistoryUiEntry>, onReplay: (HistoryUiEntry) -> Unit) {
     if (entries.isEmpty()) return
     Text(
         title,
@@ -992,13 +1195,13 @@ private fun HistorySection(title: String, entries: List<HistoryUiEntry>) {
         modifier = Modifier.padding(start = 20.dp, top = 4.dp, bottom = 10.dp)
     )
     Column(modifier = Modifier.padding(horizontal = 20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        entries.forEach { HistoryItem(it) }
+        entries.forEach { HistoryItem(it, onReplay) }
     }
     Spacer(Modifier.height(18.dp))
 }
 
 @Composable
-private fun HistoryItem(entry: HistoryUiEntry) {
+private fun HistoryItem(entry: HistoryUiEntry, onReplay: (HistoryUiEntry) -> Unit) {
     Card(
         shape = RoundedCornerShape(18.dp),
         colors = CardDefaults.cardColors(containerColor = CardWhite),
@@ -1040,7 +1243,15 @@ private fun HistoryItem(entry: HistoryUiEntry) {
                     Text(entry.status, color = TextFaint, fontSize = 11.sp)
                 }
             }
-            VoxIcon(R.drawable.ic_play_arrow, "Replay", Primary, Modifier.size(18.dp))
+            Box(
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(CircleShape)
+                    .clickable { onReplay(entry) },
+                contentAlignment = Alignment.Center
+            ) {
+                VoxIcon(R.drawable.ic_play_arrow, "Replay", Primary, Modifier.size(18.dp))
+            }
             Spacer(Modifier.width(10.dp))
             VoxIcon(R.drawable.ic_more_vert, "More", TextFaint, Modifier.size(18.dp))
         }
@@ -1092,10 +1303,11 @@ private fun StatusChip(
     label: String,
     dotColor: Color,
     containerColor: Color,
-    contentColor: Color
+    contentColor: Color,
+    modifier: Modifier = Modifier
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .clip(RoundedCornerShape(999.dp))
             .background(containerColor)
             .border(1.dp, contentColor.copy(alpha = 0.08f), RoundedCornerShape(999.dp))
