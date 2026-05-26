@@ -8,6 +8,7 @@ import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
 import android.speech.tts.TextToSpeech
+import androidx.compose.animation.AnimatedVisibility
 import androidx.camera.view.PreviewView
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -31,6 +32,7 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -61,12 +63,23 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -79,9 +92,13 @@ import com.voxgest.app.avatar.AvatarController
 import com.voxgest.app.avatar.AvatarPlaybackState
 import com.voxgest.app.avatar.AvatarView
 import com.voxgest.dryrun.BuildConfig
+import com.voxgest.dryrun.DetectionStatus
+import com.voxgest.dryrun.OverlayLandmarkPoint
 import com.voxgest.dryrun.R
+import com.voxgest.dryrun.RecognitionFeedback
 import com.voxgest.dryrun.RecognitionResult
 import com.voxgest.dryrun.VoxGestCameraRecognitionController
+import kotlinx.coroutines.delay
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -144,6 +161,14 @@ private val DemoTokenWords = listOf(
     "NOTHING",
     "CLEAR",
     "SPEAK"
+)
+
+private val HAND_CONNECTIONS = listOf(
+    0 to 1, 1 to 2, 2 to 3, 3 to 4,
+    0 to 5, 5 to 6, 6 to 7, 7 to 8,
+    0 to 9, 9 to 10, 10 to 11, 11 to 12,
+    0 to 13, 13 to 14, 14 to 15, 15 to 16,
+    0 to 17, 17 to 18, 18 to 19, 19 to 20
 )
 
 @Composable
@@ -457,6 +482,8 @@ private fun RecognitionAreaCard(
         }
     }
     val controllerRef = remember { mutableStateOf<VoxGestCameraRecognitionController?>(null) }
+    var recognitionFeedback by remember { mutableStateOf(RecognitionFeedback.idle()) }
+    var recognizedToast by remember { mutableStateOf("") }
     var hasCameraPermission by remember {
         mutableStateOf(
             ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
@@ -489,8 +516,17 @@ private fun RecognitionAreaCard(
             context = context,
             lifecycleOwner = lifecycleOwner,
             onStatus = onRecognitionStatus,
+            onRecognitionFeedback = { recognitionFeedback = it },
             onAcceptedResult = onAcceptedRecognition
         ).also { it.start(previewView) }
+    }
+
+    LaunchedEffect(recognitionFeedback.eventId) {
+        if (recognitionFeedback.detectionStatus == DetectionStatus.RECOGNIZED && recognitionFeedback.eventId > 0L) {
+            recognizedToast = "Recognized ${recognitionFeedback.label}"
+            delay(1200)
+            recognizedToast = ""
+        }
     }
 
     DisposableEffect(Unit) {
@@ -504,10 +540,14 @@ private fun RecognitionAreaCard(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(256.dp)
+                .height(400.dp)
                 .clip(RoundedCornerShape(22.dp))
                 .background(Color.Black)
                 .border(1.dp, Border, RoundedCornerShape(22.dp))
+                .semantics {
+                    liveRegion = LiveRegionMode.Polite
+                    contentDescription = "Recognition status: $recognitionStatus"
+                }
         ) {
             AndroidView(
                 factory = { previewView },
@@ -547,6 +587,11 @@ private fun RecognitionAreaCard(
                     }
                 }
             }
+            HandScanOverlay(
+                feedback = recognitionFeedback,
+                recognitionRunning = recognitionRunning && hasCameraPermission,
+                modifier = Modifier.fillMaxSize()
+            )
             StatusChip(
                 label = recognitionStatus,
                 dotColor = if (recognitionRunning) AccentGreen else Amber,
@@ -556,6 +601,28 @@ private fun RecognitionAreaCard(
                     .align(Alignment.TopStart)
                     .padding(14.dp)
             )
+        }
+        AnimatedVisibility(visible = recognizedToast.isNotBlank()) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 10.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Surface(
+                    shape = RoundedCornerShape(999.dp),
+                    color = Primary.copy(alpha = 0.94f),
+                    shadowElevation = 4.dp
+                ) {
+                    Text(
+                        recognizedToast,
+                        color = Color.White,
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                    )
+                }
+            }
         }
         if (presentationMode) {
             Row(
@@ -601,18 +668,158 @@ private fun RecognitionAreaCard(
 }
 
 @Composable
+private fun HandScanOverlay(
+    feedback: RecognitionFeedback,
+    recognitionRunning: Boolean,
+    modifier: Modifier = Modifier
+) {
+    val status = if (recognitionRunning) feedback.detectionStatus else DetectionStatus.SEARCHING
+    val transition = rememberInfiniteTransition(label = "hand-scan")
+    val pulse by transition.animateFloat(
+        initialValue = 1f,
+        targetValue = 1.02f,
+        animationSpec = infiniteRepeatable(tween(1500, easing = FastOutSlowInEasing), RepeatMode.Reverse),
+        label = "guide-pulse"
+    )
+
+    Box(modifier = modifier) {
+        when (status) {
+            DetectionStatus.SEARCHING -> SearchingHandGuide(pulse)
+            DetectionStatus.DETECTING -> DetectingHandOverlay(feedback.handLandmarks, AccentGreen)
+            DetectionStatus.RECOGNIZED -> DetectingHandOverlay(feedback.handLandmarks, Primary)
+        }
+    }
+}
+
+@Composable
+private fun SearchingHandGuide(pulse: Float) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth(0.65f)
+                .fillMaxHeight(0.70f)
+                .scale(pulse),
+            contentAlignment = Alignment.Center
+        ) {
+            Canvas(Modifier.fillMaxSize()) {
+                drawRoundRect(
+                    color = Color.White.copy(alpha = 0.50f),
+                    topLeft = Offset.Zero,
+                    size = size,
+                    cornerRadius = CornerRadius(18.dp.toPx(), 18.dp.toPx()),
+                    style = Stroke(
+                        width = 2.dp.toPx(),
+                        pathEffect = PathEffect.dashPathEffect(floatArrayOf(18.dp.toPx(), 12.dp.toPx()))
+                    )
+                )
+            }
+            Text(
+                "Position hand here",
+                color = Color.White,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.SemiBold,
+                textAlign = TextAlign.Center
+            )
+        }
+    }
+}
+
+@Composable
+private fun DetectingHandOverlay(
+    landmarks: List<OverlayLandmarkPoint>,
+    reticleColor: Color
+) {
+    Box(Modifier.fillMaxSize()) {
+        Canvas(Modifier.fillMaxSize()) {
+            val cornerLength = size.minDimension * 0.11f
+            val inset = size.minDimension * 0.08f
+            val strokeWidth = 4.dp.toPx()
+            fun drawCorner(start: Offset, horizontal: Float, vertical: Float) {
+                drawLine(
+                    color = reticleColor,
+                    start = start,
+                    end = Offset(start.x + horizontal, start.y),
+                    strokeWidth = strokeWidth,
+                    cap = StrokeCap.Round
+                )
+                drawLine(
+                    color = reticleColor,
+                    start = start,
+                    end = Offset(start.x, start.y + vertical),
+                    strokeWidth = strokeWidth,
+                    cap = StrokeCap.Round
+                )
+            }
+            drawCorner(Offset(inset, inset), cornerLength, cornerLength)
+            drawCorner(Offset(size.width - inset, inset), -cornerLength, cornerLength)
+            drawCorner(Offset(inset, size.height - inset), cornerLength, -cornerLength)
+            drawCorner(Offset(size.width - inset, size.height - inset), -cornerLength, -cornerLength)
+
+            drawHandSkeleton(landmarks, size)
+        }
+        ScanningBadge(Modifier.align(Alignment.TopStart).padding(start = 14.dp, top = 58.dp))
+    }
+}
+
+@Composable
+private fun ScanningBadge(modifier: Modifier = Modifier) {
+    Row(
+        modifier = modifier
+            .clip(RoundedCornerShape(999.dp))
+            .background(Color(0xFFE8F7EE))
+            .padding(horizontal = 12.dp, vertical = 7.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(7.dp)
+    ) {
+        BlinkDot(AccentGreen)
+        Text("Scanning...", color = Green, fontSize = 11.sp, fontWeight = FontWeight.Bold)
+    }
+}
+
+private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawHandSkeleton(
+    landmarks: List<OverlayLandmarkPoint>,
+    canvasSize: Size
+) {
+    if (landmarks.size != 21) return
+    val points = landmarks.map { point ->
+        Offset(
+            x = point.x.coerceIn(0f, 1f) * canvasSize.width,
+            y = point.y.coerceIn(0f, 1f) * canvasSize.height
+        )
+    }
+    val lineColor = Color(0xFFB8F060).copy(alpha = 0.60f)
+    val dotColor = Color(0xFFB8F060)
+    HAND_CONNECTIONS.forEach { connection ->
+        drawLine(
+            color = lineColor,
+            start = points[connection.first],
+            end = points[connection.second],
+            strokeWidth = 2.dp.toPx(),
+            cap = StrokeCap.Round
+        )
+    }
+    points.forEach { point ->
+        drawCircle(color = dotColor, radius = 4.dp.toPx(), center = point)
+    }
+}
+
+@Composable
 private fun CurrentWordCard(word: String) {
     val clean = word.trim()
     val hasWord = isMeaningfulOutput(clean)
     val displayWord = if (hasWord) clean.uppercase(Locale.US) else "No word yet"
-    VoxGestCard(modifier = Modifier.padding(horizontal = 20.dp, vertical = 14.dp)) {
+    VoxGestCard(modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Label("CURRENT WORD", Modifier.weight(1f))
         }
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 12.dp, bottom = 4.dp),
+                .padding(top = 8.dp, bottom = 2.dp),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {

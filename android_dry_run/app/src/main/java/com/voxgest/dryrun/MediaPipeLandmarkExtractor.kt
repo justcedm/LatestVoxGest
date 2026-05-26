@@ -12,7 +12,7 @@ import com.google.mediapipe.tasks.vision.poselandmarker.PoseLandmarker
 
 class MediaPipeLandmarkExtractor(
     context: Context,
-    private val mirrorInput: Boolean
+    private val mirrorCameraFrame: Boolean
 ) : LandmarkExtractor {
     private val appContext = context.applicationContext
     private val handLandmarker: HandLandmarker
@@ -45,13 +45,13 @@ class MediaPipeLandmarkExtractor(
             .build()
         handLandmarker = HandLandmarker.createFromOptions(appContext, handOptions)
         poseLandmarker = PoseLandmarker.createFromOptions(appContext, poseOptions)
-        Log.w(TAG, "MediaPipe Android uses Tasks hand+pose landmarks; live parity still needs calibration.")
+        Log.w(TAG, "MediaPipe Android uses Tasks hand+pose landmarks; mirrorCameraFrame=$mirrorCameraFrame; live parity still needs calibration.")
     }
 
     @Synchronized
     override fun processFrame(imageProxy: ImageProxy): LandmarkFrame? {
         val timestampMs = nextTimestamp(imageProxy.imageInfo.timestamp / 1_000_000L)
-        val bitmap = ImageProxyBitmapConverter.toUprightBitmap(imageProxy, mirrorInput)
+        val bitmap = ImageProxyBitmapConverter.toUprightBitmap(imageProxy, mirrorCameraFrame)
         return try {
             val mpImage = BitmapImageBuilder(bitmap).build()
             val handResult = handLandmarker.detectForVideo(mpImage, timestampMs)

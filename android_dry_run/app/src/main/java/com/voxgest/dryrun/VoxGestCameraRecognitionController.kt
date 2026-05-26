@@ -20,6 +20,7 @@ class VoxGestCameraRecognitionController(
     private val context: Context,
     private val lifecycleOwner: LifecycleOwner,
     private val onStatus: (String) -> Unit,
+    private val onRecognitionFeedback: (RecognitionFeedback) -> Unit = {},
     private val onAcceptedResult: (RecognitionResult) -> Unit
 ) {
     private val appContext = context.applicationContext
@@ -48,7 +49,8 @@ class VoxGestCameraRecognitionController(
                 postStatus("Recognition Experimental / Calibration")
                 val loadedRecognizer = VoxGestTfliteRecognizer(appContext)
                 val loadedProfile = loadedRecognizer.load()
-                val loadedExtractor = MediaPipeLandmarkExtractor(appContext, loadedProfile.mirroredInput)
+                val mirrorCameraFrame = AndroidLandmarkInputPolicy.shouldMirrorFrameBeforeLandmarkExtraction(loadedProfile)
+                val loadedExtractor = MediaPipeLandmarkExtractor(appContext, mirrorCameraFrame)
                 recognizer = loadedRecognizer
                 profile = loadedProfile
                 extractor = loadedExtractor
@@ -66,6 +68,8 @@ class VoxGestCameraRecognitionController(
             postStatus("Recognition Paused")
             return
         }
+        gate.reset()
+        postFeedback(RecognitionFeedback.idle())
         mainExecutor.execute {
             imageAnalysis?.clearAnalyzer()
             imageAnalysis = null
@@ -134,6 +138,8 @@ class VoxGestCameraRecognitionController(
             val frame = loadedExtractor.processFrame(imageProxy)
             if (frame == null || !frame.hasPose) {
                 buffer.resetStability()
+                gate.reset()
+                postFeedback(RecognitionFeedback.idle())
                 postStatus("Landmark profile not ready.")
                 return
             }
@@ -141,9 +147,12 @@ class VoxGestCameraRecognitionController(
             val feature = buildFeature(loadedProfile, frame)
             if (feature == null) {
                 buffer.resetStability()
+                gate.reset()
+                postFeedback(feedbackFromFrame(frame, DetectionStatus.SEARCHING, 0f, ""))
                 postStatus(if (frame.hasAnyHand) "Landmark profile not ready." else "Waiting for clearer hand")
                 return
             }
+            postFeedback(feedbackFromFrame(frame, DetectionStatus.DETECTING, 0.45f, ""))
 
             if (!buffer.markStableFrame(true)) {
                 postStatus("Tracking Hand")
@@ -172,6 +181,8 @@ class VoxGestCameraRecognitionController(
 
             val raw = loadedRecognizer.recognize(snapshot)
             if (raw.label.uppercase(Locale.US) !in DEMO_ACCEPTED_LABELS) {
+                gate.reset()
+                postFeedback(feedbackFromFrame(frame, DetectionStatus.DETECTING, raw.confidence, raw.label))
                 postStatus("Waiting for clearer hand")
                 return
             }
@@ -190,6 +201,7 @@ class VoxGestCameraRecognitionController(
                 )
             )
             if (!gateResult.accepted) {
+                postFeedback(feedbackFromFrame(frame, statusForConfidence(raw.confidence), raw.confidence, raw.label))
                 postStatus(gateReasonText(gateResult.reason))
                 return
             }
@@ -203,10 +215,13 @@ class VoxGestCameraRecognitionController(
                 gateResult.reason,
                 raw.top3
             )
+            postFeedback(feedbackFromFrame(frame, DetectionStatus.RECOGNIZED, raw.confidence, accepted.label))
             mainExecutor.execute { onAcceptedResult(accepted) }
             postStatus("Recognition Paused")
         } catch (exc: Throwable) {
             sequenceBuffer?.resetStability()
+            gate.reset()
+            postFeedback(RecognitionFeedback.idle())
             postStatus("Landmark profile not ready.")
         } finally {
             imageProxy.close()
@@ -231,6 +246,8 @@ class VoxGestCameraRecognitionController(
             "low_hand_presence" -> "Unstable landmarks"
             "bad_sequence" -> "Collecting"
             "wrong_input_shape" -> "Landmark profile not ready."
+            "need_consistency_1_3" -> "Hold sign steady 1/3"
+            "need_consistency_2_3" -> "Hold sign steady 2/3"
             else -> "Waiting for clearer hand"
         }
     }
@@ -244,6 +261,7 @@ class VoxGestCameraRecognitionController(
     }
 
     private fun closePipeline() {
+        gate.reset()
         extractor?.close()
         extractor = null
         recognizer?.close()
@@ -253,10 +271,39 @@ class VoxGestCameraRecognitionController(
         sequenceBuffer = null
     }
 
+    private fun statusForConfidence(confidence: Float): DetectionStatus {
+        return if (confidence >= DETECTING_CONFIDENCE) {
+            DetectionStatus.DETECTING
+        } else {
+            DetectionStatus.SEARCHING
+        }
+    }
+
+    private fun feedbackFromFrame(
+        frame: LandmarkFrame,
+        status: DetectionStatus,
+        confidence: Float,
+        label: String
+    ): RecognitionFeedback {
+        val hand = frame.rightHandLandmarks ?: frame.leftHandLandmarks ?: emptyList()
+        return RecognitionFeedback(
+            detectionStatus = status,
+            confidence = confidence,
+            label = label.uppercase(Locale.US),
+            handLandmarks = hand.map { OverlayLandmarkPoint(it.x, it.y, it.z) },
+            eventId = if (status == DetectionStatus.RECOGNIZED) SystemClock.elapsedRealtime() else 0L
+        )
+    }
+
+    private fun postFeedback(feedback: RecognitionFeedback) {
+        mainExecutor.execute { onRecognitionFeedback(feedback) }
+    }
+
     companion object {
         private const val ANALYZE_INTERVAL_MS = 90L
         private const val ACCEPTED_COOLDOWN_MS = 1600L
         private const val STATUS_MIN_INTERVAL_MS = 220L
+        private const val DETECTING_CONFIDENCE = 0.40f
         private val DEMO_ACCEPTED_LABELS = setOf("WHAT", "YOUR", "NAME", "MY", "YOU", "OKAY", "NOTHING")
     }
 }
