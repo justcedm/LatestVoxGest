@@ -1,0 +1,280 @@
+{
+  "version": 1,
+  "profile": "fullsign225_team16",
+  "status": "experimental_until_live_tested",
+  "default_model": false,
+  "replaces_demo10": false,
+  "replaces_onehand162": false,
+  "phrase_enabled_default": false,
+  "created_at": "2026-05-19T12:38:04",
+  "feature_profile": "fullsign225",
+  "model_kind": "tcn",
+  "models": {
+    "tcn": {
+      "file": "model/voxgest_tcn_fullsign225_team16.tflite",
+      "keras_file": "model/voxgest_tcn_fullsign225_team16.h5",
+      "labels_file": "model/class_labels_tcn_fullsign225_team16.json",
+      "training_report": "model/tcn_training_report_fullsign225_team16.json",
+      "input_shape": [
+        1,
+        30,
+        225
+      ],
+      "output_shape": [
+        1,
+        16
+      ],
+      "sequence_length": 30,
+      "pose_size": 99,
+      "left_hand_size": 63,
+      "right_hand_size": 63,
+      "feature_size": 225,
+      "labels": [
+        "DOCTOR",
+        "EAT",
+        "HELLO",
+        "HELP",
+        "NAME",
+        "NO",
+        "PAIN",
+        "PLEASE",
+        "SORRY",
+        "STOP",
+        "THANKYOU",
+        "TIME",
+        "WANT",
+        "WATER",
+        "YES",
+        "NOTHING"
+      ],
+      "negative_label": "NOTHING",
+      "nothing_policy": "ignore_no_output",
+      "artifact_size_bytes": 316136
+    }
+  },
+  "dataset": {
+    "source": "external_datasets/fullsign225_team_dataset_normalized",
+    "features": "external_datasets/fullsign225_team16_features",
+    "videos_extracted": 380,
+    "total_sequences": 3420,
+    "skipped_videos": [
+      "NOTHING_fullsign225_011.mp4",
+      "NOTHING_fullsign225_018.mp4"
+    ],
+    "per_label": {
+      "DOCTOR": {
+        "videos": 31,
+        "sequences": 279,
+        "groups": 31,
+        "failed": 0
+      },
+      "EAT": {
+        "videos": 21,
+        "sequences": 189,
+        "groups": 21,
+        "failed": 0
+      },
+      "HELLO": {
+        "videos": 27,
+        "sequences": 243,
+        "groups": 27,
+        "failed": 0
+      },
+      "HELP": {
+        "videos": 26,
+        "sequences": 234,
+        "groups": 26,
+        "failed": 0
+      },
+      "NAME": {
+        "videos": 25,
+        "sequences": 225,
+        "groups": 25,
+        "failed": 0
+      },
+      "NO": {
+        "videos": 24,
+        "sequences": 216,
+        "groups": 24,
+        "failed": 0
+      },
+      "NOTHING": {
+        "videos": 17,
+        "sequences": 153,
+        "groups": 17,
+        "failed": 0
+      },
+      "PAIN": {
+        "videos": 19,
+        "sequences": 171,
+        "groups": 19,
+        "failed": 0
+      },
+      "PLEASE": {
+        "videos": 25,
+        "sequences": 225,
+        "groups": 25,
+        "failed": 0
+      },
+      "SORRY": {
+        "videos": 31,
+        "sequences": 279,
+        "groups": 31,
+        "failed": 0
+      },
+      "STOP": {
+        "videos": 22,
+        "sequences": 198,
+        "groups": 22,
+        "failed": 0
+      },
+      "THANKYOU": {
+        "videos": 22,
+        "sequences": 198,
+        "groups": 22,
+        "failed": 0
+      },
+      "TIME": {
+        "videos": 20,
+        "sequences": 180,
+        "groups": 20,
+        "failed": 0
+      },
+      "WANT": {
+        "videos": 21,
+        "sequences": 189,
+        "groups": 21,
+        "failed": 0
+      },
+      "WATER": {
+        "videos": 30,
+        "sequences": 270,
+        "groups": 30,
+        "failed": 0
+      },
+      "YES": {
+        "videos": 19,
+        "sequences": 171,
+        "groups": 19,
+        "failed": 0
+      }
+    }
+  },
+  "validation": {
+    "best_grouped_val_accuracy": 89.0390396118164,
+    "train_sequences": 2754,
+    "val_sequences": 666,
+    "train_groups": 306,
+    "val_groups": 74,
+    "per_class": {
+      "DOCTOR": {
+        "correct": 44,
+        "total": 54,
+        "accuracy": 81.48148148148148
+      },
+      "EAT": {
+        "correct": 36,
+        "total": 36,
+        "accuracy": 100.0
+      },
+      "HELLO": {
+        "correct": 45,
+        "total": 45,
+        "accuracy": 100.0
+      },
+      "HELP": {
+        "correct": 35,
+        "total": 45,
+        "accuracy": 77.77777777777779
+      },
+      "NAME": {
+        "correct": 44,
+        "total": 45,
+        "accuracy": 97.77777777777777
+      },
+      "NO": {
+        "correct": 44,
+        "total": 45,
+        "accuracy": 97.77777777777777
+      },
+      "PAIN": {
+        "correct": 36,
+        "total": 36,
+        "accuracy": 100.0
+      },
+      "PLEASE": {
+        "correct": 36,
+        "total": 45,
+        "accuracy": 80.0
+      },
+      "SORRY": {
+        "correct": 53,
+        "total": 54,
+        "accuracy": 98.14814814814815
+      },
+      "STOP": {
+        "correct": 35,
+        "total": 36,
+        "accuracy": 97.22222222222221
+      },
+      "THANKYOU": {
+        "correct": 27,
+        "total": 36,
+        "accuracy": 75.0
+      },
+      "TIME": {
+        "correct": 36,
+        "total": 36,
+        "accuracy": 100.0
+      },
+      "WANT": {
+        "correct": 34,
+        "total": 36,
+        "accuracy": 94.44444444444444
+      },
+      "WATER": {
+        "correct": 43,
+        "total": 54,
+        "accuracy": 79.62962962962963
+      },
+      "YES": {
+        "correct": 36,
+        "total": 36,
+        "accuracy": 100.0
+      },
+      "NOTHING": {
+        "correct": 9,
+        "total": 27,
+        "accuracy": 33.33333333333333
+      }
+    },
+    "top_miss": {
+      "DOCTOR": "STOP",
+      "EAT": "-",
+      "HELLO": "-",
+      "HELP": "STOP",
+      "NAME": "DOCTOR",
+      "NO": "YES",
+      "PAIN": "-",
+      "PLEASE": "THANKYOU",
+      "SORRY": "PLEASE",
+      "STOP": "HELP",
+      "THANKYOU": "PLEASE",
+      "TIME": "-",
+      "WANT": "HELP",
+      "WATER": "YES",
+      "YES": "-",
+      "NOTHING": "HELLO"
+    }
+  },
+  "runtime_policy": {
+    "input_policy": "accepted_predictions_only",
+    "raw_prediction_policy": "never_update_sentence_output_directly",
+    "nothing_policy": "NOTHING remains no-output and must not be spoken, stored, or sent to avatar",
+    "recommended_dynamic_model_env": "VOXGEST_DYNAMIC_MODEL=tcn",
+    "feature_env": "VOXGEST_FEATURE_PROFILE=fullsign225",
+    "word_profile_env": "VOXGEST_WORD_PROFILE=fullsign225_team16",
+    "single_hand_pose_env": "VOXGEST_SINGLE_HAND_POSE=0"
+  },
+  "warning": "Experimental Team16 FullSign225 pass. Live testing is required before any app preview, and demo10 remains the safe baseline."
+}

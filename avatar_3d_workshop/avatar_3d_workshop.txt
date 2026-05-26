@@ -1,0 +1,23 @@
+C:\BSIT 3RD YEAR\New VovGest\avatar_3d_workshop\
+
+avatar_3d_workshop/
+  source/
+    voxgest_avatar_original.blend
+    voxgest_avatar_original.fbx
+    voxgest_avatar_original.vrm
+
+  blender/
+    voxgest_avatar_working.blend
+
+  exported/
+    voxgest_avatar.glb
+    voxgest_avatar_IDLE.glb
+    voxgest_avatar_HELLO.glb
+    voxgest_avatar_THANKYOU.glb
+    voxgest_avatar_WATER.glb
+    voxgest_avatar_EAT.glb
+
+  reference/
+    avatar_reference.png
+    VOXGEST DESIGN.png
+    voxgest_full_app_v2.html

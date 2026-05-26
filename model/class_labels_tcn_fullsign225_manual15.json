@@ -1,0 +1,17 @@
+{
+  "YES": 0,
+  "NO": 1,
+  "WATER": 2,
+  "HELLO": 3,
+  "HELP": 4,
+  "STOP": 5,
+  "DOCTOR": 6,
+  "NAME": 7,
+  "THANKYOU": 8,
+  "PLEASE": 9,
+  "SORRY": 10,
+  "PAIN": 11,
+  "EAT": 12,
+  "TIME": 13,
+  "NOTHING": 14
+}

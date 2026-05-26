@@ -41,6 +41,13 @@ from lstm_features import (
     single_hand_pose_enabled,
     top_prediction,
 )
+from frame_quality_gate import (
+    BAD_SEQUENCE,
+    GOOD,
+    capture_frame_quality,
+    evaluate_sequence_quality,
+    quality_allows_inference,
+)
 from token_composer import TokenComposer
 from phrase_builder import PhraseBuilder
 from word_config import NEGATIVE_WORDS, TARGET_WORDS, TRAINING_WORDS, WORD_PROFILE
@@ -381,8 +388,19 @@ if os.path.exists(MOTION_LETTER_MODEL) and os.path.exists(MOTION_LETTER_LABELS):
         motion_letter_label_to_idx, motion_letter_idx_to_label = load_label_maps(MOTION_LETTER_LABELS)
         required_motion_letters = set(MOTION_LETTER_OUTPUTS) | {"NOTHING"}
         missing_motion_letters = sorted(required_motion_letters - set(motion_letter_label_to_idx))
+        motion_letter_input_shape = getattr(motion_letter_model, "input_shape", None)
+        motion_letter_feature_size = None
+        if isinstance(motion_letter_input_shape, (list, tuple)) and motion_letter_input_shape:
+            first_shape = motion_letter_input_shape[0] if isinstance(motion_letter_input_shape[0], (list, tuple)) else motion_letter_input_shape
+            if isinstance(first_shape, (list, tuple)) and len(first_shape) >= 3:
+                motion_letter_feature_size = first_shape[-1]
         if missing_motion_letters:
             motion_letter_last_error = f"missing labels: {missing_motion_letters}"
+        elif motion_letter_feature_size not in (None, FEAT_SIZE):
+            motion_letter_last_error = (
+                f"input feature mismatch: model expects {motion_letter_feature_size}, "
+                f"active profile provides {FEAT_SIZE}"
+            )
         else:
             has_motion_letters = True
             print(f"  Motion letters: {sorted(motion_letter_label_to_idx.keys())}")
@@ -422,6 +440,7 @@ mp_draw = mp.solutions.drawing_utils
 mp_styles = mp.solutions.drawing_styles
 
 frame_window = deque(maxlen=SEQ_LEN)
+quality_window = deque(maxlen=SEQ_LEN)
 phrase_segmenter = GestureSegmenter() if ENABLE_PHRASE and GestureSegmenter is not None else None
 pred_buffer = deque(maxlen=SMOOTH_WIN)
 composer = TokenComposer(ACTIVE_WORD_LABELS)
@@ -446,6 +465,8 @@ display_motion = 0.0
 display_path = 0.0
 display_presence = 0.0
 last_word = ("", 0.0, 0.0, 0.0, 0.0, 0.0)
+last_quality_status = GOOD
+last_quality_reason = "waiting for a complete quality-gated sequence"
 last_motion_letter = ("", 0.0, 0.0, 0.0, 0.0, 0.0)
 last_phrase = ("", 0.0, 0.0)
 
@@ -524,6 +545,7 @@ with mp_holistic.Holistic(
         holistic_vec = extract_frame_features(results, mirrored_input=MIRROR_INPUT)
         if holistic_vec is not None:
             frame_window.append(holistic_vec)
+            quality_window.append(capture_frame_quality(results, mirrored_input=MIRROR_INPUT))
             no_pose_frames = 0
             if has_phrase and phrase_segmenter is not None and mode != "LETTERS":
                 phrase_segment = phrase_segmenter.update(holistic_vec)
@@ -552,6 +574,7 @@ with mp_holistic.Holistic(
                             last_confirmed_t = last_phrase_t
                             pred_buffer.clear()
                             frame_window.clear()
+                            quality_window.clear()
                             current_label = ""
                             stable = 0
                         elif is_phrase_noop(phrase_label):
@@ -563,6 +586,7 @@ with mp_holistic.Holistic(
             no_pose_frames += 1
             if no_pose_frames >= NO_POSE_RESET_FRAMES:
                 frame_window.clear()
+                quality_window.clear()
                 pred_buffer.clear()
                 if phrase_segmenter is not None:
                     phrase_segmenter.reset()
@@ -570,8 +594,11 @@ with mp_holistic.Holistic(
                 display_conf = 0.0
                 display_src = ""
                 last_word = ("", 0.0, 0.0, 0.0, 0.0, 0.0)
+                last_quality_status = BAD_SEQUENCE
+                last_quality_reason = "pose missing for reset window"
                 last_motion_letter = ("", 0.0, 0.0, 0.0, 0.0, 0.0)
                 last_phrase = ("", 0.0, 0.0)
+                no_pose_frames = 0
 
         hand_landmarks = select_hand_landmarks(results, mirrored_input=MIRROR_INPUT)
         static_candidate = ("", 0.0, "static")
@@ -587,12 +614,20 @@ with mp_holistic.Holistic(
         if has_lstm and len(frame_window) == SEQ_LEN and mode != "LETTERS":
             if dynamic_due:
                 seq = np.array(list(frame_window), dtype=np.float32)
-                probs = lstm_model.predict(seq[np.newaxis, ...], verbose=0)[0]
-                word_idx, word_conf, word_margin = top_prediction(probs)
-                word_label = lstm_idx_to_label.get(word_idx, "?")
+                quality = evaluate_sequence_quality(seq, list(quality_window))
                 motion = sequence_motion_energy(seq)
                 wrist_path = sequence_wrist_path(seq)
                 hand_presence = sequence_hand_presence_ratio(seq)
+                last_quality_status = quality.status
+                last_quality_reason = quality.reason
+                if quality.good:
+                    probs = lstm_model.predict(seq[np.newaxis, ...], verbose=0)[0]
+                    word_idx, word_conf, word_margin = top_prediction(probs)
+                    word_label = lstm_idx_to_label.get(word_idx, "?")
+                else:
+                    word_label = ""
+                    word_conf = 0.0
+                    word_margin = 0.0
                 last_word = (
                     word_label,
                     word_conf,
@@ -610,7 +645,7 @@ with mp_holistic.Holistic(
                 wrist_path,
                 hand_presence,
                 mode,
-            ) and word_label in ACTIVE_DYNAMIC_LABELS:
+            ) and word_label in ACTIVE_DYNAMIC_LABELS and quality_allows_inference(last_quality_status):
                 word_candidate = (word_label, word_conf, "motion", word_margin, motion)
 
         motion_letter_candidate = ("", 0.0, "motion-letter", 0.0, 0.0)
@@ -710,6 +745,7 @@ with mp_holistic.Holistic(
             needed = stable_frames_for(current_label, mode)
             if stable >= needed and time.time() - last_confirmed_t >= COOLDOWN_S:
                 result = composer.accept(current_label)
+                phrase_result = None
                 if result.accepted:
                     last_accepted_token = result.token or current_label
                     phrase_result = phrase_builder.accept(current_label)
@@ -752,6 +788,8 @@ with mp_holistic.Holistic(
                 f"mrg {last_word[2]:.0%} mot {last_word[3]:.3f} "
                 f"path {last_word[4]:.2f} hand {last_word[5]:.0%}"
             )
+        elif has_lstm and last_quality_status != GOOD:
+            word_preview = f"quality {last_quality_status}: {last_quality_reason}"
         motion_letter_preview = ""
         if has_motion_letters and last_motion_letter[0] and mode != "WORDS":
             motion_letter_preview = (
@@ -893,12 +931,15 @@ with mp_holistic.Holistic(
             stable = 0
             pred_buffer.clear()
             frame_window.clear()
+            quality_window.clear()
             if phrase_segmenter is not None:
                 phrase_segmenter.reset()
             display_label = ""
             display_conf = 0.0
             display_src = ""
             last_word = ("", 0.0, 0.0, 0.0, 0.0, 0.0)
+            last_quality_status = GOOD
+            last_quality_reason = "reset"
             last_motion_letter = ("", 0.0, 0.0, 0.0, 0.0, 0.0)
             last_phrase = ("", 0.0, 0.0)
         elif key == ord("s"):
@@ -917,9 +958,14 @@ with mp_holistic.Holistic(
                 phrase_segmenter.reset()
             current_label = ""
             stable = 0
+            frame_window.clear()
+            quality_window.clear()
             display_label = ""
             display_conf = 0.0
             display_src = ""
+            last_word = ("", 0.0, 0.0, 0.0, 0.0, 0.0)
+            last_quality_status = GOOD
+            last_quality_reason = "mode reset"
             last_motion_letter = ("", 0.0, 0.0, 0.0, 0.0, 0.0)
             print(f"Mode: {MODES[mode_idx]}")
 

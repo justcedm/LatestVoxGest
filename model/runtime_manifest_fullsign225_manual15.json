@@ -1,0 +1,243 @@
+{
+  "version": 1,
+  "profile": "fullsign225_manual15",
+  "status": "experimental_until_live_tested",
+  "default_model": false,
+  "replaces_demo10": false,
+  "replaces_onehand162": false,
+  "phrase_enabled_default": false,
+  "feature_profile": "fullsign225",
+  "model_kind": "tcn",
+  "models": {
+    "tcn": {
+      "file": "model/voxgest_tcn_fullsign225_manual15.tflite",
+      "keras_file": "model/voxgest_tcn_fullsign225_manual15.h5",
+      "labels_file": "model/class_labels_tcn_fullsign225_manual15.json",
+      "training_report": "model/tcn_training_report_fullsign225_manual15.json",
+      "input_shape": [
+        1,
+        30,
+        225
+      ],
+      "output_shape": [
+        1,
+        15
+      ],
+      "sequence_length": 30,
+      "feature_size": 225,
+      "labels": [
+        "YES",
+        "NO",
+        "WATER",
+        "HELLO",
+        "HELP",
+        "STOP",
+        "DOCTOR",
+        "NAME",
+        "THANKYOU",
+        "PLEASE",
+        "SORRY",
+        "PAIN",
+        "EAT",
+        "TIME",
+        "NOTHING"
+      ],
+      "negative_label": "NOTHING",
+      "nothing_policy": "ignore_no_output"
+    }
+  },
+  "dataset": {
+    "features": "C:\\BSIT 3RD YEAR\\New VovGest\\dataset_words_lstm_fullsign225",
+    "class_stats": {
+      "YES": {
+        "sequences": 400,
+        "groups": 16,
+        "used": true,
+        "skipped_missing_hand_metadata": 0
+      },
+      "NO": {
+        "sequences": 400,
+        "groups": 16,
+        "used": true,
+        "skipped_missing_hand_metadata": 0
+      },
+      "WATER": {
+        "sequences": 400,
+        "groups": 16,
+        "used": true,
+        "skipped_missing_hand_metadata": 0
+      },
+      "HELLO": {
+        "sequences": 400,
+        "groups": 16,
+        "used": true,
+        "skipped_missing_hand_metadata": 0
+      },
+      "HELP": {
+        "sequences": 400,
+        "groups": 16,
+        "used": true,
+        "skipped_missing_hand_metadata": 0
+      },
+      "STOP": {
+        "sequences": 400,
+        "groups": 16,
+        "used": true,
+        "skipped_missing_hand_metadata": 0
+      },
+      "DOCTOR": {
+        "sequences": 400,
+        "groups": 16,
+        "used": true,
+        "skipped_missing_hand_metadata": 0
+      },
+      "NAME": {
+        "sequences": 400,
+        "groups": 16,
+        "used": true,
+        "skipped_missing_hand_metadata": 0
+      },
+      "THANKYOU": {
+        "sequences": 400,
+        "groups": 16,
+        "used": true,
+        "skipped_missing_hand_metadata": 0
+      },
+      "PLEASE": {
+        "sequences": 400,
+        "groups": 16,
+        "used": true,
+        "skipped_missing_hand_metadata": 0
+      },
+      "SORRY": {
+        "sequences": 350,
+        "groups": 14,
+        "used": true,
+        "skipped_missing_hand_metadata": 0
+      },
+      "PAIN": {
+        "sequences": 275,
+        "groups": 11,
+        "used": true,
+        "skipped_missing_hand_metadata": 0
+      },
+      "EAT": {
+        "sequences": 200,
+        "groups": 8,
+        "used": true,
+        "skipped_missing_hand_metadata": 0
+      },
+      "TIME": {
+        "sequences": 200,
+        "groups": 8,
+        "used": true,
+        "skipped_missing_hand_metadata": 0
+      },
+      "NOTHING": {
+        "sequences": 600,
+        "groups": 10,
+        "used": true,
+        "skipped_missing_hand_metadata": 0
+      }
+    }
+  },
+  "validation": {
+    "best_grouped_val_accuracy": 47.179487347602844,
+    "per_class": {
+      "YES": {
+        "correct": 17,
+        "total": 75,
+        "accuracy": 22.666666666666664
+      },
+      "NO": {
+        "correct": 50,
+        "total": 75,
+        "accuracy": 66.66666666666666
+      },
+      "WATER": {
+        "correct": 49,
+        "total": 75,
+        "accuracy": 65.33333333333333
+      },
+      "HELLO": {
+        "correct": 75,
+        "total": 75,
+        "accuracy": 100.0
+      },
+      "HELP": {
+        "correct": 19,
+        "total": 75,
+        "accuracy": 25.333333333333336
+      },
+      "STOP": {
+        "correct": 0,
+        "total": 75,
+        "accuracy": 0.0
+      },
+      "DOCTOR": {
+        "correct": 26,
+        "total": 75,
+        "accuracy": 34.66666666666667
+      },
+      "NAME": {
+        "correct": 34,
+        "total": 75,
+        "accuracy": 45.33333333333333
+      },
+      "THANKYOU": {
+        "correct": 48,
+        "total": 75,
+        "accuracy": 64.0
+      },
+      "PLEASE": {
+        "correct": 2,
+        "total": 75,
+        "accuracy": 2.666666666666667
+      },
+      "SORRY": {
+        "correct": 46,
+        "total": 75,
+        "accuracy": 61.33333333333333
+      },
+      "PAIN": {
+        "correct": 50,
+        "total": 50,
+        "accuracy": 100.0
+      },
+      "EAT": {
+        "correct": 44,
+        "total": 50,
+        "accuracy": 88.0
+      },
+      "TIME": {
+        "correct": 0,
+        "total": 50,
+        "accuracy": 0.0
+      }
+    },
+    "top_miss": {
+      "YES": "NO",
+      "NO": "PLEASE",
+      "WATER": "EAT",
+      "HELLO": "-",
+      "HELP": "HELLO",
+      "STOP": "HELP",
+      "DOCTOR": "PAIN",
+      "NAME": "TIME",
+      "THANKYOU": "NAME",
+      "PLEASE": "DOCTOR",
+      "SORRY": "THANKYOU",
+      "PAIN": "-",
+      "EAT": "YES",
+      "TIME": "NAME"
+    }
+  },
+  "runtime_policy": {
+    "input_policy": "accepted_predictions_only",
+    "raw_prediction_policy": "never_update_sentence_output_directly",
+    "nothing_policy": "NOTHING remains no-output",
+    "word_profile_env": "VOXGEST_WORD_PROFILE=fullsign225_manual15",
+    "feature_profile_env": "VOXGEST_FEATURE_PROFILE=fullsign225",
+    "dynamic_model_env": "VOXGEST_DYNAMIC_MODEL=tcn"
+  }
+}

@@ -1,0 +1,177 @@
+{
+  "profile": "fullsign225_manual5_team",
+  "word_profile": "fullsign225_manual5_team",
+  "feature_profile": "fullsign225",
+  "model_type": "Residual Dilated TCN",
+  "model_kind": "rd_tcn",
+  "dataset": "C:\\BSIT 3RD YEAR\\New VovGest\\external_datasets\\fullsign225_manual5_team_features",
+  "model": "C:\\BSIT 3RD YEAR\\New VovGest\\model\\voxgest_rd_tcn_fullsign225_manual5_team.h5",
+  "labels": "C:\\BSIT 3RD YEAR\\New VovGest\\model\\class_labels_rd_tcn_fullsign225_manual5_team.json",
+  "tflite": "C:\\BSIT 3RD YEAR\\New VovGest\\model\\voxgest_rd_tcn_fullsign225_manual5_team.tflite",
+  "runtime_manifest": "C:\\BSIT 3RD YEAR\\New VovGest\\model\\runtime_manifest_rd_tcn_fullsign225_manual5_team.json",
+  "seq_len": 30,
+  "feature_size": 225,
+  "input_shape": [
+    1,
+    30,
+    225
+  ],
+  "output_shape": [
+    1,
+    5
+  ],
+  "target_words": [
+    "EAT",
+    "WATER",
+    "HELLO",
+    "THANKYOU"
+  ],
+  "training_words": [
+    "EAT",
+    "WATER",
+    "HELLO",
+    "THANKYOU",
+    "NOTHING"
+  ],
+  "classes": [
+    "EAT",
+    "WATER",
+    "HELLO",
+    "THANKYOU",
+    "NOTHING"
+  ],
+  "sample_counts": {
+    "EAT": 72,
+    "WATER": 70,
+    "HELLO": 70,
+    "THANKYOU": 70,
+    "NOTHING": 50
+  },
+  "class_stats": {
+    "EAT": {
+      "sequences": 72,
+      "groups": 4,
+      "used": true,
+      "wrong_shape": 0,
+      "skipped_missing_hand_metadata": 0
+    },
+    "WATER": {
+      "sequences": 70,
+      "groups": 2,
+      "used": true,
+      "wrong_shape": 0,
+      "skipped_missing_hand_metadata": 0
+    },
+    "HELLO": {
+      "sequences": 70,
+      "groups": 2,
+      "used": true,
+      "wrong_shape": 0,
+      "skipped_missing_hand_metadata": 0
+    },
+    "THANKYOU": {
+      "sequences": 70,
+      "groups": 2,
+      "used": true,
+      "wrong_shape": 0,
+      "skipped_missing_hand_metadata": 0
+    },
+    "NOTHING": {
+      "sequences": 50,
+      "groups": 1,
+      "used": true,
+      "wrong_shape": 0,
+      "skipped_missing_hand_metadata": 0
+    }
+  },
+  "train_validation_split_method": "grouped source split with optional random fallback for one-group classes",
+  "manual_to_train": true,
+  "random_val_fallback": true,
+  "min_sequences_per_class": 20,
+  "min_groups_per_class": 1,
+  "ignored_wrong_shape_files": 0,
+  "ignored_missing_hand_metadata_files": 0,
+  "train_sequences": 211,
+  "val_sequences": 121,
+  "train_groups": 7,
+  "val_groups": 5,
+  "best_grouped_val_accuracy": 41.322314739227295,
+  "per_class": {
+    "EAT": {
+      "correct": 0,
+      "total": 1,
+      "accuracy": 0.0
+    },
+    "WATER": {
+      "correct": 0,
+      "total": 30,
+      "accuracy": 0.0
+    },
+    "HELLO": {
+      "correct": 40,
+      "total": 40,
+      "accuracy": 100.0
+    },
+    "THANKYOU": {
+      "correct": 10,
+      "total": 40,
+      "accuracy": 25.0
+    },
+    "NOTHING": {
+      "correct": 0,
+      "total": 10,
+      "accuracy": 0.0
+    }
+  },
+  "top_confusions": {
+    "EAT": "HELLO",
+    "WATER": "HELLO",
+    "HELLO": "-",
+    "THANKYOU": "EAT",
+    "NOTHING": "HELLO"
+  },
+  "confusion_counts": {
+    "EAT": {
+      "top_miss": "HELLO",
+      "count": 1
+    },
+    "WATER": {
+      "top_miss": "HELLO",
+      "count": 30
+    },
+    "HELLO": {
+      "top_miss": "-",
+      "count": 0
+    },
+    "THANKYOU": {
+      "top_miss": "EAT",
+      "count": 20
+    },
+    "NOTHING": {
+      "top_miss": "HELLO",
+      "count": 8
+    }
+  },
+  "tflite_export_status": {
+    "ok": true,
+    "error": null,
+    "input_shape": [
+      1,
+      30,
+      225
+    ],
+    "output_shape": [
+      1,
+      5
+    ],
+    "smoke_class": 0,
+    "size_kb": 182.546875
+  },
+  "artifacts": {
+    "keras": "model/voxgest_rd_tcn_fullsign225_manual5_team.h5",
+    "tflite": "model/voxgest_rd_tcn_fullsign225_manual5_team.tflite",
+    "labels": "model/class_labels_rd_tcn_fullsign225_manual5_team.json",
+    "training_report": "model/rd_tcn_training_report_fullsign225_manual5_team.json",
+    "runtime_manifest": "model/runtime_manifest_rd_tcn_fullsign225_manual5_team.json"
+  }
+}

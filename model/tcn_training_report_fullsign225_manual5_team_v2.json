@@ -1,0 +1,120 @@
+{
+  "dataset": "C:\\BSIT 3RD YEAR\\New VovGest\\external_datasets\\fullsign225_manual5_team_features_v2",
+  "model": "C:\\BSIT 3RD YEAR\\New VovGest\\model\\voxgest_tcn_fullsign225_manual5_team_v2.h5",
+  "labels": "C:\\BSIT 3RD YEAR\\New VovGest\\model\\class_labels_tcn_fullsign225_manual5_team_v2.json",
+  "tflite": "C:\\BSIT 3RD YEAR\\New VovGest\\model\\voxgest_tcn_fullsign225_manual5_team_v2.tflite",
+  "seq_len": 30,
+  "feature_size": 225,
+  "input_shape": [
+    1,
+    30,
+    225
+  ],
+  "output_shape": [
+    1,
+    5
+  ],
+  "feature_profile": "fullsign225",
+  "word_profile": "fullsign225_manual5_team_v2",
+  "target_words": [
+    "EAT",
+    "WATER",
+    "HELLO",
+    "THANKYOU",
+    "NOTHING"
+  ],
+  "training_words": [
+    "EAT",
+    "WATER",
+    "HELLO",
+    "THANKYOU",
+    "NOTHING"
+  ],
+  "include_extra_words": false,
+  "manual_to_train": true,
+  "random_val_fallback": true,
+  "min_sequences_per_class": 20,
+  "min_groups_per_class": 1,
+  "classes": [
+    "EAT",
+    "WATER",
+    "HELLO",
+    "THANKYOU",
+    "NOTHING"
+  ],
+  "missing_target_words": [],
+  "skipped_target_words": [],
+  "ignored_wrong_shape_files": 0,
+  "ignored_missing_hand_metadata_files": 0,
+  "class_stats": {
+    "EAT": {
+      "sequences": 123,
+      "groups": 4,
+      "used": true,
+      "skipped_missing_hand_metadata": 0
+    },
+    "WATER": {
+      "sequences": 120,
+      "groups": 3,
+      "used": true,
+      "skipped_missing_hand_metadata": 0
+    },
+    "HELLO": {
+      "sequences": 120,
+      "groups": 3,
+      "used": true,
+      "skipped_missing_hand_metadata": 0
+    },
+    "THANKYOU": {
+      "sequences": 120,
+      "groups": 3,
+      "used": true,
+      "skipped_missing_hand_metadata": 0
+    },
+    "NOTHING": {
+      "sequences": 150,
+      "groups": 2,
+      "used": true,
+      "skipped_missing_hand_metadata": 0
+    }
+  },
+  "train_sequences": 442,
+  "val_sequences": 191,
+  "train_groups": 10,
+  "val_groups": 5,
+  "best_grouped_val_accuracy": 16.753926873207092,
+  "per_class": {
+    "EAT": {
+      "correct": 1,
+      "total": 41,
+      "accuracy": 2.4390243902439024
+    },
+    "WATER": {
+      "correct": 3,
+      "total": 40,
+      "accuracy": 7.5
+    },
+    "HELLO": {
+      "correct": 28,
+      "total": 30,
+      "accuracy": 93.33333333333333
+    },
+    "THANKYOU": {
+      "correct": 0,
+      "total": 30,
+      "accuracy": 0.0
+    },
+    "NOTHING": {
+      "correct": 0,
+      "total": 50,
+      "accuracy": 0.0
+    }
+  },
+  "top_miss": {
+    "EAT": "THANKYOU",
+    "WATER": "THANKYOU",
+    "HELLO": "EAT",
+    "THANKYOU": "EAT",
+    "NOTHING": "EAT"
+  }
+}

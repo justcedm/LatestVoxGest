@@ -1,0 +1,404 @@
+SOURCE: C:\Users\loldk\Downloads\VoxGest_Comprehensive_Contextual_Notes (1).pdf
+PAGES: 7
+
+
+
+--- PAGE 1 ---
+VOXGEST COMPREHENSIVE CONTEXTUAL NOTES
+Current Progress, Paper Alignment, Methodology Context, and Defense Preparation
+Prepared for Chapter 1-3 Review and Oral Defense Readiness
+Purpose: This document summarizes the current VoxGest project from the beginning up to the latest 
+recognition-hardening and Android handoff stage. It answers what was built, why decisions were made, 
+how the system works, where it is intended to run, and when major milestones happened. It also explains 
+how the thesis paper was updated so the manuscript matches the real system progress.
+1. Executive Summary
+VoxGest is an offline Android edge-computing accessibility prototype designed to assist communication 
+between sign language users and hearing or non-signing individuals. The system uses camera-based 
+landmark tracking and trained machine learning models to recognize selected signs, convert accepted 
+outputs into text and speech, and support a reverse communication path through speech-to-text and 
+lightweight avatar or fingerspelling feedback.
+The most important correction for the paper is that VoxGest is no longer only a CNN-based static 
+alphabet recognizer. The current system is a layered recognition and communication tool. It includes 
+static alphabet/control recognition, selected dynamic word recognition, a NOTHING negative class, 
+token-based sentence composition, Android/TFLite deployment planning, and avatar playback 
+downstream of confirmed accepted tokens.
+Core Question Defense-Ready Answer
+What is VoxGest? A bidirectional offline Android accessibility prototype for 
+selected sign recognition, text/speech output, speech-
+to-text response, and avatar/fingerspelling feedback.
+Why is it needed? To reduce communication barriers when no interpreter 
+is available and when quick face-to-face 
+communication is needed.
+How does it work? Camera input is converted into landmarks, landmarks 
+are passed into static or dynamic models, accepted 
+tokens are composed into text, and outputs are 
+displayed, spoken, or animated.
+Where will it run? Android devices, using on-device inference with no 
+backend required for recognition.
+When is the current paper focused? The paper focuses on the current Chapter 1-3 oral-
+defense stage and the Recognition Hardening v1 
+system state.
+2. Current System State
+The current development priority is Recognition Hardening v1. This means the team is intentionally 
+freezing feature expansion and prioritizing stability for the current recognition set. Phrase-level 
+recognition files may remain in the repository, but phrase recognition is disabled by default. Sentence 
+output is currently built from confirmed accepted tokens instead of phrase shortcuts.
+System Area Current Status Defense Interpretation
+Static recognition A-Z, del, space, and nothing This is the spelling and control 
+foundation of the app.
+Dynamic recognition YES, NO, PLEASE, WATER, This is the current controlled word 
+
+--- PAGE 2 ---
+HELLO, HELP, STOP, DOCTOR, 
+NAME, THANKYOU, and 
+NOTHING
+vocabulary for demo and 
+evaluation.
+NOTHING class Active no-output/negative class Prevents random words from idle 
+hands, partial signs, and transitions.
+Token composer Builds text only from accepted 
+predictions
+Prevents raw unstable predictions 
+from becoming output.
+Phrase intent Explored but disabled by default Future path; not part of current 
+hardening priority.
+Avatar Lightweight known-word animations 
+and fingerspelling fallback
+Visual response prototype, not full 
+ASL grammar generation.
+Android Kotlin + CameraX + MediaPipe + 
+TFLite target
+Mobile prototype should mirror 
+Python preprocessing and label 
+contracts.
+3. Why the System Took This Direction
+3.1 Why the Original CNN-Only Direction Had to Change
+The project started with CNN-based image recognition because CNNs are familiar and effective for 
+image classification tasks. The first idea was to let the model learn hand shapes from static ASL alphabet 
+images. This made sense for a beginning prototype, but live camera testing exposed a domain gap: 
+clean dataset images are different from webcam and phone camera conditions.
+The CNN approach became sensitive to background, lighting, camera angle, hand distance, cropping, 
+and signer position. Because the project needs reliable live recognition, the team moved toward 
+landmark-based recognition. Landmarks represent the hand and body as numerical points, allowing the 
+model to focus on geometry rather than the entire image.
+3.2 Why Static Signs Use 63 Features
+Each hand has 21 landmarks, and each landmark has x, y, and z coordinates. Therefore, the static 
+feature vector has 21 x 3 = 63 features. This is used for A-Z, del, space, and nothing. The static model 
+normalizes the hand around the wrist and scales it by hand size, making the model less dependent on 
+the exact camera position.
+3.3 Why Dynamic Words Use 30 x 162
+Dynamic signs need motion over time. The dynamic word model uses 30 frames per decision window. 
+Each frame contains 99 pose features and 63 dominant-hand features, for a total of 162 features per 
+frame. This gives the model both motion information and body-relative location. Body-relative location is 
+important because some signs depend on whether the hand is near the face, chest, or another body 
+region.
+3.4 Why NOTHING Is Required
+A softmax word classifier will always choose some word if it is forced to classify every input. This can 
+produce false outputs when the user is idle or only moving casually. NOTHING teaches the model what 
+no valid word looks like. This makes the system safer and more reliable because idle hands, open hands, 
+aborted signs, transitions, and partial gestures can be rejected rather than spoken or displayed.
+3.5 Why the One-Hand/Dominant-Hand Policy Exists
+The current goal is not full multi-hand ASL fluency. The goal is reliable one-hand accessibility for a 
+mobile communication utility. A dominant-hand policy supports users who sign with one hand by 
+
+--- PAGE 3 ---
+preference or necessity, including users with physical limitations. It also makes training and Android 
+preprocessing more consistent because the system knows which hand to prioritize.
+4. How the Current Pipeline Works
+Stage What Happens Why It Matters
+Camera input Android CameraX or webcam 
+captures live frames.
+The system uses ordinary device 
+cameras without gloves or special 
+sensors.
+Landmark extraction MediaPipe extracts hand and pose 
+landmarks.
+Converts image frames into stable 
+numerical features.
+Static recognition A 63-feature model recognizes 
+alphabet/control signs.
+Supports spelling and control signs.
+Dynamic recognition A 30-frame x 162-feature model 
+recognizes selected word signs.
+Supports faster communication than 
+spelling every word.
+Acceptance gates Confidence, margin, motion, wrist 
+path, hand presence, stability, and 
+cooldown are checked.
+Prevents unstable raw predictions 
+from becoming outputs.
+Token composer Accepted letters and words are 
+composed into a text strip.
+Builds readable output only from 
+confirmed predictions.
+Text-to-speech Accepted text can be spoken aloud. Lets the hearing user understand 
+the signing user.
+Speech-to-text Hearing-user speech becomes text. Allows the hearing user to respond 
+through the same app.
+Avatar/fingerspelling Known words animate; unknown 
+words fingerspell.
+Provides a visual response path for 
+the signing user.
+5. Chronological Development Context
+When What Happened Why It Was Important
+March 30, 2026 Project started; team set up 
+Python/VSCode environment and 
+downloaded ASL alphabet dataset.
+Established the first ML 
+development environment and 
+dataset foundation.
+March 30-31 First CNN model was trained on 
+ASL alphabet images.
+Created the first working proof of 
+concept for static hand-shape 
+recognition.
+April 1-3 Live webcam testing revealed 
+failures such as wrong repeated 
+predictions and cropping problems.
+Showed that dataset validation 
+does not automatically mean live 
+camera reliability.
+April 3-5 Scope revised from one-way sign-
+to-speech to bidirectional 
+communication.
+Added speech-to-text, avatar 
+response, and quick phrase 
+direction.
+April 5-8 Hybrid CNN + landmark model was 
+explored and then abandoned.
+Demonstrated that extra complexity 
+did not solve live robustness 
+enough.
+April 8-10 Landmark-only static model 
+became the stronger direction.
+Shifted from raw images to hand 
+geometry for more stable live 
+recognition.
+April 22 Word-recognition fixes added: 
+NOTHING, gates, 30x162 holistic 
+sequences, diagnostics.
+Started reducing false word outputs 
+and improving live dynamic 
+recognition.
+April 24 Holistic 162-feature spatial-temporal 
+dynamic model and live pipeline 
+were stabilized for a smaller word 
+set.
+Resolved the floating-hand problem 
+by adding body-relative pose 
+context.
+April 28-29 Demo10 scope, dominant-hand 
+policy, single-hand pose masking, 
+Made the system direction more 
+consistent with one-hand 
+
+--- PAGE 4 ---
+and mirror mapping fixes were 
+documented.
+accessibility.
+May 8 Phrase-intent pathway for 
+ASK_NAME was designed using 
+endpoint segmentation.
+Identified that longer phrase 
+motions must be segmented before 
+classification.
+May 10 Recognition Hardening v1 began; 
+phrase expansion frozen; token 
+composer and avatar contract 
+added.
+Current defense-ready direction 
+became alphabet + 10 words + 
+NOTHING + confirmed token 
+composition.
+May 15 Paper update focus: update 
+Chapter 1-2 and create Chapter 3 
+aligned with current sources.
+Ensures manuscript, methodology, 
+and actual system progress tell the 
+same story.
+6. Current Paper Problems and Required Fixes
+The current Thesis_Capstone_Format_CCS_TRAD paper needed careful revision because it still 
+contained old or conflicting claims. The most serious issue was that the paper described VoxGest as 
+mainly a CNN-based static alphabet system, while the actual system has already evolved into a static + 
+dynamic + token-composer + avatar architecture.
+Paper Issue Found Why It Was a Problem How It Was Fixed
+CNN described as the main final 
+model
+Current system uses landmark 
+static recognition and LSTM/TCN 
+dynamic recognition.
+CNN is now explained as an early 
+development approach, not the final 
+pipeline.
+Scope limited to static alphabet only Current sources show dynamic 
+demo10 words plus NOTHING.
+Scope now includes static alphabet, 
+selected dynamic words, and 
+NOTHING.
+Dynamic signs described as future 
+only
+Dynamic recognition is already part 
+of the current pipeline.
+Chapter 1 objectives and Chapter 3 
+methodology now include dynamic 
+word recognition.
+No clear bidirectional 
+communication path
+VoxGest now includes speech-to-
+text and avatar/fingerspelling 
+response.
+Purpose, objectives, and 
+methodology now include both 
+communication directions.
+No clear negative-class explanation False positives are a key technical 
+risk.
+NOTHING is explained as a no-
+output class for idle, partial, and 
+transition movement.
+Chapter 3 placeholder/lipsum 
+content
+Not defense-ready. Chapter 3 was rewritten with 
+research design, Agile RAD, 
+architecture, datasets, models, 
+Android plan, testing, and 
+evaluation.
+Unrelated bibliography items Old template contained irrelevant 
+medical/retina references.
+Bibliography was replaced with sign 
+language recognition, MediaPipe, 
+LSTM, TCN, TensorFlow, edge 
+computing, and ISO/IEC 25010 
+references.
+Wrong names in 
+approval/endorsement pages
+The template still had sample 
+names from another project.
+Names and title were corrected 
+while preserving the document 
+format.
+
+--- PAGE 5 ---
+7. Chapter-by-Chapter Defense Alignment
+7.1 Chapter 1: What It Now Must Prove
+ The communication problem is real and affects daily interaction, public service, healthcare, school, 
+and employment contexts.
+ VoxGest is positioned as an assistive communication prototype, not a replacement for interpreters.
+ The system is bidirectional: sign-to-text/speech and speech-to-text/avatar response.
+ The current scope is controlled: static alphabet, 10 dynamic words, NOTHING, token composer, 
+Android/TFLite direction, and lightweight avatar.
+ The limitations are honest: no full ASL grammar, no unrestricted vocabulary, phrase recognition 
+currently disabled, avatar is lightweight.
+7.2 Chapter 2: What the Literature Must Support
+ CNN and deep learning literature supports the original recognition attempt and the broader AI basis.
+ MediaPipe and landmark literature supports the shift from raw images to hand/body coordinates.
+ LSTM, TCN, and WLASL literature supports dynamic word recognition.
+ Edge computing and TensorFlow Lite literature supports offline Android deployment.
+ Accessibility and sign language technology literature supports bidirectional communication needs.
+ ISO/IEC 25010 literature supports the evaluation categories.
+7.3 Chapter 3: What the Methodology Must Explain
+ Research design: Developmental research because the output is a working system.
+ Methodology: Agile RAD because the project needs repeated build-test-revise cycles.
+ System architecture: camera -> landmarks -> models -> gates -> token composer -> outputs.
+ Dataset process: static samples, dynamic sequences, negative/no-output samples, and future phrase 
+data.
+ Model evolution: CNN -> hybrid attempt -> landmark static -> LSTM/TCN dynamic.
+ Evaluation: ISO/IEC 25010 using Functional Suitability, Performance Efficiency, Reliability, and 
+Usability.
+8. Technical Contracts for the Team
+Contract Value Meaning
+Static input [1, 63] One frame of 21 hand landmarks x 
+3 coordinates.
+Static output [1, 29] A-Z plus del, space, and nothing.
+Dynamic input [1, 30, 162] 30 frames, each with pose + 
+dominant-hand features.
+Dynamic output [1, 11] 10 words plus NOTHING.
+Phrase input [1, 60, 162] Future complete phrase segment 
+input. Disabled by default.
+Android target Kotlin, CameraX, MediaPipe, 
+TensorFlow Lite
+The mobile app consumes exported 
+models and labels.
+Recognition modes AUTO, LETTERS, WORDS Different operation modes for live 
+recognition/testing.
+Output policy Confirmed tokens only Raw predictions must not directly 
+trigger text, speech, or avatar.
+
+--- PAGE 6 ---
+9. Achievements Up to Latest Progress
+ The project progressed from a simple CNN concept into a layered offline accessibility prototype.
+ Static alphabet/control recognition exists using landmark features.
+ Dynamic word recognition exists for the demo10 vocabulary plus NOTHING.
+ The project identified and documented the floating-hand problem and fixed it using pose + hand 
+features.
+ The system adopted a dominant-hand and single-hand pose policy to support accessibility and 
+consistent data collection.
+ Recognition gates and live diagnostics were added to prevent random false outputs.
+ Token composition was added so sentences are built only from accepted tokens.
+ Phrase-intent recognition was explored, but correctly paused during hardening to avoid destabilizing 
+the main demo.
+ Android handoff documentation exists, including model contracts, label files, thresholds, modes, and 
+module responsibilities.
+ Avatar pipeline documentation exists, including known word animation behavior and fingerspelling 
+fallback.
+10. Current Limitations to State Honestly
+ The system cannot yet translate full ASL grammar.
+ The system does not recognize an unrestricted vocabulary.
+ Phrase-level recognition is not part of the current default demo because recognition hardening is the 
+priority.
+ Dynamic word validation is demo-ready but not production-ready; weak words still need repair data 
+and live testing.
+ Android real-time CameraX + MediaPipe + TFLite integration is still being prepared.
+ The avatar is a lightweight prototype and not a complete ASL avatar.
+ Environmental factors such as lighting, camera angle, distance, and hand visibility can still affect 
+recognition.
+11. Recommended Defense Answers
+Likely Question Recommended Answer
+Why did you move away from CNN? CNN was useful as a starting point, but live testing 
+showed sensitivity to lighting, background, cropping, 
+and camera position. Landmarks provide a more stable 
+hand/body representation.
+Why use LSTM or TCN? Dynamic signs are motion sequences. LSTM and TCN 
+can learn temporal patterns across frames better than a 
+single-frame classifier.
+Why one hand? The current goal is reliable one-hand accessibility, 
+which supports users who sign with one hand by 
+preference or necessity. It also simplifies controlled 
+mobile recognition.
+What is NOTHING? NOTHING is a no-output negative class that teaches 
+the model to reject idle hands, transitions, partial signs, 
+and non-sign movement.
+Is this full ASL translation? No. It is selected sign recognition and assistive token 
+composition. Full ASL grammar and unrestricted 
+vocabulary are future work.
+Why is phrase recognition disabled? Phrase intent was explored, but the current priority is to 
+
+--- PAGE 7 ---
+make alphabet, 10 words, and NOTHING reliable 
+before expanding.
+What makes it bidirectional? The app supports sign-to-text/speech and speech-to-
+text/avatar or fingerspelling response.
+What will you evaluate? Functional Suitability, Performance Efficiency, 
+Reliability, and Usability based on ISO/IEC 25010.
+12. Next Best Steps After Paper Update
+ Submit the updated Chapter 1-3 PDF to the professor for alignment review.
+ Keep phrase recognition disabled until the alphabet and current dynamic words are stable.
+ Run the repeatable live alphabet protocol and log weak letters.
+ Run live word testing and log each word with confidence, margin, motion, wrist path, and hand 
+presence.
+ Record additional NOTHING hard negatives: idle, open hand, transitions, partial signs, aborted signs, 
+hand entering/leaving frame.
+ Collect repair samples only for weak words instead of adding new vocabulary.
+ Retrain LSTM and TCN after clean data repair and compare grouped validation with live behavior.
+ Complete Android runtime integration using the documented model contracts.
+ Prepare ISO/IEC 25010 questionnaire, consent form, test script, and respondent plan.
+13. Final Project Positioning
+The best way to present VoxGest is as a capstone-stage assistive communication prototype. It is not yet 
+a full ASL translator, but it is a meaningful and technically defensible system because it combines live 
+camera input, landmark extraction, static recognition, dynamic recognition, negative-class rejection, token 
+composition, speech output, speech-to-text response, and avatar/fingerspelling feedback into a single 
+offline Android accessibility direction.
+The paper should always describe what the system actually does now, not what the earliest proposal 
+planned and not what the future expansion may eventually become. The strongest defense position is 
+honesty plus clear engineering logic: VoxGest started with CNN, found live limitations, moved to 
+landmarks and temporal models, added NOTHING and gates for reliability, froze expansion for 
+hardening, and prepared Android/TFLite integration for local use.

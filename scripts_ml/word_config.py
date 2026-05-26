@@ -261,6 +261,16 @@ EXTENDED_WORDS = [
     "GO",
 ]
 
+FULLSIGN225_MANUAL7_WORDS = [
+    "HELLO",
+    "PAIN",
+    "EAT",
+    "WATER",
+    "THANKYOU",
+    "NO",
+    "NOTHING",
+]
+
 FULL_WORDS = CORE_WORDS + EXTENDED_WORDS
 WORD_PROFILES = {
     "demo5": DEMO5_WORDS,
@@ -286,6 +296,7 @@ WORD_PROFILES = {
     "onehand162_phrase_words": WORD_TOKEN_PHRASE_WORDS,
     "fullsign225_phrase_v1": FULLSIGN225_PHRASE_V1_WORDS,
     "onehand162_phrase_v1": ONEHAND162_PHRASE_V1_WORDS,
+    "fullsign225_manual7": FULLSIGN225_MANUAL7_WORDS,
     "focus": FOCUS_WORDS,
     "core": CORE_WORDS,
     "full": FULL_WORDS,

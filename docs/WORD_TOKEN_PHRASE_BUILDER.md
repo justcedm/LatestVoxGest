@@ -8,7 +8,7 @@ That is not the right direction for VoxGest now. It makes the model brittle, hid
 
 The current design uses actual word tokens instead:
 
-`WHAT + IS + YOUR + NAME` -> `What is your name?`
+`WHAT + YOUR + NAME` -> `What is your name?`
 
 This is easier to debug, easier to extend, and safer for a defense/demo because the output comes from confirmed component words.
 
@@ -28,30 +28,33 @@ The phrase builder is feature-profile agnostic. FullSign225 and OneHand162 can s
 
 Supported word profiles:
 
-- `fullsign225_phrase_words`
-- `onehand162_phrase_words`
+- `fullsign225_phrase_v1`
+- `onehand162_phrase_v1`
 
-Both profiles use the same target word-token vocabulary.
+Both phrase-v1 profiles intentionally avoid English filler labels such as
+`IS`, `ARE`, `A`, and `DO`. The phrase builder adds those words in the final
+English sentence after the meaningful accepted sign tokens are complete.
 
 ## Static A-Z Name Spelling
 
 Names are handled with the existing static alphabet recognizer after:
 
-`MY + NAME + IS`
+`MY + NAME`
 
 Example:
 
-`MY + NAME + IS + J + H + O + N` -> `My name is JHON.`
+`MY + NAME + J + H + O + N` -> `My name is JHON.`
 
 Because name length is unknown, this phrase is finalized only when the user confirms/speaks. Timeout keeps the partial phrase visible but does not falsely finalize it.
 
 ## Current Phrase Targets
 
-1. `WHAT + IS + YOUR + NAME` -> `What is your name?`
-2. `MY + NAME + IS + A-Z letters` -> `My name is <spelled name>.`
-3. `ARE + YOU + A + STUDENT` -> `Are you a student?`
-4. `ARE + YOU + OKAY` -> `Are you okay?`
-5. `WHERE + DO + YOU + LIVE` -> `Where do you live?`
+1. `WHAT + YOUR + NAME` -> `What is your name?`
+2. `YOUR + NAME + WHAT` -> `What is your name?`
+3. `MY + NAME + A-Z letters` -> `My name is <spelled name>.`
+4. `YOU + STUDENT` or `STUDENT + YOU` -> `Are you a student?`
+5. `YOU + OKAY` or `OKAY + YOU` -> `Are you okay?`
+6. `WHERE + YOU + LIVE` or `YOU + LIVE + WHERE` -> `Where do you live?`
 
 ## Current Limitations
 

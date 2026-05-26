@@ -711,6 +711,85 @@ def write_json_summary(path, rows, model_name, model_path):
     }
     with open(path, "w", encoding="utf-8") as f:
         json.dump(payload, f, indent=2)
+    return payload
+
+
+def write_ranking_reports(json_path, payload):
+    ranking = payload.get("demo_label_ranking", {})
+    ranking_json_path = json_path.with_name(f"{json_path.stem}_ranking.json")
+    ranking_md_path = json_path.with_name(f"{json_path.stem}_ranking.md")
+
+    with open(ranking_json_path, "w", encoding="utf-8") as f:
+        json.dump(
+            {
+                "generated_at": payload.get("generated_at"),
+                "model_name": payload.get("model_name"),
+                "model_path": payload.get("model_path"),
+                "gate_profile": payload.get("gate_profile"),
+                "capture_mode": payload.get("capture_mode"),
+                "feature_profile": payload.get("feature_profile"),
+                "input_shape": payload.get("input_shape"),
+                "capture_warmup_frames": payload.get("capture_warmup_frames"),
+                "demo_label_ranking": ranking,
+            },
+            f,
+            indent=2,
+        )
+
+    def list_text(items):
+        return ", ".join(items) if items else "-"
+
+    lines = [
+        "# VoxGest Demo Live Label Ranking",
+        "",
+        f"- Generated: {payload.get('generated_at')}",
+        f"- Model: {payload.get('model_name')} ({payload.get('model_path')})",
+        f"- Feature profile: {payload.get('feature_profile')}",
+        f"- Input shape: {payload.get('input_shape')}",
+        f"- Gate profile: {payload.get('gate_profile')}",
+        f"- Capture mode: {payload.get('capture_mode')}",
+        f"- Warm-up frames: {payload.get('capture_warmup_frames')}",
+        "",
+        "## Buckets",
+        "",
+        f"- Stable labels: {list_text(ranking.get('stable_labels', []))}",
+        f"- Partially stable labels: {list_text(ranking.get('partially_stable_labels', []))}",
+        f"- Unstable labels: {list_text(ranking.get('unstable_labels', []))}",
+        f"- Gate-blocked labels: {list_text(ranking.get('gate_blocked_labels', []))}",
+        f"- Capture-blocked labels: {list_text(ranking.get('capture_blocked_labels', []))}",
+        "",
+        "## Per Label",
+        "",
+        "| Label | Trials | Matched | Accepted Correct | False Accepts | Gate Blocked | Capture Blocked | Match Rate |",
+        "|---|---:|---:|---:|---:|---:|---:|---:|",
+    ]
+    for label, row in sorted((ranking.get("per_label") or {}).items()):
+        lines.append(
+            "| {label} | {trials} | {matched} | {accepted_correct} | {false_accepts} | "
+            "{gate_blocked} | {capture_blocked} | {match_rate:.0%} |".format(
+                label=label,
+                trials=int(row.get("trials", 0)),
+                matched=int(row.get("matched", 0)),
+                accepted_correct=int(row.get("accepted_correct", 0)),
+                false_accepts=int(row.get("false_accepts", 0)),
+                gate_blocked=int(row.get("gate_blocked", 0)),
+                capture_blocked=int(row.get("capture_blocked", 0)),
+                match_rate=float(row.get("match_rate", 0.0)),
+            )
+        )
+    lines.extend(
+        [
+            "",
+            "## Demo Runtime Notes",
+            "",
+            "- `NOTHING` remains a no-output class and is never accepted as a sentence token.",
+            "- `VOXGEST_GATE_PROFILE=demo` lowers thresholds only for demo/runtime testing.",
+            "- Strict gating remains the default when `VOXGEST_GATE_PROFILE` is not set.",
+            "- Demo capture mode waits for stable hands before recording the 30-frame window.",
+        ]
+    )
+    ranking_md_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    return ranking_json_path, ranking_md_path
 
 
 def draw(frame, model_name, expected, state, trial_text, last_row, last_prediction, paused=False):
@@ -1161,9 +1240,12 @@ def main():
     finally:
         cap.release()
         cv2.destroyAllWindows()
-        write_json_summary(json_path, rows, model_name, model_path)
+        payload = write_json_summary(json_path, rows, model_name, model_path)
+        ranking_json_path, ranking_md_path = write_ranking_reports(json_path, payload)
         print(f"\nWrote: {out_path}")
         print(f"Wrote: {json_path}")
+        print(f"Wrote: {ranking_json_path}")
+        print(f"Wrote: {ranking_md_path}")
 
 
 if __name__ == "__main__":

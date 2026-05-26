@@ -1,0 +1,104 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                           CHAPTER 1
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\pagestyle{plain}
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
+\chapter{\uppercase {\textbf{CHAPTER 1 - Introduction}}}
+
+This chapter presents the problem and background of the study. It discusses the communication barriers experienced by Deaf, mute, speech-impaired, and hard-of-hearing individuals, the need for a portable assistive communication tool, and the proposed development of VoxGest as an Android-based accessibility application using visual tracking, deep learning, and on-device inference.
+
+\section{Background of the Study}
+
+Communication is a fundamental part of human interaction, education, healthcare, public service, employment, and daily social participation. However, individuals who rely on sign language often encounter communication barriers when interacting with hearing or non-signing people. These barriers become more serious in situations where a professional interpreter is unavailable, such as hospital visits, pharmacies, public offices, schools, interviews, emergency counters, and ordinary face-to-face conversations. Although interpreters and assistive tools exist, they are not always accessible, affordable, immediate, or practical in every daily interaction.
+
+The development of artificial intelligence, computer vision, mobile computing, and edge-based machine learning provides an opportunity to create assistive systems that can recognize hand gestures through a camera and transform recognized gestures into readable or audible outputs. Sign language recognition systems are especially relevant because they can support communication between signing and non-signing individuals without requiring specialized external sensors, gloves, or continuous internet connectivity.
+
+VoxGest is proposed as a bidirectional digital accessibility application for sign language recognition and real-time speech communication. The system is designed to use a mobile device camera to detect hand and body landmarks, process the extracted features through trained recognition models, and convert confirmed sign inputs into text and speech. To support the reverse communication flow, the application also includes speech-to-text input and a lightweight avatar or fingerspelling response for the signing user. This makes the project more than a one-way sign-to-speech converter; it is intended to support a basic conversation flow between a sign language user and a hearing or non-signing person.
+
+The current development of VoxGest focuses on a controlled and realistic recognition scope. Static alphabet and control signs are recognized through a hand-landmark model, while selected dynamic word signs are recognized through temporal landmark sequences. The active dynamic vocabulary is limited to commonly useful words such as YES, NO, PLEASE, WATER, HELLO, HELP, STOP, DOCTOR, NAME, and THANKYOU, with NOTHING used as a negative or no-output class. This controlled scope allows the researchers to prioritize reliability, reduce false outputs, and prepare the system for Android deployment before expanding to larger vocabulary or full sentence-level interpretation.
+
+A major accessibility decision in VoxGest is its dominant-hand recognition policy. Instead of requiring full two-hand signing at the current stage, the system prioritizes one configured hand for recognition. This design supports users who sign with one dominant hand by preference or by necessity, including users with limb difference, injury, amputation, stroke-related mobility limitations, or other physical restrictions. Therefore, VoxGest is not only a sign recognition project but also an accessibility-oriented communication tool designed around practical use, portability, and inclusive interaction.
+
+\section{Project Context}
+
+VoxGest is developed within the fields of artificial intelligence, deep learning, computer vision, Android mobile development, and digital accessibility. The system is intended to operate as an offline Android prototype that performs recognition locally on the device using TensorFlow Lite models. This design is important because a communication tool for public and daily environments should not depend fully on cloud services or stable internet connectivity. Local processing also supports privacy because camera-based gesture recognition can be performed on the device rather than sending user video to an external server.
+
+The current project direction differs from the earlier concept of a purely CNN-based static alphabet recognizer. The project initially explored image-based CNN recognition because CNNs are commonly used for visual classification. However, live testing showed that raw image recognition was sensitive to background, lighting, hand size, camera distance, and cropping conditions. Because of these limitations, the system evolved toward landmark-based feature extraction using MediaPipe. This shift allowed the model to focus on hand and body geometry rather than the full camera image.
+
+The present VoxGest pipeline is composed of multiple recognition and communication modules. The static alphabet module recognizes A-Z, del, space, and nothing through 63 hand-landmark features. The dynamic word module recognizes selected motion signs using a 30-frame sequence of 162 features per frame, composed of pose and dominant-hand landmarks. The system also applies post-processing gates such as confidence, margin, motion, wrist path, and hand presence before accepting predictions. Accepted outputs are passed to a token composer that builds the displayed message. NOTHING is treated as a no-output class and is not spoken, displayed, or animated as a word.
+
+The Android implementation is designed around the same runtime behavior used in the Python prototype. The recommended mobile stack includes Kotlin, CameraX, MediaPipe Holistic or an equivalent landmark pipeline, and TensorFlow Lite interpreters for the static and dynamic recognition models. The Android application is expected to include camera input, recognition modes, text output, speech output, speech-to-text, and avatar playback. Phrase-level recognition has been explored as a future pathway, but the current defense-ready priority is recognition hardening: static alphabet, 10 dynamic words, NOTHING, token-based sentence output, and avatar playback from confirmed tokens.
+
+\section{Purpose and Description}
+
+The overall purpose of this study is to design and develop VoxGest, a bidirectional digital accessibility application that assists communication between sign language users and hearing or non-signing individuals. The system aims to recognize selected sign inputs from a camera, convert accepted signs into text and speech, and provide a visual response path through speech-to-text and avatar or fingerspelling output.
+
+Specifically, the VoxGest application is designed to provide the following capabilities:
+
+\begin{enumerate}
+    \item Capture live visual input using an Android mobile device camera for real-time gesture tracking;
+    \item Extract hand and upper-body landmarks using MediaPipe-based visual tracking;
+    \item Recognize static alphabet and control signs using normalized hand-landmark features;
+    \item Recognize selected dynamic word signs using temporal pose and dominant-hand landmark sequences;
+    \item Reduce false recognition by using a NOTHING class and acceptance gates before output is displayed or spoken;
+    \item Compose readable message output from confirmed accepted tokens such as letters, control signs, and word signs;
+    \item Convert recognized text into speech output for the hearing or non-signing listener;
+    \item Convert spoken replies into text through speech-to-text; and
+    \item Provide a lightweight avatar or fingerspelling response for known and unknown words.
+\end{enumerate}
+
+The application is designed as an assistive communication prototype and not as a complete replacement for professional interpreters. Its purpose is to demonstrate how computer vision, deep learning, and on-device Android deployment can be used to create a practical communication bridge in controlled real-world situations where immediate interpretation support is not available.
+
+\section{Statement of the Problem}
+
+The general problem of this study is the communication barrier between sign language users and hearing or non-signing individuals in situations where an interpreter or reliable assistive communication support is not immediately available. To address this problem, the study aims to develop VoxGest, a bidirectional Android-based accessibility application for selected sign language recognition, text and speech output, speech-to-text response, and avatar-based visual feedback.
+
+Specifically, this study seeks to answer the following questions:
+
+\renewcommand{\labelenumii}{\arabic{enumi}.\arabic{enumii}}
+\begin{enumerate}
+    \item How can an Android-based accessibility application be designed and developed to capture live camera input and perform on-device sign recognition?
+    \item How can MediaPipe landmark tracking be used to extract hand and body features for static alphabet and dynamic word recognition?
+    \item How can the system implement static ASL alphabet recognition using normalized 63-feature hand-landmark inputs?
+    \item How can the system implement selected dynamic word recognition using 30-frame temporal sequences with 162 pose and dominant-hand features per frame?
+    \item How can the system reduce false outputs through acceptance gates, a NOTHING negative class, and token-based sentence composition?
+    \item How can VoxGest support bidirectional communication through sign-to-text, text-to-speech, speech-to-text, and avatar or fingerspelling response?
+    \item What is the level of software quality of the developed VoxGest system based on ISO/IEC 25010, as evaluated by IT professionals and target users, in terms of:
+    \begin{enumerate}
+        \item Functional Suitability;
+        \item Performance Efficiency;
+        \item Reliability; and
+        \item Usability?
+    \end{enumerate}
+\end{enumerate}
+
+\section{Objectives of the Study}
+
+The main objective of this study is to design and develop VoxGest, a bidirectional digital accessibility application for selected sign language recognition and real-time speech communication using deep learning and visual tracking.
+
+Specifically, the study aims to:
+
+\begin{enumerate}
+    \item Design and develop an Android-based accessibility application that uses camera input for real-time sign recognition;
+    \item Implement MediaPipe-based landmark extraction for hand and upper-body tracking;
+    \item Implement static alphabet and control sign recognition for A-Z, del, space, and nothing using 63 normalized hand-landmark features;
+    \item Implement selected dynamic word recognition for YES, NO, PLEASE, WATER, HELLO, HELP, STOP, DOCTOR, NAME, THANKYOU, and NOTHING using temporal landmark sequences;
+    \item Apply post-processing gates, token composition, and a NOTHING negative class to reduce false or unstable recognition outputs;
+    \item Integrate text output and text-to-speech for sign-to-speech communication;
+    \item Integrate speech-to-text and avatar or fingerspelling playback for hearing-user replies;
+    \item Prepare the recognition models for offline Android deployment using TensorFlow Lite; and
+    \item Evaluate the software quality of VoxGest using ISO/IEC 25010 in terms of Functional Suitability, Performance Efficiency, Reliability, and Usability.
+\end{enumerate}
+
+\section{Scope and Limitation}
+
+The scope of this study covers the design, development, and evaluation preparation of VoxGest as an Android-based assistive communication prototype. The system focuses on camera-based recognition using hand and body landmarks, static alphabet recognition, selected dynamic word recognition, token-based sentence composition, text-to-speech, speech-to-text, and lightweight avatar or fingerspelling output. The recognition scope is limited to A-Z, del, space, nothing, and the current dynamic words YES, NO, PLEASE, WATER, HELLO, HELP, STOP, DOCTOR, NAME, THANKYOU, and NOTHING.
+
+The system is designed to run locally on Android using TensorFlow Lite models and does not require a backend server for the recognition process. Model training, dataset preparation, and model export are performed in the Python development environment, while the Android application consumes exported model files, label files, and runtime configuration. The Android build is expected to mirror the Python feature extraction and post-processing behavior to maintain consistency between training and deployment.
+
+The study does not claim to translate unrestricted ASL grammar, full conversations, or all possible sign language vocabulary. Phrase-level sentence recognition has been explored as a future pathway, but it is disabled by default during the current recognition-hardening stage. The avatar module is also limited to lightweight visual feedback, known word animations, placeholder animations, and fingerspelling fallback. It does not claim to provide complete or linguistically perfect ASL avatar translation.
+
+The performance of the system may still be affected by camera quality, lighting conditions, distance from the camera, hand visibility, signer speed, body position, and consistency between training samples and live usage. The dynamic word recognition model is considered demo-ready and still requires additional live testing and repair samples for weak or confusing signs. Therefore, VoxGest is intended as an assistive communication prototype for controlled use and evaluation, not as a replacement for certified human interpreters in legal, medical, educational, or emergency-critical communication.

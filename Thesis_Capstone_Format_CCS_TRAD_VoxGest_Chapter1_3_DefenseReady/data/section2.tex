@@ -1,0 +1,79 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                           CHAPTER 2
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{\uppercase {\textbf{CHAPTER 2 - REVIEW OF RELATED LITERATURE AND STUDIES}}}
+
+This chapter presents literature and studies related to sign language recognition, computer vision, landmark tracking, dynamic gesture modeling, edge deployment, bidirectional assistive communication, avatar-based feedback, and software quality evaluation. The reviewed works provide the technical and conceptual foundation for VoxGest and explain why the system uses a landmark-based, on-device, and accessibility-oriented approach.
+
+\section{Sign Language Recognition and Assistive Communication}
+
+Sign language recognition is a computer vision and machine learning task that aims to interpret visual language inputs and convert them into a form that can be understood by non-signers. It is often developed as an assistive technology because it can reduce communication barriers between Deaf or hard-of-hearing individuals and hearing people. Rastgoo et al. (2021) described sign language recognition as a broad area that involves hand shape, motion, body pose, and sometimes facial expression, making it more complex than ordinary image classification. Their survey emphasized that both spatial and temporal features are important because signs are not always defined by a single hand image.
+
+Bragg et al. (2019) also explained that sign language technology should be viewed from an interdisciplinary perspective because recognition, generation, and translation systems must consider language structure, user interaction, accessibility, and the lived experience of sign language users. This is important for VoxGest because the project is not only a machine learning classifier but also an accessibility tool. The system must produce outputs that are useful in communication, not only predictions that are correct in a dataset.
+
+The current VoxGest system follows this assistive direction by focusing on selected signs that can support practical communication. Instead of claiming unrestricted sign language translation, the system recognizes a controlled vocabulary and uses text, speech, and avatar or fingerspelling feedback to support basic interaction between signing and non-signing users.
+
+\section{Deep Learning for Static Gesture Recognition}
+
+Deep learning has been widely used for gesture recognition because neural networks can learn visual and geometric patterns from gesture data. Convolutional Neural Networks (CNNs) are commonly used for image-based recognition because they can identify edges, shapes, and visual patterns from raw images. Kasapbasi et al. (2022) developed DeepASLR, a CNN-based interface for American Sign Language recognition, showing that CNN models can classify static signs effectively when trained with controlled image data.
+
+Alzubaidi et al. (2023) also demonstrated the use of deep learning and transfer learning for American Sign Language recognition. Transfer learning can reduce training difficulty by using pre-trained models that already learned useful visual features. These studies support the original idea of VoxGest, where the project first explored image-based CNN recognition for static alphabet signs.
+
+However, static image recognition alone has limitations in live camera environments. The current development of VoxGest found that raw image-based CNN recognition was affected by lighting, background, cropping, camera angle, and differences between dataset images and webcam conditions. Therefore, CNN-based recognition is discussed in this study as an important starting point and related approach, but not as the only final recognition method of the current system. VoxGest moved toward landmark-based static recognition because landmarks provide a more stable representation of hand geometry.
+
+\section{Landmark-Based Hand Tracking and MediaPipe}
+
+Landmark-based tracking is important for VoxGest because it converts camera frames into numerical coordinates that represent the hand and body. Instead of asking the model to understand the entire camera image, the system focuses on the points that matter for signing. Zhang et al. (2020) introduced MediaPipe Hands as a real-time, on-device hand tracking pipeline that predicts hand skeleton landmarks from a single RGB camera. Their work supports the feasibility of extracting hand landmarks in real-time environments without requiring external sensors.
+
+Lugaresi et al. (2019) presented MediaPipe as a framework for building perception pipelines. MediaPipe is relevant to VoxGest because the system needs a reusable and real-time visual tracking layer that can operate across development and mobile environments. For static alphabet recognition, VoxGest uses 21 hand landmarks with x, y, and z coordinates. This produces 63 features per hand frame. The features are normalized around the wrist and scaled by hand size, helping the model recognize signs despite changes in camera distance or hand position.
+
+For dynamic word recognition, VoxGest uses MediaPipe Holistic or an equivalent pose-and-hand landmark pipeline. This is necessary because some signs depend on body location. A hand movement near the face can mean something different from a similar movement near the chest. By including pose landmarks and dominant-hand landmarks, the model gains body-relative spatial context that cannot be captured by hand landmarks alone.
+
+\section{Dynamic Sign Recognition Using Sequential Models}
+
+Dynamic signs require temporal modeling because their meaning depends on movement across time. A single image cannot fully represent signs such as HELLO, THANKYOU, WATER, STOP, or PLEASE because these signs involve motion, direction, repetition, or location changes. Hochreiter and Schmidhuber (1997) introduced Long Short-Term Memory networks to address sequence learning problems, making LSTM suitable for recognizing gesture sequences where earlier frames influence later interpretation.
+
+Li et al. (2020) introduced the Word-Level American Sign Language dataset, commonly known as WLASL, which contains large-scale video data for word-level ASL recognition. Their work showed that word-level recognition is more challenging than static image classification because the model must learn both appearance and motion patterns. WLASL is relevant to VoxGest because the project uses dynamic word videos and webcam calibration samples to train selected word signs.
+
+Temporal Convolutional Networks are also relevant for sequence modeling. Bai, Kolter, and Koltun (2018) found that temporal convolutional architectures can be strong alternatives to recurrent models for sequence tasks. VoxGest includes LSTM and TCN directions because both architectures can learn motion patterns from temporal landmark sequences. The current system compares these models based not only on validation accuracy but also on live behavior, since live camera recognition may reveal failures not visible in saved-data testing.
+
+The present VoxGest dynamic word model uses a 30-frame sequence. Each frame contains 162 features composed of 99 pose features and 63 dominant-hand features. This design allows the system to process both the motion of the hand and the location of the sign relative to the body.
+
+\section{Negative Class and Recognition Hardening}
+
+Real-time recognition systems may produce false outputs if every camera movement is forced into one of the known classes. In a softmax classifier, the model will always select a top label even when the user is idle, transitioning between signs, moving casually, or not signing at all. For this reason, VoxGest includes NOTHING as a negative or no-output class.
+
+The purpose of NOTHING is to teach the system what non-sign input looks like. Examples include idle hands, open hands, aborted signs, partial signs, transition movements, and hand entering or leaving the frame. This supports reliability because the system should not speak, display, or animate a word unless the prediction is stable and meaningful. In VoxGest, the NOTHING class works together with post-processing gates that check confidence, prediction margin, motion, wrist path, and hand presence before a sign is accepted.
+
+Recognition hardening is therefore part of the methodology, not just a debugging task. The system must be tested live, logged, repaired with additional data, and retrained when weak signs are discovered. This approach supports the defense of VoxGest because it shows that the researchers understand the difference between dataset accuracy and practical live reliability.
+
+\section{Edge Computing and Android-Based Deployment}
+
+Edge computing allows intelligent processing to happen directly on a user device instead of depending on a remote server. This is important for assistive communication because the user may need the application in places where internet access is weak, unavailable, or inappropriate for privacy reasons. Warden and Situnayake (2020) explained that TensorFlow Lite and TinyML approaches allow machine learning models to run on constrained devices, supporting low-latency and local inference.
+
+Abadi et al. (2016) introduced TensorFlow as a flexible machine learning system, while TensorFlow Lite later became a common deployment pathway for mobile and embedded devices. For VoxGest, model training is done in the Python workspace, while Android consumes exported TensorFlow Lite models, labels, and runtime configuration. This separation allows the researchers to train and test models on a development machine while preparing the Android app for on-device recognition.
+
+The Android direction of VoxGest uses Kotlin, CameraX, MediaPipe landmark extraction, TensorFlow Lite interpreters, and local text-to-speech and speech-to-text components. This supports the goal of an offline communication prototype. The Android application is not expected to retrain models; it only performs live inference using exported model files.
+
+\section{Bidirectional Communication, Speech-to-Text, and Avatar Feedback}
+
+A one-way sign-to-speech tool helps the hearing person understand the sign language user, but it does not fully solve conversation. The hearing person must also be able to respond in a way that the sign language user can access. For this reason, VoxGest includes a bidirectional communication flow.
+
+The first direction is sign-to-text and sign-to-speech. The signing user performs a recognized sign, the app displays the confirmed output as text, and the text can be spoken aloud through text-to-speech. The second direction is speech-to-text and avatar response. The hearing person speaks into the device, the app converts speech into readable text, and known words can be shown through avatar animation or unknown words can be fingerspelled.
+
+The avatar module in VoxGest is intentionally lightweight. It does not claim complete ASL grammar generation or full linguistic signing correctness. Instead, it provides visual feedback for known words and fingerspelling fallback for unknown words. This supports accessibility while keeping the scope realistic for the current capstone stage.
+
+\section{Software Quality Evaluation Using ISO/IEC 25010}
+
+ISO/IEC 25010 provides a software quality model that can be used to evaluate whether a system meets its required qualities. For VoxGest, the selected quality characteristics are Functional Suitability, Performance Efficiency, Reliability, and Usability. These criteria fit the system because the application must perform the required communication tasks, respond fast enough for live use, avoid unstable or false outputs, and remain understandable to target users.
+
+Functional Suitability evaluates whether VoxGest performs its intended functions, including camera-based recognition, text output, speech output, speech-to-text, token composition, and avatar response. Performance Efficiency evaluates response time, inference behavior, and mobile suitability. Reliability evaluates stability under real use, including hand tracking failure, missing landmarks, false triggers, and no-output handling. Usability evaluates whether Deaf, mute, hard-of-hearing, and hearing users can understand and operate the application with minimal difficulty.
+
+The study will use a 5-point Likert scale questionnaire to collect evaluation data from IT professionals and target or representative users. This evaluation supports the research objective of measuring both technical quality and communication usefulness.
+
+\section{Synthesis and Relevance to the Present Study}
+
+The reviewed literature supports the current design of VoxGest in several ways. Studies on deep learning and CNNs justify the original exploration of image-based static gesture recognition. Studies on MediaPipe and landmark tracking support the decision to use hand and body landmarks instead of relying entirely on raw images. Studies on LSTM, TCN, and WLASL justify the use of temporal sequence models for dynamic word recognition. Edge computing literature supports the use of TensorFlow Lite and on-device Android inference. Literature on accessibility and sign language technology supports the need for bidirectional communication, while ISO/IEC 25010 supports the evaluation method.
+
+The present study adapts these ideas into a controlled and realistic capstone system. VoxGest does not claim unrestricted ASL translation. Instead, it demonstrates a defense-ready accessibility prototype with static alphabet recognition, selected dynamic word recognition, negative-class rejection, token-based sentence composition, text-to-speech, speech-to-text, and lightweight avatar or fingerspelling feedback. This scope is appropriate because the system prioritizes reliability, offline use, and practical communication before expanding to larger vocabulary or full sentence-level sign language interpretation.
