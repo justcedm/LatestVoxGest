@@ -19,6 +19,8 @@ import java.util.concurrent.atomic.AtomicBoolean
 class VoxGestCameraRecognitionController(
     private val context: Context,
     private val lifecycleOwner: LifecycleOwner,
+    private val recognitionMode: RecognitionMode = RecognitionMode.WORDS,
+    private val flipLandmarksHorizontal: Boolean = true,
     private val onStatus: (String) -> Unit,
     private val onRecognitionFeedback: (RecognitionFeedback) -> Unit = {},
     private val onAcceptedResult: (RecognitionResult) -> Unit
@@ -33,10 +35,12 @@ class VoxGestCameraRecognitionController(
     @Volatile private var imageAnalysis: ImageAnalysis? = null
     @Volatile private var extractor: LandmarkExtractor? = null
     @Volatile private var recognizer: VoxGestTfliteRecognizer? = null
+    @Volatile private var alphabetClassifier: AlphabetClassifier? = null
     @Volatile private var profile: RecognitionProfile? = null
     @Volatile private var sequenceBuffer: LandmarkSequenceBuffer? = null
     @Volatile private var lastAnalyzeAtMs: Long = 0L
     @Volatile private var cooldownUntilMs: Long = 0L
+    @Volatile private var lastWordAcceptedAtMs: Long = 0L
     @Volatile private var lastStatus: String = ""
     @Volatile private var lastStatusAtMs: Long = 0L
 
@@ -51,11 +55,13 @@ class VoxGestCameraRecognitionController(
                 val loadedProfile = loadedRecognizer.load()
                 val mirrorCameraFrame = AndroidLandmarkInputPolicy.shouldMirrorFrameBeforeLandmarkExtraction(loadedProfile)
                 val loadedExtractor = MediaPipeLandmarkExtractor(appContext, mirrorCameraFrame)
+                val loadedAlphabetClassifier = AlphabetClassifier(appContext).also { it.load() }
                 recognizer = loadedRecognizer
                 profile = loadedProfile
                 extractor = loadedExtractor
+                alphabetClassifier = loadedAlphabetClassifier
                 sequenceBuffer = LandmarkSequenceBuffer(loadedProfile.sequenceLength, loadedProfile.featureSize)
-                postStatus("Tracking Hand")
+                postStatus(if (recognitionMode == RecognitionMode.ALPHABET) "Tracking A-Z" else "Tracking Hand")
             } catch (exc: Throwable) {
                 postStatus("Landmark profile not ready.")
                 closePipeline()
@@ -69,6 +75,7 @@ class VoxGestCameraRecognitionController(
             return
         }
         gate.reset()
+        alphabetClassifier?.reset()
         postFeedback(RecognitionFeedback.idle())
         mainExecutor.execute {
             imageAnalysis?.clearAnalyzer()
@@ -124,9 +131,10 @@ class VoxGestCameraRecognitionController(
 
             val loadedExtractor = extractor
             val loadedRecognizer = recognizer
+            val loadedAlphabetClassifier = alphabetClassifier
             val loadedProfile = profile
             val buffer = sequenceBuffer
-            if (loadedExtractor == null || loadedRecognizer == null || loadedProfile == null || buffer == null) {
+            if (loadedExtractor == null || loadedRecognizer == null || loadedAlphabetClassifier == null || loadedProfile == null || buffer == null) {
                 postStatus("Starting Camera")
                 return
             }
@@ -136,16 +144,36 @@ class VoxGestCameraRecognitionController(
             }
 
             val frame = loadedExtractor.processFrame(imageProxy)
-            if (frame == null || !frame.hasPose) {
+            if (frame == null || !frame.hasAnyHand) {
                 buffer.resetStability()
                 gate.reset()
+                loadedAlphabetClassifier.reset()
                 postFeedback(RecognitionFeedback.idle())
+                postStatus("Waiting for clearer hand")
+                return
+            }
+
+            if (recognitionMode == RecognitionMode.ALPHABET) {
+                processAlphabetFrame(loadedAlphabetClassifier, frame)
+                return
+            }
+
+            if (!frame.hasPose) {
+                if (recognitionMode == RecognitionMode.PHRASE && shouldRunPhraseAlphabetFallback(now)) {
+                    if (processAlphabetFrame(loadedAlphabetClassifier, frame)) return
+                }
+                buffer.resetStability()
+                gate.reset()
+                postFeedback(feedbackFromFrame(frame, DetectionStatus.SEARCHING, 0f, ""))
                 postStatus("Landmark profile not ready.")
                 return
             }
 
             val feature = buildFeature(loadedProfile, frame)
             if (feature == null) {
+                if (recognitionMode == RecognitionMode.PHRASE && shouldRunPhraseAlphabetFallback(now)) {
+                    if (processAlphabetFrame(loadedAlphabetClassifier, frame)) return
+                }
                 buffer.resetStability()
                 gate.reset()
                 postFeedback(feedbackFromFrame(frame, DetectionStatus.SEARCHING, 0f, ""))
@@ -153,6 +181,10 @@ class VoxGestCameraRecognitionController(
                 return
             }
             postFeedback(feedbackFromFrame(frame, DetectionStatus.DETECTING, 0.45f, ""))
+
+            if (recognitionMode == RecognitionMode.PHRASE && shouldRunPhraseAlphabetFallback(now)) {
+                if (processAlphabetFrame(loadedAlphabetClassifier, frame)) return
+            }
 
             if (!buffer.markStableFrame(true)) {
                 postStatus("Tracking Hand")
@@ -207,6 +239,7 @@ class VoxGestCameraRecognitionController(
             }
 
             cooldownUntilMs = SystemClock.elapsedRealtime() + ACCEPTED_COOLDOWN_MS
+            lastWordAcceptedAtMs = SystemClock.elapsedRealtime()
             val accepted = RecognitionResult(
                 raw.label.uppercase(Locale.US),
                 raw.confidence,
@@ -221,11 +254,34 @@ class VoxGestCameraRecognitionController(
         } catch (exc: Throwable) {
             sequenceBuffer?.resetStability()
             gate.reset()
+            alphabetClassifier?.reset()
             postFeedback(RecognitionFeedback.idle())
             postStatus("Landmark profile not ready.")
         } finally {
             imageProxy.close()
         }
+    }
+
+    private fun shouldRunPhraseAlphabetFallback(nowMs: Long): Boolean {
+        return nowMs - lastWordAcceptedAtMs >= PHRASE_ALPHABET_FALLBACK_MS
+    }
+
+    private fun processAlphabetFrame(
+        classifier: AlphabetClassifier,
+        frame: LandmarkFrame
+    ): Boolean {
+        val prediction = classifier.classify(frame, flipLandmarksHorizontal)
+        if (prediction == null) {
+            postFeedback(feedbackFromFrame(frame, DetectionStatus.DETECTING, 0.45f, ""))
+            postStatus("Hold letter steady")
+            return false
+        }
+        val label = prediction.letter.toString()
+        val accepted = RecognitionResult(label, prediction.confidence, 0f, true, "alphabet_tflite")
+        postFeedback(feedbackFromFrame(frame, DetectionStatus.RECOGNIZED, prediction.confidence, label))
+        mainExecutor.execute { onAcceptedResult(accepted) }
+        postStatus("Recognized $label")
+        return true
     }
 
     private fun buildFeature(profile: RecognitionProfile, frame: LandmarkFrame): FloatArray? {
@@ -262,6 +318,8 @@ class VoxGestCameraRecognitionController(
 
     private fun closePipeline() {
         gate.reset()
+        alphabetClassifier?.close()
+        alphabetClassifier = null
         extractor?.close()
         extractor = null
         recognizer?.close()
@@ -302,6 +360,7 @@ class VoxGestCameraRecognitionController(
     companion object {
         private const val ANALYZE_INTERVAL_MS = 90L
         private const val ACCEPTED_COOLDOWN_MS = 1600L
+        private const val PHRASE_ALPHABET_FALLBACK_MS = 800L
         private const val STATUS_MIN_INTERVAL_MS = 220L
         private const val DETECTING_CONFIDENCE = 0.40f
         private val DEMO_ACCEPTED_LABELS = setOf("WHAT", "YOUR", "NAME", "MY", "YOU", "OKAY", "NOTHING")

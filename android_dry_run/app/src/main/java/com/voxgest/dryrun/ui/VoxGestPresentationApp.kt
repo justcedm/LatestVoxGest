@@ -1,13 +1,20 @@
 package com.voxgest.dryrun.ui
 
 import android.Manifest
+import android.content.ContentValues
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
+import android.os.SystemClock
+import android.provider.MediaStore
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
 import android.speech.tts.TextToSpeech
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.camera.view.PreviewView
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -25,6 +32,7 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -58,6 +66,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -75,6 +84,7 @@ import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.semantics.LiveRegionMode
@@ -95,13 +105,16 @@ import com.voxgest.app.avatar.AvatarStatus
 import com.voxgest.app.avatar.AvatarView
 import com.voxgest.dryrun.BuildConfig
 import com.voxgest.dryrun.DetectionStatus
+import com.voxgest.dryrun.NamePhraseDetector
 import com.voxgest.dryrun.OverlayLandmarkPoint
 import com.voxgest.dryrun.R
 import com.voxgest.dryrun.RecognitionFeedback
+import com.voxgest.dryrun.RecognitionMode
 import com.voxgest.dryrun.RecognitionResult
 import com.voxgest.dryrun.SignVocabulary
 import com.voxgest.dryrun.VoxGestCameraRecognitionController
 import kotlinx.coroutines.delay
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -124,6 +137,7 @@ private val Purple = Color(0xFF7C5AA6)
 private val Green = Color(0xFF43A047)
 private const val PRESENTATION_MODE = true
 private const val SHOW_DEBUG_TOOLS = false
+private const val ACCURACY_TEST_WINDOW_MS = 5000L
 
 private enum class VoxTab(
     val label: String,
@@ -166,6 +180,17 @@ private val DemoTokenWords = listOf(
     "SPEAK"
 )
 
+private val AccuracyTestTargets = listOf("WHAT", "YOUR", "NAME", "MY", "YOU", "OKAY") +
+    ('A'..'Z').map { it.toString() }
+
+private data class AccuracyCounter(
+    val correct: Int = 0,
+    val attempts: Int = 0
+) {
+    val percentage: Int
+        get() = if (attempts == 0) 0 else ((correct.toFloat() / attempts.toFloat()) * 100f).toInt()
+}
+
 private val HAND_CONNECTIONS = listOf(
     0 to 1, 1 to 2, 2 to 3, 3 to 4,
     0 to 5, 5 to 6, 6 to 7, 7 to 8,
@@ -182,11 +207,20 @@ fun VoxGestPresentationApp() {
     var demoTokenBuffer by remember { mutableStateOf("") }
     var recognitionRunning by remember { mutableStateOf(false) }
     var recognitionStatus by remember { mutableStateOf("Tap Start Recognition") }
+    var recognitionMode by remember { mutableStateOf(RecognitionMode.WORDS) }
+    var namePhraseHint by remember { mutableStateOf("") }
     var pendingAvatarText by remember { mutableStateOf("") }
     var pendingAvatarRequestId by remember { mutableStateOf(0) }
     var selectedPhrase by remember { mutableStateOf("") }
     val history = remember { mutableStateListOf<HistoryUiEntry>() }
     val context = LocalContext.current
+    val debugPreferences = remember {
+        context.getSharedPreferences("voxgest_debug_settings", Context.MODE_PRIVATE)
+    }
+    var flipLandmarksHorizontal by remember {
+        mutableStateOf(debugPreferences.getBoolean("flip_landmarks_horizontal", true))
+    }
+    val namePhraseDetector = remember { NamePhraseDetector() }
     val ttsRef = remember { mutableStateOf<TextToSpeech?>(null) }
     fun speakNow(text: String) {
         if (!isMeaningfulOutput(text)) return
@@ -204,6 +238,20 @@ fun VoxGestPresentationApp() {
         demoTokenBuffer = ""
         currentWord = ""
         sentence = ""
+        namePhraseHint = ""
+        recognitionMode = RecognitionMode.WORDS
+        namePhraseDetector.reset()
+    }
+
+    fun setFlipLandmarksHorizontal(enabled: Boolean) {
+        flipLandmarksHorizontal = enabled
+        debugPreferences.edit().putBoolean("flip_landmarks_horizontal", enabled).apply()
+    }
+
+    fun applyNamePhraseUpdate(update: com.voxgest.dryrun.NamePhraseUpdate) {
+        if (update.mode != null) recognitionMode = update.mode
+        namePhraseHint = update.hint
+        if (update.sentence.isNotBlank()) sentence = update.sentence
     }
 
     fun addDemoToken(token: String) {
@@ -226,10 +274,29 @@ fun VoxGestPresentationApp() {
             }
         }
 
-        val tokens = (demoTokenBuffer.toDemoTokens() + clean).takeLast(4)
+        val isLetter = clean.length == 1 && clean[0] in 'A'..'Z'
+        if (isLetter && namePhraseDetector.isActive()) {
+            val tokens = (demoTokenBuffer.toDemoTokens() + clean).takeLast(32)
+            demoTokenBuffer = tokens.joinToString("|")
+            currentWord = clean
+            history.add(0, HistoryUiEntry("Today", "Sign", clean, nowLabel(), "Accepted letter", R.drawable.ic_hand_gesture, PrimaryLight))
+            applyNamePhraseUpdate(namePhraseDetector.acceptLetter(clean[0], SystemClock.elapsedRealtime()))
+            return
+        }
+
+        val tokens = (demoTokenBuffer.toDemoTokens() + clean).takeLast(32)
         demoTokenBuffer = tokens.joinToString("|")
         currentWord = clean
         history.add(0, HistoryUiEntry("Today", "Sign", clean, nowLabel(), "Accepted sign", R.drawable.ic_hand_gesture, PrimaryLight))
+
+        val nameUpdate = namePhraseDetector.observeAcceptedTokens(tokens, SystemClock.elapsedRealtime())
+        if (nameUpdate.mode == RecognitionMode.PHRASE) {
+            val phraseTokens = (tokens + "IS").takeLast(32)
+            demoTokenBuffer = phraseTokens.joinToString("|")
+            applyNamePhraseUpdate(nameUpdate)
+            history.add(0, HistoryUiEntry("Today", "Sign", nameUpdate.sentence, nowLabel(), "Name phrase started", R.drawable.ic_hand_gesture, PrimaryLight))
+            return
+        }
 
         val finalized = demoSentenceForTokens(tokens)
         if (finalized == null) {
@@ -240,6 +307,17 @@ fun VoxGestPresentationApp() {
         sentence = finalized
         history.add(0, HistoryUiEntry("Today", "Sign", finalized, nowLabel(), "From recognition", R.drawable.ic_hand_gesture, PrimaryLight))
         queueAvatarPhrase(finalized)
+    }
+
+    LaunchedEffect(Unit) {
+        while (true) {
+            delay(250)
+            val update = namePhraseDetector.checkPause(SystemClock.elapsedRealtime())
+            if (update.finalized) {
+                applyNamePhraseUpdate(update)
+                history.add(0, HistoryUiEntry("Today", "Sign", update.sentence, nowLabel(), "Name phrase finalized", R.drawable.ic_hand_gesture, PrimaryLight))
+            }
+        }
     }
 
     DisposableEffect(Unit) {
@@ -288,7 +366,12 @@ fun VoxGestPresentationApp() {
                             sentence = sentence,
                             recognitionRunning = recognitionRunning,
                             recognitionStatus = recognitionStatus,
+                            recognitionMode = recognitionMode,
+                            namePhraseHint = namePhraseHint,
+                            flipLandmarksHorizontal = flipLandmarksHorizontal,
                             presentationMode = PRESENTATION_MODE,
+                            onRecognitionModeChange = { recognitionMode = it },
+                            onFlipLandmarksHorizontalChange = { setFlipLandmarksHorizontal(it) },
                             onSpeak = {
                                 if (isMeaningfulOutput(sentence)) {
                                     speakNow(sentence)
@@ -305,6 +388,9 @@ fun VoxGestPresentationApp() {
                                 } else {
                                     sentence = sentence.split(",").dropLast(1).joinToString(", ")
                                 }
+                                namePhraseHint = ""
+                                recognitionMode = RecognitionMode.WORDS
+                                namePhraseDetector.reset()
                             },
                             onClear = {
                                 clearDemoTokens()
@@ -371,6 +457,51 @@ private fun nowLabel(): String {
     return SimpleDateFormat("hh:mm a", Locale.US).format(Date())
 }
 
+private fun exportAccuracyReport(
+    context: Context,
+    targets: List<String>,
+    stats: Map<String, AccuracyCounter>
+): String {
+    val stamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(Date())
+    val fileName = "voxgest_accuracy_$stamp.txt"
+    val totalAttempts = stats.values.sumOf { it.attempts }
+    val totalCorrect = stats.values.sumOf { it.correct }
+    val overall = if (totalAttempts == 0) 0 else ((totalCorrect.toFloat() / totalAttempts.toFloat()) * 100f).toInt()
+    val body = buildString {
+        appendLine("VoxGest Live Accuracy Test")
+        appendLine("Generated: $stamp")
+        appendLine("Overall: $overall% ($totalCorrect/$totalAttempts)")
+        appendLine()
+        targets.forEach { label ->
+            val counter = stats[label] ?: AccuracyCounter()
+            appendLine("$label: ${counter.percentage}% (${counter.correct}/${counter.attempts})")
+        }
+    }
+
+    return try {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            val values = ContentValues().apply {
+                put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
+                put(MediaStore.MediaColumns.MIME_TYPE, "text/plain")
+                put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS)
+            }
+            val uri = context.contentResolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, values)
+                ?: return "Export failed"
+            context.contentResolver.openOutputStream(uri)?.use { stream ->
+                stream.write(body.toByteArray(Charsets.UTF_8))
+            } ?: return "Export failed"
+            "Exported $fileName"
+        } else {
+            val dir = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) ?: context.filesDir
+            val file = File(dir, fileName)
+            file.writeText(body, Charsets.UTF_8)
+            "Exported ${file.name}"
+        }
+    } catch (exc: Throwable) {
+        "Export failed: ${exc.message ?: "unknown error"}"
+    }
+}
+
 private fun isMeaningfulOutput(text: String): Boolean {
     return text.trim().isNotBlank() && text.trim().uppercase(Locale.US) != "NOTHING"
 }
@@ -386,7 +517,7 @@ private fun demoSentenceForTokens(tokens: List<String>): String? {
         val letters = clean.drop(nameStart + 3)
             .filter { it.length == 1 && it[0] in 'A'..'Z' }
             .joinToString("")
-        if (letters.isNotBlank()) return "My name is ${letters.lowercase(Locale.US).replaceFirstChar { it.uppercase() }}."
+        if (letters.isNotBlank()) return "MY NAME IS $letters"
     }
     return when {
         clean.endsWithTokens("WHAT", "YOUR", "NAME") -> "What is your name?"
@@ -413,14 +544,36 @@ private fun List<String>.endsWithTokens(vararg expected: String): Boolean {
 }
 
 @Composable
-private fun ScreenTopBar(title: String, @DrawableRes trailing: Int, secondTrailing: Int? = null) {
+private fun ScreenTopBar(
+    title: String,
+    @DrawableRes trailing: Int,
+    secondTrailing: Int? = null,
+    showLogo: Boolean = false,
+    onLogoLongPress: (() -> Unit)? = null,
+    onTrailingClick: (() -> Unit)? = null
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(start = 20.dp, end = 20.dp, top = 6.dp, bottom = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Spacer(Modifier.width(if (secondTrailing == null) 24.dp else 56.dp))
+        if (showLogo) {
+            Box(
+                modifier = Modifier
+                    .size(28.dp)
+                    .clip(CircleShape)
+                    .background(Primary)
+                    .pointerInput(onLogoLongPress) {
+                        detectTapGestures(onLongPress = { onLogoLongPress?.invoke() })
+                    },
+                contentAlignment = Alignment.Center
+            ) {
+                Text("V", color = Color.White, fontSize = 13.sp, fontWeight = FontWeight.Bold)
+            }
+        } else {
+            Spacer(Modifier.width(if (secondTrailing == null) 24.dp else 56.dp))
+        }
         Text(
             text = title,
             color = Primary,
@@ -432,7 +585,15 @@ private fun ScreenTopBar(title: String, @DrawableRes trailing: Int, secondTraili
         )
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
             secondTrailing?.let { VoxIcon(it, "$title action", Primary, Modifier.size(21.dp)) }
-            VoxIcon(trailing, "$title menu", Primary, Modifier.size(22.dp))
+            Box(
+                modifier = Modifier
+                    .size(32.dp)
+                    .clip(CircleShape)
+                    .clickable(enabled = onTrailingClick != null) { onTrailingClick?.invoke() },
+                contentAlignment = Alignment.Center
+            ) {
+                VoxIcon(trailing, "$title menu", Primary, Modifier.size(22.dp))
+            }
         }
     }
 }
@@ -443,7 +604,12 @@ private fun SignScreen(
     sentence: String,
     recognitionRunning: Boolean,
     recognitionStatus: String,
+    recognitionMode: RecognitionMode,
+    namePhraseHint: String,
+    flipLandmarksHorizontal: Boolean,
     presentationMode: Boolean,
+    onRecognitionModeChange: (RecognitionMode) -> Unit,
+    onFlipLandmarksHorizontalChange: (Boolean) -> Unit,
     onSpeak: () -> Unit,
     onDelete: () -> Unit,
     onClear: () -> Unit,
@@ -454,16 +620,52 @@ private fun SignScreen(
     demoTokens: List<String>,
     onDemoToken: (String) -> Unit
 ) {
+    var showDebugSettings by remember { mutableStateOf(false) }
+    var showAccuracyDebug by remember { mutableStateOf(false) }
+    var latestAcceptedLabel by remember { mutableStateOf("") }
+    var latestAcceptedEventId by remember { mutableStateOf(0L) }
+
     ScreenScroll {
-        ScreenTopBar("SIGN", R.drawable.ic_settings)
+        ScreenTopBar(
+            title = "SIGN",
+            trailing = R.drawable.ic_settings,
+            showLogo = true,
+            onLogoLongPress = {
+                if (BuildConfig.DEBUG) showAccuracyDebug = !showAccuracyDebug
+            },
+            onTrailingClick = {
+                if (BuildConfig.DEBUG) showDebugSettings = !showDebugSettings
+            }
+        )
+        AnimatedVisibility(visible = BuildConfig.DEBUG && showDebugSettings) {
+            DebugSettingsPanel(
+                flipLandmarksHorizontal = flipLandmarksHorizontal,
+                onFlipLandmarksHorizontalChange = onFlipLandmarksHorizontalChange
+            )
+        }
+        AnimatedVisibility(visible = BuildConfig.DEBUG && showAccuracyDebug) {
+            AccuracyDebugPanel(
+                latestAcceptedLabel = latestAcceptedLabel,
+                latestAcceptedEventId = latestAcceptedEventId,
+                onModeForTarget = onRecognitionModeChange
+            )
+        }
         RecognitionAreaCard(
             recognitionRunning = recognitionRunning,
             recognitionStatus = recognitionStatus,
+            recognitionMode = recognitionMode,
+            namePhraseHint = namePhraseHint,
+            flipLandmarksHorizontal = flipLandmarksHorizontal,
             presentationMode = presentationMode,
+            onRecognitionModeChange = onRecognitionModeChange,
             onStartRecognition = onStartRecognition,
             onStopRecognition = onStopRecognition,
             onRecognitionStatus = onRecognitionStatus,
-            onAcceptedRecognition = onAcceptedRecognition
+            onAcceptedRecognition = { result ->
+                latestAcceptedLabel = result.label
+                latestAcceptedEventId = SystemClock.elapsedRealtime()
+                onAcceptedRecognition(result)
+            }
         )
         CurrentWordCard(currentWord)
         SentenceCard(sentence, onSpeak)
@@ -487,10 +689,197 @@ private fun SignScreen(
 }
 
 @Composable
+private fun RecognitionModePill(
+    recognitionMode: RecognitionMode,
+    onRecognitionModeChange: (RecognitionMode) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(999.dp))
+            .background(SoftCyan)
+            .border(1.dp, Border, RoundedCornerShape(999.dp))
+            .padding(4.dp),
+        horizontalArrangement = Arrangement.spacedBy(4.dp)
+    ) {
+        RecognitionModeSegment(
+            label = "Words",
+            selected = recognitionMode == RecognitionMode.WORDS,
+            modifier = Modifier.weight(1f)
+        ) {
+            onRecognitionModeChange(RecognitionMode.WORDS)
+        }
+        RecognitionModeSegment(
+            label = if (recognitionMode == RecognitionMode.PHRASE) "Phrase A-Z" else "A-Z",
+            selected = recognitionMode == RecognitionMode.ALPHABET || recognitionMode == RecognitionMode.PHRASE,
+            modifier = Modifier.weight(1f)
+        ) {
+            onRecognitionModeChange(RecognitionMode.ALPHABET)
+        }
+    }
+}
+
+@Composable
+private fun RecognitionModeSegment(
+    label: String,
+    selected: Boolean,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
+) {
+    Box(
+        modifier = modifier
+            .height(34.dp)
+            .clip(RoundedCornerShape(999.dp))
+            .background(if (selected) Primary else Color.Transparent)
+            .clickable { onClick() },
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            label,
+            color = if (selected) Color.White else TextMuted,
+            fontSize = 12.sp,
+            fontWeight = FontWeight.Bold,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
+    }
+}
+
+@Composable
+private fun DebugSettingsPanel(
+    flipLandmarksHorizontal: Boolean,
+    onFlipLandmarksHorizontalChange: (Boolean) -> Unit
+) {
+    VoxGestCard(modifier = Modifier.padding(horizontal = 20.dp, vertical = 4.dp)) {
+        Text("Debug Settings", color = Primary, fontSize = 13.sp, fontWeight = FontWeight.Bold)
+        Spacer(Modifier.height(10.dp))
+        Button(
+            onClick = { onFlipLandmarksHorizontalChange(!flipLandmarksHorizontal) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(42.dp),
+            shape = RoundedCornerShape(999.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = if (flipLandmarksHorizontal) Primary else CardWhite),
+            border = BorderStroke(1.dp, if (flipLandmarksHorizontal) Primary else Border)
+        ) {
+            Text(
+                "Flip landmarks horizontal: ${if (flipLandmarksHorizontal) "ON" else "OFF"}",
+                color = if (flipLandmarksHorizontal) Color.White else TextMain,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Bold
+            )
+        }
+    }
+}
+
+@Composable
+private fun AccuracyDebugPanel(
+    latestAcceptedLabel: String,
+    latestAcceptedEventId: Long,
+    onModeForTarget: (RecognitionMode) -> Unit
+) {
+    val context = LocalContext.current
+    val stats = remember { mutableStateMapOf<String, AccuracyCounter>() }
+    var targetIndex by remember { mutableStateOf(0) }
+    var windowStartedAtMs by remember { mutableStateOf(SystemClock.elapsedRealtime()) }
+    var remainingSeconds by remember { mutableStateOf(5) }
+    val target = AccuracyTestTargets[targetIndex]
+
+    fun advanceTarget() {
+        targetIndex = (targetIndex + 1) % AccuracyTestTargets.size
+        windowStartedAtMs = SystemClock.elapsedRealtime()
+        remainingSeconds = 5
+    }
+
+    fun recordAttempt(predicted: String?) {
+        val currentTarget = AccuracyTestTargets[targetIndex]
+        val previous = stats[currentTarget] ?: AccuracyCounter()
+        val correct = predicted?.uppercase(Locale.US) == currentTarget
+        stats[currentTarget] = previous.copy(
+            correct = previous.correct + if (correct) 1 else 0,
+            attempts = previous.attempts + 1
+        )
+        advanceTarget()
+    }
+
+    LaunchedEffect(target) {
+        onModeForTarget(if (target.length == 1) RecognitionMode.ALPHABET else RecognitionMode.WORDS)
+    }
+
+    LaunchedEffect(latestAcceptedEventId) {
+        if (latestAcceptedEventId > 0L) {
+            recordAttempt(latestAcceptedLabel)
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        while (true) {
+            delay(200)
+            val elapsed = SystemClock.elapsedRealtime() - windowStartedAtMs
+            remainingSeconds = (5 - (elapsed / 1000L).toInt()).coerceIn(0, 5)
+            if (elapsed >= ACCURACY_TEST_WINDOW_MS) {
+                recordAttempt(null)
+            }
+        }
+    }
+
+    val totalAttempts = stats.values.sumOf { it.attempts }
+    val totalCorrect = stats.values.sumOf { it.correct }
+    val overall = if (totalAttempts == 0) 0 else ((totalCorrect.toFloat() / totalAttempts.toFloat()) * 100f).toInt()
+
+    VoxGestCard(modifier = Modifier.padding(horizontal = 20.dp, vertical = 4.dp)) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Column(Modifier.weight(1f)) {
+                Text("Live Accuracy Test", color = Primary, fontSize = 13.sp, fontWeight = FontWeight.Bold)
+                Text("Target: $target · ${remainingSeconds}s", color = TextMain, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                Text("Overall: $overall% ($totalCorrect/$totalAttempts)", color = TextMuted, fontSize = 12.sp)
+            }
+            Button(
+                onClick = {
+                    val fileName = exportAccuracyReport(context, AccuracyTestTargets, stats)
+                    Toast.makeText(context, fileName, Toast.LENGTH_SHORT).show()
+                },
+                shape = RoundedCornerShape(999.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Primary)
+            ) {
+                Text("Export", color = Color.White, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+            }
+        }
+        Spacer(Modifier.height(10.dp))
+        Row(
+            modifier = Modifier.horizontalScroll(rememberScrollState()),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            AccuracyTestTargets.forEach { label ->
+                val counter = stats[label] ?: AccuracyCounter()
+                Surface(
+                    shape = RoundedCornerShape(999.dp),
+                    color = if (label == target) Color(0xFFE8F7EE) else SoftCyan,
+                    border = BorderStroke(1.dp, if (label == target) Primary else Border)
+                ) {
+                    Text(
+                        "$label ${counter.percentage}% ${counter.correct}/${counter.attempts}",
+                        color = if (label == target) Primary else TextMuted,
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(horizontal = 9.dp, vertical = 6.dp)
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
 private fun RecognitionAreaCard(
     recognitionRunning: Boolean,
     recognitionStatus: String,
+    recognitionMode: RecognitionMode,
+    namePhraseHint: String,
+    flipLandmarksHorizontal: Boolean,
     presentationMode: Boolean,
+    onRecognitionModeChange: (RecognitionMode) -> Unit,
     onStartRecognition: () -> Unit,
     onStopRecognition: () -> Unit,
     onRecognitionStatus: (String) -> Unit,
@@ -524,7 +913,7 @@ private fun RecognitionAreaCard(
         }
     }
 
-    LaunchedEffect(recognitionRunning, hasCameraPermission, previewView) {
+    LaunchedEffect(recognitionRunning, hasCameraPermission, previewView, recognitionMode, flipLandmarksHorizontal) {
         if (!recognitionRunning) {
             controllerRef.value?.stop()
             return@LaunchedEffect
@@ -538,6 +927,8 @@ private fun RecognitionAreaCard(
         controllerRef.value = VoxGestCameraRecognitionController(
             context = context,
             lifecycleOwner = lifecycleOwner,
+            recognitionMode = recognitionMode,
+            flipLandmarksHorizontal = flipLandmarksHorizontal,
             onStatus = onRecognitionStatus,
             onRecognitionFeedback = { recognitionFeedback = it },
             onAcceptedResult = onAcceptedRecognition
@@ -560,6 +951,20 @@ private fun RecognitionAreaCard(
     }
 
     VoxGestCard(modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp)) {
+        RecognitionModePill(
+            recognitionMode = recognitionMode,
+            onRecognitionModeChange = onRecognitionModeChange,
+            modifier = Modifier.padding(bottom = 12.dp)
+        )
+        AnimatedVisibility(visible = namePhraseHint.isNotBlank()) {
+            Text(
+                namePhraseHint,
+                color = Primary,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(bottom = 10.dp)
+            )
+        }
         Box(
             modifier = Modifier
                 .fillMaxWidth()
