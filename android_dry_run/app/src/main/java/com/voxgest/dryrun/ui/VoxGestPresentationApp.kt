@@ -207,19 +207,12 @@ fun VoxGestPresentationApp() {
     var demoTokenBuffer by remember { mutableStateOf("") }
     var recognitionRunning by remember { mutableStateOf(false) }
     var recognitionStatus by remember { mutableStateOf("Tap Start Recognition") }
-    var recognitionMode by remember { mutableStateOf(RecognitionMode.WORDS) }
     var namePhraseHint by remember { mutableStateOf("") }
     var pendingAvatarText by remember { mutableStateOf("") }
     var pendingAvatarRequestId by remember { mutableStateOf(0) }
     var selectedPhrase by remember { mutableStateOf("") }
     val history = remember { mutableStateListOf<HistoryUiEntry>() }
     val context = LocalContext.current
-    val debugPreferences = remember {
-        context.getSharedPreferences("voxgest_debug_settings", Context.MODE_PRIVATE)
-    }
-    var flipLandmarksHorizontal by remember {
-        mutableStateOf(debugPreferences.getBoolean("flip_landmarks_horizontal", true))
-    }
     val namePhraseDetector = remember { NamePhraseDetector() }
     val ttsRef = remember { mutableStateOf<TextToSpeech?>(null) }
     fun speakNow(text: String) {
@@ -239,17 +232,10 @@ fun VoxGestPresentationApp() {
         currentWord = ""
         sentence = ""
         namePhraseHint = ""
-        recognitionMode = RecognitionMode.WORDS
         namePhraseDetector.reset()
     }
 
-    fun setFlipLandmarksHorizontal(enabled: Boolean) {
-        flipLandmarksHorizontal = enabled
-        debugPreferences.edit().putBoolean("flip_landmarks_horizontal", enabled).apply()
-    }
-
     fun applyNamePhraseUpdate(update: com.voxgest.dryrun.NamePhraseUpdate) {
-        if (update.mode != null) recognitionMode = update.mode
         namePhraseHint = update.hint
         if (update.sentence.isNotBlank()) sentence = update.sentence
     }
@@ -261,6 +247,20 @@ fun VoxGestPresentationApp() {
             ?: raw.uppercase(Locale.US)
         when (clean) {
             "", "NOTHING" -> return
+            "DEL" -> {
+                val nextTokens = demoTokenBuffer.toDemoTokens().dropLast(1)
+                demoTokenBuffer = nextTokens.joinToString("|")
+                currentWord = nextTokens.lastOrNull() ?: ""
+                sentence = demoSentenceForTokens(nextTokens) ?: nextTokens.joinToString(" ")
+                namePhraseDetector.reset()
+                namePhraseHint = ""
+                return
+            }
+            "SPACE" -> {
+                namePhraseDetector.reset()
+                namePhraseHint = ""
+                return
+            }
             "CLEAR" -> {
                 clearDemoTokens()
                 return
@@ -290,7 +290,7 @@ fun VoxGestPresentationApp() {
         history.add(0, HistoryUiEntry("Today", "Sign", clean, nowLabel(), "Accepted sign", R.drawable.ic_hand_gesture, PrimaryLight))
 
         val nameUpdate = namePhraseDetector.observeAcceptedTokens(tokens, SystemClock.elapsedRealtime())
-        if (nameUpdate.mode == RecognitionMode.PHRASE) {
+        if (nameUpdate.hint.isNotBlank()) {
             val phraseTokens = (tokens + "IS").takeLast(32)
             demoTokenBuffer = phraseTokens.joinToString("|")
             applyNamePhraseUpdate(nameUpdate)
@@ -366,12 +366,8 @@ fun VoxGestPresentationApp() {
                             sentence = sentence,
                             recognitionRunning = recognitionRunning,
                             recognitionStatus = recognitionStatus,
-                            recognitionMode = recognitionMode,
                             namePhraseHint = namePhraseHint,
-                            flipLandmarksHorizontal = flipLandmarksHorizontal,
                             presentationMode = PRESENTATION_MODE,
-                            onRecognitionModeChange = { recognitionMode = it },
-                            onFlipLandmarksHorizontalChange = { setFlipLandmarksHorizontal(it) },
                             onSpeak = {
                                 if (isMeaningfulOutput(sentence)) {
                                     speakNow(sentence)
@@ -389,7 +385,6 @@ fun VoxGestPresentationApp() {
                                     sentence = sentence.split(",").dropLast(1).joinToString(", ")
                                 }
                                 namePhraseHint = ""
-                                recognitionMode = RecognitionMode.WORDS
                                 namePhraseDetector.reset()
                             },
                             onClear = {
@@ -604,12 +599,8 @@ private fun SignScreen(
     sentence: String,
     recognitionRunning: Boolean,
     recognitionStatus: String,
-    recognitionMode: RecognitionMode,
     namePhraseHint: String,
-    flipLandmarksHorizontal: Boolean,
     presentationMode: Boolean,
-    onRecognitionModeChange: (RecognitionMode) -> Unit,
-    onFlipLandmarksHorizontalChange: (Boolean) -> Unit,
     onSpeak: () -> Unit,
     onDelete: () -> Unit,
     onClear: () -> Unit,
@@ -620,52 +611,17 @@ private fun SignScreen(
     demoTokens: List<String>,
     onDemoToken: (String) -> Unit
 ) {
-    var showDebugSettings by remember { mutableStateOf(false) }
-    var showAccuracyDebug by remember { mutableStateOf(false) }
-    var latestAcceptedLabel by remember { mutableStateOf("") }
-    var latestAcceptedEventId by remember { mutableStateOf(0L) }
-
     ScreenScroll {
-        ScreenTopBar(
-            title = "SIGN",
-            trailing = R.drawable.ic_settings,
-            showLogo = true,
-            onLogoLongPress = {
-                if (BuildConfig.DEBUG) showAccuracyDebug = !showAccuracyDebug
-            },
-            onTrailingClick = {
-                if (BuildConfig.DEBUG) showDebugSettings = !showDebugSettings
-            }
-        )
-        AnimatedVisibility(visible = BuildConfig.DEBUG && showDebugSettings) {
-            DebugSettingsPanel(
-                flipLandmarksHorizontal = flipLandmarksHorizontal,
-                onFlipLandmarksHorizontalChange = onFlipLandmarksHorizontalChange
-            )
-        }
-        AnimatedVisibility(visible = BuildConfig.DEBUG && showAccuracyDebug) {
-            AccuracyDebugPanel(
-                latestAcceptedLabel = latestAcceptedLabel,
-                latestAcceptedEventId = latestAcceptedEventId,
-                onModeForTarget = onRecognitionModeChange
-            )
-        }
+        ScreenTopBar("SIGN", R.drawable.ic_settings)
         RecognitionAreaCard(
             recognitionRunning = recognitionRunning,
             recognitionStatus = recognitionStatus,
-            recognitionMode = recognitionMode,
             namePhraseHint = namePhraseHint,
-            flipLandmarksHorizontal = flipLandmarksHorizontal,
             presentationMode = presentationMode,
-            onRecognitionModeChange = onRecognitionModeChange,
             onStartRecognition = onStartRecognition,
             onStopRecognition = onStopRecognition,
             onRecognitionStatus = onRecognitionStatus,
-            onAcceptedRecognition = { result ->
-                latestAcceptedLabel = result.label
-                latestAcceptedEventId = SystemClock.elapsedRealtime()
-                onAcceptedRecognition(result)
-            }
+            onAcceptedRecognition = onAcceptedRecognition
         )
         CurrentWordCard(currentWord)
         SentenceCard(sentence, onSpeak)
@@ -875,11 +831,8 @@ private fun AccuracyDebugPanel(
 private fun RecognitionAreaCard(
     recognitionRunning: Boolean,
     recognitionStatus: String,
-    recognitionMode: RecognitionMode,
     namePhraseHint: String,
-    flipLandmarksHorizontal: Boolean,
     presentationMode: Boolean,
-    onRecognitionModeChange: (RecognitionMode) -> Unit,
     onStartRecognition: () -> Unit,
     onStopRecognition: () -> Unit,
     onRecognitionStatus: (String) -> Unit,
@@ -913,7 +866,7 @@ private fun RecognitionAreaCard(
         }
     }
 
-    LaunchedEffect(recognitionRunning, hasCameraPermission, previewView, recognitionMode, flipLandmarksHorizontal) {
+    LaunchedEffect(recognitionRunning, hasCameraPermission, previewView) {
         if (!recognitionRunning) {
             controllerRef.value?.stop()
             return@LaunchedEffect
@@ -927,8 +880,6 @@ private fun RecognitionAreaCard(
         controllerRef.value = VoxGestCameraRecognitionController(
             context = context,
             lifecycleOwner = lifecycleOwner,
-            recognitionMode = recognitionMode,
-            flipLandmarksHorizontal = flipLandmarksHorizontal,
             onStatus = onRecognitionStatus,
             onRecognitionFeedback = { recognitionFeedback = it },
             onAcceptedResult = onAcceptedRecognition
@@ -951,11 +902,6 @@ private fun RecognitionAreaCard(
     }
 
     VoxGestCard(modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp)) {
-        RecognitionModePill(
-            recognitionMode = recognitionMode,
-            onRecognitionModeChange = onRecognitionModeChange,
-            modifier = Modifier.padding(bottom = 12.dp)
-        )
         AnimatedVisibility(visible = namePhraseHint.isNotBlank()) {
             Text(
                 namePhraseHint,
@@ -1015,8 +961,8 @@ private fun RecognitionAreaCard(
                     }
                 }
             }
-            HandScanOverlay(
-                feedback = recognitionFeedback,
+            CleanRecognitionGuide(
+                recognitionStatus = recognitionStatus,
                 recognitionRunning = recognitionRunning && hasCameraPermission,
                 modifier = Modifier.fillMaxSize()
             )
@@ -1091,6 +1037,39 @@ private fun RecognitionAreaCard(
                     Text("Stop Recognition", color = Primary, fontSize = 12.sp, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun CleanRecognitionGuide(
+    recognitionStatus: String,
+    recognitionRunning: Boolean,
+    modifier: Modifier = Modifier
+) {
+    if (!recognitionRunning) return
+    val guideText = when {
+        recognitionStatus.contains("Looking", ignoreCase = true) -> "Place hand in frame"
+        recognitionStatus.contains("Hold", ignoreCase = true) -> "Hold steady"
+        recognitionStatus.contains("Signing", ignoreCase = true) -> "Signing..."
+        recognitionStatus.contains("Recognizing", ignoreCase = true) -> "Recognizing..."
+        recognitionStatus.contains("Accepted", ignoreCase = true) -> "Accepted"
+        else -> recognitionStatus
+    }
+    Box(modifier = modifier, contentAlignment = Alignment.BottomCenter) {
+        Surface(
+            shape = RoundedCornerShape(999.dp),
+            color = Color.Black.copy(alpha = 0.42f),
+            border = BorderStroke(1.dp, Color.White.copy(alpha = 0.18f)),
+            modifier = Modifier.padding(bottom = 18.dp)
+        ) {
+            Text(
+                guideText,
+                color = Color.White,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp)
+            )
         }
     }
 }

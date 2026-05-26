@@ -1,7 +1,7 @@
 package com.voxgest.dryrun
 
 import android.content.Context
-import android.os.SystemClock
+import android.util.Log
 import org.json.JSONObject
 import org.tensorflow.lite.Interpreter
 import java.io.IOException
@@ -13,17 +13,17 @@ data class LetterPrediction(
     val confidence: Float
 )
 
+data class AlphabetRawPrediction(
+    val label: String,
+    val confidence: Float,
+    val margin: Float
+)
+
 class AlphabetClassifier(context: Context) : AutoCloseable {
     private val appContext = context.applicationContext
     private var interpreter: Interpreter? = null
     private var labels: List<String> = emptyList()
     private var statusText: String = "Alphabet recognizer not loaded"
-    private val smoothedScores = mutableMapOf<String, Float>()
-    private var topLabel: String = ""
-    private var topFrames: Int = 0
-    private var rawLabel: String = ""
-    private var rawFramesAboveThreshold: Int = 0
-    private var cooldownUntilMs: Long = 0L
 
     fun load() {
         val options = Interpreter.Options().setNumThreads(2)
@@ -42,83 +42,41 @@ class AlphabetClassifier(context: Context) : AutoCloseable {
         interpreter = loaded
         labels = loadedLabels
         statusText = "Alphabet recognizer loaded"
-        reset()
+        Log.i(TAG, "Loaded $MODEL_ASSET input=${inputShape.contentToString()} labels=$loadedLabels")
     }
 
     fun status(): String = statusText
 
-    fun classify(frame: LandmarkFrame, flipLandmarksHorizontal: Boolean): LetterPrediction? {
+    fun predict(frame: LandmarkFrame, flipLandmarksHorizontal: Boolean): AlphabetRawPrediction? {
         val points = frame.rightHandLandmarks ?: frame.leftHandLandmarks
-        if (points?.size != HAND_LANDMARK_COUNT) {
-            reset()
-            return null
-        }
-        val inputVector = normalizeHand(points, flipLandmarksHorizontal) ?: run {
-            reset()
-            return null
-        }
-        return classify(inputVector)
+        if (points?.size != HAND_LANDMARK_COUNT) return null
+        val inputVector = normalizeHand(points, flipLandmarksHorizontal) ?: return null
+        return predict(inputVector)
     }
 
     fun reset() {
-        smoothedScores.clear()
-        topLabel = ""
-        topFrames = 0
-        rawLabel = ""
-        rawFramesAboveThreshold = 0
+        // Stateless classifier; gates hold temporal state.
     }
 
     override fun close() {
         interpreter?.close()
         interpreter = null
         labels = emptyList()
-        reset()
     }
 
-    private fun classify(features63: FloatArray): LetterPrediction? {
+    private fun predict(features63: FloatArray): AlphabetRawPrediction? {
         val localInterpreter = interpreter ?: return null
-        if (SystemClock.elapsedRealtime() < cooldownUntilMs) return null
-
         val input = arrayOf(features63)
         val output = Array(1) { FloatArray(labels.size) }
         localInterpreter.run(input, output)
         val probabilities = output[0]
-        val topIndex = probabilities.indices.maxByOrNull { probabilities[it] } ?: return null
-        val label = labels.getOrElse(topIndex) { "" }.uppercase(Locale.US)
-        val rawConfidence = probabilities[topIndex]
-
-        for (index in probabilities.indices) {
-            val candidate = labels.getOrElse(index) { "" }.uppercase(Locale.US)
-            if (candidate.isBlank()) continue
-            val previous = smoothedScores[candidate] ?: 0f
-            smoothedScores[candidate] = EMA_PREVIOUS_WEIGHT * previous + EMA_CURRENT_WEIGHT * probabilities[index]
-        }
-
-        if (label == topLabel) {
-            topFrames += 1
-        } else {
-            topLabel = label
-            topFrames = 1
-        }
-
-        if (label == rawLabel && rawConfidence >= RAW_CONFIDENCE_THRESHOLD) {
-            rawFramesAboveThreshold += 1
-        } else {
-            rawLabel = label
-            rawFramesAboveThreshold = if (rawConfidence >= RAW_CONFIDENCE_THRESHOLD) 1 else 0
-        }
-
-        if (!isOutputLetter(label)) return null
-        val smoothed = smoothedScores[label] ?: rawConfidence
-        val accepted = smoothed >= SMOOTHED_CONFIDENCE_THRESHOLD &&
-            topFrames >= REQUIRED_TOP_FRAMES &&
-            rawFramesAboveThreshold >= REQUIRED_RAW_FRAMES
-        if (!accepted) return null
-
-        cooldownUntilMs = SystemClock.elapsedRealtime() + ACCEPTED_COOLDOWN_MS
-        val prediction = LetterPrediction(label[0], smoothed.coerceAtLeast(rawConfidence))
-        reset()
-        return prediction
+        val ranked = probabilities.indices.sortedByDescending { probabilities[it] }
+        val best = ranked.firstOrNull() ?: return null
+        val second = ranked.getOrNull(1)
+        val label = labels.getOrElse(best) { "" }.normalizeAlphabetLabel()
+        val confidence = probabilities[best]
+        val margin = confidence - (second?.let { probabilities[it] } ?: 0f)
+        return AlphabetRawPrediction(label, confidence, margin)
     }
 
     private fun normalizeHand(points: List<LandmarkPoint>, flipLandmarksHorizontal: Boolean): FloatArray? {
@@ -149,10 +107,6 @@ class AlphabetClassifier(context: Context) : AutoCloseable {
         return sqrt(dx * dx + dy * dy + dz * dz)
     }
 
-    private fun isOutputLetter(label: String): Boolean {
-        return label.length == 1 && label[0] in 'A'..'Z'
-    }
-
     private fun loadLabels(): List<String> {
         val text = appContext.assets.open(LABELS_ASSET).bufferedReader().use { it.readText() }
         val json = JSONObject(text)
@@ -161,23 +115,26 @@ class AlphabetClassifier(context: Context) : AutoCloseable {
         while (keys.hasNext()) {
             val label = keys.next()
             val index = json.optInt(label, -1)
-            if (index in out.indices) out[index] = label
+            if (index in out.indices) out[index] = label.normalizeAlphabetLabel()
         }
         return out
     }
 
+    private fun String.normalizeAlphabetLabel(): String {
+        return when (trim().uppercase(Locale.US)) {
+            "DEL", "DELETE" -> "DEL"
+            "SPACE" -> "SPACE"
+            "NOTHING" -> "NOTHING"
+            else -> trim().uppercase(Locale.US)
+        }
+    }
+
     companion object {
+        private const val TAG = "VoxGestRecognition"
         private const val MODEL_ASSET = "models/asl_alphabet.tflite"
         private const val LABELS_ASSET = "models/asl_alphabet_labels.json"
         private const val FEATURE_SIZE = 63
         private const val HAND_LANDMARK_COUNT = 21
-        private const val RAW_CONFIDENCE_THRESHOLD = 0.80f
-        private const val SMOOTHED_CONFIDENCE_THRESHOLD = 0.75f
-        private const val EMA_PREVIOUS_WEIGHT = 0.60f
-        private const val EMA_CURRENT_WEIGHT = 0.40f
-        private const val REQUIRED_TOP_FRAMES = 3
-        private const val REQUIRED_RAW_FRAMES = 2
-        private const val ACCEPTED_COOLDOWN_MS = 400L
         private const val MIN_SCALE = 1.0e-4f
     }
 }

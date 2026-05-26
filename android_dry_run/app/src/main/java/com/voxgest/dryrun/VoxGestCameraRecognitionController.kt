@@ -2,6 +2,7 @@ package com.voxgest.dryrun
 
 import android.content.Context
 import android.os.SystemClock
+import android.util.Log
 import android.util.Size
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
@@ -19,8 +20,6 @@ import java.util.concurrent.atomic.AtomicBoolean
 class VoxGestCameraRecognitionController(
     private val context: Context,
     private val lifecycleOwner: LifecycleOwner,
-    private val recognitionMode: RecognitionMode = RecognitionMode.WORDS,
-    private val flipLandmarksHorizontal: Boolean = true,
     private val onStatus: (String) -> Unit,
     private val onRecognitionFeedback: (RecognitionFeedback) -> Unit = {},
     private val onAcceptedResult: (RecognitionResult) -> Unit
@@ -29,20 +28,24 @@ class VoxGestCameraRecognitionController(
     private val mainExecutor = ContextCompat.getMainExecutor(context)
     private val analyzerExecutor: ExecutorService = Executors.newSingleThreadExecutor()
     private val running = AtomicBoolean(false)
-    private val gate = RecognitionGate()
+    private val router = RecognitionAutoRouter()
+    private val alphabetGate = AlphabetAcceptanceGate()
+    private val dynamicGate = DynamicWordAcceptanceGate()
 
     @Volatile private var cameraProvider: ProcessCameraProvider? = null
     @Volatile private var imageAnalysis: ImageAnalysis? = null
     @Volatile private var extractor: LandmarkExtractor? = null
-    @Volatile private var recognizer: VoxGestTfliteRecognizer? = null
     @Volatile private var alphabetClassifier: AlphabetClassifier? = null
-    @Volatile private var profile: RecognitionProfile? = null
-    @Volatile private var sequenceBuffer: LandmarkSequenceBuffer? = null
+    @Volatile private var oneHandRecognizer: VoxGestTfliteRecognizer? = null
+    @Volatile private var fullSignRecognizer: VoxGestTfliteRecognizer? = null
+    @Volatile private var oneHandProfile: RecognitionProfile? = null
+    @Volatile private var fullSignProfile: RecognitionProfile? = null
+    @Volatile private var oneHandBuffer: LandmarkSequenceBuffer? = null
+    @Volatile private var fullSignBuffer: LandmarkSequenceBuffer? = null
     @Volatile private var lastAnalyzeAtMs: Long = 0L
-    @Volatile private var cooldownUntilMs: Long = 0L
-    @Volatile private var lastWordAcceptedAtMs: Long = 0L
     @Volatile private var lastStatus: String = ""
     @Volatile private var lastStatusAtMs: Long = 0L
+    @Volatile private var lastRoute: RecognitionRoute = RecognitionRoute.NOTHING
 
     fun start(previewView: PreviewView) {
         if (!running.compareAndSet(false, true)) return
@@ -50,20 +53,27 @@ class VoxGestCameraRecognitionController(
         bindCamera(previewView)
         analyzerExecutor.execute {
             try {
-                postStatus("Recognition Experimental / Calibration")
-                val loadedRecognizer = VoxGestTfliteRecognizer(appContext)
-                val loadedProfile = loadedRecognizer.load()
-                val mirrorCameraFrame = AndroidLandmarkInputPolicy.shouldMirrorFrameBeforeLandmarkExtraction(loadedProfile)
+                val loadedFullSignRecognizer = VoxGestTfliteRecognizer(appContext)
+                val loadedFullSignProfile = loadedFullSignRecognizer.load("fullsign225_phrase_v1")
+                val loadedOneHandRecognizer = VoxGestTfliteRecognizer(appContext)
+                val loadedOneHandProfile = loadedOneHandRecognizer.load("onehand162_phrase_v1")
+                val mirrorCameraFrame = AndroidLandmarkInputPolicy.shouldMirrorFrameBeforeLandmarkExtraction(loadedFullSignProfile)
                 val loadedExtractor = MediaPipeLandmarkExtractor(appContext, mirrorCameraFrame)
                 val loadedAlphabetClassifier = AlphabetClassifier(appContext).also { it.load() }
-                recognizer = loadedRecognizer
-                profile = loadedProfile
+
+                fullSignRecognizer = loadedFullSignRecognizer
+                fullSignProfile = loadedFullSignProfile
+                fullSignBuffer = LandmarkSequenceBuffer(loadedFullSignProfile.sequenceLength, loadedFullSignProfile.featureSize)
+                oneHandRecognizer = loadedOneHandRecognizer
+                oneHandProfile = loadedOneHandProfile
+                oneHandBuffer = LandmarkSequenceBuffer(loadedOneHandProfile.sequenceLength, loadedOneHandProfile.featureSize)
                 extractor = loadedExtractor
                 alphabetClassifier = loadedAlphabetClassifier
-                sequenceBuffer = LandmarkSequenceBuffer(loadedProfile.sequenceLength, loadedProfile.featureSize)
-                postStatus(if (recognitionMode == RecognitionMode.ALPHABET) "Tracking A-Z" else "Tracking Hand")
+                Log.i(TAG, "Automatic router ready; mirrorCameraFrame=$mirrorCameraFrame alphabetFlip=$FLIP_LANDMARKS_HORIZONTAL")
+                postStatus("Looking for hand")
             } catch (exc: Throwable) {
-                postStatus("Landmark profile not ready.")
+                Log.e(TAG, "Pipeline load failed", exc)
+                postStatus("Try again")
                 closePipeline()
             }
         }
@@ -74,8 +84,7 @@ class VoxGestCameraRecognitionController(
             postStatus("Recognition Paused")
             return
         }
-        gate.reset()
-        alphabetClassifier?.reset()
+        resetTemporalState()
         postFeedback(RecognitionFeedback.idle())
         mainExecutor.execute {
             imageAnalysis?.clearAnalyzer()
@@ -129,159 +138,170 @@ class VoxGestCameraRecognitionController(
             if (now - lastAnalyzeAtMs < ANALYZE_INTERVAL_MS) return
             lastAnalyzeAtMs = now
 
-            val loadedExtractor = extractor
-            val loadedRecognizer = recognizer
-            val loadedAlphabetClassifier = alphabetClassifier
-            val loadedProfile = profile
-            val buffer = sequenceBuffer
-            if (loadedExtractor == null || loadedRecognizer == null || loadedAlphabetClassifier == null || loadedProfile == null || buffer == null) {
-                postStatus("Starting Camera")
-                return
-            }
-            if (now < cooldownUntilMs) {
-                postStatus("Recognition Paused")
-                return
-            }
+            val frame = extractor?.processFrame(imageProxy)
+            val decision = router.decide(frame)
+            logRoute(decision)
+            handleRouteChange(decision.route)
 
-            val frame = loadedExtractor.processFrame(imageProxy)
-            if (frame == null || !frame.hasAnyHand) {
-                buffer.resetStability()
-                gate.reset()
-                loadedAlphabetClassifier.reset()
-                postFeedback(RecognitionFeedback.idle())
-                postStatus("Waiting for clearer hand")
-                return
-            }
-
-            if (recognitionMode == RecognitionMode.ALPHABET) {
-                processAlphabetFrame(loadedAlphabetClassifier, frame)
-                return
-            }
-
-            if (!frame.hasPose) {
-                if (recognitionMode == RecognitionMode.PHRASE && shouldRunPhraseAlphabetFallback(now)) {
-                    if (processAlphabetFrame(loadedAlphabetClassifier, frame)) return
+            if (frame == null || decision.route == RecognitionRoute.NOTHING) {
+                if (decision.handPresence <= 0f) {
+                    resetTemporalState()
+                    postFeedback(RecognitionFeedback.idle())
+                } else {
+                    dynamicGate.noteNoOutputState()
+                    alphabetGate.resetCandidate()
+                    postFeedback(cleanFeedback(DetectionStatus.SEARCHING, ""))
                 }
-                buffer.resetStability()
-                gate.reset()
-                postFeedback(feedbackFromFrame(frame, DetectionStatus.SEARCHING, 0f, ""))
-                postStatus("Landmark profile not ready.")
+                postStatus(decision.statusText)
                 return
             }
 
-            val feature = buildFeature(loadedProfile, frame)
-            if (feature == null) {
-                if (recognitionMode == RecognitionMode.PHRASE && shouldRunPhraseAlphabetFallback(now)) {
-                    if (processAlphabetFrame(loadedAlphabetClassifier, frame)) return
-                }
-                buffer.resetStability()
-                gate.reset()
-                postFeedback(feedbackFromFrame(frame, DetectionStatus.SEARCHING, 0f, ""))
-                postStatus(if (frame.hasAnyHand) "Landmark profile not ready." else "Waiting for clearer hand")
-                return
-            }
-            postFeedback(feedbackFromFrame(frame, DetectionStatus.DETECTING, 0.45f, ""))
-
-            if (recognitionMode == RecognitionMode.PHRASE && shouldRunPhraseAlphabetFallback(now)) {
-                if (processAlphabetFrame(loadedAlphabetClassifier, frame)) return
-            }
-
-            if (!buffer.markStableFrame(true)) {
-                postStatus("Tracking Hand")
-                return
-            }
-            if (!buffer.add(feature, true)) {
-                buffer.resetStability()
-                postStatus("Landmark profile not ready.")
-                return
-            }
-
-            val collected = buffer.size()
-            if (!buffer.isReady()) {
-                postStatus("Collecting Sequence $collected/${loadedProfile.sequenceLength}")
-                return
-            }
-
-            postStatus("Recognizing")
-            val snapshot = buffer.snapshot()
-            val handPresence = buffer.handPresenceRatio()
-            buffer.clear()
-            if (snapshot == null) {
-                postStatus("Collecting")
-                return
-            }
-
-            val raw = loadedRecognizer.recognize(snapshot)
-            if (raw.label.uppercase(Locale.US) !in DEMO_ACCEPTED_LABELS) {
-                gate.reset()
-                postFeedback(feedbackFromFrame(frame, DetectionStatus.DETECTING, raw.confidence, raw.label))
-                postStatus("Waiting for clearer hand")
-                return
-            }
-            val quality = when {
-                raw.note.startsWith("Wrong input shape", ignoreCase = true) -> "WRONG_INPUT_SHAPE"
-                raw.label.isBlank() -> "BAD_SEQUENCE"
-                else -> "GOOD"
-            }
-            val gateResult = gate.evaluate(
-                GateInput(
-                    label = raw.label,
-                    confidence = raw.confidence,
-                    margin = raw.margin,
-                    handPresence = handPresence,
-                    qualityStatus = quality
+            when (decision.route) {
+                RecognitionRoute.STATIC -> processStaticAlphabet(frame, decision)
+                RecognitionRoute.ONEHAND -> processDynamicWord(
+                    frame = frame,
+                    decision = decision,
+                    profile = oneHandProfile,
+                    recognizer = oneHandRecognizer,
+                    buffer = oneHandBuffer
                 )
-            )
-            if (!gateResult.accepted) {
-                postFeedback(feedbackFromFrame(frame, statusForConfidence(raw.confidence), raw.confidence, raw.label))
-                postStatus(gateReasonText(gateResult.reason))
-                return
+                RecognitionRoute.FULLSIGN -> processDynamicWord(
+                    frame = frame,
+                    decision = decision,
+                    profile = fullSignProfile,
+                    recognizer = fullSignRecognizer,
+                    buffer = fullSignBuffer
+                )
+                RecognitionRoute.NOTHING -> Unit
             }
-
-            cooldownUntilMs = SystemClock.elapsedRealtime() + ACCEPTED_COOLDOWN_MS
-            lastWordAcceptedAtMs = SystemClock.elapsedRealtime()
-            val accepted = RecognitionResult(
-                raw.label.uppercase(Locale.US),
-                raw.confidence,
-                raw.margin,
-                true,
-                gateResult.reason,
-                raw.top3
-            )
-            postFeedback(feedbackFromFrame(frame, DetectionStatus.RECOGNIZED, raw.confidence, accepted.label))
-            mainExecutor.execute { onAcceptedResult(accepted) }
-            postStatus("Recognition Paused")
         } catch (exc: Throwable) {
-            sequenceBuffer?.resetStability()
-            gate.reset()
-            alphabetClassifier?.reset()
+            Log.e(TAG, "Frame analysis failed", exc)
+            resetTemporalState()
             postFeedback(RecognitionFeedback.idle())
-            postStatus("Landmark profile not ready.")
+            postStatus("Try again")
         } finally {
             imageProxy.close()
         }
     }
 
-    private fun shouldRunPhraseAlphabetFallback(nowMs: Long): Boolean {
-        return nowMs - lastWordAcceptedAtMs >= PHRASE_ALPHABET_FALLBACK_MS
+    private fun processStaticAlphabet(frame: LandmarkFrame, decision: RouterDecision) {
+        val classifier = alphabetClassifier ?: run {
+            postStatus("Try again")
+            return
+        }
+        dynamicGate.noteNoOutputState()
+        oneHandBuffer?.clear()
+        fullSignBuffer?.clear()
+
+        val raw = classifier.predict(frame, FLIP_LANDMARKS_HORIZONTAL)
+        val gateResult = alphabetGate.evaluate(raw, decision)
+        logAlphabet(raw, gateResult)
+        if (!gateResult.accepted) {
+            postFeedback(cleanFeedback(DetectionStatus.DETECTING, gateResult.label))
+            postStatus(if (gateResult.reason == "hand_not_stable") "Hold steady" else "Try again")
+            return
+        }
+
+        val accepted = RecognitionResult(
+            gateResult.label,
+            gateResult.confidence,
+            gateResult.margin,
+            true,
+            "alphabet_${gateResult.reason}"
+        )
+        postFeedback(cleanFeedback(DetectionStatus.RECOGNIZED, accepted.label))
+        mainExecutor.execute { onAcceptedResult(accepted) }
+        postStatus("Accepted")
     }
 
-    private fun processAlphabetFrame(
-        classifier: AlphabetClassifier,
-        frame: LandmarkFrame
-    ): Boolean {
-        val prediction = classifier.classify(frame, flipLandmarksHorizontal)
-        if (prediction == null) {
-            postFeedback(feedbackFromFrame(frame, DetectionStatus.DETECTING, 0.45f, ""))
-            postStatus("Hold letter steady")
-            return false
+    private fun processDynamicWord(
+        frame: LandmarkFrame,
+        decision: RouterDecision,
+        profile: RecognitionProfile?,
+        recognizer: VoxGestTfliteRecognizer?,
+        buffer: LandmarkSequenceBuffer?
+    ) {
+        if (profile == null || recognizer == null || buffer == null) {
+            postStatus("Try again")
+            return
         }
-        val label = prediction.letter.toString()
-        val accepted = RecognitionResult(label, prediction.confidence, 0f, true, "alphabet_tflite")
-        postFeedback(feedbackFromFrame(frame, DetectionStatus.RECOGNIZED, prediction.confidence, label))
+        alphabetGate.resetCandidate()
+        val feature = buildFeature(profile, frame)
+        if (feature == null) {
+            buffer.clear()
+            dynamicGate.noteNoOutputState()
+            postFeedback(cleanFeedback(DetectionStatus.SEARCHING, ""))
+            postStatus("Try again")
+            Log.i(TAG, "route=${decision.route} model=${profile.id} rejected reason=missing_or_wrong_landmarks")
+            return
+        }
+        if (!buffer.add(feature, true)) {
+            buffer.clear()
+            postStatus("Try again")
+            Log.i(TAG, "route=${decision.route} model=${profile.id} rejected reason=feature_shape_${feature.size}_expected_${profile.featureSize}")
+            return
+        }
+        postFeedback(cleanFeedback(DetectionStatus.DETECTING, ""))
+        if (!buffer.isReady()) {
+            postStatus("Signing...")
+            return
+        }
+
+        val snapshot = buffer.snapshot()
+        val handPresence = buffer.handPresenceRatio()
+        buffer.clear()
+        if (snapshot == null) {
+            postStatus("Try again")
+            return
+        }
+
+        postStatus("Recognizing...")
+        val raw = recognizer.recognize(snapshot)
+        val gateResult = dynamicGate.evaluate(raw, profile, decision, handPresence)
+        logDynamic(decision, profile, raw, gateResult, snapshot)
+        if (!gateResult.accepted) {
+            postFeedback(cleanFeedback(statusForRejection(gateResult.reason), gateResult.label))
+            postStatus("Try again")
+            return
+        }
+
+        val accepted = RecognitionResult(
+            gateResult.label,
+            gateResult.confidence,
+            gateResult.margin,
+            true,
+            "dynamic_${gateResult.reason}",
+            raw.top3
+        )
+        postFeedback(cleanFeedback(DetectionStatus.RECOGNIZED, accepted.label))
         mainExecutor.execute { onAcceptedResult(accepted) }
-        postStatus("Recognized $label")
-        return true
+        postStatus("Accepted")
+    }
+
+    private fun handleRouteChange(route: RecognitionRoute) {
+        if (route == lastRoute) return
+        when (route) {
+            RecognitionRoute.STATIC -> {
+                oneHandBuffer?.clear()
+                fullSignBuffer?.clear()
+                dynamicGate.noteNoOutputState()
+            }
+            RecognitionRoute.ONEHAND -> {
+                fullSignBuffer?.clear()
+                alphabetGate.resetCandidate()
+            }
+            RecognitionRoute.FULLSIGN -> {
+                oneHandBuffer?.clear()
+                alphabetGate.resetCandidate()
+            }
+            RecognitionRoute.NOTHING -> {
+                oneHandBuffer?.clear()
+                fullSignBuffer?.clear()
+                dynamicGate.noteNoOutputState()
+                alphabetGate.resetCandidate()
+            }
+        }
+        lastRoute = route
     }
 
     private fun buildFeature(profile: RecognitionProfile, frame: LandmarkFrame): FloatArray? {
@@ -294,18 +314,29 @@ class VoxGestCameraRecognitionController(
         }
     }
 
-    private fun gateReasonText(reason: String): String {
-        return when (reason) {
-            "nothing_no_output" -> "Waiting for clearer hand"
-            "low_confidence" -> "Low confidence"
-            "low_margin" -> "Low confidence"
-            "low_hand_presence" -> "Unstable landmarks"
-            "bad_sequence" -> "Collecting"
-            "wrong_input_shape" -> "Landmark profile not ready."
-            "need_consistency_1_3" -> "Hold sign steady 1/3"
-            "need_consistency_2_3" -> "Hold sign steady 2/3"
-            else -> "Waiting for clearer hand"
-        }
+    private fun resetTemporalState() {
+        router.reset()
+        alphabetGate.reset()
+        dynamicGate.reset()
+        oneHandBuffer?.clear()
+        fullSignBuffer?.clear()
+        lastRoute = RecognitionRoute.NOTHING
+    }
+
+    private fun closePipeline() {
+        resetTemporalState()
+        extractor?.close()
+        extractor = null
+        alphabetClassifier?.close()
+        alphabetClassifier = null
+        oneHandRecognizer?.close()
+        oneHandRecognizer = null
+        fullSignRecognizer?.close()
+        fullSignRecognizer = null
+        oneHandProfile = null
+        fullSignProfile = null
+        oneHandBuffer = null
+        fullSignBuffer = null
     }
 
     private fun postStatus(status: String) {
@@ -316,39 +347,12 @@ class VoxGestCameraRecognitionController(
         mainExecutor.execute { onStatus(status) }
     }
 
-    private fun closePipeline() {
-        gate.reset()
-        alphabetClassifier?.close()
-        alphabetClassifier = null
-        extractor?.close()
-        extractor = null
-        recognizer?.close()
-        recognizer = null
-        profile = null
-        sequenceBuffer?.clear()
-        sequenceBuffer = null
-    }
-
-    private fun statusForConfidence(confidence: Float): DetectionStatus {
-        return if (confidence >= DETECTING_CONFIDENCE) {
-            DetectionStatus.DETECTING
-        } else {
-            DetectionStatus.SEARCHING
-        }
-    }
-
-    private fun feedbackFromFrame(
-        frame: LandmarkFrame,
-        status: DetectionStatus,
-        confidence: Float,
-        label: String
-    ): RecognitionFeedback {
-        val hand = frame.rightHandLandmarks ?: frame.leftHandLandmarks ?: emptyList()
+    private fun cleanFeedback(status: DetectionStatus, label: String): RecognitionFeedback {
         return RecognitionFeedback(
             detectionStatus = status,
-            confidence = confidence,
+            confidence = 0f,
             label = label.uppercase(Locale.US),
-            handLandmarks = hand.map { OverlayLandmarkPoint(it.x, it.y, it.z) },
+            handLandmarks = emptyList(),
             eventId = if (status == DetectionStatus.RECOGNIZED) SystemClock.elapsedRealtime() else 0L
         )
     }
@@ -357,12 +361,46 @@ class VoxGestCameraRecognitionController(
         mainExecutor.execute { onRecognitionFeedback(feedback) }
     }
 
+    private fun statusForRejection(reason: String): DetectionStatus {
+        return if (reason == "low_hand_presence" || reason == "wrong_input_shape") {
+            DetectionStatus.SEARCHING
+        } else {
+            DetectionStatus.DETECTING
+        }
+    }
+
+    private fun logRoute(decision: RouterDecision) {
+        Log.i(
+            TAG,
+            "router=${decision.route} status=${decision.statusText} reason=${decision.reason} hand=${decision.handPresence} both=${decision.bothHandsPresent}"
+        )
+    }
+
+    private fun logAlphabet(raw: AlphabetRawPrediction?, gate: AlphabetGateResult) {
+        Log.i(
+            TAG,
+            "route=STATIC model=models/asl_alphabet.tflite input=[1,63] predicted=${raw?.label ?: ""} conf=${raw?.confidence ?: 0f} margin=${raw?.margin ?: 0f} accepted=${gate.accepted} reason=${gate.reason}"
+        )
+    }
+
+    private fun logDynamic(
+        decision: RouterDecision,
+        profile: RecognitionProfile,
+        raw: RecognitionResult,
+        gate: DynamicWordGateResult,
+        snapshot: Array<FloatArray>
+    ) {
+        val inputShape = "[1,${snapshot.size},${snapshot.firstOrNull()?.size ?: 0}]"
+        Log.i(
+            TAG,
+            "route=${decision.route} model=${profile.modelAsset} input=$inputShape predicted=${raw.label} conf=${raw.confidence} margin=${raw.margin} accepted=${gate.accepted} reason=${gate.reason}"
+        )
+    }
+
     companion object {
+        private const val TAG = "VoxGestRecognition"
         private const val ANALYZE_INTERVAL_MS = 90L
-        private const val ACCEPTED_COOLDOWN_MS = 1600L
-        private const val PHRASE_ALPHABET_FALLBACK_MS = 800L
         private const val STATUS_MIN_INTERVAL_MS = 220L
-        private const val DETECTING_CONFIDENCE = 0.40f
-        private val DEMO_ACCEPTED_LABELS = setOf("WHAT", "YOUR", "NAME", "MY", "YOU", "OKAY", "NOTHING")
+        private const val FLIP_LANDMARKS_HORIZONTAL = false
     }
 }

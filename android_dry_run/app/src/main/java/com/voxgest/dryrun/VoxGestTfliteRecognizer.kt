@@ -1,6 +1,7 @@
 package com.voxgest.dryrun
 
 import android.content.Context
+import android.util.Log
 import org.json.JSONObject
 import org.tensorflow.lite.Interpreter
 import java.io.IOException
@@ -26,6 +27,7 @@ class VoxGestTfliteRecognizer(private val context: Context) : AutoCloseable {
         profile = loadedProfile
         labels = loadedLabels
         loadStatus = "Loaded ${loadedProfile.id} ${loadedProfile.shapeText()}"
+        Log.i(TAG, "Loaded ${loadedProfile.modelAsset} profile=${loadedProfile.id} input=${loadedProfile.shapeText()} labels=$loadedLabels")
         return loadedProfile
     }
 
@@ -101,5 +103,9 @@ class VoxGestTfliteRecognizer(private val context: Context) : AutoCloseable {
         interpreter?.close()
         interpreter = null
         profile = null
+    }
+
+    companion object {
+        private const val TAG = "VoxGestRecognition"
     }
 }
