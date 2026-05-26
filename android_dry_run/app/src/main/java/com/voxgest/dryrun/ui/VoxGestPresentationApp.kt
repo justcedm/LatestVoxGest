@@ -100,9 +100,11 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import com.voxgest.app.avatar.AvatarController
+import com.voxgest.app.avatar.AvatarFeatureFlags
 import com.voxgest.app.avatar.AvatarPlaybackState
 import com.voxgest.app.avatar.AvatarStatus
 import com.voxgest.app.avatar.AvatarView
+import com.voxgest.app.avatar.Temporary3DHandsAvatarHostView
 import com.voxgest.dryrun.BuildConfig
 import com.voxgest.dryrun.DetectionStatus
 import com.voxgest.dryrun.NamePhraseDetector
@@ -1637,7 +1639,15 @@ private fun AvatarCard(
                     )
                 }
                 AndroidView(
-                    factory = { viewContext -> AvatarView(viewContext).also { avatarController.attach(it) } },
+                    factory = { viewContext ->
+                        if (AvatarFeatureFlags.ENABLE_3D_HANDS) {
+                            Temporary3DHandsAvatarHostView(viewContext).also {
+                                avatarController.attach(it.canvasAvatarView)
+                            }
+                        } else {
+                            AvatarView(viewContext).also { avatarController.attach(it) }
+                        }
+                    },
                     update = { it.contentDescription = "Avatar signing: ${avatarState.currentWord.ifBlank { avatarState.label }}" },
                     modifier = Modifier
                         .fillMaxWidth()
