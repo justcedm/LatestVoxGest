@@ -390,6 +390,12 @@ class AvatarView @JvmOverloads constructor(
                 kf(420, 0.51f, 0.50f, 0.59f, 0.57f, HandShape.FLAT_PALM, FaceExpression.CONFIRM),
                 kf(560, 0.64f, 0.53f, 0.64f, 0.60f, HandShape.FLAT_PALM, FaceExpression.FRIENDLY)
             )
+            "IS" -> listOf(
+                kf(0, 0.72f, 0.50f, 0.66f, 0.58f, HandShape.TWO_FINGERS, FaceExpression.FRIENDLY),
+                kf(180, 0.61f, 0.45f, 0.63f, 0.54f, HandShape.TWO_FINGERS, FaceExpression.FRIENDLY),
+                kf(360, 0.61f, 0.45f, 0.63f, 0.54f, HandShape.TWO_FINGERS, FaceExpression.CONFIRM),
+                kf(520, 0.72f, 0.50f, 0.66f, 0.58f, HandShape.TWO_FINGERS, FaceExpression.FRIENDLY)
+            )
             "OKAY" -> listOf(
                 kf(0, 0.74f, 0.50f, 0.67f, 0.58f, HandShape.PINCH, FaceExpression.FRIENDLY),
                 kf(200, 0.70f, 0.34f, 0.66f, 0.49f, HandShape.PINCH, FaceExpression.CONFIRM),
@@ -674,15 +680,33 @@ class AvatarView @JvmOverloads constructor(
         fillPaint.color = withAlpha(Color.WHITE, 38)
         canvas.drawOval(cx - r * 0.78f, cy - r * 0.86f, cx - r * 0.22f, cy - r * 0.50f, fillPaint)
 
-        fillPaint.color = EYE
+        fillPaint.color = BLUSH
+        canvas.drawCircle(cx - r * 0.48f, cy + r * 0.18f, r * 0.13f, fillPaint)
+        canvas.drawCircle(cx + r * 0.48f, cy + r * 0.18f, r * 0.13f, fillPaint)
+
         val eyeY = cy - r * 0.08f
         val leftEyeX = cx - r * 0.38f
         val rightEyeX = cx + r * 0.38f
-        canvas.drawCircle(leftEyeX, eyeY, 4f.dp, fillPaint)
-        canvas.drawCircle(rightEyeX, eyeY, 4f.dp, fillPaint)
+        drawEye(canvas, leftEyeX, eyeY, r)
+        drawEye(canvas, rightEyeX, eyeY, r)
 
         drawEyebrows(canvas, leftEyeX, rightEyeX, eyeY - 10f.dp, face)
         drawMouth(canvas, cx, cy + r * 0.24f, r, face)
+    }
+
+    private fun drawEye(canvas: Canvas, x: Float, y: Float, headR: Float) {
+        fillPaint.color = EYE_WHITE
+        strokePaint.color = withAlpha(EYE, 70)
+        strokePaint.strokeWidth = 1f.dp
+        canvas.drawOval(x - headR * 0.16f, y - headR * 0.12f, x + headR * 0.16f, y + headR * 0.12f, fillPaint)
+        canvas.drawOval(x - headR * 0.16f, y - headR * 0.12f, x + headR * 0.16f, y + headR * 0.12f, strokePaint)
+
+        fillPaint.color = EYE_IRIS
+        canvas.drawCircle(x, y, headR * 0.075f, fillPaint)
+        fillPaint.color = EYE
+        canvas.drawCircle(x, y, headR * 0.040f, fillPaint)
+        fillPaint.color = Color.WHITE
+        canvas.drawCircle(x + headR * 0.030f, y - headR * 0.035f, headR * 0.022f, fillPaint)
     }
 
     private fun drawRestingLeftArm(canvas: Canvas, w: Float, h: Float) {
@@ -983,17 +1007,20 @@ class AvatarView @JvmOverloads constructor(
         private const val FINGERSPELL_STEP_MS = 300L
         private const val TWO_PI = (Math.PI * 2.0).toFloat()
 
-        private const val AVATAR_BG = 0xFF1E1E26.toInt()
-        private const val SURFACE_WHITE = 0xFF17171C.toInt()
-        private const val PRIMARY_TEAL = 0xFFB8F060.toInt()
-        private const val PRIMARY_DARK = 0xFF9ED84A.toInt()
-        private const val TEXT_PRIMARY = 0xFFEDEDEA.toInt()
-        private const val TEXT_SECONDARY = 0xFF989894.toInt()
-        private const val SKIN = 0xFFF2C9A8.toInt()
-        private const val SKIN_STROKE = 0xFFD9A47D.toInt()
-        private const val HAND_STROKE = 0xFFD09266.toInt()
-        private const val HAIR = 0xFF3A261D.toInt()
-        private const val EYE = 0xFF2B1A13.toInt()
+        private const val AVATAR_BG = 0xFFE5F0F1.toInt()
+        private const val SURFACE_WHITE = 0xFFF5F7FA.toInt()
+        private const val PRIMARY_TEAL = 0xFF18686D.toInt()
+        private const val PRIMARY_DARK = 0xFF0B3F43.toInt()
+        private const val TEXT_PRIMARY = 0xFF1F2937.toInt()
+        private const val TEXT_SECONDARY = 0xFF6B7280.toInt()
+        private const val SKIN = 0xFFE6B896.toInt()
+        private const val SKIN_STROKE = 0xFFC9916A.toInt()
+        private const val HAND_STROKE = 0xFFC9916A.toInt()
+        private const val HAIR = 0xFF1A0E08.toInt()
+        private const val EYE = 0xFF0A0A12.toInt()
+        private const val EYE_IRIS = 0xFF18686D.toInt()
+        private const val EYE_WHITE = 0xFFF5F5F0.toInt()
+        private const val BLUSH = 0x4DE8A898
         private const val SHIRT = 0xFF0B3F43.toInt()
         private const val SHIRT_HIGHLIGHT = 0xFF18686D.toInt()
         private const val SHADOW_30 = 0x4D000000

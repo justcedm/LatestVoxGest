@@ -25,6 +25,7 @@ object AvatarAnimationLibrary {
         "WHAT" to AvatarAnimation("WHAT", AvatarAnimationKind.KNOWN_SIGN, 720L),
         "YOUR" to AvatarAnimation("YOUR", AvatarAnimationKind.KNOWN_SIGN, 560L),
         "NAME" to AvatarAnimation("NAME", AvatarAnimationKind.KNOWN_SIGN, 720L),
+        "IS" to AvatarAnimation("IS", AvatarAnimationKind.KNOWN_SIGN, 520L),
         "MY" to AvatarAnimation("MY", AvatarAnimationKind.KNOWN_SIGN, 560L),
         "YOU" to AvatarAnimation("YOU", AvatarAnimationKind.KNOWN_SIGN, 560L),
         "OKAY" to AvatarAnimation("OKAY", AvatarAnimationKind.KNOWN_SIGN, 680L),

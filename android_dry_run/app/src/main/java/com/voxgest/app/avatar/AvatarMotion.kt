@@ -1,5 +1,7 @@
 package com.voxgest.app.avatar
 
+import com.voxgest.dryrun.SignVocabulary
+import com.voxgest.dryrun.buildNamePhraseSequence
 import java.util.Locale
 
 data class Keyframe(
@@ -40,6 +42,11 @@ object AvatarMotion {
     }
 
     fun wordsFromText(text: String): List<String> {
+        val nameSequence = buildNamePhraseSequence(text)
+        if (!nameSequence.isNullOrEmpty()) {
+            return nameSequence.map { SignVocabulary.playbackLabel(it) }
+        }
+
         val normalized = text.uppercase(Locale.US)
             .replace("THANK YOU", "THANKYOU")
             .replace(Regex("[^A-Z0-9 ]+"), " ")
@@ -51,12 +58,13 @@ object AvatarMotion {
         val phraseSequence = phraseSequenceFor(normalized)
         if (phraseSequence.isNotEmpty()) return phraseSequence
 
-        val direct = normalized.split(" ")
+        val vocabularyLabels = SignVocabulary.labelsForSpeech(text)
+        if (vocabularyLabels.isNotEmpty()) return vocabularyLabels
+
+        return normalized.split(" ")
             .map { normalizeWord(it) }
             .filter { it.isNotBlank() && it != "NOTHING" }
-
-        val known = direct.filter { it in knownWords }
-        return if (known.isNotEmpty()) known else direct.take(4)
+            .take(4)
     }
 
     fun phraseSequenceFor(normalizedText: String): List<String> {

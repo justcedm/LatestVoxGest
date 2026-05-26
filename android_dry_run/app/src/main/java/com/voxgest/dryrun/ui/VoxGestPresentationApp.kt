@@ -14,6 +14,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.DrawableRes
 import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
@@ -90,6 +91,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import com.voxgest.app.avatar.AvatarController
 import com.voxgest.app.avatar.AvatarPlaybackState
+import com.voxgest.app.avatar.AvatarStatus
 import com.voxgest.app.avatar.AvatarView
 import com.voxgest.dryrun.BuildConfig
 import com.voxgest.dryrun.DetectionStatus
@@ -97,6 +99,7 @@ import com.voxgest.dryrun.OverlayLandmarkPoint
 import com.voxgest.dryrun.R
 import com.voxgest.dryrun.RecognitionFeedback
 import com.voxgest.dryrun.RecognitionResult
+import com.voxgest.dryrun.SignVocabulary
 import com.voxgest.dryrun.VoxGestCameraRecognitionController
 import kotlinx.coroutines.delay
 import java.text.SimpleDateFormat
@@ -204,7 +207,10 @@ fun VoxGestPresentationApp() {
     }
 
     fun addDemoToken(token: String) {
-        val clean = token.trim().uppercase(Locale.US)
+        val raw = token.trim()
+        val clean = SignVocabulary.findByLabelOrAlias(raw)
+            ?.let { SignVocabulary.normalizeRuntimeLabel(it.label) }
+            ?: raw.uppercase(Locale.US)
         when (clean) {
             "", "NOTHING" -> return
             "CLEAR" -> {
@@ -375,14 +381,31 @@ private fun String.toDemoTokens(): List<String> {
 
 private fun demoSentenceForTokens(tokens: List<String>): String? {
     val clean = tokens.map { it.uppercase(Locale.US) }.filter { it.isNotBlank() && it != "NOTHING" }
+    val nameStart = clean.indexOfLastMyNameIs()
+    if (nameStart >= 0 && clean.size > nameStart + 3) {
+        val letters = clean.drop(nameStart + 3)
+            .filter { it.length == 1 && it[0] in 'A'..'Z' }
+            .joinToString("")
+        if (letters.isNotBlank()) return "My name is ${letters.lowercase(Locale.US).replaceFirstChar { it.uppercase() }}."
+    }
     return when {
         clean.endsWithTokens("WHAT", "YOUR", "NAME") -> "What is your name?"
         clean.endsWithTokens("MY", "NAME") -> "My name is [letters from alphabet recognizer]."
+        clean.endsWithTokens("MY", "NAME", "IS") -> "My name is"
         clean.endsWithTokens("YOU", "OKAY") -> "Are you okay?"
         clean.endsWithTokens("YOU", "STUDENT") -> "Are you a student?"
         clean.endsWithTokens("WHERE", "YOU", "LIVE") -> "Where do you live?"
         else -> null
     }
+}
+
+private fun List<String>.indexOfLastMyNameIs(): Int {
+    for (index in size - 3 downTo 0) {
+        if (this[index] == "MY" && this[index + 1] == "NAME" && this[index + 2] == "IS") {
+            return index
+        }
+    }
+    return -1
 }
 
 private fun List<String>.endsWithTokens(vararg expected: String): Boolean {
@@ -1032,6 +1055,7 @@ private fun ListenScreen(
 
             override fun onEndOfSpeech() {
                 speechStatus = "Processing speech..."
+                avatarController.setStatus(AvatarStatus.ANALYZING)
             }
 
             override fun onError(error: Int) {
@@ -1197,63 +1221,72 @@ private fun AvatarCard(
     onStop: () -> Unit,
     onDebugWord: (String) -> Unit
 ) {
-    Card(
+    val isAnalyzing = avatarState.status == AvatarStatus.ANALYZING
+    Box(
         modifier = Modifier
             .padding(horizontal = 20.dp)
             .fillMaxWidth()
-            .height(292.dp),
-        shape = RoundedCornerShape(24.dp),
-        colors = CardDefaults.cardColors(containerColor = SoftCyan),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+            .height(292.dp)
     ) {
-        Column(Modifier.fillMaxSize()) {
-            Row(
-                modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 14.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Label("AVATAR", Modifier.weight(1f))
-                StatusChip(
-                    label = when {
-                        avatarState.isPlaying -> "Signing..."
-                        avatarState.isListening -> "Listening..."
-                        else -> "Ready"
-                    },
-                    dotColor = PrimaryLight,
-                    containerColor = SoftCyan,
-                    contentColor = Primary
-                )
-            }
-            AndroidView(
-                factory = { viewContext -> AvatarView(viewContext).also { avatarController.attach(it) } },
-                update = { it.contentDescription = "Avatar signing: ${avatarState.currentWord.ifBlank { avatarState.label }}" },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-                    .padding(horizontal = 10.dp)
-            )
-            Surface(color = CardWhite.copy(alpha = 0.92f), shadowElevation = 0.dp) {
-                Column(
+        Card(
+            modifier = Modifier.matchParentSize(),
+            shape = RoundedCornerShape(24.dp),
+            colors = CardDefaults.cardColors(containerColor = SoftCyan),
+            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        ) {
+            Column(Modifier.fillMaxSize()) {
+                Row(
+                    modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 14.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Label("AVATAR", Modifier.weight(1f))
+                    StatusChip(
+                        label = when {
+                            isAnalyzing -> "Analyzing..."
+                            avatarState.isPlaying -> "Signing..."
+                            avatarState.isListening -> "Listening..."
+                            else -> "Ready"
+                        },
+                        dotColor = PrimaryLight,
+                        containerColor = SoftCyan,
+                        contentColor = Primary
+                    )
+                }
+                AndroidView(
+                    factory = { viewContext -> AvatarView(viewContext).also { avatarController.attach(it) } },
+                    update = { it.contentDescription = "Avatar signing: ${avatarState.currentWord.ifBlank { avatarState.label }}" },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(12.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        avatarState.detail.ifBlank { "Converting speech to sign language" },
-                        color = TextMuted,
-                        fontSize = 12.sp,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                    Row(
-                        modifier = Modifier.padding(top = 10.dp),
-                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                        .weight(1f)
+                        .padding(horizontal = 10.dp)
+                )
+                Surface(color = CardWhite.copy(alpha = 0.92f), shadowElevation = 0.dp) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(12.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        OutlinePillButton("Replay", R.drawable.ic_replay, Modifier.weight(1f), onReplay)
-                        FilledPillButton("Play Signs", R.drawable.ic_play_arrow, Modifier.weight(1f), onPlay)
+                        Text(
+                            avatarState.detail.ifBlank { "Converting speech to sign language" },
+                            color = TextMuted,
+                            fontSize = 12.sp,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                        Row(
+                            modifier = Modifier.padding(top = 10.dp),
+                            horizontalArrangement = Arrangement.spacedBy(12.dp)
+                        ) {
+                            OutlinePillButton("Replay", R.drawable.ic_replay, Modifier.weight(1f), onReplay)
+                            FilledPillButton("Play Signs", R.drawable.ic_play_arrow, Modifier.weight(1f), onPlay)
+                        }
                     }
                 }
             }
+        }
+        if (isAnalyzing) {
+            AnalyzingAvatarOverlay(Modifier.matchParentSize())
         }
     }
     if (SHOW_DEBUG_TOOLS && BuildConfig.DEBUG) {
@@ -1295,6 +1328,44 @@ private fun AvatarCard(
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun AnalyzingAvatarOverlay(modifier: Modifier = Modifier) {
+    val transition = rememberInfiniteTransition(label = "avatar-analyzing")
+    val rotation by transition.animateFloat(
+        initialValue = 0f,
+        targetValue = 360f,
+        animationSpec = infiniteRepeatable(tween(2000, easing = LinearEasing), RepeatMode.Restart),
+        label = "avatar-ring"
+    )
+    Box(
+        modifier = modifier
+            .clip(RoundedCornerShape(24.dp))
+            .background(Color(0x140E3F43))
+    ) {
+        Canvas(Modifier.matchParentSize()) {
+            val inset = 2.dp.toPx()
+            drawArc(
+                color = PrimaryLight,
+                startAngle = rotation,
+                sweepAngle = 108f,
+                useCenter = false,
+                topLeft = Offset(inset, inset),
+                size = Size(size.width - inset * 2f, size.height - inset * 2f),
+                style = Stroke(width = 2.dp.toPx(), cap = StrokeCap.Round)
+            )
+            drawArc(
+                color = Primary.copy(alpha = 0.50f),
+                startAngle = rotation + 180f,
+                sweepAngle = 64f,
+                useCenter = false,
+                topLeft = Offset(inset, inset),
+                size = Size(size.width - inset * 2f, size.height - inset * 2f),
+                style = Stroke(width = 2.dp.toPx(), cap = StrokeCap.Round)
+            )
         }
     }
 }
