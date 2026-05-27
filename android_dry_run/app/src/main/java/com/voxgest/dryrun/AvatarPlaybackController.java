@@ -1,7 +1,11 @@
 package com.voxgest.dryrun;
 
 import android.content.Context;
+import android.content.res.AssetManager;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -11,9 +15,11 @@ public final class AvatarPlaybackController {
         void onAvatarMessage(String title, String detail);
     }
 
+    private final AssetManager assets;
     private final Listener listener;
 
     public AvatarPlaybackController(Context context, Listener listener) {
+        this.assets = context.getAssets();
         this.listener = listener;
     }
 
@@ -67,7 +73,15 @@ public final class AvatarPlaybackController {
     }
 
     private void playKnownWord(String word) {
-        show("Playing sign: " + word, "Using built-in Canvas avatar clip.");
+        String json = readFirstAvailable(
+                "avatar/signs/" + word + ".json",
+                "signs/" + word + ".json"
+        );
+        if (json == null || json.contains("\"keyframes\": []")) {
+            show("Playing sign: " + word, "Placeholder animation card. Add avatar/signs/" + word + ".json keyframes for final playback.");
+        } else {
+            show("Playing sign: " + word, "Loaded animation JSON for " + word + ".");
+        }
     }
 
     private void fingerspell(String word) {
@@ -86,6 +100,21 @@ public final class AvatarPlaybackController {
         } else {
             show("Fingerspell: " + word, letters.toString());
         }
+    }
+
+    private String readFirstAvailable(String... paths) {
+        for (String path : paths) {
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(assets.open(path)))) {
+                StringBuilder out = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    out.append(line).append('\n');
+                }
+                return out.toString();
+            } catch (IOException ignored) {
+            }
+        }
+        return null;
     }
 
     private void show(String title, String detail) {

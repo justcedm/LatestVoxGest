@@ -11,7 +11,7 @@ interface AvatarRenderer {
 }
 
 class CanvasAvatarRenderer(
-    private var view: SignAvatarView?,
+    private var view: AvatarView?,
     private val assetLoader: AvatarAssetLoader
 ) : AvatarRenderer {
     override val rendererMode: String = assetLoader.rendererMode()
@@ -19,7 +19,7 @@ class CanvasAvatarRenderer(
     override fun playWord(word: String): Boolean {
         val normalized = AvatarMotion.normalizeWord(word)
         if (normalized.isBlank() || normalized == "NOTHING") return false
-        AvatarClip.clipForLabel(normalized)?.let { view?.playClip(it) }
+        view?.signText(normalized)
         return true
     }
 
@@ -32,7 +32,7 @@ class CanvasAvatarRenderer(
     }
 
     override fun stop() {
-        view?.playClip(AvatarClip.IDLE)
+        view?.signText("")
     }
 
     override fun detach() {

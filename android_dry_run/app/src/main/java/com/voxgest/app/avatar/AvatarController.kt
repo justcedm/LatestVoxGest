@@ -13,7 +13,7 @@ class AvatarController(
     private var lastText: String = ""
     private var state = AvatarPlaybackState()
 
-    fun attach(view: SignAvatarView) {
+    fun attach(view: AvatarView) {
         assetLoader = AvatarAssetLoader(view.context)
         renderer = CanvasAvatarRenderer(view, assetLoader!!)
         view.animateIdleBreathing()
@@ -21,7 +21,11 @@ class AvatarController(
             state.copy(
                 status = AvatarStatus.READY,
                 label = "Ready",
-                detail = "Canvas avatar active",
+                detail = if (assetLoader!!.hasModelAsset()) {
+                    "GLB avatar assets detected"
+                } else {
+                    "Canvas avatar active"
+                },
                 rendererMode = renderer.rendererMode
             )
         )
@@ -76,8 +80,7 @@ class AvatarController(
     }
 
     fun playTextAsSigns(text: String): Boolean {
-        val words = AvatarMotion.wordsFromText(text)
-        val sequence = words.ifEmpty { AvatarClip.sentenceToClips(text).map { it.label } }
+        val sequence = AvatarMotion.wordsFromText(text)
         if (sequence.isEmpty()) {
             return false
         }
@@ -115,6 +118,11 @@ class AvatarController(
         if (word == "NOTHING") return
         val animation = AvatarAnimationLibrary.resolve(word)
         val fallback = animation.kind == AvatarAnimationKind.FINGERSPELL
+        val canvasAssetPresent = assetLoader?.hasCanvasAnimation(word) ?: false
+
+        if (animation.kind == AvatarAnimationKind.KNOWN_SIGN && !canvasAssetPresent) {
+            renderer.setStatus(AvatarStatus.ASSET_MISSING)
+        }
 
         renderer.playWord(word)
         publish(

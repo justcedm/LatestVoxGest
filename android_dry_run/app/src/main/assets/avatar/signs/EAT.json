@@ -1,0 +1,49 @@
+{
+  "id": "EAT",
+  "type": "word",
+  "status": "prototype",
+  "gloss": "EAT",
+  "description": "Hand moves toward the mouth with a small eating/tap motion.",
+  "animation": {
+    "format": "avatar_keyframes_v1",
+    "dominant_hand": "configured_user_hand",
+    "fallback": "fingerspell",
+    "keyframes": [
+      {
+        "t": 0,
+        "pose": "hand_ready",
+        "right_hand": {"x": 0.74, "y": 0.54, "shape": "pinch"},
+        "right_elbow": {"x": 0.64, "y": 0.64},
+        "face": "friendly"
+      },
+      {
+        "t": 150,
+        "pose": "hand_to_mouth",
+        "right_hand": {"x": 0.62, "y": 0.36, "shape": "pinch"},
+        "right_elbow": {"x": 0.66, "y": 0.56},
+        "face": "friendly"
+      },
+      {
+        "t": 300,
+        "pose": "tap_mouth",
+        "right_hand": {"x": 0.56, "y": 0.31, "shape": "pinch"},
+        "right_elbow": {"x": 0.63, "y": 0.52},
+        "face": "confirm"
+      },
+      {
+        "t": 430,
+        "pose": "hand_away",
+        "right_hand": {"x": 0.65, "y": 0.40, "shape": "pinch"},
+        "right_elbow": {"x": 0.66, "y": 0.58},
+        "face": "warm"
+      },
+      {
+        "t": 560,
+        "pose": "tap_mouth_repeat",
+        "right_hand": {"x": 0.56, "y": 0.31, "shape": "pinch"},
+        "right_elbow": {"x": 0.63, "y": 0.52},
+        "face": "confirm"
+      }
+    ]
+  }
+}

@@ -157,8 +157,8 @@
     }
   },
   "avatar": {
-    "manifest": "built_in_canvas_sign_avatar",
-    "known_word_rule": "known word -> SignAvatarView AvatarClip",
+    "manifest": "avatar/avatar_manifest.json",
+    "known_word_rule": "known word -> avatar/signs/<WORD>.json",
     "unknown_word_rule": "fingerspell",
     "phrase_intents": "later"
   },
