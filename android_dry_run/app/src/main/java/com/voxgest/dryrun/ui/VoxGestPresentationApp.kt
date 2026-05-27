@@ -104,7 +104,7 @@ import com.voxgest.app.avatar.AvatarFeatureFlags
 import com.voxgest.app.avatar.AvatarPlaybackState
 import com.voxgest.app.avatar.AvatarStatus
 import com.voxgest.app.avatar.AvatarView
-import com.voxgest.app.avatar.Temporary3DHandsAvatarHostView
+import com.voxgest.app.avatar.SceneAvatarHostView
 import com.voxgest.dryrun.BuildConfig
 import com.voxgest.dryrun.DetectionStatus
 import com.voxgest.dryrun.NamePhraseDetector
@@ -1640,8 +1640,8 @@ private fun AvatarCard(
                 }
                 AndroidView(
                     factory = { viewContext ->
-                        if (AvatarFeatureFlags.ENABLE_3D_HANDS) {
-                            Temporary3DHandsAvatarHostView(viewContext).also {
+                        if (AvatarFeatureFlags.ENABLE_3D_AVATAR) {
+                            SceneAvatarHostView(viewContext).also {
                                 avatarController.attach(it.canvasAvatarView)
                             }
                         } else {
