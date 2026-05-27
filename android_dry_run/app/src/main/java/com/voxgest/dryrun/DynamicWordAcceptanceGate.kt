@@ -8,7 +8,9 @@ data class DynamicWordGateResult(
     val label: String,
     val confidence: Float,
     val margin: Float,
-    val reason: String
+    val reason: String,
+    val cooldownActive: Boolean = false,
+    val duplicateBlocked: Boolean = false
 )
 
 class DynamicWordAcceptanceGate {
@@ -53,9 +55,7 @@ class DynamicWordAcceptanceGate {
             resetStableCandidate()
             return reject(label, raw, "UNSUPPORTED_LABEL")
         }
-        if (profile.id != RecognitionProfile.ACTIVE_RECOGNITION_PROFILE ||
-            !profile.inputShape.contentEquals(RecognitionProfile.ONEHAND162_INPUT_SHAPE)
-        ) {
+        if (!isValidOneHandProfile(profile)) {
             resetStableCandidate()
             return reject(label, raw, "UNSUPPORTED_LABEL")
         }
@@ -71,6 +71,14 @@ class DynamicWordAcceptanceGate {
         if (raw.margin < threshold.margin) {
             resetStableCandidate()
             return reject(label, raw, "LOW_MARGIN")
+        }
+
+        if (shouldAcceptCalibratedHighConfidence(label, raw, profile)) {
+            lastAcceptedLabel = label
+            cooldownUntilMs = SystemClock.elapsedRealtime() + ACCEPTED_COOLDOWN_MS
+            movementResetSeen = false
+            resetStableCandidate()
+            return DynamicWordGateResult(true, label, raw.confidence, raw.margin, "HIGH_CONFIDENCE")
         }
 
         if (label == stableCandidateLabel) {
@@ -89,10 +97,10 @@ class DynamicWordAcceptanceGate {
 
         val now = SystemClock.elapsedRealtime()
         if (label == lastAcceptedLabel && now < cooldownUntilMs) {
-            return reject(label, raw, "DUPLICATE_COOLDOWN")
+            return reject(label, raw, "DUPLICATE_COOLDOWN", cooldownActive = true, duplicateBlocked = true)
         }
         if (label == lastAcceptedLabel && !movementResetSeen) {
-            return reject(label, raw, "DUPLICATE_COOLDOWN")
+            return reject(label, raw, "DUPLICATE_COOLDOWN", duplicateBlocked = true)
         }
 
         movementResetSeen = label != lastAcceptedLabel || movementResetSeen
@@ -110,8 +118,14 @@ class DynamicWordAcceptanceGate {
         resetStableCandidate()
     }
 
-    private fun reject(label: String, raw: RecognitionResult, reason: String): DynamicWordGateResult {
-        return DynamicWordGateResult(false, label, raw.confidence, raw.margin, reason)
+    private fun reject(
+        label: String,
+        raw: RecognitionResult,
+        reason: String,
+        cooldownActive: Boolean = false,
+        duplicateBlocked: Boolean = false
+    ): DynamicWordGateResult {
+        return DynamicWordGateResult(false, label, raw.confidence, raw.margin, reason, cooldownActive, duplicateBlocked)
     }
 
     private fun resetStableCandidate() {
@@ -127,6 +141,24 @@ class DynamicWordAcceptanceGate {
         }
     }
 
+    private fun isValidOneHandProfile(profile: RecognitionProfile): Boolean {
+        val validProfile = profile.id == RecognitionProfile.ACTIVE_RECOGNITION_PROFILE ||
+            profile.id == OneHandCalibrationConfig.CALIBRATED_PROFILE_ID
+        return validProfile && profile.inputShape.contentEquals(RecognitionProfile.ONEHAND162_INPUT_SHAPE)
+    }
+
+    private fun shouldAcceptCalibratedHighConfidence(
+        label: String,
+        raw: RecognitionResult,
+        profile: RecognitionProfile
+    ): Boolean {
+        return OneHandCalibrationConfig.DEBUG_ACCEPT_CALIBRATED_HIGH_CONFIDENCE &&
+            profile.id == OneHandCalibrationConfig.CALIBRATED_PROFILE_ID &&
+            label in ALLOWED_ONEHAND_LABELS &&
+            raw.confidence >= CALIBRATED_HIGH_CONFIDENCE &&
+            raw.margin >= CALIBRATED_HIGH_MARGIN
+    }
+
     private data class Threshold(
         val confidence: Float,
         val margin: Float
@@ -137,6 +169,8 @@ class DynamicWordAcceptanceGate {
         private const val MIN_HAND_PRESENCE = 0.65f
         private const val NAME_REQUIRED_WINDOWS = 2
         private const val NAME_SINGLE_WINDOW_CONFIDENCE = 0.85f
+        private const val CALIBRATED_HIGH_CONFIDENCE = 0.85f
+        private const val CALIBRATED_HIGH_MARGIN = 0.20f
         private const val ACCEPTED_COOLDOWN_MS = 1000L
     }
 }

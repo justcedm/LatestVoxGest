@@ -14,6 +14,7 @@ import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
 import android.speech.tts.TextToSpeech
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.camera.view.PreviewView
@@ -141,6 +142,7 @@ private val Green = Color(0xFF43A047)
 private const val PRESENTATION_MODE = true
 private const val SHOW_DEBUG_TOOLS = false
 private const val ACCURACY_TEST_WINDOW_MS = 5000L
+private const val RECOGNITION_LOG_TAG = "VoxGestRecognition"
 
 private enum class VoxTab(
     val label: String,
@@ -243,6 +245,13 @@ fun VoxGestPresentationApp() {
         if (update.sentence.isNotBlank()) sentence = update.sentence
     }
 
+    fun logUiUpdate(tokens: List<String>) {
+        Log.i(
+            RECOGNITION_LOG_TAG,
+            "ui_update currentWord=$currentWord tokens=${tokens.joinToString(prefix = "[", postfix = "]")} sentence=$sentence"
+        )
+    }
+
     fun addDemoToken(token: String) {
         val raw = token.trim()
         val clean = SignVocabulary.findByLabelOrAlias(raw)
@@ -284,6 +293,7 @@ fun VoxGestPresentationApp() {
             currentWord = clean
             history.add(0, HistoryUiEntry("Today", "Sign", clean, nowLabel(), "Accepted letter", R.drawable.ic_hand_gesture, PrimaryLight))
             applyNamePhraseUpdate(namePhraseDetector.acceptLetter(clean[0], SystemClock.elapsedRealtime()))
+            logUiUpdate(tokens)
             return
         }
 
@@ -299,6 +309,7 @@ fun VoxGestPresentationApp() {
             namePhraseHint = ""
             history.add(0, HistoryUiEntry("Today", "Sign", finalized, nowLabel(), "From recognition", R.drawable.ic_hand_gesture, PrimaryLight))
             queueAvatarPhrase(finalized)
+            logUiUpdate(tokens)
             return
         }
 
@@ -308,10 +319,12 @@ fun VoxGestPresentationApp() {
             demoTokenBuffer = phraseTokens.joinToString("|")
             applyNamePhraseUpdate(nameUpdate)
             history.add(0, HistoryUiEntry("Today", "Sign", nameUpdate.sentence, nowLabel(), "Name phrase started", R.drawable.ic_hand_gesture, PrimaryLight))
+            logUiUpdate(phraseTokens)
             return
         }
 
         sentence = tokens.joinToString(" ")
+        logUiUpdate(tokens)
     }
 
     LaunchedEffect(Unit) {

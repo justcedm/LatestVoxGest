@@ -339,12 +339,15 @@ class VoxGestCameraRecognitionController(
         Log.i(TAG, "inference_started shape=[1,${snapshot.size},${snapshot.firstOrNull()?.size ?: 0}] profile=${profile.id}")
         val raw = recognizer.recognize(snapshot)
         logInferenceResult(raw)
+        logGateInput(profile, raw)
         val gateResult = dynamicGate.evaluate(raw, profile, decision, handPresence)
+        logGateOutput(gateResult)
         logDynamic(decision, profile, raw, gateResult, snapshot)
         logNameDiagnostic(profile, decision, raw, gateResult, snapshot, handPresence)
         resetFeatureQualityCounters()
         clearSequenceBuffer()
         if (!gateResult.accepted) {
+            logEmitResult(gateResult.label, emitted = false)
             postFeedback(cleanFeedback(statusForRejection(gateResult.reason), gateResult.label))
             resetCollection(statusTextForRejection(gateResult.reason), resetGate = false)
             return
@@ -359,8 +362,9 @@ class VoxGestCameraRecognitionController(
             raw.top3
         )
         postFeedback(cleanFeedback(DetectionStatus.RECOGNIZED, accepted.label))
+        logEmitResult(accepted.label, emitted = true)
         mainExecutor.execute { onAcceptedResult(accepted) }
-        resetCollection("Accepted", resetGate = false)
+        resetCollection("Accepted: ${accepted.label}", resetGate = false)
     }
 
     private fun processCalibration(frame: LandmarkFrame) {
@@ -731,6 +735,24 @@ class VoxGestCameraRecognitionController(
             TAG,
             "inference_result top3=$top3 top1=${top1?.label ?: ""} top2=${top2?.label ?: ""} confidence=${String.format(Locale.US, "%.3f", raw.confidence)} margin=${String.format(Locale.US, "%.3f", raw.margin)}"
         )
+    }
+
+    private fun logGateInput(profile: RecognitionProfile, raw: RecognitionResult) {
+        Log.i(
+            TAG,
+            "gate_input label=${raw.label} conf=${String.format(Locale.US, "%.3f", raw.confidence)} margin=${String.format(Locale.US, "%.3f", raw.margin)} profile=${profile.id} supportedLabels=${profile.labels}"
+        )
+    }
+
+    private fun logGateOutput(gate: DynamicWordGateResult) {
+        Log.i(
+            TAG,
+            "gate_output accepted=${gate.accepted} reason=${gate.reason} cooldownActive=${gate.cooldownActive} duplicateBlocked=${gate.duplicateBlocked}"
+        )
+    }
+
+    private fun logEmitResult(label: String, emitted: Boolean) {
+        Log.i(TAG, "emit_result label=$label emitted=$emitted")
     }
 
     private fun statusTextForRejection(reason: String): String {
