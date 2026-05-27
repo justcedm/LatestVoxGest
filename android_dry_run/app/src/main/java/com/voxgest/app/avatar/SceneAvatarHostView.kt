@@ -13,7 +13,7 @@ import android.widget.FrameLayout
 import android.widget.ProgressBar
 import com.google.android.filament.EntityManager
 import com.google.android.filament.LightManager
-import com.google.android.filament.TransformManager
+import com.google.android.filament.utils.Float3
 import com.google.android.filament.utils.ModelViewer
 import com.google.android.filament.utils.Utils
 import kotlinx.coroutines.CoroutineScope
@@ -125,7 +125,7 @@ class SceneAvatarHostView @JvmOverloads constructor(
                 val buffer = withContext(Dispatchers.IO) { readAssetBuffer(assetPath) }
                 try {
                     viewer.loadModelGlb(buffer)
-                    viewer.transformToUnitCube()
+                    frameAvatarRoot(viewer)
                     configureCamera(viewer)
                     configureLights(viewer)
                     bindRig(viewer)
@@ -241,6 +241,23 @@ class SceneAvatarHostView @JvmOverloads constructor(
             1.0,
             0.0
         )
+    }
+
+    private fun frameAvatarRoot(viewer: ModelViewer) {
+        viewer.transformToUnitCube(Float3(0.0f, 0.0f, 0.0f))
+        val root = viewer.asset?.root ?: return
+        val transformManager = viewer.engine.transformManager
+        if (!transformManager.hasComponent(root)) return
+        val instance = transformManager.getInstance(root)
+        val base = FloatArray(MATRIX_SIZE)
+        transformManager.getTransform(instance, base)
+        val adjustment = translationScaleColumnMajor(
+            scale = AVATAR_ROOT_SCALE,
+            translateX = 0f,
+            translateY = AVATAR_ROOT_TRANSLATE_Y,
+            translateZ = 0f
+        )
+        transformManager.setTransform(instance, multiplyColumnMajor(adjustment, base))
     }
 
     private fun configureLights(viewer: ModelViewer) {
@@ -376,6 +393,20 @@ class SceneAvatarHostView @JvmOverloads constructor(
         )
     }
 
+    private fun translationScaleColumnMajor(
+        scale: Float,
+        translateX: Float,
+        translateY: Float,
+        translateZ: Float
+    ): FloatArray {
+        return floatArrayOf(
+            scale, 0f, 0f, 0f,
+            0f, scale, 0f, 0f,
+            0f, 0f, scale, 0f,
+            translateX, translateY, translateZ, 1f
+        )
+    }
+
     private fun multiplyColumnMajor(left: FloatArray, right: FloatArray): FloatArray {
         val out = FloatArray(MATRIX_SIZE)
         for (column in 0 until 4) {
@@ -415,5 +446,7 @@ class SceneAvatarHostView @JvmOverloads constructor(
         private const val KEY_LIGHT_INTENSITY = 1.8f
         private const val FILL_LIGHT_INTENSITY = 0.6f
         private const val FILAMENT_LIGHT_SCALE = 50_000f
+        private const val AVATAR_ROOT_SCALE = 1.10f
+        private const val AVATAR_ROOT_TRANSLATE_Y = -0.90f
     }
 }
