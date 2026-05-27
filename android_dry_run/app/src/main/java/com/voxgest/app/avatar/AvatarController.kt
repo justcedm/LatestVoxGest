@@ -21,11 +21,7 @@ class AvatarController(
             state.copy(
                 status = AvatarStatus.READY,
                 label = "Ready",
-                detail = if (assetLoader!!.hasModelAsset()) {
-                    "GLB avatar assets detected"
-                } else {
-                    "Canvas avatar active"
-                },
+                detail = "Canvas avatar active",
                 rendererMode = renderer.rendererMode
             )
         )

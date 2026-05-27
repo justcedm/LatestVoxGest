@@ -17,11 +17,7 @@ class AvatarAssetLoader(private val context: Context) {
     }
 
     fun rendererMode(): String {
-        return if (hasModelAsset()) {
-            "GLB-ready assets present"
-        } else {
-            "Canvas fallback"
-        }
+        return "Canvas avatar active"
     }
 
     private fun assetExists(path: String): Boolean {
