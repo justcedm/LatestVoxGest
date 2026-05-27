@@ -44,14 +44,36 @@ class OneHand162FeatureBuilder(private val profile: RecognitionProfile) {
         }
     }
 
+    fun selectedMediaPipeSide(): String {
+        return mediaPipeSideForPreference(profile.dominantHand, profile.mirroredInput)
+    }
+
+    fun selectedHandLandmarks(frame: LandmarkFrame): List<LandmarkPoint>? {
+        return handForSide(frame, selectedMediaPipeSide())
+    }
+
+    fun selectedMappingText(): String {
+        val side = selectedMediaPipeSide()
+        val physical = when {
+            profile.dominantHand.lowercase() == "right" -> "physical_right"
+            profile.dominantHand.lowercase() == "left" -> "physical_left"
+            else -> "physical_auto"
+        }
+        return "$physical -> mediapipe_$side mirroredInput=${profile.mirroredInput}"
+    }
+
     fun hasRequiredLandmarks(frame: LandmarkFrame): Boolean {
         val selectedSide = mediaPipeSideForPreference(profile.dominantHand, profile.mirroredInput)
-        val selectedHand = when (selectedSide) {
+        val selectedHand = handForSide(frame, selectedSide)
+        return frame.hasPose && selectedHand?.size == HAND_LANDMARK_COUNT
+    }
+
+    private fun handForSide(frame: LandmarkFrame, selectedSide: String): List<LandmarkPoint>? {
+        return when (selectedSide) {
             "left" -> frame.leftHandLandmarks
             "right" -> frame.rightHandLandmarks
             else -> frame.rightHandLandmarks ?: frame.leftHandLandmarks
         }
-        return frame.hasPose && selectedHand?.size == HAND_LANDMARK_COUNT
     }
 
     private fun mediaPipeSideForPreference(handPreference: String, mirroredInput: Boolean): String {

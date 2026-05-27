@@ -18,7 +18,15 @@ class VoxGestTfliteRecognizer(private val context: Context) : AutoCloseable {
         val loadedLabels = loadLabels(loadedProfile)
         validateOneHandRuntime(loadedProfile, loadedLabels)
         val options = Interpreter.Options().setNumThreads(2)
-        val loadedInterpreter = TfliteModelLoader(context).loadInterpreterWithOptions(options, loadedProfile.modelAsset)
+        val modelLoader = TfliteModelLoader(context)
+        Log.i(TAG, "startup active_profile=${loadedProfile.id}")
+        Log.i(TAG, "startup model_path=${loadedProfile.modelAsset}")
+        Log.i(TAG, "startup model_exists=${modelLoader.assetExists(loadedProfile.modelAsset)}")
+        Log.i(TAG, "startup label_file_path=${loadedProfile.labelsAsset}")
+        Log.i(TAG, "startup label_file_exists=${assetExists(loadedProfile.labelsAsset)}")
+        Log.i(TAG, "startup runtime_manifest_path=${loadedProfile.manifestAsset}")
+        Log.i(TAG, "startup runtime_manifest_exists=${assetExists(loadedProfile.manifestAsset)}")
+        val loadedInterpreter = modelLoader.loadInterpreterWithOptions(options, loadedProfile.modelAsset)
         loadedInterpreter.resizeInput(0, loadedProfile.inputShape)
         loadedInterpreter.allocateTensors()
         validateInterpreterShape(loadedInterpreter, loadedProfile)
@@ -121,10 +129,6 @@ class VoxGestTfliteRecognizer(private val context: Context) : AutoCloseable {
     }
 
     private fun logStartupValidation(profile: RecognitionProfile, interpreter: Interpreter, loadedLabels: List<String>) {
-        Log.i(TAG, "startup active_profile=${profile.id}")
-        Log.i(TAG, "startup model_path=${profile.modelAsset}")
-        Log.i(TAG, "startup label_file=${profile.labelsAsset}")
-        Log.i(TAG, "startup runtime_manifest=${profile.manifestAsset}")
         Log.i(TAG, "startup expected_input_shape=${profile.shapeText()}")
         Log.i(TAG, "startup interpreter_input_shape=${interpreter.getInputTensor(0).shape().contentToString()}")
         Log.i(TAG, "startup feature_profile=${profile.featureProfile}")
@@ -133,6 +137,15 @@ class VoxGestTfliteRecognizer(private val context: Context) : AutoCloseable {
         Log.i(TAG, "startup labels=$loadedLabels")
         Log.i(TAG, "feature_check onehand162=pose99+selected_hand63 sequence=30x162 expected_model_input=[1,30,162]")
         Log.w(TAG, "MIRRORING_UNVERIFIED profile=${profile.id} mirrored_input=${profile.mirroredInput}")
+    }
+
+    private fun assetExists(assetPath: String): Boolean {
+        return try {
+            context.assets.open(assetPath).close()
+            true
+        } catch (_: IOException) {
+            false
+        }
     }
 
     private fun loadLabels(profile: RecognitionProfile): List<String> {

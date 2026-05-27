@@ -60,6 +60,7 @@ class MediaPipeLandmarkExtractor(
 
             var leftHand: List<LandmarkPoint>? = null
             var rightHand: List<LandmarkPoint>? = null
+            val observations = mutableListOf<HandObservation>()
             val hands = handResult.landmarks()
             val handedness = handResult.handedness()
             hands.forEachIndexed { index, landmarks ->
@@ -69,15 +70,23 @@ class MediaPipeLandmarkExtractor(
                     ?.categoryName()
                     .orEmpty()
                     .lowercase()
+                val averageX = landmarks.map { it.x() }.average().toFloat()
                 when (label) {
-                    "left" -> leftHand = landmarks.toLandmarkPoints()
-                    "right" -> rightHand = landmarks.toLandmarkPoints()
+                    "left" -> {
+                        leftHand = landmarks.toLandmarkPoints()
+                        observations.add(handObservation("left", label, averageX))
+                    }
+                    "right" -> {
+                        rightHand = landmarks.toLandmarkPoints()
+                        observations.add(handObservation("right", label, averageX))
+                    }
                     else -> {
-                        val averageX = landmarks.map { it.x() }.average().toFloat()
                         if (averageX < 0.5f && leftHand == null) {
                             leftHand = landmarks.toLandmarkPoints()
+                            observations.add(handObservation("left", "unknown", averageX))
                         } else if (rightHand == null) {
                             rightHand = landmarks.toLandmarkPoints()
+                            observations.add(handObservation("right", "unknown", averageX))
                         }
                     }
                 }
@@ -87,7 +96,8 @@ class MediaPipeLandmarkExtractor(
                 poseLandmarks = poseLandmarks,
                 leftHandLandmarks = leftHand,
                 rightHandLandmarks = rightHand,
-                timestampMs = timestampMs
+                timestampMs = timestampMs,
+                handObservations = observations
             )
         } finally {
             bitmap.recycle()
@@ -108,6 +118,21 @@ class MediaPipeLandmarkExtractor(
 
     private fun List<NormalizedLandmark>.toLandmarkPoints(): List<LandmarkPoint> {
         return map { landmark -> LandmarkPoint(landmark.x(), landmark.y(), landmark.z()) }
+    }
+
+    private fun handObservation(slot: String, label: String, averageX: Float): HandObservation {
+        val processedSide = if (averageX < 0.5f) "processed_left" else "processed_right"
+        val physicalEstimate = if (mirrorCameraFrame) {
+            if (averageX < 0.5f) "physical_right_estimated_after_mirror" else "physical_left_estimated_after_mirror"
+        } else {
+            if (averageX < 0.5f) "physical_left_estimated" else "physical_right_estimated"
+        }
+        return HandObservation(
+            slot = slot,
+            mediaPipeHandedness = label.ifBlank { "unknown" },
+            averageX = averageX,
+            physicalSideEstimate = "$physicalEstimate/$processedSide"
+        )
     }
 
     companion object {

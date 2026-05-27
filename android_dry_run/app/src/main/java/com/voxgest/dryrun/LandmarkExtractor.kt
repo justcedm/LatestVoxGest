@@ -8,11 +8,19 @@ data class LandmarkPoint(
     val z: Float
 )
 
+data class HandObservation(
+    val slot: String,
+    val mediaPipeHandedness: String,
+    val averageX: Float,
+    val physicalSideEstimate: String
+)
+
 data class LandmarkFrame(
     val poseLandmarks: List<LandmarkPoint>?,
     val leftHandLandmarks: List<LandmarkPoint>?,
     val rightHandLandmarks: List<LandmarkPoint>?,
-    val timestampMs: Long
+    val timestampMs: Long,
+    val handObservations: List<HandObservation> = emptyList()
 ) {
     val hasPose: Boolean = poseLandmarks?.size == 33
     val hasLeftHand: Boolean = leftHandLandmarks?.size == 21

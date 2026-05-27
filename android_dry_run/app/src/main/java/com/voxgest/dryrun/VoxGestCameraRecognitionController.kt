@@ -46,6 +46,9 @@ class VoxGestCameraRecognitionController(
     @Volatile private var lastStatus: String = ""
     @Volatile private var lastStatusAtMs: Long = 0L
     @Volatile private var lastRoute: RecognitionRoute = RecognitionRoute.NOTHING
+    @Volatile private var missingPoseCount: Int = 0
+    @Volatile private var missingHandCount: Int = 0
+    @Volatile private var lastHandMappingLogAtMs: Long = 0L
 
     fun start(previewView: PreviewView) {
         if (!running.compareAndSet(false, true)) return
@@ -71,8 +74,14 @@ class VoxGestCameraRecognitionController(
                 postStatus("Looking for hand")
             } catch (exc: Throwable) {
                 Log.e(TAG, "Pipeline load failed", exc)
-                val message = exc.message.orEmpty()
-                postStatus(if (message.contains("Model/labels mismatch", ignoreCase = true)) "Model/labels mismatch." else "Try again")
+                running.set(false)
+                postStatus(startupFailureStatus(exc))
+                mainExecutor.execute {
+                    imageAnalysis?.clearAnalyzer()
+                    imageAnalysis = null
+                    cameraProvider?.unbindAll()
+                    cameraProvider = null
+                }
                 closePipeline()
             }
         }
@@ -144,6 +153,7 @@ class VoxGestCameraRecognitionController(
 
             if (frame == null || !frame.hasAnyHand) {
                 resetTemporalState()
+                resetFeatureQualityCounters()
                 postFeedback(RecognitionFeedback.idle())
                 postStatus(decision.statusText)
                 return
@@ -167,6 +177,8 @@ class VoxGestCameraRecognitionController(
     }
 
     private fun processStaticAlphabet(frame: LandmarkFrame, decision: RouterDecision) {
+        // TODO: Re-enable camera alphabet output only after AlphabetAcceptanceGate is live-tested
+        // with an 8-12 frame stable hold and same-letter anti-spam reset.
         val classifier = alphabetClassifier ?: run {
             postStatus("Try again")
             return
@@ -207,13 +219,18 @@ class VoxGestCameraRecognitionController(
             postStatus("Try again")
             return
         }
+        logHandMappingIfNeeded(profile, frame)
         val feature = buildFeature(profile, frame)
         if (feature == null) {
+            countMissingFeatureParts(profile, frame)
             buffer.clear()
             dynamicGate.noteNoOutputState()
             postFeedback(cleanFeedback(DetectionStatus.SEARCHING, ""))
             postStatus("Try again")
-            Log.i(TAG, "route=${decision.route} model=${profile.id} rejected reason=missing_or_wrong_landmarks")
+            Log.i(
+                TAG,
+                "route=${decision.route} model=${profile.id} rejected reason=missing_or_wrong_landmarks missing_pose_count=$missingPoseCount missing_hand_count=$missingHandCount"
+            )
             return
         }
         if (!buffer.add(feature, true)) {
@@ -235,10 +252,12 @@ class VoxGestCameraRecognitionController(
             return
         }
 
+        logFeatureWindow(profile, snapshot, handPresence)
         postStatus("Recognizing...")
         val raw = recognizer.recognize(snapshot)
         val gateResult = dynamicGate.evaluate(raw, profile, decision, handPresence)
         logDynamic(decision, profile, raw, gateResult, snapshot)
+        resetFeatureQualityCounters()
         if (!gateResult.accepted) {
             postFeedback(cleanFeedback(statusForRejection(gateResult.reason), gateResult.label))
             postStatus("Try again")
@@ -284,6 +303,7 @@ class VoxGestCameraRecognitionController(
         dynamicGate.reset()
         oneHandBuffer?.clear()
         lastRoute = RecognitionRoute.NOTHING
+        resetFeatureQualityCounters()
     }
 
     private fun closePipeline() {
@@ -363,10 +383,68 @@ class VoxGestCameraRecognitionController(
         )
     }
 
+    private fun logFeatureWindow(
+        profile: RecognitionProfile,
+        snapshot: Array<FloatArray>,
+        handPresence: Float
+    ) {
+        val lengths = snapshot.map { it.size }.distinct().joinToString(prefix = "[", postfix = "]")
+        val finalInputShape = "[1,${snapshot.size},${snapshot.firstOrNull()?.size ?: 0}]"
+        Log.i(
+            TAG,
+            "feature_window profile=${profile.id} sequence_frames=${snapshot.size} per_frame_feature_length=$lengths final_input_shape=$finalInputShape missing_pose_count=$missingPoseCount missing_hand_count=$missingHandCount hand_presence_ratio=${String.format(Locale.US, "%.3f", handPresence)} contract=pose99+selected_hand63"
+        )
+    }
+
+    private fun logHandMappingIfNeeded(profile: RecognitionProfile, frame: LandmarkFrame) {
+        val now = SystemClock.elapsedRealtime()
+        if (now - lastHandMappingLogAtMs < HAND_MAPPING_LOG_INTERVAL_MS) return
+        lastHandMappingLogAtMs = now
+
+        val builder = OneHand162FeatureBuilder(profile)
+        val selectedSlot = builder.selectedMediaPipeSide()
+        val selectedPresent = builder.selectedHandLandmarks(frame)?.size == HAND_LANDMARK_COUNT
+        val observations = frame.handObservations.joinToString(prefix = "[", postfix = "]") { item ->
+            "slot=${item.slot},mp=${item.mediaPipeHandedness},avgX=${String.format(Locale.US, "%.3f", item.averageX)},estimate=${item.physicalSideEstimate}"
+        }
+        val mirroringStatus = "MIRRORING_UNVERIFIED"
+        Log.i(
+            TAG,
+            "hand_mapping status=$mirroringStatus mediaPipeHandedness=$observations selected_hand_slot=$selectedSlot selected_present=$selectedPresent selected_mapping=${builder.selectedMappingText()} mirrored_input=${profile.mirroredInput}"
+        )
+    }
+
+    private fun countMissingFeatureParts(profile: RecognitionProfile, frame: LandmarkFrame) {
+        if (!frame.hasPose) missingPoseCount += 1
+        if (profile.featureProfile == "onehand162") {
+            val selectedPresent = OneHand162FeatureBuilder(profile).selectedHandLandmarks(frame)?.size == HAND_LANDMARK_COUNT
+            if (!selectedPresent) missingHandCount += 1
+        } else if (!frame.hasAnyHand) {
+            missingHandCount += 1
+        }
+    }
+
+    private fun resetFeatureQualityCounters() {
+        missingPoseCount = 0
+        missingHandCount = 0
+    }
+
+    private fun startupFailureStatus(exc: Throwable): String {
+        val message = exc.message.orEmpty()
+        return when {
+            message.contains("Model/labels mismatch", ignoreCase = true) -> "Model/labels mismatch."
+            message.contains("SHAPE_MISMATCH", ignoreCase = true) ||
+                message.contains("input shape", ignoreCase = true) -> "Shape mismatch."
+            else -> "Try again"
+        }
+    }
+
     companion object {
         private const val TAG = "VoxGestRecognition"
         private const val ANALYZE_INTERVAL_MS = 90L
         private const val STATUS_MIN_INTERVAL_MS = 220L
         private const val FLIP_LANDMARKS_HORIZONTAL = false
+        private const val HAND_LANDMARK_COUNT = 21
+        private const val HAND_MAPPING_LOG_INTERVAL_MS = 1000L
     }
 }
