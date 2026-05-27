@@ -36,17 +36,39 @@ data class RecognitionProfile(
     }
 
     companion object {
-        const val ACTIVE_RECOGNITION_PROFILE = "onehand162_phrase_v1"
-        val ONEHAND162_LABELS = listOf("WHAT", "YOUR", "NAME", "MY", "NOTHING")
+        const val ACTIVE_RECOGNITION_PROFILE = OneHandCalibrationConfig.ORIGINAL_PROFILE_ID
+        val ONEHAND162_LABELS = OneHandCalibrationConfig.MODEL_LABELS
         val ONEHAND162_INPUT_SHAPE = intArrayOf(1, 30, 162)
 
         fun loadDefault(context: Context): RecognitionProfile {
-            return load(context, ACTIVE_RECOGNITION_PROFILE)
+            return load(context, activeRecognitionProfileId(context))
+        }
+
+        fun activeRecognitionProfileId(context: Context): String {
+            if (!OneHandCalibrationConfig.USE_ANDROID_CALIBRATED_ONEHAND_MODEL) {
+                return ACTIVE_RECOGNITION_PROFILE
+            }
+            val required = listOf(
+                "model/voxgest_tcn_onehand162_android_calibrated_v1.tflite",
+                "model/class_labels_tcn_onehand162_android_calibrated_v1.json",
+                "model/runtime_manifest_onehand162_android_calibrated_v1.json"
+            )
+            val missing = required.filterNot { assetExists(context, it) }
+            return if (missing.isEmpty()) {
+                OneHandCalibrationConfig.CALIBRATED_PROFILE_ID
+            } else {
+                android.util.Log.w(
+                    "VoxGestRecognition",
+                    "calibrated_model_missing fallback_profile=$ACTIVE_RECOGNITION_PROFILE missing=$missing"
+                )
+                ACTIVE_RECOGNITION_PROFILE
+            }
         }
 
         fun load(context: Context, profileId: String): RecognitionProfile {
             val manifestAsset = when (profileId) {
                 "onehand162_phrase_v1" -> "model/runtime_manifest_onehand162_phrase_v1.json"
+                "onehand162_android_calibrated_v1" -> "model/runtime_manifest_onehand162_android_calibrated_v1.json"
                 "fullsign225_phrase_v1" -> "model/runtime_manifest_fullsign225_phrase_v1.json"
                 else -> throw IOException("Unknown recognition profile: $profileId")
             }
@@ -90,18 +112,27 @@ data class RecognitionProfile(
         }
 
         private fun defaultModelAsset(profileId: String): String {
-            return if (profileId == "fullsign225_phrase_v1") {
-                "model/voxgest_tcn_fullsign225_phrase_v1.tflite"
-            } else {
-                "model/voxgest_tcn_onehand162_phrase_v1.tflite"
+            return when (profileId) {
+                "fullsign225_phrase_v1" -> "model/voxgest_tcn_fullsign225_phrase_v1.tflite"
+                "onehand162_android_calibrated_v1" -> "model/voxgest_tcn_onehand162_android_calibrated_v1.tflite"
+                else -> "model/voxgest_tcn_onehand162_phrase_v1.tflite"
             }
         }
 
         private fun defaultLabelsAsset(profileId: String): String {
-            return if (profileId == "fullsign225_phrase_v1") {
-                "model/class_labels_tcn_fullsign225_phrase_v1.json"
-            } else {
-                "model/class_labels_tcn_onehand162_phrase_v1.json"
+            return when (profileId) {
+                "fullsign225_phrase_v1" -> "model/class_labels_tcn_fullsign225_phrase_v1.json"
+                "onehand162_android_calibrated_v1" -> "model/class_labels_tcn_onehand162_android_calibrated_v1.json"
+                else -> "model/class_labels_tcn_onehand162_phrase_v1.json"
+            }
+        }
+
+        private fun assetExists(context: Context, assetPath: String): Boolean {
+            return try {
+                context.assets.open(assetPath).close()
+                true
+            } catch (_: IOException) {
+                false
             }
         }
     }

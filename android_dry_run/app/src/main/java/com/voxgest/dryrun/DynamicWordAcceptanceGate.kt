@@ -59,15 +59,16 @@ class DynamicWordAcceptanceGate {
             resetStableCandidate()
             return reject(label, raw, "UNSUPPORTED_LABEL")
         }
+        val threshold = thresholdFor(label)
         if (handPresence < MIN_HAND_PRESENCE) {
             noteNoOutputState()
             return reject(label, raw, "LOW_HAND_PRESENCE")
         }
-        if (raw.confidence < MIN_CONFIDENCE) {
+        if (raw.confidence < threshold.confidence) {
             resetStableCandidate()
             return reject(label, raw, "LOW_CONFIDENCE")
         }
-        if (raw.margin < MIN_MARGIN) {
+        if (raw.margin < threshold.margin) {
             resetStableCandidate()
             return reject(label, raw, "LOW_MARGIN")
         }
@@ -78,8 +79,12 @@ class DynamicWordAcceptanceGate {
             stableCandidateLabel = label
             stableCandidateCount = 1
         }
-        if (stableCandidateCount < REQUIRED_STABLE_PREDICTIONS) {
-            return reject(label, raw, "UNSTABLE_LANDMARKS")
+
+        if (label == "NAME") {
+            val highConfidenceSingleWindow = raw.confidence >= NAME_SINGLE_WINDOW_CONFIDENCE
+            if (!highConfidenceSingleWindow && stableCandidateCount < NAME_REQUIRED_WINDOWS) {
+                return reject(label, raw, "NAME_NEEDS_SECOND_WINDOW")
+            }
         }
 
         val now = SystemClock.elapsedRealtime()
@@ -114,12 +119,24 @@ class DynamicWordAcceptanceGate {
         stableCandidateCount = 0
     }
 
+    private fun thresholdFor(label: String): Threshold {
+        return when (label) {
+            "MY", "WHAT", "YOUR" -> Threshold(confidence = 0.75f, margin = 0.12f)
+            "NAME" -> Threshold(confidence = 0.70f, margin = 0.10f)
+            else -> Threshold(confidence = 0.80f, margin = 0.15f)
+        }
+    }
+
+    private data class Threshold(
+        val confidence: Float,
+        val margin: Float
+    )
+
     companion object {
         private val ALLOWED_ONEHAND_LABELS = setOf("WHAT", "YOUR", "NAME", "MY")
-        private const val MIN_CONFIDENCE = 0.85f
-        private const val MIN_MARGIN = 0.25f
-        private const val MIN_HAND_PRESENCE = 0.75f
-        private const val REQUIRED_STABLE_PREDICTIONS = 3
-        private const val ACCEPTED_COOLDOWN_MS = 1200L
+        private const val MIN_HAND_PRESENCE = 0.65f
+        private const val NAME_REQUIRED_WINDOWS = 2
+        private const val NAME_SINGLE_WINDOW_CONFIDENCE = 0.85f
+        private const val ACCEPTED_COOLDOWN_MS = 1000L
     }
 }

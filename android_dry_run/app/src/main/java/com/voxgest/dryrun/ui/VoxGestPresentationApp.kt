@@ -108,6 +108,7 @@ import com.voxgest.app.avatar.SceneAvatarHostView
 import com.voxgest.dryrun.BuildConfig
 import com.voxgest.dryrun.DetectionStatus
 import com.voxgest.dryrun.NamePhraseDetector
+import com.voxgest.dryrun.OneHandCalibrationConfig
 import com.voxgest.dryrun.OverlayLandmarkPoint
 import com.voxgest.dryrun.R
 import com.voxgest.dryrun.RecognitionFeedback
@@ -291,6 +292,16 @@ fun VoxGestPresentationApp() {
         currentWord = clean
         history.add(0, HistoryUiEntry("Today", "Sign", clean, nowLabel(), "Accepted sign", R.drawable.ic_hand_gesture, PrimaryLight))
 
+        val finalized = demoSentenceForTokens(tokens)
+        if (finalized != null) {
+            sentence = finalized
+            namePhraseDetector.reset()
+            namePhraseHint = ""
+            history.add(0, HistoryUiEntry("Today", "Sign", finalized, nowLabel(), "From recognition", R.drawable.ic_hand_gesture, PrimaryLight))
+            queueAvatarPhrase(finalized)
+            return
+        }
+
         val nameUpdate = namePhraseDetector.observeAcceptedTokens(tokens, SystemClock.elapsedRealtime())
         if (nameUpdate.hint.isNotBlank()) {
             val phraseTokens = (tokens + "IS").takeLast(32)
@@ -300,15 +311,7 @@ fun VoxGestPresentationApp() {
             return
         }
 
-        val finalized = demoSentenceForTokens(tokens)
-        if (finalized == null) {
-            sentence = tokens.joinToString(" ")
-            return
-        }
-
-        sentence = finalized
-        history.add(0, HistoryUiEntry("Today", "Sign", finalized, nowLabel(), "From recognition", R.drawable.ic_hand_gesture, PrimaryLight))
-        queueAvatarPhrase(finalized)
+        sentence = tokens.joinToString(" ")
     }
 
     LaunchedEffect(Unit) {
@@ -518,8 +521,8 @@ private fun demoSentenceForTokens(tokens: List<String>): String? {
     }
     return when {
         clean.endsWithTokens("WHAT", "YOUR", "NAME") -> "What is your name?"
-        clean.endsWithTokens("MY", "NAME") -> "My name is [letters from alphabet recognizer]."
-        clean.endsWithTokens("MY", "NAME", "IS") -> "My name is"
+        clean.endsWithTokens("MY", "NAME") -> "My name is VoxGest"
+        clean.endsWithTokens("MY", "NAME", "IS") -> "My name is VoxGest"
         clean.endsWithTokens("YOU", "OKAY") -> "Are you okay?"
         clean.endsWithTokens("YOU", "STUDENT") -> "Are you a student?"
         clean.endsWithTokens("WHERE", "YOU", "LIVE") -> "Where do you live?"
@@ -613,13 +616,23 @@ private fun SignScreen(
     demoTokens: List<String>,
     onDemoToken: (String) -> Unit
 ) {
+    var showCalibrationPanel by remember { mutableStateOf(false) }
     ScreenScroll {
-        ScreenTopBar("SIGN", R.drawable.ic_settings)
+        ScreenTopBar(
+            "SIGN",
+            R.drawable.ic_settings,
+            onTrailingClick = {
+                if (BuildConfig.DEBUG && OneHandCalibrationConfig.ENABLE_ONEHAND_CALIBRATION_RECORDING) {
+                    showCalibrationPanel = !showCalibrationPanel
+                }
+            }
+        )
         RecognitionAreaCard(
             recognitionRunning = recognitionRunning,
             recognitionStatus = recognitionStatus,
             namePhraseHint = namePhraseHint,
             presentationMode = presentationMode,
+            showCalibrationPanel = showCalibrationPanel,
             onStartRecognition = onStartRecognition,
             onStopRecognition = onStopRecognition,
             onRecognitionStatus = onRecognitionStatus,
@@ -835,6 +848,7 @@ private fun RecognitionAreaCard(
     recognitionStatus: String,
     namePhraseHint: String,
     presentationMode: Boolean,
+    showCalibrationPanel: Boolean,
     onStartRecognition: () -> Unit,
     onStopRecognition: () -> Unit,
     onRecognitionStatus: (String) -> Unit,
@@ -1000,6 +1014,18 @@ private fun RecognitionAreaCard(
                 }
             }
         }
+        if (BuildConfig.DEBUG && OneHandCalibrationConfig.ENABLE_ONEHAND_CALIBRATION_RECORDING) {
+            AnimatedVisibility(visible = showCalibrationPanel) {
+                OneHandCalibrationPanel(
+                    recognitionRunning = recognitionRunning && hasCameraPermission,
+                    onStartCalibration = { label ->
+                        controllerRef.value?.startCalibration(label)
+                            ?: Toast.makeText(context, "Start recognition first", Toast.LENGTH_SHORT).show()
+                    },
+                    onCancelCalibration = { controllerRef.value?.cancelCalibration() }
+                )
+            }
+        }
         if (presentationMode) {
             Row(
                 modifier = Modifier.padding(top = 14.dp),
@@ -1039,6 +1065,63 @@ private fun RecognitionAreaCard(
                     Text("Stop Recognition", color = Primary, fontSize = 12.sp, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun OneHandCalibrationPanel(
+    recognitionRunning: Boolean,
+    onStartCalibration: (String) -> Unit,
+    onCancelCalibration: () -> Unit
+) {
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 12.dp),
+        shape = RoundedCornerShape(18.dp),
+        color = Color(0xFFF7FBFB),
+        border = BorderStroke(1.dp, Border)
+    ) {
+        Column(Modifier.padding(12.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Column(Modifier.weight(1f)) {
+                    Text("Onehand162 calibration", color = Primary, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                    Text(
+                        if (recognitionRunning) "Choose a label, then perform one sample." else "Start Recognition before recording.",
+                        color = TextMuted,
+                        fontSize = 11.sp
+                    )
+                }
+                OutlinePillButton("Cancel", R.drawable.ic_cancel, Modifier.width(104.dp), onCancelCalibration)
+            }
+            Row(
+                modifier = Modifier
+                    .padding(top = 10.dp)
+                    .horizontalScroll(rememberScrollState()),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                OneHandCalibrationConfig.CALIBRATION_LABELS.forEach { label ->
+                    Surface(
+                        modifier = Modifier
+                            .height(38.dp)
+                            .clickable(enabled = recognitionRunning) { onStartCalibration(label) },
+                        shape = RoundedCornerShape(999.dp),
+                        color = if (recognitionRunning) SoftCyan else Color(0xFFF1F5F9),
+                        border = BorderStroke(1.dp, Border)
+                    ) {
+                        Box(contentAlignment = Alignment.Center, modifier = Modifier.padding(horizontal = 14.dp)) {
+                            Text(label, color = if (recognitionRunning) Primary else TextFaint, fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                        }
+                    }
+                }
+            }
+            Text(
+                "Exports JSON only to Downloads/VoxGestCalibration/onehand162_phrase_v1.",
+                color = TextFaint,
+                fontSize = 10.sp,
+                modifier = Modifier.padding(top = 8.dp)
+            )
         }
     }
 }

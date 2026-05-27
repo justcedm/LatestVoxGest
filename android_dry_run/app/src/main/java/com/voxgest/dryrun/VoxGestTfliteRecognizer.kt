@@ -13,7 +13,7 @@ class VoxGestTfliteRecognizer(private val context: Context) : AutoCloseable {
     private var labels: List<String> = emptyList()
     private var loadStatus: String = "Recognizer not loaded"
 
-    fun load(profileId: String = RecognitionProfile.ACTIVE_RECOGNITION_PROFILE): RecognitionProfile {
+    fun load(profileId: String = RecognitionProfile.activeRecognitionProfileId(context)): RecognitionProfile {
         val loadedProfile = RecognitionProfile.load(context, profileId)
         val loadedLabels = loadLabels(loadedProfile)
         validateOneHandRuntime(loadedProfile, loadedLabels)
@@ -111,8 +111,10 @@ class VoxGestTfliteRecognizer(private val context: Context) : AutoCloseable {
     }
 
     private fun validateOneHandRuntime(profile: RecognitionProfile, loadedLabels: List<String>) {
-        if (profile.id != RecognitionProfile.ACTIVE_RECOGNITION_PROFILE) {
-            throw IOException("Only ${RecognitionProfile.ACTIVE_RECOGNITION_PROFILE} is enabled for camera recognition")
+        if (profile.id != RecognitionProfile.ACTIVE_RECOGNITION_PROFILE &&
+            profile.id != OneHandCalibrationConfig.CALIBRATED_PROFILE_ID
+        ) {
+            throw IOException("Only onehand162 camera recognition is enabled")
         }
         if (!profile.inputShape.contentEquals(RecognitionProfile.ONEHAND162_INPUT_SHAPE)) {
             throw IOException("SHAPE_MISMATCH: ${profile.shapeText()} != [1, 30, 162]")
