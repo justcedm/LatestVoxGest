@@ -21,6 +21,7 @@ class RecognitionGate {
         val label = input.label.uppercase()
         if (label.isBlank()) return GateResult(false, "empty_label")
         if (label == "NOTHING") return GateResult(false, "nothing_no_output")
+        if (label !in ALLOWED_ONEHAND_LABELS) return GateResult(false, "unsupported_label")
         if (input.qualityStatus in BLOCKED_QUALITY) {
             reset()
             return GateResult(false, input.qualityStatus.lowercase())
@@ -72,14 +73,13 @@ class RecognitionGate {
             "LANDMARK_PROFILE_NOT_READY"
         )
         private const val REQUIRED_CONSECUTIVE_MATCHES = 3
-        private val DEFAULT_THRESHOLD = Threshold(confidence = 0.75f, margin = 0.08f, presence = 0.65f)
+        private val ALLOWED_ONEHAND_LABELS = setOf("WHAT", "YOUR", "NAME", "MY", "NOTHING")
+        private val DEFAULT_THRESHOLD = Threshold(confidence = 0.85f, margin = 0.25f, presence = 0.75f)
         private val PROFILE_THRESHOLDS = mapOf(
-            "WHAT" to Threshold(confidence = 0.75f, margin = 0.08f, presence = 0.65f),
-            "YOUR" to Threshold(confidence = 0.75f, margin = 0.08f, presence = 0.65f),
-            "NAME" to Threshold(confidence = 0.75f, margin = 0.08f, presence = 0.65f),
-            "MY" to Threshold(confidence = 0.75f, margin = 0.08f, presence = 0.65f),
-            "YOU" to Threshold(confidence = 0.75f, margin = 0.08f, presence = 0.65f),
-            "OKAY" to Threshold(confidence = 0.75f, margin = 0.08f, presence = 0.65f)
+            "WHAT" to DEFAULT_THRESHOLD,
+            "YOUR" to DEFAULT_THRESHOLD,
+            "NAME" to DEFAULT_THRESHOLD,
+            "MY" to DEFAULT_THRESHOLD
         )
     }
 }

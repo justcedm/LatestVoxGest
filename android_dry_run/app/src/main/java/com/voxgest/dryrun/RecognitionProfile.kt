@@ -2,6 +2,7 @@ package com.voxgest.dryrun
 
 import android.content.Context
 import org.json.JSONObject
+import java.io.IOException
 import java.util.Locale
 
 data class RecognitionProfile(
@@ -35,7 +36,9 @@ data class RecognitionProfile(
     }
 
     companion object {
-        const val ACTIVE_RECOGNITION_PROFILE = "fullsign225_phrase_v1"
+        const val ACTIVE_RECOGNITION_PROFILE = "onehand162_phrase_v1"
+        val ONEHAND162_LABELS = listOf("WHAT", "YOUR", "NAME", "MY", "NOTHING")
+        val ONEHAND162_INPUT_SHAPE = intArrayOf(1, 30, 162)
 
         fun loadDefault(context: Context): RecognitionProfile {
             return load(context, ACTIVE_RECOGNITION_PROFILE)
@@ -43,8 +46,9 @@ data class RecognitionProfile(
 
         fun load(context: Context, profileId: String): RecognitionProfile {
             val manifestAsset = when (profileId) {
+                "onehand162_phrase_v1" -> "model/runtime_manifest_onehand162_phrase_v1.json"
                 "fullsign225_phrase_v1" -> "model/runtime_manifest_fullsign225_phrase_v1.json"
-                else -> "model/runtime_manifest_onehand162_phrase_v1.json"
+                else -> throw IOException("Unknown recognition profile: $profileId")
             }
             val manifestText = context.assets.open(manifestAsset).bufferedReader().use { it.readText() }
             val manifest = JSONObject(manifestText)

@@ -16,6 +16,7 @@ class VoxGestTfliteRecognizer(private val context: Context) : AutoCloseable {
     fun load(profileId: String = RecognitionProfile.ACTIVE_RECOGNITION_PROFILE): RecognitionProfile {
         val loadedProfile = RecognitionProfile.load(context, profileId)
         val loadedLabels = loadLabels(loadedProfile)
+        validateOneHandRuntime(loadedProfile, loadedLabels)
         val options = Interpreter.Options().setNumThreads(2)
         val loadedInterpreter = TfliteModelLoader(context).loadInterpreterWithOptions(options, loadedProfile.modelAsset)
         loadedInterpreter.resizeInput(0, loadedProfile.inputShape)
@@ -27,7 +28,7 @@ class VoxGestTfliteRecognizer(private val context: Context) : AutoCloseable {
         profile = loadedProfile
         labels = loadedLabels
         loadStatus = "Loaded ${loadedProfile.id} ${loadedProfile.shapeText()}"
-        Log.i(TAG, "Loaded ${loadedProfile.modelAsset} profile=${loadedProfile.id} input=${loadedProfile.shapeText()} labels=$loadedLabels")
+        logStartupValidation(loadedProfile, loadedInterpreter, loadedLabels)
         return loadedProfile
     }
 
@@ -37,7 +38,12 @@ class VoxGestTfliteRecognizer(private val context: Context) : AutoCloseable {
         val loadedProfile = profile ?: return RecognitionResult.inactive(loadStatus)
         val localInterpreter = interpreter ?: return RecognitionResult.inactive(loadStatus)
         val shapeStatus = validateSequenceShape(sequence, loadedProfile)
-        if (shapeStatus != null) return RecognitionResult.inactive(shapeStatus)
+        val actualInputShape = "[1,${sequence.size},${sequence.firstOrNull()?.size ?: 0}]"
+        Log.i(TAG, "attempt profile=${loadedProfile.id} model=${loadedProfile.modelAsset} actual_input_shape=$actualInputShape expected_input_shape=${loadedProfile.shapeText()}")
+        if (shapeStatus != null) {
+            Log.e(TAG, "attempt rejected reason=SHAPE_MISMATCH detail=$shapeStatus")
+            return RecognitionResult.inactive("SHAPE_MISMATCH: $shapeStatus")
+        }
         if (labels.isEmpty()) return RecognitionResult.inactive("Labels not loaded")
 
         val input = Array(1) {
@@ -57,8 +63,14 @@ class VoxGestTfliteRecognizer(private val context: Context) : AutoCloseable {
         val top3 = ranked.take(3).map { index ->
             RecognitionResult.TopPrediction(labels.getOrElse(index) { "" }, probabilities[index])
         }
+        val label = labels.getOrElse(best) { "" }.uppercase(Locale.US)
+        val top3Text = top3.joinToString(prefix = "[", postfix = "]") { "${it.label}:${String.format(Locale.US, "%.3f", it.confidence)}" }
+        Log.i(
+            TAG,
+            "attempt profile=${loadedProfile.id} model=${loadedProfile.modelAsset} labels=$labels input_shape=$actualInputShape top3=$top3Text predicted=$label confidence=${String.format(Locale.US, "%.3f", confidence)} margin=${String.format(Locale.US, "%.3f", margin)}"
+        )
         return RecognitionResult(
-            labels.getOrElse(best) { "" }.uppercase(Locale.US),
+            label,
             confidence,
             margin,
             false,
@@ -72,6 +84,10 @@ class VoxGestTfliteRecognizer(private val context: Context) : AutoCloseable {
         if (!actual.contentEquals(profile.inputShape)) {
             throw IOException("TFLite input shape ${actual.contentToString()} does not match ${profile.shapeText()}")
         }
+        val output = interpreter.getOutputTensor(0).shape()
+        if (output.size < 2 || output[1] != profile.labels.size) {
+            throw IOException("TFLite output shape ${output.contentToString()} does not match ${profile.labels.size} labels")
+        }
     }
 
     private fun validateSequenceShape(sequence: Array<FloatArray>, profile: RecognitionProfile): String? {
@@ -84,6 +100,39 @@ class VoxGestTfliteRecognizer(private val context: Context) : AutoCloseable {
             }
         }
         return null
+    }
+
+    private fun validateOneHandRuntime(profile: RecognitionProfile, loadedLabels: List<String>) {
+        if (profile.id != RecognitionProfile.ACTIVE_RECOGNITION_PROFILE) {
+            throw IOException("Only ${RecognitionProfile.ACTIVE_RECOGNITION_PROFILE} is enabled for camera recognition")
+        }
+        if (!profile.inputShape.contentEquals(RecognitionProfile.ONEHAND162_INPUT_SHAPE)) {
+            throw IOException("SHAPE_MISMATCH: ${profile.shapeText()} != [1, 30, 162]")
+        }
+        if (loadedLabels != RecognitionProfile.ONEHAND162_LABELS) {
+            throw IOException("Model/labels mismatch: $loadedLabels")
+        }
+        if (profile.labels != RecognitionProfile.ONEHAND162_LABELS) {
+            throw IOException("Model/labels mismatch: manifest=${profile.labels}")
+        }
+        if (profile.featureProfile != "onehand162" || profile.featureSize != 162 || profile.sequenceLength != 30) {
+            throw IOException("Model/labels mismatch: feature=${profile.featureProfile} sequence=${profile.sequenceLength} featureSize=${profile.featureSize}")
+        }
+    }
+
+    private fun logStartupValidation(profile: RecognitionProfile, interpreter: Interpreter, loadedLabels: List<String>) {
+        Log.i(TAG, "startup active_profile=${profile.id}")
+        Log.i(TAG, "startup model_path=${profile.modelAsset}")
+        Log.i(TAG, "startup label_file=${profile.labelsAsset}")
+        Log.i(TAG, "startup runtime_manifest=${profile.manifestAsset}")
+        Log.i(TAG, "startup expected_input_shape=${profile.shapeText()}")
+        Log.i(TAG, "startup interpreter_input_shape=${interpreter.getInputTensor(0).shape().contentToString()}")
+        Log.i(TAG, "startup feature_profile=${profile.featureProfile}")
+        Log.i(TAG, "startup dominant_hand=${profile.dominantHand}")
+        Log.i(TAG, "startup mirrored_input=${profile.mirroredInput}")
+        Log.i(TAG, "startup labels=$loadedLabels")
+        Log.i(TAG, "feature_check onehand162=pose99+selected_hand63 sequence=30x162 expected_model_input=[1,30,162]")
+        Log.w(TAG, "MIRRORING_UNVERIFIED profile=${profile.id} mirrored_input=${profile.mirroredInput}")
     }
 
     private fun loadLabels(profile: RecognitionProfile): List<String> {

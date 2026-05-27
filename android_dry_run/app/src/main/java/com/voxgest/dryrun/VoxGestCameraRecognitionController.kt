@@ -53,27 +53,26 @@ class VoxGestCameraRecognitionController(
         bindCamera(previewView)
         analyzerExecutor.execute {
             try {
-                val loadedFullSignRecognizer = VoxGestTfliteRecognizer(appContext)
-                val loadedFullSignProfile = loadedFullSignRecognizer.load("fullsign225_phrase_v1")
                 val loadedOneHandRecognizer = VoxGestTfliteRecognizer(appContext)
-                val loadedOneHandProfile = loadedOneHandRecognizer.load("onehand162_phrase_v1")
-                val mirrorCameraFrame = AndroidLandmarkInputPolicy.shouldMirrorFrameBeforeLandmarkExtraction(loadedFullSignProfile)
+                val loadedOneHandProfile = loadedOneHandRecognizer.load(RecognitionProfile.ACTIVE_RECOGNITION_PROFILE)
+                val mirrorCameraFrame = AndroidLandmarkInputPolicy.shouldMirrorFrameBeforeLandmarkExtraction(loadedOneHandProfile)
                 val loadedExtractor = MediaPipeLandmarkExtractor(appContext, mirrorCameraFrame)
-                val loadedAlphabetClassifier = AlphabetClassifier(appContext).also { it.load() }
 
-                fullSignRecognizer = loadedFullSignRecognizer
-                fullSignProfile = loadedFullSignProfile
-                fullSignBuffer = LandmarkSequenceBuffer(loadedFullSignProfile.sequenceLength, loadedFullSignProfile.featureSize)
+                fullSignRecognizer = null
+                fullSignProfile = null
+                fullSignBuffer = null
                 oneHandRecognizer = loadedOneHandRecognizer
                 oneHandProfile = loadedOneHandProfile
                 oneHandBuffer = LandmarkSequenceBuffer(loadedOneHandProfile.sequenceLength, loadedOneHandProfile.featureSize)
                 extractor = loadedExtractor
-                alphabetClassifier = loadedAlphabetClassifier
-                Log.i(TAG, "Automatic router ready; mirrorCameraFrame=$mirrorCameraFrame alphabetFlip=$FLIP_LANDMARKS_HORIZONTAL")
+                alphabetClassifier = null
+                Log.i(TAG, "active_profile=${loadedOneHandProfile.id} automatic alphabet output disabled; fullsign output disabled")
+                Log.i(TAG, "landmark_policy ${AndroidLandmarkInputPolicy.describe(loadedOneHandProfile)} mirrorCameraFrame=$mirrorCameraFrame")
                 postStatus("Looking for hand")
             } catch (exc: Throwable) {
                 Log.e(TAG, "Pipeline load failed", exc)
-                postStatus("Try again")
+                val message = exc.message.orEmpty()
+                postStatus(if (message.contains("Model/labels mismatch", ignoreCase = true)) "Model/labels mismatch." else "Try again")
                 closePipeline()
             }
         }
@@ -143,37 +142,20 @@ class VoxGestCameraRecognitionController(
             logRoute(decision)
             handleRouteChange(decision.route)
 
-            if (frame == null || decision.route == RecognitionRoute.NOTHING) {
-                if (decision.handPresence <= 0f) {
-                    resetTemporalState()
-                    postFeedback(RecognitionFeedback.idle())
-                } else {
-                    dynamicGate.noteNoOutputState()
-                    alphabetGate.resetCandidate()
-                    postFeedback(cleanFeedback(DetectionStatus.SEARCHING, ""))
-                }
+            if (frame == null || !frame.hasAnyHand) {
+                resetTemporalState()
+                postFeedback(RecognitionFeedback.idle())
                 postStatus(decision.statusText)
                 return
             }
 
-            when (decision.route) {
-                RecognitionRoute.STATIC -> processStaticAlphabet(frame, decision)
-                RecognitionRoute.ONEHAND -> processDynamicWord(
-                    frame = frame,
-                    decision = decision,
-                    profile = oneHandProfile,
-                    recognizer = oneHandRecognizer,
-                    buffer = oneHandBuffer
-                )
-                RecognitionRoute.FULLSIGN -> processDynamicWord(
-                    frame = frame,
-                    decision = decision,
-                    profile = fullSignProfile,
-                    recognizer = fullSignRecognizer,
-                    buffer = fullSignBuffer
-                )
-                RecognitionRoute.NOTHING -> Unit
-            }
+            processDynamicWord(
+                frame = frame,
+                decision = decision,
+                profile = oneHandProfile,
+                recognizer = oneHandRecognizer,
+                buffer = oneHandBuffer
+            )
         } catch (exc: Throwable) {
             Log.e(TAG, "Frame analysis failed", exc)
             resetTemporalState()
@@ -225,7 +207,6 @@ class VoxGestCameraRecognitionController(
             postStatus("Try again")
             return
         }
-        alphabetGate.resetCandidate()
         val feature = buildFeature(profile, frame)
         if (feature == null) {
             buffer.clear()
@@ -249,7 +230,6 @@ class VoxGestCameraRecognitionController(
 
         val snapshot = buffer.snapshot()
         val handPresence = buffer.handPresenceRatio()
-        buffer.clear()
         if (snapshot == null) {
             postStatus("Try again")
             return
@@ -281,25 +261,10 @@ class VoxGestCameraRecognitionController(
     private fun handleRouteChange(route: RecognitionRoute) {
         if (route == lastRoute) return
         when (route) {
-            RecognitionRoute.STATIC -> {
-                oneHandBuffer?.clear()
-                fullSignBuffer?.clear()
-                dynamicGate.noteNoOutputState()
-            }
-            RecognitionRoute.ONEHAND -> {
-                fullSignBuffer?.clear()
-                alphabetGate.resetCandidate()
-            }
-            RecognitionRoute.FULLSIGN -> {
-                oneHandBuffer?.clear()
-                alphabetGate.resetCandidate()
-            }
-            RecognitionRoute.NOTHING -> {
-                oneHandBuffer?.clear()
-                fullSignBuffer?.clear()
-                dynamicGate.noteNoOutputState()
-                alphabetGate.resetCandidate()
-            }
+            RecognitionRoute.STATIC -> Log.i(TAG, "router=STATIC camera_output=ONEHAND_ONLY alphabet_disabled=true")
+            RecognitionRoute.ONEHAND -> Log.i(TAG, "router=ONEHAND camera_output=onehand162_phrase_v1")
+            RecognitionRoute.FULLSIGN -> Log.i(TAG, "router=FULLSIGN camera_output=ONEHAND_ONLY fullsign_disabled=true")
+            RecognitionRoute.NOTHING -> Log.i(TAG, "router=NOTHING camera_output=ONEHAND_BUFFER_HELD until hand leaves frame")
         }
         lastRoute = route
     }
@@ -316,10 +281,8 @@ class VoxGestCameraRecognitionController(
 
     private fun resetTemporalState() {
         router.reset()
-        alphabetGate.reset()
         dynamicGate.reset()
         oneHandBuffer?.clear()
-        fullSignBuffer?.clear()
         lastRoute = RecognitionRoute.NOTHING
     }
 
@@ -362,7 +325,7 @@ class VoxGestCameraRecognitionController(
     }
 
     private fun statusForRejection(reason: String): DetectionStatus {
-        return if (reason == "low_hand_presence" || reason == "wrong_input_shape") {
+        return if (reason == "LOW_HAND_PRESENCE" || reason == "SHAPE_MISMATCH" || reason == "BAD_SEQUENCE") {
             DetectionStatus.SEARCHING
         } else {
             DetectionStatus.DETECTING
@@ -391,9 +354,12 @@ class VoxGestCameraRecognitionController(
         snapshot: Array<FloatArray>
     ) {
         val inputShape = "[1,${snapshot.size},${snapshot.firstOrNull()?.size ?: 0}]"
+        val top3 = raw.top3.joinToString(prefix = "[", postfix = "]") {
+            "${it.label}:${String.format(Locale.US, "%.3f", it.confidence)}"
+        }
         Log.i(
             TAG,
-            "route=${decision.route} model=${profile.modelAsset} input=$inputShape predicted=${raw.label} conf=${raw.confidence} margin=${raw.margin} accepted=${gate.accepted} reason=${gate.reason}"
+            "active_profile=${profile.id} route=${decision.route} model=${profile.modelAsset} labels=${profile.labels} input_shape=$inputShape top3=$top3 predicted=${raw.label} confidence=${String.format(Locale.US, "%.3f", raw.confidence)} margin=${String.format(Locale.US, "%.3f", raw.margin)} ${if (gate.accepted) "accepted" else "rejected"} reason=${gate.reason}"
         )
     }
 
