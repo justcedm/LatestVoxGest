@@ -308,7 +308,8 @@ fun VoxGestPresentationApp() {
             namePhraseDetector.reset()
             namePhraseHint = ""
             history.add(0, HistoryUiEntry("Today", "Sign", finalized, nowLabel(), "From recognition", R.drawable.ic_hand_gesture, PrimaryLight))
-            queueAvatarPhrase(finalized)
+            // Sign recognition should not auto-jump to Listen/Avatar.
+            // queueAvatarPhrase(finalized)
             logUiUpdate(tokens)
             return
         }
@@ -534,8 +535,8 @@ private fun demoSentenceForTokens(tokens: List<String>): String? {
     }
     return when {
         clean.endsWithTokens("WHAT", "YOUR", "NAME") -> "What is your name?"
-        clean.endsWithTokens("MY", "NAME") -> "My name is VoxGest"
-        clean.endsWithTokens("MY", "NAME", "IS") -> "My name is VoxGest"
+        clean.endsWithTokens("MY", "NAME") -> "My name is ..."
+        clean.endsWithTokens("MY", "NAME", "IS") -> "My name is ..."
         clean.endsWithTokens("YOU", "OKAY") -> "Are you okay?"
         clean.endsWithTokens("YOU", "STUDENT") -> "Are you a student?"
         clean.endsWithTokens("WHERE", "YOU", "LIVE") -> "Where do you live?"
@@ -2354,3 +2355,5 @@ private fun VoxIcon(
         modifier = modifier
     )
 }
+
+
