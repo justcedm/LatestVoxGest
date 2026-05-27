@@ -20,6 +20,13 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicBoolean
 
+private data class OneHandCaptureResult(
+    val valid: Boolean,
+    val appended: Boolean,
+    val framesCollected: Int,
+    val reason: String
+)
+
 class VoxGestCameraRecognitionController(
     private val context: Context,
     private val lifecycleOwner: LifecycleOwner,
@@ -57,6 +64,8 @@ class VoxGestCameraRecognitionController(
     @Volatile private var collectionStartedAtMs: Long = 0L
     @Volatile private var signingStatusStartedAtMs: Long = 0L
     @Volatile private var collectionPausedUntilMs: Long = 0L
+    @Volatile private var collectionInvalidStartedAtMs: Long = 0L
+    @Volatile private var collectionLostHandFrames: Int = 0
     @Volatile private var statusToken: Long = 0L
     @Volatile private var calibrationLabel: String = ""
     @Volatile private var calibrationBuffer: LandmarkSequenceBuffer? = null
@@ -200,6 +209,10 @@ class VoxGestCameraRecognitionController(
             handleRouteChange(decision.route)
 
             if (frame == null || !frame.hasAnyHand) {
+                if (calibrationLabel.isBlank() && hasActiveLiveCollection()) {
+                    handleLiveCollectionMissingFrame("hand_lost")
+                    return
+                }
                 if (calibrationLabel.isBlank()) {
                     resetTemporalState()
                 }
@@ -277,39 +290,39 @@ class VoxGestCameraRecognitionController(
         }
         val now = SystemClock.elapsedRealtime()
         if (now < collectionPausedUntilMs) return
-        if (signingStatusStartedAtMs > 0L && now - signingStatusStartedAtMs > SIGNING_STATUS_TIMEOUT_MS) {
-            resetCollection("Try again", resetGate = true)
-            Log.i(TAG, "collection_reset reason=SIGNING_TIMEOUT elapsed_ms=${now - signingStatusStartedAtMs}")
-            return
-        }
         logHandMappingIfNeeded(profile, frame)
-        val feature = buildFeature(profile, frame)
-        if (feature == null) {
+        val capture = appendOneHandCaptureFrame(profile, frame, buffer)
+        if (!capture.valid) {
             countMissingFeatureParts(profile, frame)
             postFeedback(cleanFeedback(DetectionStatus.SEARCHING, ""))
-            resetCollection("Hold hand clearer", resetGate = true)
+            if (hasActiveLiveCollection()) {
+                handleLiveCollectionMissingFrame(capture.reason)
+                return
+            }
+            postStatus("Hold hand clearer")
             Log.i(
                 TAG,
                 "route=${decision.route} model=${profile.id} rejected reason=missing_or_wrong_landmarks missing_pose_count=$missingPoseCount missing_hand_count=$missingHandCount"
             )
             return
         }
-        if (buffer.size() == 0) {
-            collectionStartedAtMs = now
-        }
-        if (!buffer.add(feature, true)) {
+        collectionInvalidStartedAtMs = 0L
+        collectionLostHandFrames = 0
+        if (!capture.appended) {
             resetCollection("Try again", resetGate = true)
-            Log.i(TAG, "route=${decision.route} model=${profile.id} rejected reason=feature_shape_${feature.size}_expected_${profile.featureSize}")
+            Log.i(TAG, "route=${decision.route} model=${profile.id} rejected reason=${capture.reason}")
             return
         }
         postFeedback(cleanFeedback(DetectionStatus.DETECTING, ""))
-        if (collectionStartedAtMs > 0L && now - collectionStartedAtMs > COLLECTION_TIMEOUT_MS) {
+        val framesCollected = capture.framesCollected
+        Log.i(TAG, "collection_progress frames=$framesCollected/${profile.sequenceLength}")
+        if (collectionStartedAtMs > 0L && now - collectionStartedAtMs > collectionTimeoutMs(profile)) {
             Log.i(TAG, "collection_reset reason=SEQUENCE_TIMEOUT elapsed_ms=${now - collectionStartedAtMs} frames=${buffer.size()}")
             resetCollection("Try again", resetGate = true)
             return
         }
         if (!buffer.isReady()) {
-            postSigningStatus(now)
+            postCollectionProgress(profile, framesCollected)
             return
         }
 
@@ -322,7 +335,10 @@ class VoxGestCameraRecognitionController(
 
         logFeatureWindow(profile, snapshot, handPresence)
         postStatus("Recognizing...")
+        Log.i(TAG, "collection_progress frames=${profile.sequenceLength}/${profile.sequenceLength}")
+        Log.i(TAG, "inference_started shape=[1,${snapshot.size},${snapshot.firstOrNull()?.size ?: 0}] profile=${profile.id}")
         val raw = recognizer.recognize(snapshot)
+        logInferenceResult(raw)
         val gateResult = dynamicGate.evaluate(raw, profile, decision, handPresence)
         logDynamic(decision, profile, raw, gateResult, snapshot)
         logNameDiagnostic(profile, decision, raw, gateResult, snapshot, handPresence)
@@ -355,8 +371,8 @@ class VoxGestCameraRecognitionController(
 
         logHandMappingIfNeeded(profile, frame)
         val builder = OneHand162FeatureBuilder(profile)
-        val feature = buildFeature(profile, frame)
-        if (feature == null) {
+        val capture = appendOneHandCaptureFrame(profile, frame, buffer)
+        if (!capture.valid) {
             if (!frame.hasPose) calibrationMissingPoseCount += 1
             if (builder.selectedHandLandmarks(frame)?.size != HAND_LANDMARK_COUNT) {
                 calibrationMissingHandCount += 1
@@ -370,14 +386,14 @@ class VoxGestCameraRecognitionController(
             return
         }
 
-        if (!buffer.add(feature, true)) {
+        if (!capture.appended) {
             postStatus("Calibration shape mismatch")
-            Log.e(TAG, "calibration_rejected label=$label reason=shape_${feature.size}_expected_${profile.featureSize}")
+            Log.e(TAG, "calibration_rejected label=$label reason=${capture.reason}")
             buffer.clear()
             return
         }
 
-        val collected = buffer.size()
+        val collected = capture.framesCollected
         postFeedback(cleanFeedback(DetectionStatus.DETECTING, label))
         postStatus("Recording $label $collected/${profile.sequenceLength}")
         if (!buffer.isReady()) return
@@ -423,6 +439,53 @@ class VoxGestCameraRecognitionController(
             calibrationMissingHandCount = 0
             scheduleStatus("Looking for hand", STATUS_RESET_DELAY_MS)
         }
+    }
+
+    private fun appendOneHandCaptureFrame(
+        profile: RecognitionProfile,
+        frame: LandmarkFrame,
+        buffer: LandmarkSequenceBuffer
+    ): OneHandCaptureResult {
+        val feature = buildFeature(profile, frame)
+            ?: return OneHandCaptureResult(valid = false, appended = false, framesCollected = buffer.size(), reason = "missing_or_wrong_landmarks")
+        if (buffer.size() == 0) {
+            collectionStartedAtMs = SystemClock.elapsedRealtime()
+        }
+        if (!buffer.add(feature, true)) {
+            return OneHandCaptureResult(
+                valid = true,
+                appended = false,
+                framesCollected = buffer.size(),
+                reason = "feature_shape_${feature.size}_expected_${profile.featureSize}"
+            )
+        }
+        return OneHandCaptureResult(valid = true, appended = true, framesCollected = buffer.size(), reason = "")
+    }
+
+    private fun handleLiveCollectionMissingFrame(reason: String) {
+        val now = SystemClock.elapsedRealtime()
+        if (collectionInvalidStartedAtMs == 0L) collectionInvalidStartedAtMs = now
+        collectionLostHandFrames += 1
+        val frames = oneHandBuffer?.size() ?: 0
+        val elapsedInvalid = now - collectionInvalidStartedAtMs
+        if (collectionLostHandFrames >= LOST_HAND_ABORT_FRAMES || elapsedInvalid > NO_VALID_LANDMARK_TIMEOUT_MS) {
+            Log.i(
+                TAG,
+                "collection_reset reason=${reason.uppercase(Locale.US)} elapsed_invalid_ms=$elapsedInvalid lost_frames=$collectionLostHandFrames frames=$frames"
+            )
+            resetCollection("Try again", resetGate = true)
+            return
+        }
+        Log.i(
+            TAG,
+            "collection_wait reason=$reason elapsed_invalid_ms=$elapsedInvalid lost_frames=$collectionLostHandFrames frames=$frames/${oneHandProfile?.sequenceLength ?: 30}"
+        )
+        postFeedback(cleanFeedback(DetectionStatus.SEARCHING, ""))
+        postCollectionProgress(oneHandProfile, frames)
+    }
+
+    private fun hasActiveLiveCollection(): Boolean {
+        return (oneHandBuffer?.size() ?: 0) > 0
     }
 
     private fun handleRouteChange(route: RecognitionRoute) {
@@ -639,16 +702,35 @@ class VoxGestCameraRecognitionController(
     private fun clearSequenceState() {
         collectionStartedAtMs = 0L
         signingStatusStartedAtMs = 0L
+        collectionInvalidStartedAtMs = 0L
+        collectionLostHandFrames = 0
     }
 
-    private fun postSigningStatus(now: Long) {
-        if (signingStatusStartedAtMs == 0L) signingStatusStartedAtMs = now
-        if (now - signingStatusStartedAtMs > SIGNING_STATUS_TIMEOUT_MS) {
-            Log.i(TAG, "collection_reset reason=SIGNING_TIMEOUT elapsed_ms=${now - signingStatusStartedAtMs}")
-            resetCollection("Try again", resetGate = true)
-            return
+    private fun postCollectionProgress(profile: RecognitionProfile?, framesCollected: Int) {
+        val total = profile?.sequenceLength ?: LandmarkSequenceBuffer.SEQUENCE_LENGTH
+        postStatus("Collecting sign ${framesCollected.coerceAtMost(total)}/$total")
+    }
+
+    private fun collectionTimeoutMs(profile: RecognitionProfile): Long {
+        return if (profile.id == OneHandCalibrationConfig.CALIBRATED_PROFILE_ID ||
+            OneHandCalibrationConfig.USE_ANDROID_CALIBRATED_ONEHAND_MODEL
+        ) {
+            CALIBRATED_ONEHAND_COLLECTION_TIMEOUT_MS
+        } else {
+            ONEHAND_COLLECTION_TIMEOUT_MS
         }
-        postStatus("Signing...")
+    }
+
+    private fun logInferenceResult(raw: RecognitionResult) {
+        val top3 = raw.top3.joinToString(prefix = "[", postfix = "]") {
+            "${it.label}:${String.format(Locale.US, "%.3f", it.confidence)}"
+        }
+        val top1 = raw.top3.getOrNull(0)
+        val top2 = raw.top3.getOrNull(1)
+        Log.i(
+            TAG,
+            "inference_result top3=$top3 top1=${top1?.label ?: ""} top2=${top2?.label ?: ""} confidence=${String.format(Locale.US, "%.3f", raw.confidence)} margin=${String.format(Locale.US, "%.3f", raw.margin)}"
+        )
     }
 
     private fun statusTextForRejection(reason: String): String {
@@ -708,8 +790,10 @@ class VoxGestCameraRecognitionController(
         private const val FLIP_LANDMARKS_HORIZONTAL = false
         private const val HAND_LANDMARK_COUNT = 21
         private const val HAND_MAPPING_LOG_INTERVAL_MS = 1000L
-        private const val COLLECTION_TIMEOUT_MS = 2500L
-        private const val SIGNING_STATUS_TIMEOUT_MS = 3000L
+        private const val ONEHAND_COLLECTION_TIMEOUT_MS = 8000L
+        private const val CALIBRATED_ONEHAND_COLLECTION_TIMEOUT_MS = 10000L
+        private const val NO_VALID_LANDMARK_TIMEOUT_MS = 1500L
+        private const val LOST_HAND_ABORT_FRAMES = 8
         private const val STATUS_RESET_DELAY_MS = 1000L
         private const val DEBUG_EXPECTED_ONEHAND_LABEL = ""
     }
