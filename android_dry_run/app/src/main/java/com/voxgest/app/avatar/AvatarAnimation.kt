@@ -16,12 +16,12 @@ data class AvatarAnimation(
 
 object AvatarAnimationLibrary {
     private val canvasAnimations = mapOf(
-        "HELLO" to AvatarAnimation("HELLO", AvatarAnimationKind.KNOWN_SIGN, 620L, "avatar/signs/HELLO.json"),
-        "THANKYOU" to AvatarAnimation("THANKYOU", AvatarAnimationKind.KNOWN_SIGN, 680L, "avatar/signs/THANKYOU.json"),
-        "WATER" to AvatarAnimation("WATER", AvatarAnimationKind.KNOWN_SIGN, 640L, "avatar/signs/WATER.json"),
-        "EAT" to AvatarAnimation("EAT", AvatarAnimationKind.KNOWN_SIGN, 640L, "avatar/signs/EAT.json"),
-        "YES" to AvatarAnimation("YES", AvatarAnimationKind.KNOWN_SIGN, 560L, "avatar/signs/YES.json"),
-        "NO" to AvatarAnimation("NO", AvatarAnimationKind.KNOWN_SIGN, 560L, "avatar/signs/NO.json"),
+        "HELLO" to AvatarAnimation("HELLO", AvatarAnimationKind.KNOWN_SIGN, 620L),
+        "THANKYOU" to AvatarAnimation("THANKYOU", AvatarAnimationKind.KNOWN_SIGN, 680L),
+        "WATER" to AvatarAnimation("WATER", AvatarAnimationKind.KNOWN_SIGN, 640L),
+        "EAT" to AvatarAnimation("EAT", AvatarAnimationKind.KNOWN_SIGN, 640L),
+        "YES" to AvatarAnimation("YES", AvatarAnimationKind.KNOWN_SIGN, 560L),
+        "NO" to AvatarAnimation("NO", AvatarAnimationKind.KNOWN_SIGN, 560L),
         "WHAT" to AvatarAnimation("WHAT", AvatarAnimationKind.KNOWN_SIGN, 720L),
         "YOUR" to AvatarAnimation("YOUR", AvatarAnimationKind.KNOWN_SIGN, 560L),
         "NAME" to AvatarAnimation("NAME", AvatarAnimationKind.KNOWN_SIGN, 720L),

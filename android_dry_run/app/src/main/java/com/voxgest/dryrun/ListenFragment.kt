@@ -18,7 +18,7 @@ import androidx.dynamicanimation.animation.SpringAnimation
 import androidx.dynamicanimation.animation.SpringForce
 import androidx.fragment.app.Fragment
 import com.google.android.material.button.MaterialButton
-import com.voxgest.app.avatar.AvatarView
+import com.voxgest.app.avatar.SignAvatarView
 
 class ListenFragment : Fragment(R.layout.fragment_listen) {
 
@@ -27,7 +27,7 @@ class ListenFragment : Fragment(R.layout.fragment_listen) {
         const val SEQUENCE_STEP_MS = 620L
     }
 
-    private lateinit var avatarView: AvatarView
+    private lateinit var avatarView: SignAvatarView
     private lateinit var avatarPanel: View
     private lateinit var responseText: TextView
     private lateinit var micStatusText: TextView

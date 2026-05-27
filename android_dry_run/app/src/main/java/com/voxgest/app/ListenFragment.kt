@@ -15,7 +15,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.voxgest.app.adapter.HistoryType
 import com.voxgest.app.adapter.VoxHistoryStore
-import com.voxgest.app.avatar.AvatarView
+import com.voxgest.app.avatar.SignAvatarView
 import com.voxgest.app.views.WaveformView
 import com.voxgest.dryrun.AvatarPhraseMapper
 import com.voxgest.dryrun.MotionSettings
@@ -27,7 +27,7 @@ class ListenFragment : Fragment(R.layout.fragment_listen) {
     private lateinit var responseText: TextView
     private lateinit var statusPill: TextView
     private lateinit var micStatusText: TextView
-    private lateinit var avatarView: AvatarView
+    private lateinit var avatarView: SignAvatarView
     private lateinit var avatarPanel: View
     private lateinit var waveformLeft: WaveformView
     private lateinit var waveformRight: WaveformView
