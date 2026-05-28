@@ -1,4 +1,4 @@
-package com.voxgest.dryrun
+﻿package com.voxgest.dryrun
 
 import android.content.Context
 import android.os.Build
@@ -32,6 +32,7 @@ class VoxGestCameraRecognitionController(
     private val lifecycleOwner: LifecycleOwner,
     private val onStatus: (String) -> Unit,
     private val onRecognitionFeedback: (RecognitionFeedback) -> Unit = {},
+    private val onSkeletonFrame: (LandmarkFrame?) -> Unit = {},
     private val onAcceptedResult: (RecognitionResult) -> Unit
 ) {
     private val appContext = context.applicationContext
@@ -67,6 +68,7 @@ class VoxGestCameraRecognitionController(
     @Volatile private var collectionInvalidStartedAtMs: Long = 0L
     @Volatile private var collectionLostHandFrames: Int = 0
     @Volatile private var statusToken: Long = 0L
+    @Volatile private var useBackCamera: Boolean = false
     @Volatile private var calibrationLabel: String = ""
     @Volatile private var calibrationBuffer: LandmarkSequenceBuffer? = null
     @Volatile private var calibrationMissingPoseCount: Int = 0
@@ -80,7 +82,7 @@ class VoxGestCameraRecognitionController(
             try {
                 val loadedOneHandRecognizer = VoxGestTfliteRecognizer(appContext)
                 val loadedOneHandProfile = loadedOneHandRecognizer.load(RecognitionProfile.activeRecognitionProfileId(appContext))
-                val mirrorCameraFrame = AndroidLandmarkInputPolicy.shouldMirrorFrameBeforeLandmarkExtraction(loadedOneHandProfile)
+                val mirrorCameraFrame = mirrorCameraFrameFor(loadedOneHandProfile)
                 val loadedExtractor = MediaPipeLandmarkExtractor(appContext, mirrorCameraFrame)
 
                 fullSignRecognizer = null
@@ -117,6 +119,7 @@ class VoxGestCameraRecognitionController(
         }
         resetTemporalState()
         postFeedback(RecognitionFeedback.idle())
+        postSkeletonFrame(null)
         mainExecutor.execute {
             imageAnalysis?.clearAnalyzer()
             imageAnalysis = null
@@ -168,6 +171,39 @@ class VoxGestCameraRecognitionController(
         }
     }
 
+    fun switchCamera(previewView: PreviewView) {
+        analyzerExecutor.execute {
+            useBackCamera = !useBackCamera
+            resetTemporalState()
+            postFeedback(RecognitionFeedback.idle())
+
+            oneHandProfile?.let { profile ->
+                val mirrorCameraFrame = mirrorCameraFrameFor(profile)
+                extractor?.close()
+                extractor = MediaPipeLandmarkExtractor(appContext, mirrorCameraFrame)
+                Log.i(TAG, "camera_switch camera=${currentCameraLabel()} mirrorCameraFrame=$mirrorCameraFrame")
+            }
+
+            postStatus("Switching to ${currentCameraLabel()} camera")
+
+            mainExecutor.execute {
+                bindCamera(previewView)
+            }
+        }
+    }
+
+    private fun currentCameraLabel(): String {
+        return if (useBackCamera) "Back" else "Front"
+    }
+
+    private fun mirrorCameraFrameFor(profile: RecognitionProfile): Boolean {
+        return if (useBackCamera) {
+            false
+        } else {
+            AndroidLandmarkInputPolicy.shouldMirrorFrameBeforeLandmarkExtraction(profile)
+        }
+    }
+
     private fun bindCamera(previewView: PreviewView) {
         val providerFuture = ProcessCameraProvider.getInstance(appContext)
         providerFuture.addListener({
@@ -179,17 +215,19 @@ class VoxGestCameraRecognitionController(
             }
             @Suppress("DEPRECATION")
             val analysis = ImageAnalysis.Builder()
-                .setTargetResolution(Size(256, 192))
+                .setTargetResolution(Size(192, 144))
                 .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                 .build()
             analysis.setAnalyzer(analyzerExecutor) { imageProxy ->
                 analyzeFrame(imageProxy)
             }
             imageAnalysis = analysis
+            val cameraSelector = if (useBackCamera) CameraSelector.DEFAULT_BACK_CAMERA else CameraSelector.DEFAULT_FRONT_CAMERA
+            Log.i(TAG, "camera_selector=" + (if (useBackCamera) "BACK" else "FRONT"))
             provider.unbindAll()
             provider.bindToLifecycle(
                 lifecycleOwner,
-                CameraSelector.DEFAULT_FRONT_CAMERA,
+                cameraSelector,
                 preview,
                 analysis
             )
@@ -204,6 +242,7 @@ class VoxGestCameraRecognitionController(
             lastAnalyzeAtMs = now
 
             val frame = extractor?.processFrame(imageProxy)
+            postSkeletonFrame(frame)
             val decision = router.decide(frame)
             logRoute(decision)
             handleRouteChange(decision.route)
@@ -321,12 +360,21 @@ class VoxGestCameraRecognitionController(
             resetCollection("Try again", resetGate = true)
             return
         }
-        if (!buffer.isReady()) {
+        val fastDemoReady = FAST_DEMO_MODE &&
+            profile.id == OneHandCalibrationConfig.CALIBRATED_PROFILE_ID &&
+            buffer.size() >= FAST_DEMO_MIN_FRAMES
+
+        if (!buffer.isReady() && !fastDemoReady) {
             postCollectionProgress(profile, framesCollected)
             return
         }
 
-        val snapshot = buffer.snapshot()
+        val snapshot = if (fastDemoReady && !buffer.isReady()) {
+            Log.i(TAG, "fast_demo_inference frames=${buffer.size()}/${profile.sequenceLength} padded_to=${profile.sequenceLength}")
+            buffer.snapshotPaddedToSequence()
+        } else {
+            buffer.snapshot()
+        }
         val handPresence = buffer.handPresenceRatio()
         if (snapshot == null) {
             postStatus("Try again")
@@ -574,6 +622,10 @@ class VoxGestCameraRecognitionController(
         mainExecutor.execute { onRecognitionFeedback(feedback) }
     }
 
+    private fun postSkeletonFrame(frame: LandmarkFrame?) {
+        mainExecutor.execute { onSkeletonFrame(frame) }
+    }
+
     private fun statusForRejection(reason: String): DetectionStatus {
         return if (reason == "LOW_HAND_PRESENCE" || reason == "SHAPE_MISMATCH" || reason == "BAD_SEQUENCE") {
             DetectionStatus.SEARCHING
@@ -808,6 +860,8 @@ class VoxGestCameraRecognitionController(
     companion object {
         private const val TAG = "VoxGestRecognition"
         private const val ANALYZE_INTERVAL_MS = 0L
+        private const val FAST_DEMO_MODE = true
+        private const val FAST_DEMO_MIN_FRAMES = 18
         private const val STATUS_MIN_INTERVAL_MS = 220L
         private const val FLIP_LANDMARKS_HORIZONTAL = false
         private const val HAND_LANDMARK_COUNT = 21
@@ -820,3 +874,5 @@ class VoxGestCameraRecognitionController(
         private const val DEBUG_EXPECTED_ONEHAND_LABEL = ""
     }
 }
+
+

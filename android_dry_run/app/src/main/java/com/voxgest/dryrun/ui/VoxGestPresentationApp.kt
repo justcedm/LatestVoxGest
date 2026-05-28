@@ -1,4 +1,4 @@
-package com.voxgest.dryrun.ui
+﻿package com.voxgest.dryrun.ui
 
 import android.Manifest
 import android.content.ContentValues
@@ -82,6 +82,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -108,6 +109,7 @@ import com.voxgest.app.avatar.AvatarView
 import com.voxgest.app.avatar.SceneAvatarHostView
 import com.voxgest.dryrun.BuildConfig
 import com.voxgest.dryrun.DetectionStatus
+import com.voxgest.dryrun.LandmarkFrame
 import com.voxgest.dryrun.NamePhraseDetector
 import com.voxgest.dryrun.OneHandCalibrationConfig
 import com.voxgest.dryrun.OverlayLandmarkPoint
@@ -140,7 +142,7 @@ private val Blue = Color(0xFF22A7D8)
 private val Purple = Color(0xFF7C5AA6)
 private val Green = Color(0xFF43A047)
 private const val PRESENTATION_MODE = true
-private const val SHOW_DEBUG_TOOLS = false
+private const val SHOW_DEBUG_TOOLS = true
 private const val ACCURACY_TEST_WINDOW_MS = 5000L
 private const val RECOGNITION_LOG_TAG = "VoxGestRecognition"
 
@@ -175,12 +177,33 @@ private val DemoTokenWords = listOf(
     "YOUR",
     "NAME",
     "MY",
-    "YOU",
-    "OKAY",
-    "STUDENT",
-    "WHERE",
-    "LIVE",
-    "NOTHING",
+    "A",
+    "B",
+    "C",
+    "D",
+    "E",
+    "F",
+    "G",
+    "H",
+    "I",
+    "J",
+    "K",
+    "L",
+    "M",
+    "N",
+    "O",
+    "P",
+    "Q",
+    "R",
+    "S",
+    "T",
+    "U",
+    "V",
+    "W",
+    "X",
+    "Y",
+    "Z",
+    "DEL",
     "CLEAR",
     "SPEAK"
 )
@@ -531,12 +554,12 @@ private fun demoSentenceForTokens(tokens: List<String>): String? {
         val letters = clean.drop(nameStart + 3)
             .filter { it.length == 1 && it[0] in 'A'..'Z' }
             .joinToString("")
-        if (letters.isNotBlank()) return "MY NAME IS $letters"
+        if (letters.isNotBlank()) return "My name is $letters"
     }
     return when {
         clean.endsWithTokens("WHAT", "YOUR", "NAME") -> "What is your name?"
-        clean.endsWithTokens("MY", "NAME") -> "My name is ..."
-        clean.endsWithTokens("MY", "NAME", "IS") -> "My name is ..."
+        clean.endsWithTokens("MY", "NAME") -> null
+        clean.endsWithTokens("MY", "NAME", "IS") -> null
         clean.endsWithTokens("YOU", "OKAY") -> "Are you okay?"
         clean.endsWithTokens("YOU", "STUDENT") -> "Are you a student?"
         clean.endsWithTokens("WHERE", "YOU", "LIVE") -> "Where do you live?"
@@ -817,7 +840,7 @@ private fun AccuracyDebugPanel(
         Row(verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f)) {
                 Text("Live Accuracy Test", color = Primary, fontSize = 13.sp, fontWeight = FontWeight.Bold)
-                Text("Target: $target · ${remainingSeconds}s", color = TextMain, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                Text("Target: $target Â· ${remainingSeconds}s", color = TextMain, fontSize = 18.sp, fontWeight = FontWeight.Bold)
                 Text("Overall: $overall% ($totalCorrect/$totalAttempts)", color = TextMuted, fontSize = 12.sp)
             }
             Button(
@@ -879,6 +902,8 @@ private fun RecognitionAreaCard(
     val controllerRef = remember { mutableStateOf<VoxGestCameraRecognitionController?>(null) }
     var recognitionFeedback by remember { mutableStateOf(RecognitionFeedback.idle()) }
     var recognizedToast by remember { mutableStateOf("") }
+    var showSkeletonFeatureView by remember { mutableStateOf(false) }
+    var skeletonFrame by remember { mutableStateOf<LandmarkFrame?>(null) }
     var hasCameraPermission by remember {
         mutableStateOf(
             ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
@@ -912,6 +937,7 @@ private fun RecognitionAreaCard(
             lifecycleOwner = lifecycleOwner,
             onStatus = onRecognitionStatus,
             onRecognitionFeedback = { recognitionFeedback = it },
+            onSkeletonFrame = { skeletonFrame = it },
             onAcceptedResult = onAcceptedRecognition
         ).also { it.start(previewView) }
     }
@@ -957,6 +983,12 @@ private fun RecognitionAreaCard(
                 factory = { previewView },
                 modifier = Modifier.fillMaxSize()
             )
+            if (showSkeletonFeatureView) {
+                SkeletonFeatureOverlay(
+                    frame = skeletonFrame,
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
             if (!recognitionRunning || !hasCameraPermission) {
                 Box(
                     modifier = Modifier
@@ -1005,6 +1037,23 @@ private fun RecognitionAreaCard(
                     .align(Alignment.TopStart)
                     .padding(14.dp)
             )
+            Surface(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(14.dp)
+                    .clickable { showSkeletonFeatureView = !showSkeletonFeatureView },
+                shape = RoundedCornerShape(999.dp),
+                color = if (showSkeletonFeatureView) Primary.copy(alpha = 0.92f) else Color.Black.copy(alpha = 0.45f),
+                border = BorderStroke(1.dp, Color.White.copy(alpha = 0.32f))
+            ) {
+                Text(
+                    if (showSkeletonFeatureView) "Simple Camera" else "162 Feature View",
+                    color = Color.White,
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
+                )
+            }
         }
         AnimatedVisibility(visible = recognizedToast.isNotBlank()) {
             Box(
@@ -1077,6 +1126,22 @@ private fun RecognitionAreaCard(
                     VoxIcon(R.drawable.ic_cancel, "Stop Recognition", Primary, Modifier.size(18.dp))
                     Spacer(Modifier.width(7.dp))
                     Text("Stop Recognition", color = Primary, fontSize = 12.sp, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                }
+                Button(
+                    onClick = {
+                        controllerRef.value?.switchCamera(previewView)
+                            ?: Toast.makeText(context, "Start recognition first", Toast.LENGTH_SHORT).show()
+                    },
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(48.dp),
+                    shape = RoundedCornerShape(14.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = CardWhite, contentColor = Primary),
+                    border = BorderStroke(1.dp, Border)
+                ) {
+                    VoxIcon(R.drawable.ic_camera_off, "Switch Camera", Primary, Modifier.size(18.dp))
+                    Spacer(Modifier.width(7.dp))
+                    Text("Switch Cam", color = Primary, fontSize = 12.sp, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 }
             }
         }
@@ -1313,6 +1378,112 @@ private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawHandSkeleton(
     }
 }
 
+
+@Composable
+private fun SkeletonFeatureOverlay(
+    frame: LandmarkFrame?,
+    modifier: Modifier = Modifier
+) {
+    Canvas(
+        modifier = modifier
+            .background(Color.Black.copy(alpha = 0.18f))
+    ) {
+        val pose = frame?.poseLandmarks.orEmpty()
+        val left = frame?.leftHandLandmarks.orEmpty()
+        val right = frame?.rightHandLandmarks.orEmpty()
+
+        fun pointOf(x: Float, y: Float): Offset {
+            return Offset(
+                x = x.coerceIn(0f, 1f) * size.width,
+                y = y.coerceIn(0f, 1f) * size.height
+            )
+        }
+
+        fun drawPoint(x: Float, y: Float, color: Color, radius: Float = 4.2f) {
+            drawCircle(
+                color = color,
+                radius = radius.dp.toPx(),
+                center = pointOf(x, y)
+            )
+        }
+
+        fun drawSegment(aX: Float, aY: Float, bX: Float, bY: Float, color: Color, stroke: Float = 2.2f) {
+            drawLine(
+                color = color,
+                start = pointOf(aX, aY),
+                end = pointOf(bX, bY),
+                strokeWidth = stroke.dp.toPx(),
+                cap = StrokeCap.Round
+            )
+        }
+
+        fun drawPoseSegment(a: Int, b: Int, color: Color) {
+            if (pose.size > maxOf(a, b)) {
+                val pa = pose[a]
+                val pb = pose[b]
+                drawSegment(pa.x, pa.y, pb.x, pb.y, color, 2.6f)
+            }
+        }
+
+        fun drawPosePoint(index: Int, color: Color, radius: Float = 4.4f) {
+            if (pose.size > index) {
+                val p = pose[index]
+                drawPoint(p.x, p.y, color, radius)
+            }
+        }
+
+        fun drawHandSkeletonRaw(points: List<com.voxgest.dryrun.LandmarkPoint>, color: Color) {
+            if (points.size != 21) return
+            HAND_CONNECTIONS.forEach { connection ->
+                val a = points[connection.first]
+                val b = points[connection.second]
+                drawSegment(a.x, a.y, b.x, b.y, color.copy(alpha = 0.70f), 2.0f)
+            }
+            points.forEach { p ->
+                drawPoint(p.x, p.y, color, 3.5f)
+            }
+        }
+
+        val mouthColor = Color(0xFFFFD54F)
+        val poseColor = Color(0xFF40C4FF)
+        val armColor = Color(0xFF00E676)
+        val leftHandColor = Color(0xFFFF80AB)
+        val rightHandColor = Color(0xFFB8F060)
+
+        // Mouth / face reference points: nose and mouth corners.
+        listOf(0, 9, 10).forEach { drawPosePoint(it, mouthColor, 4.6f) }
+        if (pose.size > 10) {
+            drawPoseSegment(9, 10, mouthColor.copy(alpha = 0.70f))
+        }
+
+        // Shoulders and arms.
+        drawPoseSegment(11, 12, poseColor)
+        drawPoseSegment(11, 13, armColor)
+        drawPoseSegment(13, 15, armColor)
+        drawPoseSegment(12, 14, armColor)
+        drawPoseSegment(14, 16, armColor)
+
+        // Important pose/body points used for body-relative context.
+        listOf(11, 12, 13, 14, 15, 16).forEach { drawPosePoint(it, poseColor, 4.4f) }
+
+        // Hands.
+        drawHandSkeletonRaw(left, leftHandColor)
+        drawHandSkeletonRaw(right, rightHandColor)
+
+        // Label.
+        drawContext.canvas.nativeCanvas.apply {
+            val paint = android.graphics.Paint().apply {
+                isAntiAlias = true
+                color = android.graphics.Color.WHITE
+                textSize = 32f
+                typeface = android.graphics.Typeface.create(android.graphics.Typeface.DEFAULT, android.graphics.Typeface.BOLD)
+            }
+            drawText("162 FEATURE VIEW: mouth + shoulders + arms + hands", 24f, size.height - 28f, paint)
+        }
+    }
+}
+
+
 @Composable
 private fun CurrentWordCard(word: String) {
     val clean = word.trim()
@@ -1347,9 +1518,9 @@ private fun DemoTokenPanel(
     VoxGestCard(modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f)) {
-                Label("DEMO TOKEN AREA")
+                Label("NAME SPELLING ASSIST")
                 Text(
-                    if (tokens.isEmpty()) "Tap tokens to build a phrase." else tokens.joinToString(" + "),
+                    if (tokens.isEmpty()) "Tap letters to spell a name." else tokens.joinToString(" + "),
                     color = TextMain,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.SemiBold,
@@ -1359,7 +1530,7 @@ private fun DemoTokenPanel(
                 )
             }
             StatusChip(
-                label = "Phrase Demo",
+                label = "Manual Assist",
                 dotColor = Amber,
                 containerColor = Color(0xFFFFF7ED),
                 contentColor = Amber
@@ -2355,5 +2526,8 @@ private fun VoxIcon(
         modifier = modifier
     )
 }
+
+
+
 
 
