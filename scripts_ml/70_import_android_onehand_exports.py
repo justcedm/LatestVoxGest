@@ -25,7 +25,7 @@ SOURCE_ROOT = ROOT / "external_datasets" / "android_phone_exports" / "VoxGestCal
 OUTPUT_ROOT = ROOT / "external_datasets" / "android_onehand162_phrase_v1_features"
 REPORTS_DIR = ROOT / "reports"
 LABELS = ("WHAT", "YOUR", "NAME", "MY", "NOTHING")
-EXPECTED_SHAPE = (30, 162)
+EXPECTED_SHAPE = (20, 162)
 
 
 def safe_name(value: object) -> str:
@@ -76,6 +76,17 @@ def import_exports(source_root: Path, output_root: Path):
         if label not in LABELS:
             skipped.append({"path": str(path), "reason": f"unsupported_label:{label}"})
             continue
+        sequence_length_at_export = data.get("sequence_length_at_export")
+        if sequence_length_at_export is not None:
+            try:
+                found_sequence_length = int(sequence_length_at_export)
+            except (TypeError, ValueError):
+                found_sequence_length = sequence_length_at_export
+            if found_sequence_length != EXPECTED_SHAPE[0]:
+                reason = f"sequence_length_mismatch expected={EXPECTED_SHAPE[0]} found={found_sequence_length}"
+                print(f"skipped: {reason} path={path}")
+                skipped.append({"path": str(path), "reason": reason})
+                continue
         if tuple(arr.shape) != EXPECTED_SHAPE:
             skipped.append({"path": str(path), "reason": f"shape:{list(arr.shape)}"})
             continue
@@ -95,6 +106,7 @@ def import_exports(source_root: Path, output_root: Path):
             "active_profile": data.get("active_profile"),
             "feature_profile": data.get("feature_profile"),
             "input_shape": data.get("input_shape"),
+            "sequence_length_at_export": data.get("sequence_length_at_export"),
             "dominant_hand": data.get("dominant_hand"),
             "mirrored_input": data.get("mirrored_input"),
             "selected_hand_slot": data.get("selected_hand_slot"),

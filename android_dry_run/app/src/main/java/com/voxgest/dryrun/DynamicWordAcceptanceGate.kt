@@ -30,7 +30,8 @@ class DynamicWordAcceptanceGate {
         raw: RecognitionResult,
         profile: RecognitionProfile,
         decision: RouterDecision,
-        handPresence: Float
+        handPresence: Float,
+        consecutiveMatches: Int = 1
     ): DynamicWordGateResult {
         val label = raw.label.trim().uppercase(Locale.US)
         if (decision.route == RecognitionRoute.NOTHING && decision.handPresence <= 0f) {
@@ -71,6 +72,9 @@ class DynamicWordAcceptanceGate {
         if (raw.margin < threshold.margin) {
             resetStableCandidate()
             return reject(label, raw, "LOW_MARGIN")
+        }
+        if (consecutiveMatches < REQUIRED_CONSECUTIVE_WINDOWS) {
+            return reject(label, raw, "SLIDING_WINDOW_NEEDS_SECOND_MATCH")
         }
 
         if (shouldAcceptCalibratedHighConfidence(label, raw, profile)) {
@@ -167,6 +171,7 @@ class DynamicWordAcceptanceGate {
     companion object {
         private val ALLOWED_ONEHAND_LABELS = setOf("WHAT", "YOUR", "NAME", "MY")
         private const val MIN_HAND_PRESENCE = 0.65f
+        private const val REQUIRED_CONSECUTIVE_WINDOWS = 2
         private const val NAME_REQUIRED_WINDOWS = 2
         private const val NAME_SINGLE_WINDOW_CONFIDENCE = 0.85f
         private const val CALIBRATED_HIGH_CONFIDENCE = 0.85f

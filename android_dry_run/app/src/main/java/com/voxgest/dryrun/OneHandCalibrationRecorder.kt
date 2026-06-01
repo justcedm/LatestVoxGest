@@ -21,6 +21,7 @@ data class OneHandCalibrationSample(
     val activeProfile: String,
     val featureProfile: String,
     val inputShape: IntArray,
+    val sequenceLengthAtExport: Int,
     val dominantHand: String,
     val mirroredInput: Boolean,
     val selectedHandSlot: String,
@@ -82,6 +83,7 @@ class OneHandCalibrationRecorder(private val context: Context) {
             .put("active_profile", activeProfile)
             .put("feature_profile", featureProfile)
             .put("input_shape", JSONArray(inputShape.toList()))
+            .put("sequence_length_at_export", sequenceLengthAtExport)
             .put("dominant_hand", dominantHand)
             .put("mirrored_input", mirroredInput)
             .put("selected_hand_slot", selectedHandSlot)
