@@ -58,6 +58,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -108,6 +109,7 @@ import com.voxgest.app.avatar.AvatarStatus
 import com.voxgest.app.avatar.AvatarView
 import com.voxgest.app.avatar.SceneAvatarHostView
 import com.voxgest.dryrun.BuildConfig
+import com.voxgest.dryrun.CalibrationExportMode
 import com.voxgest.dryrun.DetectionStatus
 import com.voxgest.dryrun.LandmarkFrame
 import com.voxgest.dryrun.NamePhraseDetector
@@ -1081,8 +1083,8 @@ private fun RecognitionAreaCard(
             AnimatedVisibility(visible = showCalibrationPanel) {
                 OneHandCalibrationPanel(
                     recognitionRunning = recognitionRunning && hasCameraPermission,
-                    onStartCalibration = { label ->
-                        controllerRef.value?.startCalibration(label)
+                    onStartCalibration = { label, exportMode, signerId, deviceSessionTag ->
+                        controllerRef.value?.startCalibration(label, exportMode, signerId, deviceSessionTag)
                             ?: Toast.makeText(context, "Start recognition first", Toast.LENGTH_SHORT).show()
                     },
                     onCancelCalibration = { controllerRef.value?.cancelCalibration() }
@@ -1148,12 +1150,33 @@ private fun RecognitionAreaCard(
     }
 }
 
+private fun defaultFslDeviceSessionTag(): String {
+    val device = (Build.MODEL ?: "ANDROID")
+        .trim()
+        .replace(Regex("[^A-Za-z0-9_-]+"), "_")
+        .trim('_')
+        .ifBlank { "ANDROID" }
+    val date = SimpleDateFormat("yyyyMMdd", Locale.US).format(Date())
+    return "${device}_$date"
+}
+
 @Composable
 private fun OneHandCalibrationPanel(
     recognitionRunning: Boolean,
-    onStartCalibration: (String) -> Unit,
+    onStartCalibration: (String, CalibrationExportMode, String, String) -> Unit,
     onCancelCalibration: () -> Unit
 ) {
+    var exportMode by remember { mutableStateOf(CalibrationExportMode.ASL) }
+    var currentExportLabel by remember { mutableStateOf(0) }
+    var signerIdInput by remember { mutableStateOf("") }
+    val deviceSessionTag = remember { defaultFslDeviceSessionTag() }
+    val fslLabels = OneHandCalibrationConfig.FSL_EXPORT_LABELS
+    val selectedFslLabel = fslLabels[currentExportLabel.coerceIn(0, fslLabels.lastIndex)]
+
+    fun advanceFslLabel(delta: Int) {
+        currentExportLabel = (currentExportLabel + delta + fslLabels.size) % fslLabels.size
+    }
+
     Surface(
         modifier = Modifier
             .fillMaxWidth()
@@ -1167,7 +1190,7 @@ private fun OneHandCalibrationPanel(
                 Column(Modifier.weight(1f)) {
                     Text("Onehand162 calibration", color = Primary, fontSize = 12.sp, fontWeight = FontWeight.Bold)
                     Text(
-                        if (recognitionRunning) "Choose a label, then perform one sample." else "Start Recognition before recording.",
+                        if (recognitionRunning) "Choose a mode and label, then perform one sample." else "Start Recognition before recording.",
                         color = TextMuted,
                         fontSize = 11.sp
                     )
@@ -1177,26 +1200,105 @@ private fun OneHandCalibrationPanel(
             Row(
                 modifier = Modifier
                     .padding(top = 10.dp)
-                    .horizontalScroll(rememberScrollState()),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(999.dp))
+                    .background(SoftCyan)
+                    .border(1.dp, Border, RoundedCornerShape(999.dp))
+                    .padding(4.dp),
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
             ) {
-                OneHandCalibrationConfig.CALIBRATION_LABELS.forEach { label ->
-                    Surface(
-                        modifier = Modifier
-                            .height(38.dp)
-                            .clickable(enabled = recognitionRunning) { onStartCalibration(label) },
-                        shape = RoundedCornerShape(999.dp),
-                        color = if (recognitionRunning) SoftCyan else Color(0xFFF1F5F9),
-                        border = BorderStroke(1.dp, Border)
-                    ) {
-                        Box(contentAlignment = Alignment.Center, modifier = Modifier.padding(horizontal = 14.dp)) {
-                            Text(label, color = if (recognitionRunning) Primary else TextFaint, fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                RecognitionModeSegment(
+                    label = "ASL",
+                    selected = exportMode == CalibrationExportMode.ASL,
+                    modifier = Modifier.weight(1f)
+                ) {
+                    exportMode = CalibrationExportMode.ASL
+                }
+                RecognitionModeSegment(
+                    label = "FSL",
+                    selected = exportMode == CalibrationExportMode.FSL,
+                    modifier = Modifier.weight(1f)
+                ) {
+                    exportMode = CalibrationExportMode.FSL
+                }
+            }
+
+            if (exportMode == CalibrationExportMode.ASL) {
+                Row(
+                    modifier = Modifier
+                        .padding(top = 10.dp)
+                        .horizontalScroll(rememberScrollState()),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    OneHandCalibrationConfig.CALIBRATION_LABELS.forEach { label ->
+                        Surface(
+                            modifier = Modifier
+                                .height(38.dp)
+                                .clickable(enabled = recognitionRunning) {
+                                    onStartCalibration(label, CalibrationExportMode.ASL, "", "")
+                                },
+                            shape = RoundedCornerShape(999.dp),
+                            color = if (recognitionRunning) SoftCyan else Color(0xFFF1F5F9),
+                            border = BorderStroke(1.dp, Border)
+                        ) {
+                            Box(contentAlignment = Alignment.Center, modifier = Modifier.padding(horizontal = 14.dp)) {
+                                Text(label, color = if (recognitionRunning) Primary else TextFaint, fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                            }
                         }
                     }
                 }
+            } else {
+                OutlinedTextField(
+                    value = signerIdInput,
+                    onValueChange = { signerIdInput = it },
+                    modifier = Modifier
+                        .padding(top = 10.dp)
+                        .fillMaxWidth(),
+                    singleLine = true,
+                    label = { Text("Signer ID") }
+                )
+                Text(
+                    "Session: $deviceSessionTag",
+                    color = TextFaint,
+                    fontSize = 10.sp,
+                    modifier = Modifier.padding(top = 6.dp)
+                )
+                Row(
+                    modifier = Modifier.padding(top = 10.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    OutlinePillButton("Prev", R.drawable.ic_replay, Modifier.weight(1f)) { advanceFslLabel(-1) }
+                    Surface(
+                        modifier = Modifier
+                            .height(48.dp)
+                            .weight(1.2f),
+                        shape = RoundedCornerShape(14.dp),
+                        color = SoftCyan,
+                        border = BorderStroke(1.dp, Border)
+                    ) {
+                        Box(contentAlignment = Alignment.Center) {
+                            Text(selectedFslLabel, color = Primary, fontSize = 13.sp, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                        }
+                    }
+                    OutlinePillButton("Next", R.drawable.ic_play_arrow, Modifier.weight(1f)) { advanceFslLabel(1) }
+                }
+                FilledPillButton(
+                    label = "Record FSL",
+                    icon = R.drawable.ic_check_circle,
+                    modifier = Modifier
+                        .padding(top = 10.dp)
+                        .fillMaxWidth()
+                ) {
+                    onStartCalibration(selectedFslLabel, CalibrationExportMode.FSL, signerIdInput, deviceSessionTag)
+                }
             }
             Text(
-                "Exports JSON only to Downloads/VoxGestCalibration/onehand162_phrase_v1.",
+                if (exportMode == CalibrationExportMode.FSL) {
+                    "Exports JSON only to Downloads/VoxGestCalibration/fsl_phrase_v1."
+                } else {
+                    "Exports JSON only to Downloads/VoxGestCalibration/onehand162_phrase_v1."
+                },
                 color = TextFaint,
                 fontSize = 10.sp,
                 modifier = Modifier.padding(top = 8.dp)

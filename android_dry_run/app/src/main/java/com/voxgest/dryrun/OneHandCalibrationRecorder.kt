@@ -16,6 +16,9 @@ import java.util.concurrent.atomic.AtomicInteger
 
 data class OneHandCalibrationSample(
     val label: String,
+    val exportMode: CalibrationExportMode = CalibrationExportMode.ASL,
+    val signerId: String = "",
+    val deviceSessionTag: String = "",
     val timestamp: Long,
     val deviceModel: String,
     val activeProfile: String,
@@ -49,7 +52,8 @@ class OneHandCalibrationRecorder(private val context: Context) {
         val timestampText = FILE_STAMP.format(Date(sample.timestamp))
         val deviceName = sanitizeDeviceName(sample.deviceModel)
         val fileName = "${label}_${deviceName}_${timestampText}_${count}.json"
-        val relativePath = "$BASE_RELATIVE_PATH/$label"
+        val calibrationFolder = calibrationFolderFor(sample.exportMode)
+        val relativePath = "Download/$calibrationFolder/$label"
         val body = sample.toJson().toString(2)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -65,17 +69,17 @@ class OneHandCalibrationRecorder(private val context: Context) {
             } ?: throw IllegalStateException("Could not open MediaStore stream for $fileName")
         } else {
             @Suppress("DEPRECATION")
-            val dir = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "$CALIBRATION_FOLDER/$label")
+            val dir = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "$calibrationFolder/$label")
             dir.mkdirs()
             File(dir, fileName).writeText(body, Charsets.UTF_8)
         }
 
-        Log.i(TAG, "calibration_saved path=/sdcard/$relativePath/$fileName label=$label frames=${sample.featureArray.size}")
+        Log.i(TAG, "calibration_saved path=/sdcard/$relativePath/$fileName label=$label mode=${sample.exportMode} frames=${sample.featureArray.size}")
         return OneHandCalibrationSaveResult(fileName, relativePath, count)
     }
 
     private fun OneHandCalibrationSample.toJson(): JSONObject {
-        return JSONObject()
+        val body = JSONObject()
             .put("label", label)
             .put("timestamp", timestamp)
             .put("timestamp_iso", ISO_STAMP.format(Date(timestamp)))
@@ -93,6 +97,13 @@ class OneHandCalibrationRecorder(private val context: Context) {
             .put("motion_score", motionScore)
             .put("wrist_path", wristPath)
             .put("feature_array", featureArray.toJsonArray())
+        if (exportMode == CalibrationExportMode.FSL) {
+            body
+                .put("signer_id", signerId)
+                .put("device_session_tag", deviceSessionTag)
+                .put("fsl_mode", true)
+        }
+        return body
     }
 
     private fun Array<FloatArray>.toJsonArray(): JSONArray {
@@ -110,10 +121,17 @@ class OneHandCalibrationRecorder(private val context: Context) {
         return clean.ifBlank { "ANDROID" }
     }
 
+    private fun calibrationFolderFor(exportMode: CalibrationExportMode): String {
+        return when (exportMode) {
+            CalibrationExportMode.ASL -> ASL_CALIBRATION_FOLDER
+            CalibrationExportMode.FSL -> FSL_CALIBRATION_FOLDER
+        }
+    }
+
     companion object {
         private const val TAG = "VoxGestRecognition"
-        private const val CALIBRATION_FOLDER = "VoxGestCalibration/onehand162_phrase_v1"
-        private const val BASE_RELATIVE_PATH = "Download/$CALIBRATION_FOLDER"
+        private const val ASL_CALIBRATION_FOLDER = "VoxGestCalibration/onehand162_phrase_v1"
+        private const val FSL_CALIBRATION_FOLDER = "VoxGestCalibration/fsl_phrase_v1"
         private val FILE_STAMP = SimpleDateFormat("yyyyMMdd_HHmmss_SSS", Locale.US)
         private val ISO_STAMP = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.US)
     }

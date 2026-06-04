@@ -15,6 +15,8 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
+import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.Locale
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -74,6 +76,9 @@ class VoxGestCameraRecognitionController(
     @Volatile private var statusToken: Long = 0L
     @Volatile private var useBackCamera: Boolean = false
     @Volatile private var calibrationLabel: String = ""
+    @Volatile private var calibrationExportMode: CalibrationExportMode = CalibrationExportMode.ASL
+    @Volatile private var calibrationSignerId: String = ""
+    @Volatile private var calibrationDeviceSessionTag: String = ""
     @Volatile private var calibrationBuffer: LandmarkSequenceBuffer? = null
     @Volatile private var calibrationMissingPoseCount: Int = 0
     @Volatile private var calibrationMissingHandCount: Int = 0
@@ -143,24 +148,55 @@ class VoxGestCameraRecognitionController(
     }
 
     fun startCalibration(label: String) {
+        startCalibration(
+            label = label,
+            exportMode = CalibrationExportMode.ASL,
+            signerId = "",
+            deviceSessionTag = ""
+        )
+    }
+
+    fun startCalibration(
+        label: String,
+        exportMode: CalibrationExportMode,
+        signerId: String,
+        deviceSessionTag: String
+    ) {
         if (!OneHandCalibrationConfig.ENABLE_ONEHAND_CALIBRATION_RECORDING) {
             postStatus("Calibration disabled")
             return
         }
         val clean = label.trim().uppercase(Locale.US)
-        if (clean !in OneHandCalibrationConfig.CALIBRATION_LABELS) {
+        if (clean !in labelsForExportMode(exportMode)) {
             postStatus("Unsupported calibration label")
             return
         }
+        val cleanSignerId = if (exportMode == CalibrationExportMode.FSL) {
+            safeCalibrationToken(signerId, "UNKNOWN_SIGNER")
+        } else {
+            ""
+        }
+        if (exportMode == CalibrationExportMode.FSL && cleanSignerId == "UNKNOWN_SIGNER") {
+            postStatus("Enter signer ID")
+            return
+        }
+        val cleanSessionTag = if (exportMode == CalibrationExportMode.FSL) {
+            safeCalibrationToken(deviceSessionTag, defaultDeviceSessionTag())
+        } else {
+            ""
+        }
         analyzerExecutor.execute {
             calibrationLabel = clean
+            calibrationExportMode = exportMode
+            calibrationSignerId = cleanSignerId
+            calibrationDeviceSessionTag = cleanSessionTag
             calibrationBuffer?.clear()
             calibrationMissingPoseCount = 0
             calibrationMissingHandCount = 0
             oneHandBuffer?.clear()
             clearSequenceState()
             dynamicGate.noteNoOutputState()
-            Log.i(TAG, "calibration_start label=$clean profile=${oneHandProfile?.id ?: "not_loaded"}")
+            Log.i(TAG, "calibration_start label=$clean mode=$exportMode profile=${oneHandProfile?.id ?: "not_loaded"}")
             postStatus("Prepare $clean")
         }
     }
@@ -168,6 +204,9 @@ class VoxGestCameraRecognitionController(
     fun cancelCalibration() {
         analyzerExecutor.execute {
             calibrationLabel = ""
+            calibrationExportMode = CalibrationExportMode.ASL
+            calibrationSignerId = ""
+            calibrationDeviceSessionTag = ""
             calibrationBuffer?.clear()
             calibrationMissingPoseCount = 0
             calibrationMissingHandCount = 0
@@ -420,6 +459,9 @@ class VoxGestCameraRecognitionController(
 
     private fun processCalibration(frame: LandmarkFrame) {
         val label = calibrationLabel
+        val exportMode = calibrationExportMode
+        val signerId = calibrationSignerId
+        val deviceSessionTag = calibrationDeviceSessionTag
         val profile = oneHandProfile
         val buffer = calibrationBuffer
         if (label.isBlank() || profile == null || buffer == null) return
@@ -461,6 +503,9 @@ class VoxGestCameraRecognitionController(
         val wristIndex = selectedPoseWristIndex(profile)
         val sample = OneHandCalibrationSample(
             label = label,
+            exportMode = exportMode,
+            signerId = signerId,
+            deviceSessionTag = deviceSessionTag,
             timestamp = System.currentTimeMillis(),
             deviceModel = Build.MODEL ?: "ANDROID",
             activeProfile = profile.id,
@@ -490,6 +535,9 @@ class VoxGestCameraRecognitionController(
             postStatus("Calibration save failed")
         } finally {
             calibrationLabel = ""
+            calibrationExportMode = CalibrationExportMode.ASL
+            calibrationSignerId = ""
+            calibrationDeviceSessionTag = ""
             buffer.clear()
             calibrationMissingPoseCount = 0
             calibrationMissingHandCount = 0
@@ -626,9 +674,29 @@ class VoxGestCameraRecognitionController(
         oneHandBuffer = null
         fullSignBuffer = null
         calibrationLabel = ""
+        calibrationExportMode = CalibrationExportMode.ASL
+        calibrationSignerId = ""
+        calibrationDeviceSessionTag = ""
         calibrationBuffer = null
         calibrationMissingPoseCount = 0
         calibrationMissingHandCount = 0
+    }
+
+    private fun labelsForExportMode(exportMode: CalibrationExportMode): List<String> {
+        return when (exportMode) {
+            CalibrationExportMode.ASL -> OneHandCalibrationConfig.CALIBRATION_LABELS
+            CalibrationExportMode.FSL -> OneHandCalibrationConfig.FSL_EXPORT_LABELS
+        }
+    }
+
+    private fun safeCalibrationToken(value: String, fallback: String): String {
+        val clean = value.trim().replace(Regex("[^A-Za-z0-9_-]+"), "_").trim('_')
+        return clean.ifBlank { fallback }
+    }
+
+    private fun defaultDeviceSessionTag(): String {
+        val device = safeCalibrationToken(Build.MODEL ?: "ANDROID", "ANDROID")
+        return "${device}_${SESSION_DATE.format(Date())}"
     }
 
     private fun postStatus(status: String) {
@@ -912,6 +980,7 @@ class VoxGestCameraRecognitionController(
         private const val LOST_HAND_ABORT_FRAMES = 8
         private const val STATUS_RESET_DELAY_MS = 1000L
         private const val DEBUG_EXPECTED_ONEHAND_LABEL = ""
+        private val SESSION_DATE = SimpleDateFormat("yyyyMMdd", Locale.US)
     }
 }
 
