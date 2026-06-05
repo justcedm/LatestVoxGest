@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import csv
 import json
 import re
 from collections import defaultdict
@@ -11,7 +12,7 @@ from pathlib import Path
 
 import numpy as np
 
-from fsl_config import FSL_EXPECTED_SHAPE, FSL_FEATURE_SIZE, FSL_LABELS, FSL_SEQUENCE_LENGTH
+from fsl_config import FSL_FEATURE_SIZE, FSL_LABELS, FSL_SEQUENCE_LENGTH
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -20,12 +21,11 @@ REPORTS_DIR = ROOT / "reports" / "fsl"
 VIDEO_EXTENSIONS = {".mp4", ".mov", ".avi", ".mkv", ".webm", ".m4v"}
 POSE_LANDMARK_COUNT = 33
 HAND_LANDMARK_COUNT = 21
-POSE_SIZE = 99
-HAND_SIZE = 63
 WINDOW_STRIDE = 5
 MIN_HAND_PRESENCE_RATIO = 0.65
 MIN_WRIST_MCP_SCALE = 0.001
 Z_DAMPING = 0.3
+FSL_LABEL_LOOKUP = {"".join(ch for ch in label if ch.isalnum()): label for label in FSL_LABELS}
 cv2 = None
 mp = None
 
@@ -52,8 +52,12 @@ def safe_name(value: object) -> str:
     return text.strip("_") or "sample"
 
 
-def clean_label(value: object) -> str:
-    return safe_name(value).upper()
+def compact_label(value: object) -> str:
+    return "".join(ch for ch in str(value).upper() if ch.isalnum())
+
+
+def canonical_fsl_label(value: object) -> str | None:
+    return FSL_LABEL_LOOKUP.get(compact_label(value))
 
 
 def unique_path(path: Path) -> Path:
@@ -72,19 +76,44 @@ def iter_videos(root: Path):
             yield path
 
 
-def infer_label(video_path: Path, root: Path) -> str | None:
+def normalized_path_key(path: Path) -> str:
+    try:
+        return str(path.resolve()).replace("\\", "/").lower()
+    except OSError:
+        return str(path).replace("\\", "/").lower()
+
+
+def build_fsl105_label_map(root: Path) -> dict[str, str]:
+    label_map: dict[str, str] = {}
+    for csv_path in sorted(root.rglob("*.csv")):
+        if csv_path.name.lower() not in {"train.csv", "test.csv"}:
+            continue
+        with csv_path.open("r", encoding="utf-8-sig", newline="") as file:
+            for row in csv.DictReader(file):
+                label = canonical_fsl_label(row.get("label", ""))
+                rel_video = str(row.get("vid_path", "")).strip()
+                if not label or not rel_video:
+                    continue
+                video_path = csv_path.parent / Path(rel_video.replace("\\", "/"))
+                label_map[normalized_path_key(video_path)] = label
+    return label_map
+
+
+def infer_label(video_path: Path, root: Path, csv_label_map: dict[str, str]) -> str | None:
+    mapped = csv_label_map.get(normalized_path_key(video_path))
+    if mapped:
+        return mapped
     try:
         parts = video_path.relative_to(root).parts
     except ValueError:
         parts = video_path.parts
     for part in reversed(parts[:-1]):
-        label = clean_label(part)
-        if label in FSL_LABELS:
+        label = canonical_fsl_label(part)
+        if label:
             return label
-    stem_tokens = re.split(r"[^A-Za-z0-9]+", video_path.stem)
-    for token in stem_tokens:
-        label = clean_label(token)
-        if label in FSL_LABELS:
+    for token in re.split(r"[^A-Za-z0-9]+", video_path.stem):
+        label = canonical_fsl_label(token)
+        if label:
             return label
     return None
 
@@ -142,7 +171,7 @@ def read_video_features(video_path: Path, holistic) -> tuple[list[tuple[int, np.
     return frames, processed
 
 
-def save_window(label: str, video_path: Path, window: list[tuple[int, np.ndarray, bool]], output_root: Path) -> Path:
+def save_window(label: str, video_path: Path, window: list[tuple[int, np.ndarray, bool]], output_root: Path, sequence_length: int) -> Path:
     label_dir = output_root / label
     label_dir.mkdir(parents=True, exist_ok=True)
     start_frame = window[0][0]
@@ -157,7 +186,7 @@ def save_window(label: str, video_path: Path, window: list[tuple[int, np.ndarray
         "window_start_frame": int(start_frame),
         "device_model": "FSL105_VIDEO",
         "signer_id": f"fsl105_{safe_name(video_path.stem)}",
-        "sequence_length_at_export": FSL_SEQUENCE_LENGTH,
+        "sequence_length_at_export": sequence_length,
         "fsl_mode": True,
         "feature_shape": list(seq.shape),
         "hand_presence_ratio": float(sum(1 for _, _, present in window if present) / len(window)),
@@ -167,25 +196,34 @@ def save_window(label: str, video_path: Path, window: list[tuple[int, np.ndarray
     return npy_path
 
 
-def extract_video(label: str, video_path: Path, holistic, output_root: Path) -> dict:
+def extract_video(
+    label: str,
+    video_path: Path,
+    holistic,
+    output_root: Path,
+    sequence_length: int,
+    stride: int,
+    min_hand_presence: float,
+) -> dict:
     frames, processed = read_video_features(video_path, holistic)
+    expected_shape = (sequence_length, FSL_FEATURE_SIZE)
     saved = 0
     skipped_low_hand = 0
     hand_present_frames = sum(1 for _, _, present in frames if present)
     no_hand_majority = bool(frames and hand_present_frames <= (len(frames) / 2.0))
 
-    for start in range(0, max(0, len(frames) - FSL_SEQUENCE_LENGTH + 1), WINDOW_STRIDE):
-        window = frames[start : start + FSL_SEQUENCE_LENGTH]
-        if len(window) != FSL_SEQUENCE_LENGTH:
+    for start in range(0, max(0, len(frames) - sequence_length + 1), max(1, stride)):
+        window = frames[start : start + sequence_length]
+        if len(window) != sequence_length:
             continue
-        hand_presence_ratio = sum(1 for _, _, present in window if present) / FSL_SEQUENCE_LENGTH
-        if hand_presence_ratio < MIN_HAND_PRESENCE_RATIO:
+        hand_presence_ratio = sum(1 for _, _, present in window if present) / sequence_length
+        if hand_presence_ratio < min_hand_presence:
             skipped_low_hand += 1
             continue
         seq = np.asarray([item[1] for item in window], dtype=np.float32)
-        if seq.shape != FSL_EXPECTED_SHAPE:
+        if seq.shape != expected_shape:
             continue
-        save_window(label, video_path, window, output_root)
+        save_window(label, video_path, window, output_root, sequence_length)
         saved += 1
 
     return {
@@ -200,15 +238,22 @@ def extract_video(label: str, video_path: Path, holistic, output_root: Path) -> 
     }
 
 
-def extract_dataset(fsl105_dir: Path, output_root: Path) -> tuple[dict, Path]:
+def extract_dataset(
+    fsl105_dir: Path,
+    output_root: Path,
+    sequence_length: int = FSL_SEQUENCE_LENGTH,
+    stride: int = WINDOW_STRIDE,
+    min_hand_presence: float = MIN_HAND_PRESENCE_RATIO,
+) -> tuple[dict, Path]:
     require_video_dependencies()
     output_root.mkdir(parents=True, exist_ok=True)
     REPORTS_DIR.mkdir(parents=True, exist_ok=True)
 
+    csv_label_map = build_fsl105_label_map(fsl105_dir)
     videos = []
     skipped_unknown_label = []
     for video_path in iter_videos(fsl105_dir):
-        label = infer_label(video_path, fsl105_dir)
+        label = infer_label(video_path, fsl105_dir, csv_label_map)
         if label is None:
             skipped_unknown_label.append(str(video_path))
             continue
@@ -225,7 +270,7 @@ def extract_dataset(fsl105_dir: Path, output_root: Path) -> tuple[dict, Path]:
         min_tracking_confidence=0.5,
     ) as holistic:
         for label, video_path in videos:
-            row = extract_video(label, video_path, holistic, output_root)
+            row = extract_video(label, video_path, holistic, output_root, sequence_length, stride, min_hand_presence)
             rows.append(row)
             per_label[label]["videos"] += 1
             per_label[label]["windows"] += int(row["saved_windows"])
@@ -236,9 +281,11 @@ def extract_dataset(fsl105_dir: Path, output_root: Path) -> tuple[dict, Path]:
     report = {
         "fsl105_dir": str(fsl105_dir),
         "output_root": str(output_root),
-        "expected_shape": list(FSL_EXPECTED_SHAPE),
-        "window": FSL_SEQUENCE_LENGTH,
-        "stride": WINDOW_STRIDE,
+        "expected_shape": [sequence_length, FSL_FEATURE_SIZE],
+        "window": sequence_length,
+        "stride": stride,
+        "min_hand_presence": min_hand_presence,
+        "csv_mapped_videos": len(csv_label_map),
         "videos_seen": len(videos),
         "skipped_unknown_label": skipped_unknown_label,
         "per_label": {label: dict(per_label[label]) for label in FSL_LABELS},
@@ -254,6 +301,7 @@ def print_summary(report: dict, report_path: Path) -> None:
     print("FSL-105 extraction complete")
     print(f"Input : {report['fsl105_dir']}")
     print(f"Output: {report['output_root']}")
+    print(f"CSV mapped videos: {report['csv_mapped_videos']}")
     print("")
     print(f"{'LABEL':<12} {'VIDEOS':>6} {'WINDOWS':>8} {'LOW_HAND':>9}")
     for label in FSL_LABELS:
@@ -274,13 +322,26 @@ def print_summary(report: dict, report_path: Path) -> None:
 def main() -> None:
     parser = argparse.ArgumentParser(description="Extract FSL-105 videos into 20x162 FSL features.")
     parser.add_argument("--fsl105_dir", type=Path, required=True, help="Path to the FSL-105 video folder.")
-    parser.add_argument("--output", type=Path, default=OUTPUT_ROOT)
+    parser.add_argument("--output", "--output_dir", dest="output", type=Path, default=OUTPUT_ROOT)
+    parser.add_argument("--sequence_length", type=int, default=FSL_SEQUENCE_LENGTH)
+    parser.add_argument("--stride", type=int, default=WINDOW_STRIDE)
+    parser.add_argument("--min_hand_presence", type=float, default=MIN_HAND_PRESENCE_RATIO)
     args = parser.parse_args()
 
     if not args.fsl105_dir.exists():
         raise SystemExit(f"FSL-105 directory does not exist: {args.fsl105_dir}")
+    if args.sequence_length <= 0:
+        raise SystemExit("--sequence_length must be positive")
+    if args.stride <= 0:
+        raise SystemExit("--stride must be positive")
 
-    report, report_path = extract_dataset(args.fsl105_dir, args.output)
+    report, report_path = extract_dataset(
+        fsl105_dir=args.fsl105_dir,
+        output_root=args.output,
+        sequence_length=args.sequence_length,
+        stride=args.stride,
+        min_hand_presence=args.min_hand_presence,
+    )
     print_summary(report, report_path)
 
 

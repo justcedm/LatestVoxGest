@@ -16,6 +16,7 @@ ROOT = Path(__file__).resolve().parents[1]
 DATASET_ROOT = ROOT / "external_datasets" / "fsl_features"
 REPORTS_DIR = ROOT / "reports" / "fsl"
 REPORT_PATH = REPORTS_DIR / "audit_report.json"
+DIVERSITY_REPORT_PATH = REPORTS_DIR / "device_diversity_report.json"
 
 
 def load_meta(npy_path: Path) -> dict:
@@ -106,11 +107,13 @@ def audit_dataset(dataset_root: Path):
             "per_device": dict(sorted(device_counts.items())),
         }
 
+    device_diversity_report = build_device_diversity_report(per_label)
     report = {
         "dataset_root": str(dataset_root),
         "expected_shape": list(FSL_EXPECTED_SHAPE),
         "labels": list(FSL_LABELS),
         "per_label": per_label,
+        "device_diversity_report": device_diversity_report,
         "per_device": {
             device: {label: int(labels.get(label, 0)) for label in FSL_LABELS}
             for device, labels in sorted(per_device_label.items())
@@ -121,7 +124,35 @@ def audit_dataset(dataset_root: Path):
         "ready_preferred": all(per_label[label]["preferred_met"] for label in FSL_LABELS),
     }
     REPORT_PATH.write_text(json.dumps(report, indent=2), encoding="utf-8")
+    DIVERSITY_REPORT_PATH.write_text(json.dumps(device_diversity_report, indent=2), encoding="utf-8")
     return report, REPORT_PATH
+
+
+def build_device_diversity_report(per_label: dict) -> dict:
+    labels = {}
+    low_diversity = []
+    for label in FSL_LABELS:
+        item = per_label[label]
+        total = int(item["sequence_count"])
+        signer_count = int(item["unique_signer_count"])
+        device_count = int(item["unique_device_count"])
+        diversity_score = float((signer_count * device_count) / total) if total > 0 else 0.0
+        status = "LOW_DIVERSITY" if diversity_score < 0.02 else "OK"
+        if status == "LOW_DIVERSITY":
+            low_diversity.append(label)
+        labels[label] = {
+            "sequence_count": total,
+            "unique_device_models": item["unique_devices"],
+            "unique_signer_ids": item["unique_signers"],
+            "sequence_count_per_device": item["per_device"],
+            "diversity_score": diversity_score,
+            "status": status,
+        }
+    return {
+        "labels": labels,
+        "low_diversity_labels": low_diversity,
+        "formula": "(unique_signers * unique_devices) / total_sequences",
+    }
 
 
 def yes_no(value: bool) -> str:
@@ -145,6 +176,17 @@ def print_ready_table(report: dict, report_path: Path) -> None:
     print(f"Ready minimum   : {report['ready_minimum']}")
     print(f"Ready preferred : {report['ready_preferred']}")
     print(f"Report          : {report_path}")
+    print("")
+    print("Device diversity")
+    for label in FSL_LABELS:
+        item = report["device_diversity_report"]["labels"][label]
+        signer_word = "signer" if len(item["unique_signer_ids"]) == 1 else "signers"
+        device_word = "device" if len(item["unique_device_models"]) == 1 else "devices"
+        print(
+            f"{label}: {item['sequence_count']} seqs | {len(item['unique_signer_ids'])} {signer_word} | "
+            f"{len(item['unique_device_models'])} {device_word} | diversity={item['diversity_score']:.3f} {item['status']}"
+        )
+    print(f"Diversity report: {DIVERSITY_REPORT_PATH}")
 
 
 def main() -> None:
