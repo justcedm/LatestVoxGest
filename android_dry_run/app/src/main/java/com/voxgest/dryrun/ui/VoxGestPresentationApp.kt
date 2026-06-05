@@ -35,19 +35,26 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -65,6 +72,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.Typography
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -100,6 +108,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import com.voxgest.app.avatar.AvatarController
@@ -174,6 +183,21 @@ private data class PhraseUi(
     val color: Color
 )
 
+private val QuickPhrases = listOf(
+    PhraseUi("I need help", R.drawable.ic_warning, Color(0xFFF97316)),
+    PhraseUi("Call a doctor", R.drawable.ic_medical, PrimaryLight),
+    PhraseUi("I need water", R.drawable.ic_water_drop, Blue),
+    PhraseUi("Stop", R.drawable.ic_hand_gesture, Red),
+    PhraseUi("Please wait", R.drawable.ic_clock, Amber),
+    PhraseUi("Thank you", R.drawable.ic_hand_gesture, Purple),
+    PhraseUi("Yes", R.drawable.ic_check_circle, Green),
+    PhraseUi("No", R.drawable.ic_no_circle, Red),
+    PhraseUi("What is your name?", R.drawable.ic_chat, Primary),
+    PhraseUi("Are you okay?", R.drawable.ic_check_circle, Green),
+    PhraseUi("Are you a student?", R.drawable.ic_chat, Blue),
+    PhraseUi("Where do you live?", R.drawable.ic_history, Purple)
+)
+
 private val DemoTokenWords = listOf(
     "WHAT",
     "YOUR",
@@ -230,7 +254,7 @@ private val HAND_CONNECTIONS = listOf(
 )
 
 @Composable
-fun VoxGestPresentationApp() {
+fun VoxGestPresentationApp(windowSizeClass: WindowSizeClass) {
     var selectedTab by remember { mutableStateOf(VoxTab.Sign) }
     var currentWord by remember { mutableStateOf("") }
     var sentence by remember { mutableStateOf("") }
@@ -378,34 +402,35 @@ fun VoxGestPresentationApp() {
         }
     }
 
-    MaterialTheme(
-        colorScheme = lightColorScheme(
-            primary = Primary,
-            onPrimary = DarkInk,
-            background = AppBg,
-            surface = CardWhite,
-            onSurface = TextMain
-        ),
-        typography = Typography()
-    ) {
-        Scaffold(
-            containerColor = AppBg,
-            bottomBar = {
-                BottomNavBar(
-                    selectedTab = selectedTab,
-                    onTabSelected = { selectedTab = it }
-                )
-            }
-        ) { innerPadding ->
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(AppBg)
-                    .padding(innerPadding)
-            ) {
-                Box(modifier = Modifier.weight(1f)) {
-                    when (selectedTab) {
-                        VoxTab.Sign -> SignScreen(
+    CompositionLocalProvider(LocalWindowSizeClass provides windowSizeClass) {
+        MaterialTheme(
+            colorScheme = lightColorScheme(
+                primary = Primary,
+                onPrimary = DarkInk,
+                background = AppBg,
+                surface = CardWhite,
+                onSurface = TextMain
+            ),
+            typography = Typography()
+        ) {
+            Scaffold(
+                containerColor = AppBg,
+                bottomBar = {
+                    BottomNavBar(
+                        selectedTab = selectedTab,
+                        onTabSelected = { selectedTab = it }
+                    )
+                }
+            ) { innerPadding ->
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(AppBg)
+                        .padding(innerPadding)
+                ) {
+                    Box(modifier = Modifier.weight(1f)) {
+                        when (selectedTab) {
+                            VoxTab.Sign -> SignScreen(
                             currentWord = currentWord,
                             sentence = sentence,
                             recognitionRunning = recognitionRunning,
@@ -447,8 +472,8 @@ fun VoxGestPresentationApp() {
                             onAcceptedRecognition = { result -> addDemoToken(result.label) },
                             demoTokens = demoTokenBuffer.toDemoTokens(),
                             onDemoToken = { addDemoToken(it) }
-                        )
-                        VoxTab.Listen -> ListenScreen(
+                            )
+                            VoxTab.Listen -> ListenScreen(
                             pendingAvatarText = pendingAvatarText,
                             pendingAvatarRequestId = pendingAvatarRequestId,
                             onSpeechSaved = { text ->
@@ -456,8 +481,8 @@ fun VoxGestPresentationApp() {
                                     history.add(0, HistoryUiEntry("Today", "Speech", text, nowLabel(), "Shown in signs", R.drawable.ic_waveform, Primary))
                                 }
                             }
-                        )
-                        VoxTab.Phrases -> PhrasesScreen(
+                            )
+                            VoxTab.Phrases -> PhrasesScreen(
                             selectedPhrase = selectedPhrase,
                             onPhrase = { phrase ->
                                 if (isMeaningfulOutput(phrase)) {
@@ -467,8 +492,8 @@ fun VoxGestPresentationApp() {
                                     queueAvatarPhrase(phrase)
                                 }
                             }
-                        )
-                        VoxTab.History -> HistoryScreen(
+                            )
+                            VoxTab.History -> HistoryScreen(
                             entries = history,
                             onClearAll = { history.clear() },
                             onReplay = { entry ->
@@ -477,7 +502,8 @@ fun VoxGestPresentationApp() {
                                     queueAvatarPhrase(entry.text)
                                 }
                             }
-                        )
+                            )
+                        }
                     }
                 }
             }
@@ -686,7 +712,9 @@ private fun SignScreen(
             )
         }
         Row(
-            modifier = Modifier.padding(horizontal = 20.dp, vertical = 10.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 10.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             ActionButton(R.drawable.ic_volume_up, "Speak", Primary, Modifier.weight(1f), onSpeak)
@@ -761,14 +789,18 @@ private fun DebugSettingsPanel(
     flipLandmarksHorizontal: Boolean,
     onFlipLandmarksHorizontalChange: (Boolean) -> Unit
 ) {
-    VoxGestCard(modifier = Modifier.padding(horizontal = 20.dp, vertical = 4.dp)) {
+    VoxGestCard(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 4.dp)
+    ) {
         Text("Debug Settings", color = Primary, fontSize = 13.sp, fontWeight = FontWeight.Bold)
         Spacer(Modifier.height(10.dp))
         Button(
             onClick = { onFlipLandmarksHorizontalChange(!flipLandmarksHorizontal) },
             modifier = Modifier
                 .fillMaxWidth()
-                .height(42.dp),
+                .heightIn(min = 42.dp),
             shape = RoundedCornerShape(999.dp),
             colors = ButtonDefaults.buttonColors(containerColor = if (flipLandmarksHorizontal) Primary else CardWhite),
             border = BorderStroke(1.dp, if (flipLandmarksHorizontal) Primary else Border)
@@ -838,7 +870,11 @@ private fun AccuracyDebugPanel(
     val totalCorrect = stats.values.sumOf { it.correct }
     val overall = if (totalAttempts == 0) 0 else ((totalCorrect.toFloat() / totalAttempts.toFloat()) * 100f).toInt()
 
-    VoxGestCard(modifier = Modifier.padding(horizontal = 20.dp, vertical = 4.dp)) {
+    VoxGestCard(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 4.dp)
+    ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f)) {
                 Text("Live Accuracy Test", color = Primary, fontSize = 13.sp, fontWeight = FontWeight.Bold)
@@ -959,7 +995,12 @@ private fun RecognitionAreaCard(
         }
     }
 
-    VoxGestCard(modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp)) {
+    val buttonTextSize = adaptiveSp(12, 14, 16)
+    VoxGestCard(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+    ) {
         AnimatedVisibility(visible = namePhraseHint.isNotBlank()) {
             Text(
                 namePhraseHint,
@@ -972,7 +1013,7 @@ private fun RecognitionAreaCard(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(400.dp)
+                .aspectRatio(4f / 3f)
                 .clip(RoundedCornerShape(22.dp))
                 .background(Color.Black)
                 .border(1.dp, Border, RoundedCornerShape(22.dp))
@@ -1093,7 +1134,9 @@ private fun RecognitionAreaCard(
         }
         if (presentationMode) {
             Row(
-                modifier = Modifier.padding(top = 14.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 14.dp),
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 Button(
@@ -1107,11 +1150,12 @@ private fun RecognitionAreaCard(
                         .weight(1f)
                         .height(48.dp),
                     shape = RoundedCornerShape(14.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Primary)
+                    colors = ButtonDefaults.buttonColors(containerColor = Primary),
+                    contentPadding = PaddingValues(horizontal = 6.dp, vertical = 0.dp)
                 ) {
                     VoxIcon(R.drawable.ic_play_arrow, "Start Recognition", DarkInk, Modifier.size(18.dp))
                     Spacer(Modifier.width(7.dp))
-                    Text("Start Recognition", color = DarkInk, fontSize = 12.sp, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    Text("Start", color = DarkInk, fontSize = buttonTextSize, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 }
                 Button(
                     onClick = {
@@ -1123,11 +1167,12 @@ private fun RecognitionAreaCard(
                         .height(48.dp),
                     shape = RoundedCornerShape(14.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = CardWhite, contentColor = Primary),
-                    border = BorderStroke(1.dp, Border)
+                    border = BorderStroke(1.dp, Border),
+                    contentPadding = PaddingValues(horizontal = 6.dp, vertical = 0.dp)
                 ) {
                     VoxIcon(R.drawable.ic_cancel, "Stop Recognition", Primary, Modifier.size(18.dp))
                     Spacer(Modifier.width(7.dp))
-                    Text("Stop Recognition", color = Primary, fontSize = 12.sp, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    Text("Stop", color = Primary, fontSize = buttonTextSize, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 }
                 Button(
                     onClick = {
@@ -1139,11 +1184,12 @@ private fun RecognitionAreaCard(
                         .height(48.dp),
                     shape = RoundedCornerShape(14.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = CardWhite, contentColor = Primary),
-                    border = BorderStroke(1.dp, Border)
+                    border = BorderStroke(1.dp, Border),
+                    contentPadding = PaddingValues(horizontal = 6.dp, vertical = 0.dp)
                 ) {
                     VoxIcon(R.drawable.ic_camera_off, "Switch Camera", Primary, Modifier.size(18.dp))
                     Spacer(Modifier.width(7.dp))
-                    Text("Switch Cam", color = Primary, fontSize = 12.sp, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    Text("Switch", color = Primary, fontSize = buttonTextSize, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 }
             }
         }
@@ -1195,7 +1241,7 @@ private fun OneHandCalibrationPanel(
                         fontSize = 11.sp
                     )
                 }
-                OutlinePillButton("Cancel", R.drawable.ic_cancel, Modifier.width(104.dp), onCancelCalibration)
+                OutlinePillButton("Cancel", R.drawable.ic_cancel, Modifier.weight(0.55f), onCancelCalibration)
             }
             Row(
                 modifier = Modifier
@@ -1591,7 +1637,11 @@ private fun CurrentWordCard(word: String) {
     val clean = word.trim()
     val hasWord = isMeaningfulOutput(clean)
     val displayWord = if (hasWord) clean.uppercase(Locale.US) else "No word yet"
-    VoxGestCard(modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp)) {
+    VoxGestCard(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+    ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Label("CURRENT WORD", Modifier.weight(1f))
         }
@@ -1605,7 +1655,7 @@ private fun CurrentWordCard(word: String) {
             Text(
                 displayWord,
                 color = if (hasWord) Primary else TextFaint,
-                fontSize = if (hasWord) 30.sp else 18.sp,
+                fontSize = adaptiveSp(22, 28, 34),
                 fontWeight = if (hasWord) FontWeight.Bold else FontWeight.SemiBold
             )
         }
@@ -1617,7 +1667,11 @@ private fun DemoTokenPanel(
     tokens: List<String>,
     onToken: (String) -> Unit
 ) {
-    VoxGestCard(modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp)) {
+    VoxGestCard(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 12.dp)
+    ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f)) {
                 Label("NAME SPELLING ASSIST")
@@ -1668,6 +1722,7 @@ private fun DemoTokenPanel(
 @Composable
 private fun DemoTokenButton(label: String, tint: Color, modifier: Modifier, onClick: () -> Unit) {
     val isSpeak = label == "SPEAK"
+    val buttonTextSize = adaptiveSp(12, 14, 16)
     Surface(
         modifier = modifier
             .height(46.dp)
@@ -1682,7 +1737,7 @@ private fun DemoTokenButton(label: String, tint: Color, modifier: Modifier, onCl
             Text(
                 label,
                 color = if (isSpeak) DarkInk else tint,
-                fontSize = 11.sp,
+                fontSize = buttonTextSize,
                 fontWeight = FontWeight.Bold,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
@@ -1694,12 +1749,17 @@ private fun DemoTokenButton(label: String, tint: Color, modifier: Modifier, onCl
 @Composable
 private fun SentenceCard(sentence: String, onSpeak: () -> Unit) {
     val hasSentence = isMeaningfulOutput(sentence)
-    VoxGestCard(modifier = Modifier.padding(horizontal = 20.dp)) {
+    val sentenceTextSize = adaptiveSp(16, 20, 24)
+    VoxGestCard(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+    ) {
         Label("SENTENCE")
         Text(
             if (hasSentence) sentence else "No sentence yet.",
             color = if (hasSentence) Primary else TextFaint,
-            fontSize = if (hasSentence) 20.sp else 16.sp,
+            fontSize = sentenceTextSize,
             lineHeight = 27.sp,
             fontWeight = if (hasSentence) FontWeight.Bold else FontWeight.SemiBold,
             modifier = Modifier.padding(top = 10.dp)
@@ -1734,6 +1794,7 @@ private fun ActionButton(
     modifier: Modifier,
     onClick: () -> Unit
 ) {
+    val buttonTextSize = adaptiveSp(12, 14, 16)
     Card(
         modifier = modifier
             .height(74.dp)
@@ -1746,7 +1807,7 @@ private fun ActionButton(
         Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
             VoxIcon(icon, label, tint, Modifier.size(22.dp))
             Spacer(Modifier.height(7.dp))
-            Text(label, color = TextMain, fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
+            Text(label, color = TextMain, fontSize = buttonTextSize, fontWeight = FontWeight.SemiBold)
         }
     }
 }
@@ -1922,7 +1983,11 @@ private fun SpeechTranscriptCard(
     onMicTap: () -> Unit
 ) {
     val hasTranscript = isMeaningfulOutput(transcript)
-    VoxGestCard(modifier = Modifier.padding(horizontal = 20.dp)) {
+    VoxGestCard(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+    ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Label("SPEECH TRANSCRIPT", Modifier.weight(1f))
             VoxIcon(R.drawable.ic_volume_up, "Speak transcript", TextMuted, Modifier.size(17.dp))
@@ -1980,9 +2045,9 @@ private fun AvatarCard(
     val isAnalyzing = avatarState.status == AvatarStatus.ANALYZING
     Box(
         modifier = Modifier
-            .padding(horizontal = 20.dp)
             .fillMaxWidth()
-            .height(292.dp)
+            .padding(horizontal = 16.dp)
+            .aspectRatio(1f)
     ) {
         Card(
             modifier = Modifier.matchParentSize(),
@@ -2039,7 +2104,9 @@ private fun AvatarCard(
                             overflow = TextOverflow.Ellipsis
                         )
                         Row(
-                            modifier = Modifier.padding(top = 10.dp),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 10.dp),
                             horizontalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
                             OutlinePillButton("Replay", R.drawable.ic_replay, Modifier.weight(1f), onReplay)
@@ -2063,7 +2130,8 @@ private fun AvatarCard(
         )
         Row(
             modifier = Modifier
-                .padding(horizontal = 20.dp, vertical = 8.dp)
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 8.dp)
                 .horizontalScroll(rememberScrollState()),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
@@ -2136,21 +2204,46 @@ private fun AnalyzingAvatarOverlay(modifier: Modifier = Modifier) {
 
 @Composable
 private fun PhrasesScreen(selectedPhrase: String, onPhrase: (String) -> Unit) {
-    ScreenScroll {
-        ScreenTopBar("PHRASES", R.drawable.ic_search)
-        QuickPhraseHero()
-        SelectedPhraseCard(selectedPhrase)
-        CategoryChips()
-        PhraseGrid(onPhrase)
-        PresentationBuildFooter()
-        Spacer(Modifier.height(16.dp))
+    LazyVerticalGrid(
+        columns = GridCells.Adaptive(minSize = 160.dp),
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 16.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        item(span = { GridItemSpan(maxLineSpan) }) {
+            ScreenTopBar("PHRASES", R.drawable.ic_search)
+        }
+        item(span = { GridItemSpan(maxLineSpan) }) {
+            QuickPhraseHero()
+        }
+        item(span = { GridItemSpan(maxLineSpan) }) {
+            SelectedPhraseCard(selectedPhrase)
+        }
+        item(span = { GridItemSpan(maxLineSpan) }) {
+            CategoryChips()
+        }
+        items(QuickPhrases) { phrase ->
+            PhraseCard(
+                phrase = phrase,
+                modifier = Modifier.fillMaxWidth(),
+                onClick = { onPhrase(phrase.label) }
+            )
+        }
+        item(span = { GridItemSpan(maxLineSpan) }) {
+            PresentationBuildFooter()
+        }
     }
 }
 
 @Composable
 private fun SelectedPhraseCard(selectedPhrase: String) {
     if (!isMeaningfulOutput(selectedPhrase)) return
-    VoxGestCard(modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp)) {
+    VoxGestCard(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 12.dp)
+    ) {
         Label("SELECTED PHRASE")
         Text(
             selectedPhrase,
@@ -2167,14 +2260,18 @@ private fun SelectedPhraseCard(selectedPhrase: String) {
 private fun QuickPhraseHero() {
     Box(
         modifier = Modifier
-            .padding(horizontal = 20.dp)
             .fillMaxWidth()
-            .height(132.dp)
+            .aspectRatio(16f / 6f)
+            .heightIn(min = 124.dp)
             .clip(RoundedCornerShape(22.dp))
             .background(Brush.linearGradient(listOf(Primary, PrimaryLight)))
             .padding(20.dp)
     ) {
-        Column(Modifier.align(Alignment.CenterStart).width(190.dp)) {
+        Column(
+            Modifier
+                .align(Alignment.CenterStart)
+                .fillMaxWidth(0.64f)
+        ) {
             Text("Quick Phrases", color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold)
             Text(
                 "Tap a phrase to show it in sign or speak it out.",
@@ -2206,7 +2303,7 @@ private fun QuickPhraseHero() {
 private fun CategoryChips() {
     Row(
         modifier = Modifier
-            .padding(horizontal = 20.dp, vertical = 16.dp)
+            .padding(vertical = 16.dp)
             .horizontalScroll(rememberScrollState()),
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
@@ -2231,36 +2328,6 @@ private fun CategoryChip(label: String, @DrawableRes icon: Int, tint: Color, bg:
     ) {
         VoxIcon(icon, label, tint, Modifier.size(16.dp))
         Text(label, color = tint, fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
-    }
-}
-
-@Composable
-private fun PhraseGrid(onPhrase: (String) -> Unit) {
-    val phrases = listOf(
-        PhraseUi("I need help", R.drawable.ic_warning, Color(0xFFF97316)),
-        PhraseUi("Call a doctor", R.drawable.ic_medical, PrimaryLight),
-        PhraseUi("I need water", R.drawable.ic_water_drop, Blue),
-        PhraseUi("Stop", R.drawable.ic_hand_gesture, Red),
-        PhraseUi("Please wait", R.drawable.ic_clock, Amber),
-        PhraseUi("Thank you", R.drawable.ic_hand_gesture, Purple),
-        PhraseUi("Yes", R.drawable.ic_check_circle, Green),
-        PhraseUi("No", R.drawable.ic_no_circle, Red),
-        PhraseUi("What is your name?", R.drawable.ic_chat, Primary),
-        PhraseUi("Are you okay?", R.drawable.ic_check_circle, Green),
-        PhraseUi("Are you a student?", R.drawable.ic_chat, Blue),
-        PhraseUi("Where do you live?", R.drawable.ic_history, Purple)
-    )
-    Column(
-        modifier = Modifier.padding(horizontal = 20.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        phrases.chunked(2).forEach { row ->
-            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                row.forEach { phrase ->
-                    PhraseCard(phrase = phrase, modifier = Modifier.weight(1f), onClick = { onPhrase(phrase.label) })
-                }
-            }
-        }
     }
 }
 
@@ -2306,7 +2373,7 @@ private fun HistoryScreen(
             modifier = Modifier
                 .padding(horizontal = 20.dp, vertical = 12.dp)
                 .fillMaxWidth()
-                .height(52.dp),
+                .heightIn(min = 52.dp),
             shape = RoundedCornerShape(16.dp),
             colors = ButtonDefaults.buttonColors(containerColor = Primary)
         ) {
@@ -2471,6 +2538,7 @@ private fun StatusChip(
 
 @Composable
 private fun OutlinePillButton(label: String, @DrawableRes icon: Int, modifier: Modifier, onClick: () -> Unit) {
+    val buttonTextSize = adaptiveSp(12, 14, 16)
     Row(
         modifier = modifier
             .height(48.dp)
@@ -2483,12 +2551,13 @@ private fun OutlinePillButton(label: String, @DrawableRes icon: Int, modifier: M
     ) {
         VoxIcon(icon, label, Primary, Modifier.size(18.dp))
         Spacer(Modifier.width(7.dp))
-        Text(label, color = Primary, fontSize = 12.sp, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis)
+        Text(label, color = Primary, fontSize = buttonTextSize, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis)
     }
 }
 
 @Composable
 private fun FilledPillButton(label: String, @DrawableRes icon: Int, modifier: Modifier, onClick: () -> Unit) {
+    val buttonTextSize = adaptiveSp(12, 14, 16)
     Row(
         modifier = modifier
             .height(48.dp)
@@ -2500,7 +2569,7 @@ private fun FilledPillButton(label: String, @DrawableRes icon: Int, modifier: Mo
     ) {
         VoxIcon(icon, label, DarkInk, Modifier.size(18.dp))
         Spacer(Modifier.width(7.dp))
-        Text(label, color = DarkInk, fontSize = 12.sp, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis)
+        Text(label, color = DarkInk, fontSize = buttonTextSize, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis)
     }
 }
 
@@ -2572,7 +2641,7 @@ private fun BottomNavBar(selectedTab: VoxTab, onTabSelected: (VoxTab) -> Unit) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(78.dp)
+                .heightIn(min = 78.dp)
                 .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 10.dp),
             horizontalArrangement = Arrangement.SpaceAround,
             verticalAlignment = Alignment.CenterVertically
