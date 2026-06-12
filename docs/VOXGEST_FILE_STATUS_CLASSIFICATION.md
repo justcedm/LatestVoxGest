@@ -25,6 +25,8 @@
 | `scripts_ml/71_audit_android_onehand_exports.py` | EXPERIMENTAL/NEEDS_UPDATE | Still expects 30x162. |
 | `scripts_ml/72_train_android_calibrated_onehand162.py` | EXPERIMENTAL/NEEDS_UPDATE | Still expects 30x162. |
 | `scripts_ml/check_20f_npy_shapes.py` | EXPERIMENTAL | Untracked 20-frame helper. |
+| `scripts_ml/73_setup_fsl_dataset_dirs.py` through `scripts_ml/78_train_fsl_rdtcn.py` | EXPERIMENTAL | Future FSL 20x162 data/model branch, not current ASL runtime. |
+| `scripts_ml/fsl_config.py` | EXPERIMENTAL | Shared constants for future FSL branch. |
 | `model/runtime_manifest_onehand162_*.json` | GENERATED/NEEDS_SYNC | Root copies still say 30-frame. |
 | `reports/` | GENERATED | Evaluation, merge, import, audit, training outputs. |
 | `tools/VoxGest_Recorder_*` | BACKUP | Portable recorder packs. |
@@ -492,6 +494,20 @@
 | `tools/VoxGest_Recorder_Pack/scripts_ml/token_composer.py` | BACKUP | utility | Duplicate/snapshot of external_datasets/team_incoming_recorded_features/ANASTACIA/phrase_zip_20260524_VoxGest_Recorder_Anastacia_PhraseV1_FIXED3/scripts_ml/token_composer.py. Token composer for accepted predictions. Risk: Python desktop equivalent of Android token behavior. |
 | `tools/VoxGest_Recorder_Pack/scripts_ml/word_config.py` | BACKUP | configuration | Duplicate/snapshot of tools/VoxGest_Recorder_Anastacia/scripts_ml/word_config.py. Shared desktop word vocabulary/config. Risk: Android uses separate runtime assets. |
 | `voxgest_blender_avatar.py` | EXPERIMENTAL | utility | Blender avatar generation script. Risk: Run only in Blender. |
+
+## 2026-06-12 Current Project Python Status Addendum
+
+These current project files were added after the older generated status table above and are explicitly classified here.
+
+| Path | Status | Stage | Reason |
+|---|---|---|---|
+| `scripts_ml/73_setup_fsl_dataset_dirs.py` | EXPERIMENTAL | utility/import setup | Future FSL directory setup; writes ignored local folders only. |
+| `scripts_ml/74_import_fsl_exports.py` | EXPERIMENTAL | import | Future FSL JSON-to-20x162 feature importer. |
+| `scripts_ml/75_audit_fsl_dataset.py` | EXPERIMENTAL | audit | Future FSL feature and device-diversity audit. |
+| `scripts_ml/76_extract_fsl105_features.py` | EXPERIMENTAL | preprocessing | Future FSL-105 video extraction path requiring OpenCV/MediaPipe. |
+| `scripts_ml/77_record_pc_webcam_fsl.py` | EXPERIMENTAL | recording | Experimental PC-webcam FSL recorder. |
+| `scripts_ml/78_train_fsl_rdtcn.py` | EXPERIMENTAL | training/export | Future FSL RD-TCN trainer; should wait for audit-ready data. |
+| `scripts_ml/fsl_config.py` | EXPERIMENTAL | configuration | Shared FSL constants for scripts `73` through `78`. |
 
 ## Generated Dependency Python File Status Inventory
 

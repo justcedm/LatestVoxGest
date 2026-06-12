@@ -2,10 +2,11 @@
 
 ## Scope And Method
 
-- Repository `.py` files found with ignored/generated paths included: 20971.
-- Reviewed individually: 454 VoxGest-authored/project `.py` files outside generated dependency environments.
+- Repository `.py` files found with ignored/generated paths included: 20978.
+- Reviewed individually: 461 VoxGest-authored/project `.py` files outside generated dependency environments.
 - Generated Python dependency files listed individually in the appendix: 20517 environment/package `.py` files (`voxgest_env` plus recorder/site-packages environments).
-- Project-source status counts: ACTIVE=3, BACKUP=244, EXPERIMENTAL=18, GENERATED=147, LEGACY=42. Generated dependency files are counted separately.
+- Project-source status counts: ACTIVE=3, BACKUP=244, EXPERIMENTAL=25, GENERATED=147, LEGACY=42. Generated dependency files are counted separately.
+- 2026-06-12 update: this review adds the FSL 20-frame research scripts `73_setup_fsl_dataset_dirs.py` through `78_train_fsl_rdtcn.py` plus `fsl_config.py`.
 
 ## Canonical Script Roles
 
@@ -61,11 +62,18 @@
 | `70_import_android_onehand_exports.py` | Imports Android calibration JSON exports to .npy. | Phone JSON exports. | 20x162 .npy/meta and import report. | import | ACTIVE | Active ingress; root copy has 20-frame guard. |
 | `71_audit_android_onehand_exports.py` | Audits imported Android onehand samples. | Android .npy/meta dataset. | Audit JSON report. | audit | EXPERIMENTAL | Root copy still expects 30x162 and needs update. |
 | `72_train_android_calibrated_onehand162.py` | Trains Android-calibrated onehand162 TCN. | Imported Android feature dataset. | H5/TFLite/labels/manifest/report. | training | EXPERIMENTAL | Root copy still expects 30x162 and needs update. |
+| `73_setup_fsl_dataset_dirs.py` | Creates FSL phone-export, feature, and report directory structure. | fsl_config labels/constants. | external_datasets/fsl_phone_exports, external_datasets/fsl_features, reports/fsl. | utility/import setup | EXPERIMENTAL | Future FSL branch, additive setup only. |
+| `74_import_fsl_exports.py` | Imports FSL Android calibration JSON exports into 20x162 .npy features. | external_datasets/fsl_phone_exports JSON. | external_datasets/fsl_features .npy/.meta.json and fsl import report. | import | EXPERIMENTAL | Future FSL path, separate from active ASL runtime. |
+| `75_audit_fsl_dataset.py` | Audits imported FSL 20x162 samples and device diversity. | external_datasets/fsl_features. | reports/fsl/audit_report.json and device_diversity_report.json. | audit | EXPERIMENTAL | Future FSL quality gate. |
+| `76_extract_fsl105_features.py` | Extracts 20x162 FSL windows from FSL-105 videos. | FSL-105 videos, OpenCV, MediaPipe. | external_datasets/fsl_features and fsl105 extraction report. | preprocessing | EXPERIMENTAL | Requires video dependencies; not active Android runtime. |
+| `77_record_pc_webcam_fsl.py` | Records FSL 20x162 JSON exports from a PC webcam. | Webcam, OpenCV, MediaPipe. | FSL JSON exports under external_datasets/fsl_phone_exports. | recording | EXPERIMENTAL | Experimental PC recorder, not phone runtime. |
+| `78_train_fsl_rdtcn.py` | Trains future FSL residual dilated TCN model. | external_datasets/fsl_features ready labels. | FSL H5/TFLite/report/manifest. | training | EXPERIMENTAL | Explicitly should wait for enough audited FSL labels. |
 | `check_20f_npy_shapes.py` | Checks 20-frame Android .npy shapes. | external_datasets/android_onehand162_20f_features. | Console counts/failure. | audit | EXPERIMENTAL | Untracked helper; folder differs from importer output. |
 | `clean_backcam_patch.py` | One-off Android back-camera patch helper. | Android Kotlin files. | Modified Kotlin/backups if run. | utility | BACKUP | Absolute paths; do not rerun casually. |
 | `export_tflite_fixed.py` | Utility to export/verify Keras models to TFLite. | Keras model context. | TFLite and verification output. | export | LEGACY | Active trainers export internally. |
 | `fix_backcam_log.py` | One-off back-camera log patch helper. | Android controller file. | Modified Kotlin if run. | utility | BACKUP | Absolute paths. |
 | `frame_quality_gate.py` | Desktop landmark quality gate. | MediaPipe landmarks/windows. | Quality decisions. | utility | LEGACY | Android has Kotlin gates. |
+| `fsl_config.py` | Shared constants for future FSL data/model scripts. | None. | FSL labels, 20-frame shape, minimum/preferred counts. | configuration | EXPERIMENTAL | Future FSL branch, not active ASL runtime. |
 | `gesture_segmenter.py` | Endpoint gesture segmenter. | Per-frame features/motion. | Gesture windows. | preprocessing | EXPERIMENTAL | Phrase-intent branch. |
 | `lstm_features.py` | Shared Python feature builder. | MediaPipe landmarks. | 162/225 feature arrays. | preprocessing | LEGACY | Android has Kotlin equivalent. |
 | `motion_letter_config.py` | Motion-letter config. | Environment/labels. | Normalized labels/config. | configuration | LEGACY | Separate alphabet branch. |
@@ -82,6 +90,20 @@
 | `token_composer.py` | Token composer for accepted predictions. | Accepted labels. | TokenResult sentence actions. | utility | LEGACY | Python desktop equivalent of Android token behavior. |
 | `voxgest_blender_avatar.py` | Blender avatar generation script. | Blender Python API. | Generated scene/avatar. | utility | EXPERIMENTAL | Run only in Blender. |
 | `word_config.py` | Shared desktop word vocabulary/config. | Environment variables. | Word lists/normalization. | configuration | LEGACY | Android uses separate runtime assets. |
+
+## 2026-06-12 Current Project Python Addendum
+
+These files are present in the current working tree and were not covered by the older generated table below. They are listed here explicitly so no current project Python file is skipped.
+
+| Path | Purpose | Inputs | Outputs | Main Functions/Classes | Dependencies | How To Run | Stage | Status | Connections | Risks/Issues | Lines |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| `scripts_ml/73_setup_fsl_dataset_dirs.py` | Creates FSL phone-export, feature, and report directories. | `fsl_config.FSL_LABELS`. | `external_datasets/fsl_phone_exports`, `external_datasets/fsl_features`, `reports/fsl`, README. | `count_files`, `setup_dirs`, `main` | `pathlib`, `fsl_config` | `python scripts_ml/73_setup_fsl_dataset_dirs.py` | utility/import setup | EXPERIMENTAL | Starts the future FSL data branch. | Additive setup only; writes ignored local folders. | 53 |
+| `scripts_ml/74_import_fsl_exports.py` | Imports FSL Android calibration JSON exports into 20x162 `.npy` features. | FSL phone JSON exports. | `external_datasets/fsl_features`, `.meta.json`, `reports/fsl/fsl_import_report.json`, device registry. | `safe_name`, `relative_text`, `unique_path`, `iter_exports`, `load_export`, `load_device_registry`, `save_device_registry`, `signer_id_for`, `import_exports`, `main` | `argparse`, `json`, `re`, `collections`, `datetime`, `pathlib`, `numpy`, `fsl_config` | `python scripts_ml/74_import_fsl_exports.py --source <dir> --output <dir>` | import | EXPERIMENTAL | FSL equivalent of Android onehand importer. | Separate future FSL branch, not active ASL Android runtime. | 205 |
+| `scripts_ml/75_audit_fsl_dataset.py` | Audits imported FSL 20x162 samples and device diversity. | `external_datasets/fsl_features`. | `reports/fsl/audit_report.json`, `reports/fsl/device_diversity_report.json`. | `load_meta`, `has_all_zero_frame`, `audit_dataset`, `build_device_diversity_report`, `yes_no`, `print_ready_table`, `main` | `argparse`, `json`, `collections`, `pathlib`, `numpy`, `fsl_config` | `python scripts_ml/75_audit_fsl_dataset.py --dataset <dir>` | audit | EXPERIMENTAL | FSL quality gate before future training. | Requires adequate signer/device diversity before training. | 170 |
+| `scripts_ml/76_extract_fsl105_features.py` | Extracts 20x162 FSL windows from FSL-105 videos. | FSL-105 video folder, OpenCV, MediaPipe. | FSL `.npy` windows, `.meta.json`, `reports/fsl/fsl105_extraction_report.json`. | `require_video_dependencies`, `safe_name`, `compact_label`, `canonical_fsl_label`, `unique_path`, `iter_videos`, `build_fsl105_label_map`, `infer_label`, `build_frame_features`, `extract_dataset`, `main` | `argparse`, `csv`, `json`, `re`, `collections`, `datetime`, `pathlib`, `numpy`, lazy `cv2`, lazy `mediapipe`, `fsl_config` | `python scripts_ml/76_extract_fsl105_features.py --fsl105_dir <path>` | preprocessing | EXPERIMENTAL | Future FSL expansion-data source. | Requires video dependencies; not active runtime. | 296 |
+| `scripts_ml/77_record_pc_webcam_fsl.py` | Records FSL 20x162 calibration JSON exports from a PC webcam. | Webcam, OpenCV, MediaPipe, FSL label/signer. | JSON exports under `external_datasets/fsl_phone_exports/VoxGestCalibration/fsl_phrase_v1`. | `require_video_dependencies`, `safe_name`, `landmarks_to_array`, `build_frame_features`, `has_all_zero_frame`, `compute_motion_score`, `compute_wrist_path`, `save_export`, `record_webcam`, `main` | `argparse`, `json`, `re`, `socket`, `time`, `datetime`, `pathlib`, `numpy`, lazy `cv2`, lazy `mediapipe`, `fsl_config` | `python scripts_ml/77_record_pc_webcam_fsl.py --label LABEL --signer_id ID` | recording | EXPERIMENTAL | PC-based FSL recorder compatible with FSL importer. | Experimental recorder; phone Android export remains active ASL path. | 206 |
+| `scripts_ml/78_train_fsl_rdtcn.py` | Trains future FSL residual dilated TCN. | Audited FSL feature dataset. | `model/voxgest_rdtcn_fsl_v1.h5`, `.tflite`, report, runtime manifest. | `load_json`, `load_samples`, `ready_labels`, `split_samples`, `load_arrays`, `augment_batch`, `FslBatchSequence`, `rdtcn_block`, `build_model`, `train`, `main` | `argparse`, `json`, `random`, `collections`, `pathlib`, `numpy`, TensorFlow/Keras inside functions, `fsl_config` | `python scripts_ml/78_train_fsl_rdtcn.py --dataset <dir>` | training/export | EXPERIMENTAL | Future FSL model branch. | Script itself says not to run until at least five labels meet minimum counts. | 274 |
+| `scripts_ml/fsl_config.py` | Shared constants for future FSL scripts. | None. | FSL labels, 20-frame shape, feature sizes, minimum/preferred counts. | No functions/classes; constant module. | None | Imported by `scripts_ml/73_*` through `78_*`. | configuration | EXPERIMENTAL | Central FSL branch config. | Not active ASL runtime config. | 36 |
 
 ## Every Project Python File
 
