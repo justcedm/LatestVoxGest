@@ -61,8 +61,8 @@ class NamePhraseDetector {
     fun isActive(): Boolean = active
 
     companion object {
-        const val NAME_HINT = "Tap letters below to spell your name"
-        private const val NAME_PREFIX = "My name is"
+        const val NAME_HINT = "Now fingerspell your name"
+        private const val NAME_PREFIX = "MY NAME IS"
         private const val FINALIZE_PAUSE_MS = 1500L
     }
 }

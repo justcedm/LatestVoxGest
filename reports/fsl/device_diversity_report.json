@@ -1,0 +1,353 @@
+{
+  "labels": {
+    "WHAT": {
+      "sequence_count": 0,
+      "unique_device_models": [],
+      "unique_signer_ids": [],
+      "sequence_count_per_device": {},
+      "diversity_score": 0.0,
+      "status": "LOW_DIVERSITY"
+    },
+    "YOUR": {
+      "sequence_count": 0,
+      "unique_device_models": [],
+      "unique_signer_ids": [],
+      "sequence_count_per_device": {},
+      "diversity_score": 0.0,
+      "status": "LOW_DIVERSITY"
+    },
+    "NAME": {
+      "sequence_count": 0,
+      "unique_device_models": [],
+      "unique_signer_ids": [],
+      "sequence_count_per_device": {},
+      "diversity_score": 0.0,
+      "status": "LOW_DIVERSITY"
+    },
+    "MY": {
+      "sequence_count": 0,
+      "unique_device_models": [],
+      "unique_signer_ids": [],
+      "sequence_count_per_device": {},
+      "diversity_score": 0.0,
+      "status": "LOW_DIVERSITY"
+    },
+    "NOTHING": {
+      "sequence_count": 0,
+      "unique_device_models": [],
+      "unique_signer_ids": [],
+      "sequence_count_per_device": {},
+      "diversity_score": 0.0,
+      "status": "LOW_DIVERSITY"
+    },
+    "HELLO": {
+      "sequence_count": 282,
+      "unique_device_models": [
+        "FSL105_VIDEO"
+      ],
+      "unique_signer_ids": [
+        "fsl105_0",
+        "fsl105_1",
+        "fsl105_10",
+        "fsl105_11",
+        "fsl105_12",
+        "fsl105_13",
+        "fsl105_14",
+        "fsl105_15",
+        "fsl105_16",
+        "fsl105_17",
+        "fsl105_18",
+        "fsl105_19",
+        "fsl105_2",
+        "fsl105_3",
+        "fsl105_4",
+        "fsl105_5",
+        "fsl105_6",
+        "fsl105_7",
+        "fsl105_8",
+        "fsl105_9"
+      ],
+      "sequence_count_per_device": {
+        "FSL105_VIDEO": 282
+      },
+      "diversity_score": 0.07092198581560284,
+      "status": "OK"
+    },
+    "THANKYOU": {
+      "sequence_count": 317,
+      "unique_device_models": [
+        "FSL105_VIDEO"
+      ],
+      "unique_signer_ids": [
+        "fsl105_0",
+        "fsl105_1",
+        "fsl105_10",
+        "fsl105_11",
+        "fsl105_12",
+        "fsl105_13",
+        "fsl105_14",
+        "fsl105_15",
+        "fsl105_16",
+        "fsl105_17",
+        "fsl105_18",
+        "fsl105_19",
+        "fsl105_2",
+        "fsl105_3",
+        "fsl105_4",
+        "fsl105_5",
+        "fsl105_6",
+        "fsl105_7",
+        "fsl105_8",
+        "fsl105_9"
+      ],
+      "sequence_count_per_device": {
+        "FSL105_VIDEO": 317
+      },
+      "diversity_score": 0.06309148264984227,
+      "status": "OK"
+    },
+    "WATER": {
+      "sequence_count": 0,
+      "unique_device_models": [],
+      "unique_signer_ids": [],
+      "sequence_count_per_device": {},
+      "diversity_score": 0.0,
+      "status": "LOW_DIVERSITY"
+    },
+    "EAT": {
+      "sequence_count": 0,
+      "unique_device_models": [],
+      "unique_signer_ids": [],
+      "sequence_count_per_device": {},
+      "diversity_score": 0.0,
+      "status": "LOW_DIVERSITY"
+    },
+    "HELP": {
+      "sequence_count": 0,
+      "unique_device_models": [],
+      "unique_signer_ids": [],
+      "sequence_count_per_device": {},
+      "diversity_score": 0.0,
+      "status": "LOW_DIVERSITY"
+    },
+    "STOP": {
+      "sequence_count": 0,
+      "unique_device_models": [],
+      "unique_signer_ids": [],
+      "sequence_count_per_device": {},
+      "diversity_score": 0.0,
+      "status": "LOW_DIVERSITY"
+    },
+    "YES": {
+      "sequence_count": 299,
+      "unique_device_models": [
+        "FSL105_VIDEO"
+      ],
+      "unique_signer_ids": [
+        "fsl105_0",
+        "fsl105_1",
+        "fsl105_10",
+        "fsl105_11",
+        "fsl105_12",
+        "fsl105_13",
+        "fsl105_14",
+        "fsl105_15",
+        "fsl105_16",
+        "fsl105_17",
+        "fsl105_18",
+        "fsl105_19",
+        "fsl105_2",
+        "fsl105_3",
+        "fsl105_4",
+        "fsl105_5",
+        "fsl105_6",
+        "fsl105_7",
+        "fsl105_8",
+        "fsl105_9"
+      ],
+      "sequence_count_per_device": {
+        "FSL105_VIDEO": 299
+      },
+      "diversity_score": 0.06688963210702341,
+      "status": "OK"
+    },
+    "NO": {
+      "sequence_count": 307,
+      "unique_device_models": [
+        "FSL105_VIDEO"
+      ],
+      "unique_signer_ids": [
+        "fsl105_0",
+        "fsl105_1",
+        "fsl105_10",
+        "fsl105_11",
+        "fsl105_12",
+        "fsl105_13",
+        "fsl105_14",
+        "fsl105_15",
+        "fsl105_16",
+        "fsl105_17",
+        "fsl105_18",
+        "fsl105_19",
+        "fsl105_2",
+        "fsl105_20",
+        "fsl105_3",
+        "fsl105_4",
+        "fsl105_5",
+        "fsl105_6",
+        "fsl105_7",
+        "fsl105_8",
+        "fsl105_9"
+      ],
+      "sequence_count_per_device": {
+        "FSL105_VIDEO": 307
+      },
+      "diversity_score": 0.06840390879478828,
+      "status": "OK"
+    },
+    "PLEASE": {
+      "sequence_count": 0,
+      "unique_device_models": [],
+      "unique_signer_ids": [],
+      "sequence_count_per_device": {},
+      "diversity_score": 0.0,
+      "status": "LOW_DIVERSITY"
+    },
+    "SORRY": {
+      "sequence_count": 0,
+      "unique_device_models": [],
+      "unique_signer_ids": [],
+      "sequence_count_per_device": {},
+      "diversity_score": 0.0,
+      "status": "LOW_DIVERSITY"
+    },
+    "DOCTOR": {
+      "sequence_count": 0,
+      "unique_device_models": [],
+      "unique_signer_ids": [],
+      "sequence_count_per_device": {},
+      "diversity_score": 0.0,
+      "status": "LOW_DIVERSITY"
+    },
+    "SICK": {
+      "sequence_count": 0,
+      "unique_device_models": [],
+      "unique_signer_ids": [],
+      "sequence_count_per_device": {},
+      "diversity_score": 0.0,
+      "status": "LOW_DIVERSITY"
+    },
+    "PAIN": {
+      "sequence_count": 0,
+      "unique_device_models": [],
+      "unique_signer_ids": [],
+      "sequence_count_per_device": {},
+      "diversity_score": 0.0,
+      "status": "LOW_DIVERSITY"
+    },
+    "BATHROOM": {
+      "sequence_count": 0,
+      "unique_device_models": [],
+      "unique_signer_ids": [],
+      "sequence_count_per_device": {},
+      "diversity_score": 0.0,
+      "status": "LOW_DIVERSITY"
+    },
+    "SLEEP": {
+      "sequence_count": 0,
+      "unique_device_models": [],
+      "unique_signer_ids": [],
+      "sequence_count_per_device": {},
+      "diversity_score": 0.0,
+      "status": "LOW_DIVERSITY"
+    },
+    "WHO": {
+      "sequence_count": 0,
+      "unique_device_models": [],
+      "unique_signer_ids": [],
+      "sequence_count_per_device": {},
+      "diversity_score": 0.0,
+      "status": "LOW_DIVERSITY"
+    },
+    "WHERE": {
+      "sequence_count": 0,
+      "unique_device_models": [],
+      "unique_signer_ids": [],
+      "sequence_count_per_device": {},
+      "diversity_score": 0.0,
+      "status": "LOW_DIVERSITY"
+    },
+    "HOW": {
+      "sequence_count": 0,
+      "unique_device_models": [],
+      "unique_signer_ids": [],
+      "sequence_count_per_device": {},
+      "diversity_score": 0.0,
+      "status": "LOW_DIVERSITY"
+    },
+    "WHEN": {
+      "sequence_count": 0,
+      "unique_device_models": [],
+      "unique_signer_ids": [],
+      "sequence_count_per_device": {},
+      "diversity_score": 0.0,
+      "status": "LOW_DIVERSITY"
+    },
+    "UNDERSTAND": {
+      "sequence_count": 316,
+      "unique_device_models": [
+        "FSL105_VIDEO"
+      ],
+      "unique_signer_ids": [
+        "fsl105_0",
+        "fsl105_1",
+        "fsl105_10",
+        "fsl105_11",
+        "fsl105_12",
+        "fsl105_13",
+        "fsl105_14",
+        "fsl105_15",
+        "fsl105_16",
+        "fsl105_17",
+        "fsl105_18",
+        "fsl105_19",
+        "fsl105_2",
+        "fsl105_3",
+        "fsl105_4",
+        "fsl105_5",
+        "fsl105_6",
+        "fsl105_7",
+        "fsl105_8",
+        "fsl105_9"
+      ],
+      "sequence_count_per_device": {
+        "FSL105_VIDEO": 316
+      },
+      "diversity_score": 0.06329113924050633,
+      "status": "OK"
+    }
+  },
+  "low_diversity_labels": [
+    "WHAT",
+    "YOUR",
+    "NAME",
+    "MY",
+    "NOTHING",
+    "WATER",
+    "EAT",
+    "HELP",
+    "STOP",
+    "PLEASE",
+    "SORRY",
+    "DOCTOR",
+    "SICK",
+    "PAIN",
+    "BATHROOM",
+    "SLEEP",
+    "WHO",
+    "WHERE",
+    "HOW",
+    "WHEN"
+  ],
+  "formula": "(unique_signers * unique_devices) / total_sequences"
+}
