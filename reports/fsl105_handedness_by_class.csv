@@ -1,0 +1,106 @@
+label,video_count,one_handed_votes,two_handed_votes,ambiguous_votes,avg_left_presence,avg_right_presence,avg_both_presence,avg_left_motion,avg_right_motion,final_classification,confidence_note
+APRIL,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+AUGUST,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+AUNTIE,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+BEER,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+BLACK,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+BLIND,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+BLUE,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+BOY,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+BREAD,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+BROWN,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+CHICKEN,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+COFFEE,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+COLD,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+CORRECT,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+COUSIN,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+CRAB,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+DARK,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+DAUGHTER,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+DEAF,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+DEAF BLIND,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+DECEMBER,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+DON’T KNOW,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+DON’T UNDERSTAND,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+EGG,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+EIGHT,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+FAST,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+FATHER,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+FEBRUARY,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+FISH,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+FIVE,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+FOUR,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+FRIDAY,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+GIRL,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+GOOD AFTERNOON,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+GOOD EVENING,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+GOOD MORNING,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+GRANDFATHER,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+GRANDMOTHER,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+GRAY,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+GREEN,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+HARD OF HEARING,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+HELLO,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+HOT,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+HOW ARE YOU,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+IM FINE,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+JANUARY,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+JUICE,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+JULY,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+JUNE,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+KNOW,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+LIGHT,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+LONGANISA,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+MAN,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+MARCH,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+MARRIED,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+MAY,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+MEAT,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+MILK,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+MONDAY,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+MOTHER,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+NICE TO MEET YOU,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+NINE,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+NO,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+NO SUGAR,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+NOVEMBER,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+OCTOBER,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+ONE,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+ORANGE,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+PARENTS,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+PINK,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+RED,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+RICE,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+SATURDAY,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+SEE YOU TOMORROW,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+SEPTEMBER,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+SEVEN,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+SHRIMP,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+SIX,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+SLOW,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+SON,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+SPAGHETTI,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+SUGAR,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+SUNDAY,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+TEA,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+TEN,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+THANK YOU,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+THREE,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+THURSDAY,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+TODAY,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+TOMORROW,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+TUESDAY,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+TWO,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+UNCLE,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+UNDERSTAND,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+VIOLET,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+WEDNESDAY,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+WEELCHAIR PERSON,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+WHITE,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+WINE,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+WOMAN,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+WRONG,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+YELLOW,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+YES,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+YESTERDAY,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
+YOURE WELCOME,0,0,0,0,0.0,0.0,0.0,0.0,0.0,AMBIGUOUS,manual_review:no_processed_videos_for_label
