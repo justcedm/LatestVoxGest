@@ -1,1029 +1,1648 @@
 {
-  "dataset_root": "C:\\BSIT 3RD YEAR\\New VovGest\\external_datasets\\fsl_features",
+  "dataset_root": "D:\\BSIT 3RD YEAR\\New VovGest\\external_datasets\\fsl_features",
   "expected_shape": [
     20,
     162
   ],
   "labels": [
-    "WHAT",
-    "YOUR",
-    "NAME",
-    "MY",
-    "NOTHING",
+    "AUNTIE",
+    "BEER",
+    "BLACK",
+    "BLIND",
+    "BLUE",
+    "BOY",
+    "CHICKEN",
+    "COUSIN",
+    "DEAF",
+    "DEAF BLIND",
+    "DON’T KNOW",
+    "DON’T UNDERSTAND",
+    "EIGHT",
+    "FAST",
+    "FATHER",
+    "FISH",
+    "FIVE",
+    "FOUR",
+    "FRIDAY",
+    "GIRL",
+    "GOOD AFTERNOON",
+    "GOOD EVENING",
+    "GOOD MORNING",
+    "GRANDFATHER",
+    "GRANDMOTHER",
+    "GREEN",
+    "HARD OF HEARING",
     "HELLO",
-    "THANKYOU",
-    "WATER",
-    "EAT",
-    "HELP",
-    "STOP",
-    "YES",
+    "HOT",
+    "IM FINE",
+    "KNOW",
+    "MAN",
+    "MILK",
+    "MONDAY",
+    "MOTHER",
+    "NINE",
     "NO",
-    "PLEASE",
-    "SORRY",
-    "DOCTOR",
-    "SICK",
-    "PAIN",
-    "BATHROOM",
-    "SLEEP",
-    "WHO",
-    "WHERE",
-    "HOW",
-    "WHEN",
-    "UNDERSTAND"
+    "NO SUGAR",
+    "ONE",
+    "ORANGE",
+    "PARENTS",
+    "PINK",
+    "RED",
+    "SEE YOU TOMORROW",
+    "SEVEN",
+    "SIX",
+    "SUGAR",
+    "TEN",
+    "THREE",
+    "THURSDAY",
+    "TOMORROW",
+    "TUESDAY",
+    "TWO",
+    "UNCLE",
+    "UNDERSTAND",
+    "WEDNESDAY",
+    "WHITE",
+    "WINE",
+    "WOMAN",
+    "WRONG",
+    "YELLOW",
+    "YES",
+    "YESTERDAY",
+    "YOURE WELCOME"
   ],
+  "partition_policy": {
+    "fsl105": "device_model == FSL105_VIDEO",
+    "samsung": "device_model != FSL105_VIDEO"
+  },
+  "minimum_policy": {
+    "default": 100,
+    "NOTHING": 150
+  },
   "per_label": {
-    "WHAT": {
-      "sequence_count": 0,
-      "minimum": 100,
-      "preferred": 200,
-      "minimum_met": false,
-      "preferred_met": false,
-      "sequences_needed_to_minimum": 100,
-      "sequences_needed_to_preferred": 200,
-      "unique_signer_count": 0,
-      "unique_signers": [],
-      "unique_device_count": 0,
-      "unique_devices": [],
-      "per_device": {}
-    },
-    "YOUR": {
-      "sequence_count": 0,
-      "minimum": 100,
-      "preferred": 200,
-      "minimum_met": false,
-      "preferred_met": false,
-      "sequences_needed_to_minimum": 100,
-      "sequences_needed_to_preferred": 200,
-      "unique_signer_count": 0,
-      "unique_signers": [],
-      "unique_device_count": 0,
-      "unique_devices": [],
-      "per_device": {}
-    },
-    "NAME": {
-      "sequence_count": 0,
-      "minimum": 100,
-      "preferred": 200,
-      "minimum_met": false,
-      "preferred_met": false,
-      "sequences_needed_to_minimum": 100,
-      "sequences_needed_to_preferred": 200,
-      "unique_signer_count": 0,
-      "unique_signers": [],
-      "unique_device_count": 0,
-      "unique_devices": [],
-      "per_device": {}
-    },
-    "MY": {
-      "sequence_count": 0,
-      "minimum": 100,
-      "preferred": 200,
-      "minimum_met": false,
-      "preferred_met": false,
-      "sequences_needed_to_minimum": 100,
-      "sequences_needed_to_preferred": 200,
-      "unique_signer_count": 0,
-      "unique_signers": [],
-      "unique_device_count": 0,
-      "unique_devices": [],
-      "per_device": {}
-    },
-    "NOTHING": {
-      "sequence_count": 0,
-      "minimum": 150,
-      "preferred": 300,
-      "minimum_met": false,
-      "preferred_met": false,
-      "sequences_needed_to_minimum": 150,
-      "sequences_needed_to_preferred": 300,
-      "unique_signer_count": 0,
-      "unique_signers": [],
-      "unique_device_count": 0,
-      "unique_devices": [],
-      "per_device": {}
-    },
-    "HELLO": {
-      "sequence_count": 282,
-      "minimum": 100,
-      "preferred": 200,
+    "AUNTIE": {
+      "fsl105_sequences": 214,
+      "samsung_sequences": 0,
+      "combined_total": 214,
+      "minimum_required": 100,
       "minimum_met": true,
-      "preferred_met": true,
       "sequences_needed_to_minimum": 0,
-      "sequences_needed_to_preferred": 0,
-      "unique_signer_count": 20,
-      "unique_signers": [
-        "fsl105_0",
-        "fsl105_1",
-        "fsl105_10",
-        "fsl105_11",
-        "fsl105_12",
-        "fsl105_13",
-        "fsl105_14",
-        "fsl105_15",
-        "fsl105_16",
-        "fsl105_17",
-        "fsl105_18",
-        "fsl105_19",
-        "fsl105_2",
-        "fsl105_3",
-        "fsl105_4",
-        "fsl105_5",
-        "fsl105_6",
-        "fsl105_7",
-        "fsl105_8",
-        "fsl105_9"
-      ],
-      "unique_device_count": 1,
-      "unique_devices": [
-        "FSL105_VIDEO"
-      ],
+      "per_device": {
+        "FSL105_VIDEO": 214
+      }
+    },
+    "BEER": {
+      "fsl105_sequences": 267,
+      "samsung_sequences": 0,
+      "combined_total": 267,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 267
+      }
+    },
+    "BLACK": {
+      "fsl105_sequences": 238,
+      "samsung_sequences": 0,
+      "combined_total": 238,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 238
+      }
+    },
+    "BLIND": {
+      "fsl105_sequences": 216,
+      "samsung_sequences": 0,
+      "combined_total": 216,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 216
+      }
+    },
+    "BLUE": {
+      "fsl105_sequences": 213,
+      "samsung_sequences": 0,
+      "combined_total": 213,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 213
+      }
+    },
+    "BOY": {
+      "fsl105_sequences": 276,
+      "samsung_sequences": 0,
+      "combined_total": 276,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 276
+      }
+    },
+    "CHICKEN": {
+      "fsl105_sequences": 274,
+      "samsung_sequences": 0,
+      "combined_total": 274,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 274
+      }
+    },
+    "COUSIN": {
+      "fsl105_sequences": 242,
+      "samsung_sequences": 0,
+      "combined_total": 242,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 242
+      }
+    },
+    "DEAF": {
+      "fsl105_sequences": 255,
+      "samsung_sequences": 0,
+      "combined_total": 255,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 255
+      }
+    },
+    "DEAF BLIND": {
+      "fsl105_sequences": 318,
+      "samsung_sequences": 0,
+      "combined_total": 318,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 318
+      }
+    },
+    "DON’T KNOW": {
+      "fsl105_sequences": 243,
+      "samsung_sequences": 0,
+      "combined_total": 243,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 243
+      }
+    },
+    "DON’T UNDERSTAND": {
+      "fsl105_sequences": 282,
+      "samsung_sequences": 0,
+      "combined_total": 282,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
       "per_device": {
         "FSL105_VIDEO": 282
       }
     },
-    "THANKYOU": {
-      "sequence_count": 317,
-      "minimum": 100,
-      "preferred": 200,
+    "EIGHT": {
+      "fsl105_sequences": 233,
+      "samsung_sequences": 0,
+      "combined_total": 233,
+      "minimum_required": 100,
       "minimum_met": true,
-      "preferred_met": true,
       "sequences_needed_to_minimum": 0,
-      "sequences_needed_to_preferred": 0,
-      "unique_signer_count": 20,
-      "unique_signers": [
-        "fsl105_0",
-        "fsl105_1",
-        "fsl105_10",
-        "fsl105_11",
-        "fsl105_12",
-        "fsl105_13",
-        "fsl105_14",
-        "fsl105_15",
-        "fsl105_16",
-        "fsl105_17",
-        "fsl105_18",
-        "fsl105_19",
-        "fsl105_2",
-        "fsl105_3",
-        "fsl105_4",
-        "fsl105_5",
-        "fsl105_6",
-        "fsl105_7",
-        "fsl105_8",
-        "fsl105_9"
-      ],
-      "unique_device_count": 1,
-      "unique_devices": [
-        "FSL105_VIDEO"
-      ],
+      "per_device": {
+        "FSL105_VIDEO": 233
+      }
+    },
+    "FAST": {
+      "fsl105_sequences": 268,
+      "samsung_sequences": 0,
+      "combined_total": 268,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 268
+      }
+    },
+    "FATHER": {
+      "fsl105_sequences": 248,
+      "samsung_sequences": 0,
+      "combined_total": 248,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 248
+      }
+    },
+    "FISH": {
+      "fsl105_sequences": 263,
+      "samsung_sequences": 0,
+      "combined_total": 263,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 263
+      }
+    },
+    "FIVE": {
+      "fsl105_sequences": 196,
+      "samsung_sequences": 0,
+      "combined_total": 196,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 196
+      }
+    },
+    "FOUR": {
+      "fsl105_sequences": 209,
+      "samsung_sequences": 0,
+      "combined_total": 209,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 209
+      }
+    },
+    "FRIDAY": {
+      "fsl105_sequences": 290,
+      "samsung_sequences": 0,
+      "combined_total": 290,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 290
+      }
+    },
+    "GIRL": {
+      "fsl105_sequences": 242,
+      "samsung_sequences": 0,
+      "combined_total": 242,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 242
+      }
+    },
+    "GOOD AFTERNOON": {
+      "fsl105_sequences": 352,
+      "samsung_sequences": 0,
+      "combined_total": 352,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 352
+      }
+    },
+    "GOOD EVENING": {
+      "fsl105_sequences": 366,
+      "samsung_sequences": 0,
+      "combined_total": 366,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 366
+      }
+    },
+    "GOOD MORNING": {
+      "fsl105_sequences": 327,
+      "samsung_sequences": 0,
+      "combined_total": 327,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 327
+      }
+    },
+    "GRANDFATHER": {
+      "fsl105_sequences": 251,
+      "samsung_sequences": 0,
+      "combined_total": 251,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 251
+      }
+    },
+    "GRANDMOTHER": {
+      "fsl105_sequences": 228,
+      "samsung_sequences": 0,
+      "combined_total": 228,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 228
+      }
+    },
+    "GREEN": {
+      "fsl105_sequences": 216,
+      "samsung_sequences": 0,
+      "combined_total": 216,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 216
+      }
+    },
+    "HARD OF HEARING": {
+      "fsl105_sequences": 205,
+      "samsung_sequences": 0,
+      "combined_total": 205,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 205
+      }
+    },
+    "HELLO": {
+      "fsl105_sequences": 219,
+      "samsung_sequences": 0,
+      "combined_total": 219,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 219
+      }
+    },
+    "HOT": {
+      "fsl105_sequences": 250,
+      "samsung_sequences": 0,
+      "combined_total": 250,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 250
+      }
+    },
+    "IM FINE": {
+      "fsl105_sequences": 227,
+      "samsung_sequences": 0,
+      "combined_total": 227,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 227
+      }
+    },
+    "KNOW": {
+      "fsl105_sequences": 264,
+      "samsung_sequences": 0,
+      "combined_total": 264,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 264
+      }
+    },
+    "MAN": {
+      "fsl105_sequences": 290,
+      "samsung_sequences": 0,
+      "combined_total": 290,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 290
+      }
+    },
+    "MILK": {
+      "fsl105_sequences": 258,
+      "samsung_sequences": 0,
+      "combined_total": 258,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 258
+      }
+    },
+    "MONDAY": {
+      "fsl105_sequences": 293,
+      "samsung_sequences": 0,
+      "combined_total": 293,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 293
+      }
+    },
+    "MOTHER": {
+      "fsl105_sequences": 180,
+      "samsung_sequences": 0,
+      "combined_total": 180,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 180
+      }
+    },
+    "NINE": {
+      "fsl105_sequences": 231,
+      "samsung_sequences": 0,
+      "combined_total": 231,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 231
+      }
+    },
+    "NO": {
+      "fsl105_sequences": 254,
+      "samsung_sequences": 0,
+      "combined_total": 254,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 254
+      }
+    },
+    "NO SUGAR": {
+      "fsl105_sequences": 317,
+      "samsung_sequences": 0,
+      "combined_total": 317,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
       "per_device": {
         "FSL105_VIDEO": 317
       }
     },
-    "WATER": {
-      "sequence_count": 0,
-      "minimum": 100,
-      "preferred": 200,
-      "minimum_met": false,
-      "preferred_met": false,
-      "sequences_needed_to_minimum": 100,
-      "sequences_needed_to_preferred": 200,
-      "unique_signer_count": 0,
-      "unique_signers": [],
-      "unique_device_count": 0,
-      "unique_devices": [],
-      "per_device": {}
-    },
-    "EAT": {
-      "sequence_count": 0,
-      "minimum": 100,
-      "preferred": 200,
-      "minimum_met": false,
-      "preferred_met": false,
-      "sequences_needed_to_minimum": 100,
-      "sequences_needed_to_preferred": 200,
-      "unique_signer_count": 0,
-      "unique_signers": [],
-      "unique_device_count": 0,
-      "unique_devices": [],
-      "per_device": {}
-    },
-    "HELP": {
-      "sequence_count": 0,
-      "minimum": 100,
-      "preferred": 200,
-      "minimum_met": false,
-      "preferred_met": false,
-      "sequences_needed_to_minimum": 100,
-      "sequences_needed_to_preferred": 200,
-      "unique_signer_count": 0,
-      "unique_signers": [],
-      "unique_device_count": 0,
-      "unique_devices": [],
-      "per_device": {}
-    },
-    "STOP": {
-      "sequence_count": 0,
-      "minimum": 100,
-      "preferred": 200,
-      "minimum_met": false,
-      "preferred_met": false,
-      "sequences_needed_to_minimum": 100,
-      "sequences_needed_to_preferred": 200,
-      "unique_signer_count": 0,
-      "unique_signers": [],
-      "unique_device_count": 0,
-      "unique_devices": [],
-      "per_device": {}
-    },
-    "YES": {
-      "sequence_count": 299,
-      "minimum": 100,
-      "preferred": 200,
+    "ONE": {
+      "fsl105_sequences": 216,
+      "samsung_sequences": 0,
+      "combined_total": 216,
+      "minimum_required": 100,
       "minimum_met": true,
-      "preferred_met": true,
       "sequences_needed_to_minimum": 0,
-      "sequences_needed_to_preferred": 0,
-      "unique_signer_count": 20,
-      "unique_signers": [
-        "fsl105_0",
-        "fsl105_1",
-        "fsl105_10",
-        "fsl105_11",
-        "fsl105_12",
-        "fsl105_13",
-        "fsl105_14",
-        "fsl105_15",
-        "fsl105_16",
-        "fsl105_17",
-        "fsl105_18",
-        "fsl105_19",
-        "fsl105_2",
-        "fsl105_3",
-        "fsl105_4",
-        "fsl105_5",
-        "fsl105_6",
-        "fsl105_7",
-        "fsl105_8",
-        "fsl105_9"
-      ],
-      "unique_device_count": 1,
-      "unique_devices": [
-        "FSL105_VIDEO"
-      ],
       "per_device": {
-        "FSL105_VIDEO": 299
+        "FSL105_VIDEO": 216
       }
     },
-    "NO": {
-      "sequence_count": 307,
-      "minimum": 100,
-      "preferred": 200,
+    "ORANGE": {
+      "fsl105_sequences": 195,
+      "samsung_sequences": 0,
+      "combined_total": 195,
+      "minimum_required": 100,
       "minimum_met": true,
-      "preferred_met": true,
       "sequences_needed_to_minimum": 0,
-      "sequences_needed_to_preferred": 0,
-      "unique_signer_count": 21,
-      "unique_signers": [
-        "fsl105_0",
-        "fsl105_1",
-        "fsl105_10",
-        "fsl105_11",
-        "fsl105_12",
-        "fsl105_13",
-        "fsl105_14",
-        "fsl105_15",
-        "fsl105_16",
-        "fsl105_17",
-        "fsl105_18",
-        "fsl105_19",
-        "fsl105_2",
-        "fsl105_20",
-        "fsl105_3",
-        "fsl105_4",
-        "fsl105_5",
-        "fsl105_6",
-        "fsl105_7",
-        "fsl105_8",
-        "fsl105_9"
-      ],
-      "unique_device_count": 1,
-      "unique_devices": [
-        "FSL105_VIDEO"
-      ],
       "per_device": {
-        "FSL105_VIDEO": 307
+        "FSL105_VIDEO": 195
       }
     },
-    "PLEASE": {
-      "sequence_count": 0,
-      "minimum": 100,
-      "preferred": 200,
-      "minimum_met": false,
-      "preferred_met": false,
-      "sequences_needed_to_minimum": 100,
-      "sequences_needed_to_preferred": 200,
-      "unique_signer_count": 0,
-      "unique_signers": [],
-      "unique_device_count": 0,
-      "unique_devices": [],
-      "per_device": {}
+    "PARENTS": {
+      "fsl105_sequences": 258,
+      "samsung_sequences": 0,
+      "combined_total": 258,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 258
+      }
     },
-    "SORRY": {
-      "sequence_count": 0,
-      "minimum": 100,
-      "preferred": 200,
-      "minimum_met": false,
-      "preferred_met": false,
-      "sequences_needed_to_minimum": 100,
-      "sequences_needed_to_preferred": 200,
-      "unique_signer_count": 0,
-      "unique_signers": [],
-      "unique_device_count": 0,
-      "unique_devices": [],
-      "per_device": {}
+    "PINK": {
+      "fsl105_sequences": 232,
+      "samsung_sequences": 0,
+      "combined_total": 232,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 232
+      }
     },
-    "DOCTOR": {
-      "sequence_count": 0,
-      "minimum": 100,
-      "preferred": 200,
-      "minimum_met": false,
-      "preferred_met": false,
-      "sequences_needed_to_minimum": 100,
-      "sequences_needed_to_preferred": 200,
-      "unique_signer_count": 0,
-      "unique_signers": [],
-      "unique_device_count": 0,
-      "unique_devices": [],
-      "per_device": {}
+    "RED": {
+      "fsl105_sequences": 200,
+      "samsung_sequences": 0,
+      "combined_total": 200,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 200
+      }
     },
-    "SICK": {
-      "sequence_count": 0,
-      "minimum": 100,
-      "preferred": 200,
-      "minimum_met": false,
-      "preferred_met": false,
-      "sequences_needed_to_minimum": 100,
-      "sequences_needed_to_preferred": 200,
-      "unique_signer_count": 0,
-      "unique_signers": [],
-      "unique_device_count": 0,
-      "unique_devices": [],
-      "per_device": {}
+    "SEE YOU TOMORROW": {
+      "fsl105_sequences": 320,
+      "samsung_sequences": 0,
+      "combined_total": 320,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 320
+      }
     },
-    "PAIN": {
-      "sequence_count": 0,
-      "minimum": 100,
-      "preferred": 200,
-      "minimum_met": false,
-      "preferred_met": false,
-      "sequences_needed_to_minimum": 100,
-      "sequences_needed_to_preferred": 200,
-      "unique_signer_count": 0,
-      "unique_signers": [],
-      "unique_device_count": 0,
-      "unique_devices": [],
-      "per_device": {}
+    "SEVEN": {
+      "fsl105_sequences": 253,
+      "samsung_sequences": 0,
+      "combined_total": 253,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 253
+      }
     },
-    "BATHROOM": {
-      "sequence_count": 0,
-      "minimum": 100,
-      "preferred": 200,
-      "minimum_met": false,
-      "preferred_met": false,
-      "sequences_needed_to_minimum": 100,
-      "sequences_needed_to_preferred": 200,
-      "unique_signer_count": 0,
-      "unique_signers": [],
-      "unique_device_count": 0,
-      "unique_devices": [],
-      "per_device": {}
+    "SIX": {
+      "fsl105_sequences": 256,
+      "samsung_sequences": 0,
+      "combined_total": 256,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 256
+      }
     },
-    "SLEEP": {
-      "sequence_count": 0,
-      "minimum": 100,
-      "preferred": 200,
-      "minimum_met": false,
-      "preferred_met": false,
-      "sequences_needed_to_minimum": 100,
-      "sequences_needed_to_preferred": 200,
-      "unique_signer_count": 0,
-      "unique_signers": [],
-      "unique_device_count": 0,
-      "unique_devices": [],
-      "per_device": {}
+    "SUGAR": {
+      "fsl105_sequences": 263,
+      "samsung_sequences": 0,
+      "combined_total": 263,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 263
+      }
     },
-    "WHO": {
-      "sequence_count": 0,
-      "minimum": 100,
-      "preferred": 200,
-      "minimum_met": false,
-      "preferred_met": false,
-      "sequences_needed_to_minimum": 100,
-      "sequences_needed_to_preferred": 200,
-      "unique_signer_count": 0,
-      "unique_signers": [],
-      "unique_device_count": 0,
-      "unique_devices": [],
-      "per_device": {}
+    "TEN": {
+      "fsl105_sequences": 229,
+      "samsung_sequences": 0,
+      "combined_total": 229,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 229
+      }
     },
-    "WHERE": {
-      "sequence_count": 0,
-      "minimum": 100,
-      "preferred": 200,
-      "minimum_met": false,
-      "preferred_met": false,
-      "sequences_needed_to_minimum": 100,
-      "sequences_needed_to_preferred": 200,
-      "unique_signer_count": 0,
-      "unique_signers": [],
-      "unique_device_count": 0,
-      "unique_devices": [],
-      "per_device": {}
+    "THREE": {
+      "fsl105_sequences": 230,
+      "samsung_sequences": 0,
+      "combined_total": 230,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 230
+      }
     },
-    "HOW": {
-      "sequence_count": 0,
-      "minimum": 100,
-      "preferred": 200,
-      "minimum_met": false,
-      "preferred_met": false,
-      "sequences_needed_to_minimum": 100,
-      "sequences_needed_to_preferred": 200,
-      "unique_signer_count": 0,
-      "unique_signers": [],
-      "unique_device_count": 0,
-      "unique_devices": [],
-      "per_device": {}
+    "THURSDAY": {
+      "fsl105_sequences": 288,
+      "samsung_sequences": 0,
+      "combined_total": 288,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 288
+      }
     },
-    "WHEN": {
-      "sequence_count": 0,
-      "minimum": 100,
-      "preferred": 200,
-      "minimum_met": false,
-      "preferred_met": false,
-      "sequences_needed_to_minimum": 100,
-      "sequences_needed_to_preferred": 200,
-      "unique_signer_count": 0,
-      "unique_signers": [],
-      "unique_device_count": 0,
-      "unique_devices": [],
-      "per_device": {}
+    "TOMORROW": {
+      "fsl105_sequences": 245,
+      "samsung_sequences": 0,
+      "combined_total": 245,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 245
+      }
+    },
+    "TUESDAY": {
+      "fsl105_sequences": 283,
+      "samsung_sequences": 0,
+      "combined_total": 283,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 283
+      }
+    },
+    "TWO": {
+      "fsl105_sequences": 198,
+      "samsung_sequences": 0,
+      "combined_total": 198,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 198
+      }
+    },
+    "UNCLE": {
+      "fsl105_sequences": 238,
+      "samsung_sequences": 0,
+      "combined_total": 238,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 238
+      }
     },
     "UNDERSTAND": {
-      "sequence_count": 316,
-      "minimum": 100,
-      "preferred": 200,
+      "fsl105_sequences": 257,
+      "samsung_sequences": 0,
+      "combined_total": 257,
+      "minimum_required": 100,
       "minimum_met": true,
-      "preferred_met": true,
       "sequences_needed_to_minimum": 0,
-      "sequences_needed_to_preferred": 0,
-      "unique_signer_count": 20,
-      "unique_signers": [
-        "fsl105_0",
-        "fsl105_1",
-        "fsl105_10",
-        "fsl105_11",
-        "fsl105_12",
-        "fsl105_13",
-        "fsl105_14",
-        "fsl105_15",
-        "fsl105_16",
-        "fsl105_17",
-        "fsl105_18",
-        "fsl105_19",
-        "fsl105_2",
-        "fsl105_3",
-        "fsl105_4",
-        "fsl105_5",
-        "fsl105_6",
-        "fsl105_7",
-        "fsl105_8",
-        "fsl105_9"
-      ],
-      "unique_device_count": 1,
-      "unique_devices": [
-        "FSL105_VIDEO"
-      ],
       "per_device": {
-        "FSL105_VIDEO": 316
+        "FSL105_VIDEO": 257
+      }
+    },
+    "WEDNESDAY": {
+      "fsl105_sequences": 285,
+      "samsung_sequences": 0,
+      "combined_total": 285,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 285
+      }
+    },
+    "WHITE": {
+      "fsl105_sequences": 222,
+      "samsung_sequences": 0,
+      "combined_total": 222,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 222
+      }
+    },
+    "WINE": {
+      "fsl105_sequences": 261,
+      "samsung_sequences": 0,
+      "combined_total": 261,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 261
+      }
+    },
+    "WOMAN": {
+      "fsl105_sequences": 272,
+      "samsung_sequences": 0,
+      "combined_total": 272,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 272
+      }
+    },
+    "WRONG": {
+      "fsl105_sequences": 265,
+      "samsung_sequences": 0,
+      "combined_total": 265,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 265
+      }
+    },
+    "YELLOW": {
+      "fsl105_sequences": 211,
+      "samsung_sequences": 0,
+      "combined_total": 211,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 211
+      }
+    },
+    "YES": {
+      "fsl105_sequences": 239,
+      "samsung_sequences": 0,
+      "combined_total": 239,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 239
+      }
+    },
+    "YESTERDAY": {
+      "fsl105_sequences": 238,
+      "samsung_sequences": 0,
+      "combined_total": 238,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 238
+      }
+    },
+    "YOURE WELCOME": {
+      "fsl105_sequences": 277,
+      "samsung_sequences": 0,
+      "combined_total": 277,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 277
       }
     }
   },
-  "device_diversity_report": {
-    "labels": {
-      "WHAT": {
-        "sequence_count": 0,
-        "unique_device_models": [],
-        "unique_signer_ids": [],
-        "sequence_count_per_device": {},
-        "diversity_score": 0.0,
-        "status": "LOW_DIVERSITY"
-      },
-      "YOUR": {
-        "sequence_count": 0,
-        "unique_device_models": [],
-        "unique_signer_ids": [],
-        "sequence_count_per_device": {},
-        "diversity_score": 0.0,
-        "status": "LOW_DIVERSITY"
-      },
-      "NAME": {
-        "sequence_count": 0,
-        "unique_device_models": [],
-        "unique_signer_ids": [],
-        "sequence_count_per_device": {},
-        "diversity_score": 0.0,
-        "status": "LOW_DIVERSITY"
-      },
-      "MY": {
-        "sequence_count": 0,
-        "unique_device_models": [],
-        "unique_signer_ids": [],
-        "sequence_count_per_device": {},
-        "diversity_score": 0.0,
-        "status": "LOW_DIVERSITY"
-      },
-      "NOTHING": {
-        "sequence_count": 0,
-        "unique_device_models": [],
-        "unique_signer_ids": [],
-        "sequence_count_per_device": {},
-        "diversity_score": 0.0,
-        "status": "LOW_DIVERSITY"
-      },
-      "HELLO": {
-        "sequence_count": 282,
-        "unique_device_models": [
-          "FSL105_VIDEO"
-        ],
-        "unique_signer_ids": [
-          "fsl105_0",
-          "fsl105_1",
-          "fsl105_10",
-          "fsl105_11",
-          "fsl105_12",
-          "fsl105_13",
-          "fsl105_14",
-          "fsl105_15",
-          "fsl105_16",
-          "fsl105_17",
-          "fsl105_18",
-          "fsl105_19",
-          "fsl105_2",
-          "fsl105_3",
-          "fsl105_4",
-          "fsl105_5",
-          "fsl105_6",
-          "fsl105_7",
-          "fsl105_8",
-          "fsl105_9"
-        ],
-        "sequence_count_per_device": {
-          "FSL105_VIDEO": 282
-        },
-        "diversity_score": 0.07092198581560284,
-        "status": "OK"
-      },
-      "THANKYOU": {
-        "sequence_count": 317,
-        "unique_device_models": [
-          "FSL105_VIDEO"
-        ],
-        "unique_signer_ids": [
-          "fsl105_0",
-          "fsl105_1",
-          "fsl105_10",
-          "fsl105_11",
-          "fsl105_12",
-          "fsl105_13",
-          "fsl105_14",
-          "fsl105_15",
-          "fsl105_16",
-          "fsl105_17",
-          "fsl105_18",
-          "fsl105_19",
-          "fsl105_2",
-          "fsl105_3",
-          "fsl105_4",
-          "fsl105_5",
-          "fsl105_6",
-          "fsl105_7",
-          "fsl105_8",
-          "fsl105_9"
-        ],
-        "sequence_count_per_device": {
-          "FSL105_VIDEO": 317
-        },
-        "diversity_score": 0.06309148264984227,
-        "status": "OK"
-      },
-      "WATER": {
-        "sequence_count": 0,
-        "unique_device_models": [],
-        "unique_signer_ids": [],
-        "sequence_count_per_device": {},
-        "diversity_score": 0.0,
-        "status": "LOW_DIVERSITY"
-      },
-      "EAT": {
-        "sequence_count": 0,
-        "unique_device_models": [],
-        "unique_signer_ids": [],
-        "sequence_count_per_device": {},
-        "diversity_score": 0.0,
-        "status": "LOW_DIVERSITY"
-      },
-      "HELP": {
-        "sequence_count": 0,
-        "unique_device_models": [],
-        "unique_signer_ids": [],
-        "sequence_count_per_device": {},
-        "diversity_score": 0.0,
-        "status": "LOW_DIVERSITY"
-      },
-      "STOP": {
-        "sequence_count": 0,
-        "unique_device_models": [],
-        "unique_signer_ids": [],
-        "sequence_count_per_device": {},
-        "diversity_score": 0.0,
-        "status": "LOW_DIVERSITY"
-      },
-      "YES": {
-        "sequence_count": 299,
-        "unique_device_models": [
-          "FSL105_VIDEO"
-        ],
-        "unique_signer_ids": [
-          "fsl105_0",
-          "fsl105_1",
-          "fsl105_10",
-          "fsl105_11",
-          "fsl105_12",
-          "fsl105_13",
-          "fsl105_14",
-          "fsl105_15",
-          "fsl105_16",
-          "fsl105_17",
-          "fsl105_18",
-          "fsl105_19",
-          "fsl105_2",
-          "fsl105_3",
-          "fsl105_4",
-          "fsl105_5",
-          "fsl105_6",
-          "fsl105_7",
-          "fsl105_8",
-          "fsl105_9"
-        ],
-        "sequence_count_per_device": {
-          "FSL105_VIDEO": 299
-        },
-        "diversity_score": 0.06688963210702341,
-        "status": "OK"
-      },
-      "NO": {
-        "sequence_count": 307,
-        "unique_device_models": [
-          "FSL105_VIDEO"
-        ],
-        "unique_signer_ids": [
-          "fsl105_0",
-          "fsl105_1",
-          "fsl105_10",
-          "fsl105_11",
-          "fsl105_12",
-          "fsl105_13",
-          "fsl105_14",
-          "fsl105_15",
-          "fsl105_16",
-          "fsl105_17",
-          "fsl105_18",
-          "fsl105_19",
-          "fsl105_2",
-          "fsl105_20",
-          "fsl105_3",
-          "fsl105_4",
-          "fsl105_5",
-          "fsl105_6",
-          "fsl105_7",
-          "fsl105_8",
-          "fsl105_9"
-        ],
-        "sequence_count_per_device": {
-          "FSL105_VIDEO": 307
-        },
-        "diversity_score": 0.06840390879478828,
-        "status": "OK"
-      },
-      "PLEASE": {
-        "sequence_count": 0,
-        "unique_device_models": [],
-        "unique_signer_ids": [],
-        "sequence_count_per_device": {},
-        "diversity_score": 0.0,
-        "status": "LOW_DIVERSITY"
-      },
-      "SORRY": {
-        "sequence_count": 0,
-        "unique_device_models": [],
-        "unique_signer_ids": [],
-        "sequence_count_per_device": {},
-        "diversity_score": 0.0,
-        "status": "LOW_DIVERSITY"
-      },
-      "DOCTOR": {
-        "sequence_count": 0,
-        "unique_device_models": [],
-        "unique_signer_ids": [],
-        "sequence_count_per_device": {},
-        "diversity_score": 0.0,
-        "status": "LOW_DIVERSITY"
-      },
-      "SICK": {
-        "sequence_count": 0,
-        "unique_device_models": [],
-        "unique_signer_ids": [],
-        "sequence_count_per_device": {},
-        "diversity_score": 0.0,
-        "status": "LOW_DIVERSITY"
-      },
-      "PAIN": {
-        "sequence_count": 0,
-        "unique_device_models": [],
-        "unique_signer_ids": [],
-        "sequence_count_per_device": {},
-        "diversity_score": 0.0,
-        "status": "LOW_DIVERSITY"
-      },
-      "BATHROOM": {
-        "sequence_count": 0,
-        "unique_device_models": [],
-        "unique_signer_ids": [],
-        "sequence_count_per_device": {},
-        "diversity_score": 0.0,
-        "status": "LOW_DIVERSITY"
-      },
-      "SLEEP": {
-        "sequence_count": 0,
-        "unique_device_models": [],
-        "unique_signer_ids": [],
-        "sequence_count_per_device": {},
-        "diversity_score": 0.0,
-        "status": "LOW_DIVERSITY"
-      },
-      "WHO": {
-        "sequence_count": 0,
-        "unique_device_models": [],
-        "unique_signer_ids": [],
-        "sequence_count_per_device": {},
-        "diversity_score": 0.0,
-        "status": "LOW_DIVERSITY"
-      },
-      "WHERE": {
-        "sequence_count": 0,
-        "unique_device_models": [],
-        "unique_signer_ids": [],
-        "sequence_count_per_device": {},
-        "diversity_score": 0.0,
-        "status": "LOW_DIVERSITY"
-      },
-      "HOW": {
-        "sequence_count": 0,
-        "unique_device_models": [],
-        "unique_signer_ids": [],
-        "sequence_count_per_device": {},
-        "diversity_score": 0.0,
-        "status": "LOW_DIVERSITY"
-      },
-      "WHEN": {
-        "sequence_count": 0,
-        "unique_device_models": [],
-        "unique_signer_ids": [],
-        "sequence_count_per_device": {},
-        "diversity_score": 0.0,
-        "status": "LOW_DIVERSITY"
-      },
-      "UNDERSTAND": {
-        "sequence_count": 316,
-        "unique_device_models": [
-          "FSL105_VIDEO"
-        ],
-        "unique_signer_ids": [
-          "fsl105_0",
-          "fsl105_1",
-          "fsl105_10",
-          "fsl105_11",
-          "fsl105_12",
-          "fsl105_13",
-          "fsl105_14",
-          "fsl105_15",
-          "fsl105_16",
-          "fsl105_17",
-          "fsl105_18",
-          "fsl105_19",
-          "fsl105_2",
-          "fsl105_3",
-          "fsl105_4",
-          "fsl105_5",
-          "fsl105_6",
-          "fsl105_7",
-          "fsl105_8",
-          "fsl105_9"
-        ],
-        "sequence_count_per_device": {
-          "FSL105_VIDEO": 316
-        },
-        "diversity_score": 0.06329113924050633,
-        "status": "OK"
+  "recording_priority": [
+    {
+      "rank": 1,
+      "label": "AUNTIE",
+      "fsl105_sequences": 214,
+      "samsung_sequences": 0,
+      "combined_total": 214,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 214
       }
     },
-    "low_diversity_labels": [
-      "WHAT",
-      "YOUR",
-      "NAME",
-      "MY",
-      "NOTHING",
-      "WATER",
-      "EAT",
-      "HELP",
-      "STOP",
-      "PLEASE",
-      "SORRY",
-      "DOCTOR",
-      "SICK",
-      "PAIN",
-      "BATHROOM",
-      "SLEEP",
-      "WHO",
-      "WHERE",
-      "HOW",
-      "WHEN"
-    ],
-    "formula": "(unique_signers * unique_devices) / total_sequences"
-  },
-  "per_device": {
-    "FSL105_VIDEO": {
-      "WHAT": 0,
-      "YOUR": 0,
-      "NAME": 0,
-      "MY": 0,
-      "NOTHING": 0,
-      "HELLO": 282,
-      "THANKYOU": 317,
-      "WATER": 0,
-      "EAT": 0,
-      "HELP": 0,
-      "STOP": 0,
-      "YES": 299,
-      "NO": 307,
-      "PLEASE": 0,
-      "SORRY": 0,
-      "DOCTOR": 0,
-      "SICK": 0,
-      "PAIN": 0,
-      "BATHROOM": 0,
-      "SLEEP": 0,
-      "WHO": 0,
-      "WHERE": 0,
-      "HOW": 0,
-      "WHEN": 0,
-      "UNDERSTAND": 316
-    }
-  },
-  "invalid_files": [],
-  "warnings": [
     {
-      "label": "WHAT",
-      "signers": 0,
-      "type": "low_signer_diversity"
+      "rank": 2,
+      "label": "BEER",
+      "fsl105_sequences": 267,
+      "samsung_sequences": 0,
+      "combined_total": 267,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 267
+      }
     },
     {
-      "label": "YOUR",
-      "signers": 0,
-      "type": "low_signer_diversity"
+      "rank": 3,
+      "label": "BLACK",
+      "fsl105_sequences": 238,
+      "samsung_sequences": 0,
+      "combined_total": 238,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 238
+      }
     },
     {
-      "label": "NAME",
-      "signers": 0,
-      "type": "low_signer_diversity"
+      "rank": 4,
+      "label": "BLIND",
+      "fsl105_sequences": 216,
+      "samsung_sequences": 0,
+      "combined_total": 216,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 216
+      }
     },
     {
-      "label": "MY",
-      "signers": 0,
-      "type": "low_signer_diversity"
+      "rank": 5,
+      "label": "BLUE",
+      "fsl105_sequences": 213,
+      "samsung_sequences": 0,
+      "combined_total": 213,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 213
+      }
     },
     {
-      "label": "NOTHING",
-      "signers": 0,
-      "type": "low_signer_diversity"
+      "rank": 6,
+      "label": "BOY",
+      "fsl105_sequences": 276,
+      "samsung_sequences": 0,
+      "combined_total": 276,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 276
+      }
     },
     {
+      "rank": 7,
+      "label": "CHICKEN",
+      "fsl105_sequences": 274,
+      "samsung_sequences": 0,
+      "combined_total": 274,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 274
+      }
+    },
+    {
+      "rank": 8,
+      "label": "COUSIN",
+      "fsl105_sequences": 242,
+      "samsung_sequences": 0,
+      "combined_total": 242,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 242
+      }
+    },
+    {
+      "rank": 9,
+      "label": "DEAF",
+      "fsl105_sequences": 255,
+      "samsung_sequences": 0,
+      "combined_total": 255,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 255
+      }
+    },
+    {
+      "rank": 10,
+      "label": "DEAF BLIND",
+      "fsl105_sequences": 318,
+      "samsung_sequences": 0,
+      "combined_total": 318,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 318
+      }
+    },
+    {
+      "rank": 11,
+      "label": "DON’T KNOW",
+      "fsl105_sequences": 243,
+      "samsung_sequences": 0,
+      "combined_total": 243,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 243
+      }
+    },
+    {
+      "rank": 12,
+      "label": "DON’T UNDERSTAND",
+      "fsl105_sequences": 282,
+      "samsung_sequences": 0,
+      "combined_total": 282,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 282
+      }
+    },
+    {
+      "rank": 13,
+      "label": "EIGHT",
+      "fsl105_sequences": 233,
+      "samsung_sequences": 0,
+      "combined_total": 233,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 233
+      }
+    },
+    {
+      "rank": 14,
+      "label": "FAST",
+      "fsl105_sequences": 268,
+      "samsung_sequences": 0,
+      "combined_total": 268,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 268
+      }
+    },
+    {
+      "rank": 15,
+      "label": "FATHER",
+      "fsl105_sequences": 248,
+      "samsung_sequences": 0,
+      "combined_total": 248,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 248
+      }
+    },
+    {
+      "rank": 16,
+      "label": "FISH",
+      "fsl105_sequences": 263,
+      "samsung_sequences": 0,
+      "combined_total": 263,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 263
+      }
+    },
+    {
+      "rank": 17,
+      "label": "FIVE",
+      "fsl105_sequences": 196,
+      "samsung_sequences": 0,
+      "combined_total": 196,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 196
+      }
+    },
+    {
+      "rank": 18,
+      "label": "FOUR",
+      "fsl105_sequences": 209,
+      "samsung_sequences": 0,
+      "combined_total": 209,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 209
+      }
+    },
+    {
+      "rank": 19,
+      "label": "FRIDAY",
+      "fsl105_sequences": 290,
+      "samsung_sequences": 0,
+      "combined_total": 290,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 290
+      }
+    },
+    {
+      "rank": 20,
+      "label": "GIRL",
+      "fsl105_sequences": 242,
+      "samsung_sequences": 0,
+      "combined_total": 242,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 242
+      }
+    },
+    {
+      "rank": 21,
+      "label": "GOOD AFTERNOON",
+      "fsl105_sequences": 352,
+      "samsung_sequences": 0,
+      "combined_total": 352,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 352
+      }
+    },
+    {
+      "rank": 22,
+      "label": "GOOD EVENING",
+      "fsl105_sequences": 366,
+      "samsung_sequences": 0,
+      "combined_total": 366,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 366
+      }
+    },
+    {
+      "rank": 23,
+      "label": "GOOD MORNING",
+      "fsl105_sequences": 327,
+      "samsung_sequences": 0,
+      "combined_total": 327,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 327
+      }
+    },
+    {
+      "rank": 24,
+      "label": "GRANDFATHER",
+      "fsl105_sequences": 251,
+      "samsung_sequences": 0,
+      "combined_total": 251,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 251
+      }
+    },
+    {
+      "rank": 25,
+      "label": "GRANDMOTHER",
+      "fsl105_sequences": 228,
+      "samsung_sequences": 0,
+      "combined_total": 228,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 228
+      }
+    },
+    {
+      "rank": 26,
+      "label": "GREEN",
+      "fsl105_sequences": 216,
+      "samsung_sequences": 0,
+      "combined_total": 216,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 216
+      }
+    },
+    {
+      "rank": 27,
+      "label": "HARD OF HEARING",
+      "fsl105_sequences": 205,
+      "samsung_sequences": 0,
+      "combined_total": 205,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 205
+      }
+    },
+    {
+      "rank": 28,
       "label": "HELLO",
-      "device": "FSL105_VIDEO",
-      "share": 1.0,
-      "type": "device_dominance"
+      "fsl105_sequences": 219,
+      "samsung_sequences": 0,
+      "combined_total": 219,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 219
+      }
     },
     {
-      "label": "THANKYOU",
-      "device": "FSL105_VIDEO",
-      "share": 1.0,
-      "type": "device_dominance"
+      "rank": 29,
+      "label": "HOT",
+      "fsl105_sequences": 250,
+      "samsung_sequences": 0,
+      "combined_total": 250,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 250
+      }
     },
     {
-      "label": "WATER",
-      "signers": 0,
-      "type": "low_signer_diversity"
+      "rank": 30,
+      "label": "IM FINE",
+      "fsl105_sequences": 227,
+      "samsung_sequences": 0,
+      "combined_total": 227,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 227
+      }
     },
     {
-      "label": "EAT",
-      "signers": 0,
-      "type": "low_signer_diversity"
+      "rank": 31,
+      "label": "KNOW",
+      "fsl105_sequences": 264,
+      "samsung_sequences": 0,
+      "combined_total": 264,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 264
+      }
     },
     {
-      "label": "HELP",
-      "signers": 0,
-      "type": "low_signer_diversity"
+      "rank": 32,
+      "label": "MAN",
+      "fsl105_sequences": 290,
+      "samsung_sequences": 0,
+      "combined_total": 290,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 290
+      }
     },
     {
-      "label": "STOP",
-      "signers": 0,
-      "type": "low_signer_diversity"
+      "rank": 33,
+      "label": "MILK",
+      "fsl105_sequences": 258,
+      "samsung_sequences": 0,
+      "combined_total": 258,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 258
+      }
     },
     {
-      "label": "YES",
-      "device": "FSL105_VIDEO",
-      "share": 1.0,
-      "type": "device_dominance"
+      "rank": 34,
+      "label": "MONDAY",
+      "fsl105_sequences": 293,
+      "samsung_sequences": 0,
+      "combined_total": 293,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 293
+      }
     },
     {
+      "rank": 35,
+      "label": "MOTHER",
+      "fsl105_sequences": 180,
+      "samsung_sequences": 0,
+      "combined_total": 180,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 180
+      }
+    },
+    {
+      "rank": 36,
+      "label": "NINE",
+      "fsl105_sequences": 231,
+      "samsung_sequences": 0,
+      "combined_total": 231,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 231
+      }
+    },
+    {
+      "rank": 37,
       "label": "NO",
-      "device": "FSL105_VIDEO",
-      "share": 1.0,
-      "type": "device_dominance"
+      "fsl105_sequences": 254,
+      "samsung_sequences": 0,
+      "combined_total": 254,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 254
+      }
     },
     {
-      "label": "PLEASE",
-      "signers": 0,
-      "type": "low_signer_diversity"
+      "rank": 38,
+      "label": "NO SUGAR",
+      "fsl105_sequences": 317,
+      "samsung_sequences": 0,
+      "combined_total": 317,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 317
+      }
     },
     {
-      "label": "SORRY",
-      "signers": 0,
-      "type": "low_signer_diversity"
+      "rank": 39,
+      "label": "ONE",
+      "fsl105_sequences": 216,
+      "samsung_sequences": 0,
+      "combined_total": 216,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 216
+      }
     },
     {
-      "label": "DOCTOR",
-      "signers": 0,
-      "type": "low_signer_diversity"
+      "rank": 40,
+      "label": "ORANGE",
+      "fsl105_sequences": 195,
+      "samsung_sequences": 0,
+      "combined_total": 195,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 195
+      }
     },
     {
-      "label": "SICK",
-      "signers": 0,
-      "type": "low_signer_diversity"
+      "rank": 41,
+      "label": "PARENTS",
+      "fsl105_sequences": 258,
+      "samsung_sequences": 0,
+      "combined_total": 258,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 258
+      }
     },
     {
-      "label": "PAIN",
-      "signers": 0,
-      "type": "low_signer_diversity"
+      "rank": 42,
+      "label": "PINK",
+      "fsl105_sequences": 232,
+      "samsung_sequences": 0,
+      "combined_total": 232,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 232
+      }
     },
     {
-      "label": "BATHROOM",
-      "signers": 0,
-      "type": "low_signer_diversity"
+      "rank": 43,
+      "label": "RED",
+      "fsl105_sequences": 200,
+      "samsung_sequences": 0,
+      "combined_total": 200,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 200
+      }
     },
     {
-      "label": "SLEEP",
-      "signers": 0,
-      "type": "low_signer_diversity"
+      "rank": 44,
+      "label": "SEE YOU TOMORROW",
+      "fsl105_sequences": 320,
+      "samsung_sequences": 0,
+      "combined_total": 320,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 320
+      }
     },
     {
-      "label": "WHO",
-      "signers": 0,
-      "type": "low_signer_diversity"
+      "rank": 45,
+      "label": "SEVEN",
+      "fsl105_sequences": 253,
+      "samsung_sequences": 0,
+      "combined_total": 253,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 253
+      }
     },
     {
-      "label": "WHERE",
-      "signers": 0,
-      "type": "low_signer_diversity"
+      "rank": 46,
+      "label": "SIX",
+      "fsl105_sequences": 256,
+      "samsung_sequences": 0,
+      "combined_total": 256,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 256
+      }
     },
     {
-      "label": "HOW",
-      "signers": 0,
-      "type": "low_signer_diversity"
+      "rank": 47,
+      "label": "SUGAR",
+      "fsl105_sequences": 263,
+      "samsung_sequences": 0,
+      "combined_total": 263,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 263
+      }
     },
     {
-      "label": "WHEN",
-      "signers": 0,
-      "type": "low_signer_diversity"
+      "rank": 48,
+      "label": "TEN",
+      "fsl105_sequences": 229,
+      "samsung_sequences": 0,
+      "combined_total": 229,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 229
+      }
     },
     {
+      "rank": 49,
+      "label": "THREE",
+      "fsl105_sequences": 230,
+      "samsung_sequences": 0,
+      "combined_total": 230,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 230
+      }
+    },
+    {
+      "rank": 50,
+      "label": "THURSDAY",
+      "fsl105_sequences": 288,
+      "samsung_sequences": 0,
+      "combined_total": 288,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 288
+      }
+    },
+    {
+      "rank": 51,
+      "label": "TOMORROW",
+      "fsl105_sequences": 245,
+      "samsung_sequences": 0,
+      "combined_total": 245,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 245
+      }
+    },
+    {
+      "rank": 52,
+      "label": "TUESDAY",
+      "fsl105_sequences": 283,
+      "samsung_sequences": 0,
+      "combined_total": 283,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 283
+      }
+    },
+    {
+      "rank": 53,
+      "label": "TWO",
+      "fsl105_sequences": 198,
+      "samsung_sequences": 0,
+      "combined_total": 198,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 198
+      }
+    },
+    {
+      "rank": 54,
+      "label": "UNCLE",
+      "fsl105_sequences": 238,
+      "samsung_sequences": 0,
+      "combined_total": 238,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 238
+      }
+    },
+    {
+      "rank": 55,
       "label": "UNDERSTAND",
-      "device": "FSL105_VIDEO",
-      "share": 1.0,
-      "type": "device_dominance"
+      "fsl105_sequences": 257,
+      "samsung_sequences": 0,
+      "combined_total": 257,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 257
+      }
+    },
+    {
+      "rank": 56,
+      "label": "WEDNESDAY",
+      "fsl105_sequences": 285,
+      "samsung_sequences": 0,
+      "combined_total": 285,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 285
+      }
+    },
+    {
+      "rank": 57,
+      "label": "WHITE",
+      "fsl105_sequences": 222,
+      "samsung_sequences": 0,
+      "combined_total": 222,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 222
+      }
+    },
+    {
+      "rank": 58,
+      "label": "WINE",
+      "fsl105_sequences": 261,
+      "samsung_sequences": 0,
+      "combined_total": 261,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 261
+      }
+    },
+    {
+      "rank": 59,
+      "label": "WOMAN",
+      "fsl105_sequences": 272,
+      "samsung_sequences": 0,
+      "combined_total": 272,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 272
+      }
+    },
+    {
+      "rank": 60,
+      "label": "WRONG",
+      "fsl105_sequences": 265,
+      "samsung_sequences": 0,
+      "combined_total": 265,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 265
+      }
+    },
+    {
+      "rank": 61,
+      "label": "YELLOW",
+      "fsl105_sequences": 211,
+      "samsung_sequences": 0,
+      "combined_total": 211,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 211
+      }
+    },
+    {
+      "rank": 62,
+      "label": "YES",
+      "fsl105_sequences": 239,
+      "samsung_sequences": 0,
+      "combined_total": 239,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 239
+      }
+    },
+    {
+      "rank": 63,
+      "label": "YESTERDAY",
+      "fsl105_sequences": 238,
+      "samsung_sequences": 0,
+      "combined_total": 238,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 238
+      }
+    },
+    {
+      "rank": 64,
+      "label": "YOURE WELCOME",
+      "fsl105_sequences": 277,
+      "samsung_sequences": 0,
+      "combined_total": 277,
+      "minimum_required": 100,
+      "minimum_met": true,
+      "sequences_needed_to_minimum": 0,
+      "per_device": {
+        "FSL105_VIDEO": 277
+      }
     }
   ],
-  "ready_minimum": false,
-  "ready_preferred": false
+  "labels_below_minimum": [],
+  "invalid_files": [],
+  "warnings": [],
+  "ignored_label_directories": [
+    "BATHROOM",
+    "DOCTOR",
+    "EAT",
+    "HELP",
+    "HOW",
+    "MY",
+    "NAME",
+    "NOTHING",
+    "PAIN",
+    "PLEASE",
+    "SICK",
+    "SLEEP",
+    "SORRY",
+    "STOP",
+    "THANKYOU",
+    "WATER",
+    "WHAT",
+    "WHEN",
+    "WHERE",
+    "WHO",
+    "YOUR"
+  ],
+  "ready_minimum": true
 }
