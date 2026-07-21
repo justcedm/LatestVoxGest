@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "profile": "fsl_rdtcn_v1",
+  "status": "pending_training",
+  "model_kind": "rd_tcn",
+  "sequence_length": 20,
+  "feature_size": 162,
+  "input_shape": [
+    1,
+    20,
+    162
+  ],
+  "dominant_hand": "right",
+  "mirrored_input": true,
+  "labels": [],
+  "negative_label": "NOTHING",
+  "nothing_policy": "ignore_no_output",
+  "device_invariant_normalization": true,
+  "wrist_mcp_scale_normalized": true,
+  "z_damping": 0.3
+}

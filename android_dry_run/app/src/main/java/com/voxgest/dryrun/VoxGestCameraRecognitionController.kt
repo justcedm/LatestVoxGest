@@ -1,4 +1,4 @@
-package com.voxgest.dryrun
+﻿package com.voxgest.dryrun
 
 import android.content.Context
 import android.os.Build
@@ -15,6 +15,8 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
+import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.Locale
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -32,6 +34,7 @@ class VoxGestCameraRecognitionController(
     private val lifecycleOwner: LifecycleOwner,
     private val onStatus: (String) -> Unit,
     private val onRecognitionFeedback: (RecognitionFeedback) -> Unit = {},
+    private val onSkeletonFrame: (LandmarkFrame?) -> Unit = {},
     private val onAcceptedResult: (RecognitionResult) -> Unit
 ) {
     private val appContext = context.applicationContext
@@ -66,8 +69,16 @@ class VoxGestCameraRecognitionController(
     @Volatile private var collectionPausedUntilMs: Long = 0L
     @Volatile private var collectionInvalidStartedAtMs: Long = 0L
     @Volatile private var collectionLostHandFrames: Int = 0
+    @Volatile private var slidingWindowFrame: Long = 0L
+    @Volatile private var lastSlidingTop1Label: String = ""
+    @Volatile private var consecutiveMatchCount: Int = 0
+    @Volatile private var previousOneHandFrame: LandmarkFrame? = null
     @Volatile private var statusToken: Long = 0L
+    @Volatile private var useBackCamera: Boolean = false
     @Volatile private var calibrationLabel: String = ""
+    @Volatile private var calibrationExportMode: CalibrationExportMode = CalibrationExportMode.ASL
+    @Volatile private var calibrationSignerId: String = ""
+    @Volatile private var calibrationDeviceSessionTag: String = ""
     @Volatile private var calibrationBuffer: LandmarkSequenceBuffer? = null
     @Volatile private var calibrationMissingPoseCount: Int = 0
     @Volatile private var calibrationMissingHandCount: Int = 0
@@ -80,7 +91,7 @@ class VoxGestCameraRecognitionController(
             try {
                 val loadedOneHandRecognizer = VoxGestTfliteRecognizer(appContext)
                 val loadedOneHandProfile = loadedOneHandRecognizer.load(RecognitionProfile.activeRecognitionProfileId(appContext))
-                val mirrorCameraFrame = AndroidLandmarkInputPolicy.shouldMirrorFrameBeforeLandmarkExtraction(loadedOneHandProfile)
+                val mirrorCameraFrame = mirrorCameraFrameFor(loadedOneHandProfile)
                 val loadedExtractor = MediaPipeLandmarkExtractor(appContext, mirrorCameraFrame)
 
                 fullSignRecognizer = null
@@ -88,8 +99,9 @@ class VoxGestCameraRecognitionController(
                 fullSignBuffer = null
                 oneHandRecognizer = loadedOneHandRecognizer
                 oneHandProfile = loadedOneHandProfile
-                oneHandBuffer = LandmarkSequenceBuffer(loadedOneHandProfile.sequenceLength, loadedOneHandProfile.featureSize)
-                calibrationBuffer = LandmarkSequenceBuffer(loadedOneHandProfile.sequenceLength, loadedOneHandProfile.featureSize)
+                val runtimeFeatureSize = AndroidLandmarkInputPolicy.runtimeFeatureSize(loadedOneHandProfile)
+                oneHandBuffer = LandmarkSequenceBuffer(loadedOneHandProfile.sequenceLength, runtimeFeatureSize)
+                calibrationBuffer = LandmarkSequenceBuffer(loadedOneHandProfile.sequenceLength, runtimeFeatureSize)
                 extractor = loadedExtractor
                 alphabetClassifier = null
                 Log.i(TAG, "active_profile=${loadedOneHandProfile.id} automatic alphabet output disabled; fullsign output disabled")
@@ -117,6 +129,7 @@ class VoxGestCameraRecognitionController(
         }
         resetTemporalState()
         postFeedback(RecognitionFeedback.idle())
+        postSkeletonFrame(null)
         mainExecutor.execute {
             imageAnalysis?.clearAnalyzer()
             imageAnalysis = null
@@ -135,24 +148,55 @@ class VoxGestCameraRecognitionController(
     }
 
     fun startCalibration(label: String) {
+        startCalibration(
+            label = label,
+            exportMode = CalibrationExportMode.ASL,
+            signerId = "",
+            deviceSessionTag = ""
+        )
+    }
+
+    fun startCalibration(
+        label: String,
+        exportMode: CalibrationExportMode,
+        signerId: String,
+        deviceSessionTag: String
+    ) {
         if (!OneHandCalibrationConfig.ENABLE_ONEHAND_CALIBRATION_RECORDING) {
             postStatus("Calibration disabled")
             return
         }
         val clean = label.trim().uppercase(Locale.US)
-        if (clean !in OneHandCalibrationConfig.CALIBRATION_LABELS) {
+        if (clean !in labelsForExportMode(exportMode)) {
             postStatus("Unsupported calibration label")
             return
         }
+        val cleanSignerId = if (exportMode == CalibrationExportMode.FSL) {
+            safeCalibrationToken(signerId, "UNKNOWN_SIGNER")
+        } else {
+            ""
+        }
+        if (exportMode == CalibrationExportMode.FSL && cleanSignerId == "UNKNOWN_SIGNER") {
+            postStatus("Enter signer ID")
+            return
+        }
+        val cleanSessionTag = if (exportMode == CalibrationExportMode.FSL) {
+            safeCalibrationToken(deviceSessionTag, defaultDeviceSessionTag())
+        } else {
+            ""
+        }
         analyzerExecutor.execute {
             calibrationLabel = clean
+            calibrationExportMode = exportMode
+            calibrationSignerId = cleanSignerId
+            calibrationDeviceSessionTag = cleanSessionTag
             calibrationBuffer?.clear()
             calibrationMissingPoseCount = 0
             calibrationMissingHandCount = 0
             oneHandBuffer?.clear()
             clearSequenceState()
             dynamicGate.noteNoOutputState()
-            Log.i(TAG, "calibration_start label=$clean profile=${oneHandProfile?.id ?: "not_loaded"}")
+            Log.i(TAG, "calibration_start label=$clean mode=$exportMode profile=${oneHandProfile?.id ?: "not_loaded"}")
             postStatus("Prepare $clean")
         }
     }
@@ -160,11 +204,47 @@ class VoxGestCameraRecognitionController(
     fun cancelCalibration() {
         analyzerExecutor.execute {
             calibrationLabel = ""
+            calibrationExportMode = CalibrationExportMode.ASL
+            calibrationSignerId = ""
+            calibrationDeviceSessionTag = ""
             calibrationBuffer?.clear()
             calibrationMissingPoseCount = 0
             calibrationMissingHandCount = 0
             postStatus("Looking for hand")
             Log.i(TAG, "calibration_cancelled")
+        }
+    }
+
+    fun switchCamera(previewView: PreviewView) {
+        analyzerExecutor.execute {
+            useBackCamera = !useBackCamera
+            resetTemporalState()
+            postFeedback(RecognitionFeedback.idle())
+
+            oneHandProfile?.let { profile ->
+                val mirrorCameraFrame = mirrorCameraFrameFor(profile)
+                extractor?.close()
+                extractor = MediaPipeLandmarkExtractor(appContext, mirrorCameraFrame)
+                Log.i(TAG, "camera_switch camera=${currentCameraLabel()} mirrorCameraFrame=$mirrorCameraFrame")
+            }
+
+            postStatus("Switching to ${currentCameraLabel()} camera")
+
+            mainExecutor.execute {
+                bindCamera(previewView)
+            }
+        }
+    }
+
+    private fun currentCameraLabel(): String {
+        return if (useBackCamera) "Back" else "Front"
+    }
+
+    private fun mirrorCameraFrameFor(profile: RecognitionProfile): Boolean {
+        return if (useBackCamera) {
+            false
+        } else {
+            AndroidLandmarkInputPolicy.shouldMirrorFrameBeforeLandmarkExtraction(profile)
         }
     }
 
@@ -179,17 +259,19 @@ class VoxGestCameraRecognitionController(
             }
             @Suppress("DEPRECATION")
             val analysis = ImageAnalysis.Builder()
-                .setTargetResolution(Size(256, 192))
+                .setTargetResolution(Size(192, 144))
                 .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                 .build()
             analysis.setAnalyzer(analyzerExecutor) { imageProxy ->
                 analyzeFrame(imageProxy)
             }
             imageAnalysis = analysis
+            val cameraSelector = if (useBackCamera) CameraSelector.DEFAULT_BACK_CAMERA else CameraSelector.DEFAULT_FRONT_CAMERA
+            Log.i(TAG, "camera_selector=" + (if (useBackCamera) "BACK" else "FRONT"))
             provider.unbindAll()
             provider.bindToLifecycle(
                 lifecycleOwner,
-                CameraSelector.DEFAULT_FRONT_CAMERA,
+                cameraSelector,
                 preview,
                 analysis
             )
@@ -204,6 +286,7 @@ class VoxGestCameraRecognitionController(
             lastAnalyzeAtMs = now
 
             val frame = extractor?.processFrame(imageProxy)
+            postSkeletonFrame(frame)
             val decision = router.decide(frame)
             logRoute(decision)
             handleRouteChange(decision.route)
@@ -315,8 +398,9 @@ class VoxGestCameraRecognitionController(
         }
         postFeedback(cleanFeedback(DetectionStatus.DETECTING, ""))
         val framesCollected = capture.framesCollected
+        slidingWindowFrame += 1L
         Log.i(TAG, "collection_progress frames=$framesCollected/${profile.sequenceLength}")
-        if (collectionStartedAtMs > 0L && now - collectionStartedAtMs > collectionTimeoutMs(profile)) {
+        if (!buffer.isReady() && collectionStartedAtMs > 0L && now - collectionStartedAtMs > collectionTimeoutMs(profile)) {
             Log.i(TAG, "collection_reset reason=SEQUENCE_TIMEOUT elapsed_ms=${now - collectionStartedAtMs} frames=${buffer.size()}")
             resetCollection("Try again", resetGate = true)
             return
@@ -338,18 +422,24 @@ class VoxGestCameraRecognitionController(
         Log.i(TAG, "collection_progress frames=${profile.sequenceLength}/${profile.sequenceLength}")
         Log.i(TAG, "inference_started shape=[1,${snapshot.size},${snapshot.firstOrNull()?.size ?: 0}] profile=${profile.id}")
         val raw = recognizer.recognize(snapshot)
+        val top1Label = top1Label(raw)
+        val top1Confidence = top1Confidence(raw)
+        val consecutiveMatches = updateSlidingWindowMatch(top1Label)
+        Log.i(
+            TAG,
+            "sliding_window frame=$slidingWindowFrame top1=${top1Label.ifBlank { "NONE" }} conf=${String.format(Locale.US, "%.3f", top1Confidence)} consecutive=$consecutiveMatches"
+        )
         logInferenceResult(raw)
         logGateInput(profile, raw)
-        val gateResult = dynamicGate.evaluate(raw, profile, decision, handPresence)
+        val gateResult = dynamicGate.evaluate(raw, profile, decision, handPresence, consecutiveMatches)
         logGateOutput(gateResult)
         logDynamic(decision, profile, raw, gateResult, snapshot)
         logNameDiagnostic(profile, decision, raw, gateResult, snapshot, handPresence)
         resetFeatureQualityCounters()
-        clearSequenceBuffer()
         if (!gateResult.accepted) {
             logEmitResult(gateResult.label, emitted = false)
             postFeedback(cleanFeedback(statusForRejection(gateResult.reason), gateResult.label))
-            resetCollection(statusTextForRejection(gateResult.reason), resetGate = false)
+            postStatus(statusTextForRejection(gateResult.reason))
             return
         }
 
@@ -364,11 +454,14 @@ class VoxGestCameraRecognitionController(
         postFeedback(cleanFeedback(DetectionStatus.RECOGNIZED, accepted.label))
         logEmitResult(accepted.label, emitted = true)
         mainExecutor.execute { onAcceptedResult(accepted) }
-        resetCollection("Accepted: ${accepted.label}", resetGate = false)
+        postStatus("Accepted: ${accepted.label}")
     }
 
     private fun processCalibration(frame: LandmarkFrame) {
         val label = calibrationLabel
+        val exportMode = calibrationExportMode
+        val signerId = calibrationSignerId
+        val deviceSessionTag = calibrationDeviceSessionTag
         val profile = oneHandProfile
         val buffer = calibrationBuffer
         if (label.isBlank() || profile == null || buffer == null) return
@@ -410,11 +503,15 @@ class VoxGestCameraRecognitionController(
         val wristIndex = selectedPoseWristIndex(profile)
         val sample = OneHandCalibrationSample(
             label = label,
+            exportMode = exportMode,
+            signerId = signerId,
+            deviceSessionTag = deviceSessionTag,
             timestamp = System.currentTimeMillis(),
             deviceModel = Build.MODEL ?: "ANDROID",
             activeProfile = profile.id,
             featureProfile = profile.featureProfile,
-            inputShape = intArrayOf(profile.sequenceLength, profile.featureSize),
+            inputShape = intArrayOf(profile.sequenceLength, AndroidLandmarkInputPolicy.runtimeFeatureSize(profile)),
+            sequenceLengthAtExport = LandmarkSequenceBuffer.SEQUENCE_LENGTH,
             dominantHand = profile.dominantHand,
             mirroredInput = profile.mirroredInput,
             selectedHandSlot = builder.selectedMediaPipeSide(),
@@ -438,6 +535,9 @@ class VoxGestCameraRecognitionController(
             postStatus("Calibration save failed")
         } finally {
             calibrationLabel = ""
+            calibrationExportMode = CalibrationExportMode.ASL
+            calibrationSignerId = ""
+            calibrationDeviceSessionTag = ""
             buffer.clear()
             calibrationMissingPoseCount = 0
             calibrationMissingHandCount = 0
@@ -450,7 +550,8 @@ class VoxGestCameraRecognitionController(
         frame: LandmarkFrame,
         buffer: LandmarkSequenceBuffer
     ): OneHandCaptureResult {
-        val feature = buildFeature(profile, frame)
+        val expectedFeatureSize = AndroidLandmarkInputPolicy.runtimeFeatureSize(profile)
+        val feature = buildFeature(profile, frame, previousOneHandFrame)
             ?: return OneHandCaptureResult(valid = false, appended = false, framesCollected = buffer.size(), reason = "missing_or_wrong_landmarks")
         if (buffer.size() == 0) {
             collectionStartedAtMs = SystemClock.elapsedRealtime()
@@ -460,9 +561,10 @@ class VoxGestCameraRecognitionController(
                 valid = true,
                 appended = false,
                 framesCollected = buffer.size(),
-                reason = "feature_shape_${feature.size}_expected_${profile.featureSize}"
+                reason = "feature_shape_${feature.size}_expected_$expectedFeatureSize"
             )
         }
+        previousOneHandFrame = frame
         return OneHandCaptureResult(valid = true, appended = true, framesCollected = buffer.size(), reason = "")
     }
 
@@ -503,13 +605,47 @@ class VoxGestCameraRecognitionController(
         lastRoute = route
     }
 
-    private fun buildFeature(profile: RecognitionProfile, frame: LandmarkFrame): FloatArray? {
+    private fun top1Label(raw: RecognitionResult): String {
+        return (raw.top3.firstOrNull()?.label ?: raw.label).trim().uppercase(Locale.US)
+    }
+
+    private fun top1Confidence(raw: RecognitionResult): Float {
+        return raw.top3.firstOrNull()?.confidence ?: raw.confidence
+    }
+
+    private fun updateSlidingWindowMatch(top1Label: String): Int {
+        if (top1Label.isBlank()) {
+            lastSlidingTop1Label = ""
+            consecutiveMatchCount = 0
+            return consecutiveMatchCount
+        }
+        if (top1Label == lastSlidingTop1Label) {
+            consecutiveMatchCount += 1
+        } else {
+            lastSlidingTop1Label = top1Label
+            consecutiveMatchCount = 1
+        }
+        return consecutiveMatchCount
+    }
+
+    private fun resetSlidingWindowState() {
+        slidingWindowFrame = 0L
+        lastSlidingTop1Label = ""
+        consecutiveMatchCount = 0
+    }
+
+    private fun buildFeature(profile: RecognitionProfile, frame: LandmarkFrame, previous: LandmarkFrame?): FloatArray? {
         return if (profile.featureProfile == "fullsign225") {
             val builder = FullSign225FeatureBuilder(profile)
             if (builder.hasRequiredLandmarks(frame)) builder.build(frame) else null
         } else {
             val builder = OneHand162FeatureBuilder(profile)
-            if (builder.hasRequiredLandmarks(frame)) builder.build(frame) else null
+            if (!builder.hasRequiredLandmarks(frame)) return null
+            if (AndroidLandmarkInputPolicy.USE_VELOCITY_DELTA_FEATURES) {
+                builder.buildWithDelta(frame, previous)
+            } else {
+                builder.build(frame)
+            }
         }
     }
 
@@ -538,9 +674,29 @@ class VoxGestCameraRecognitionController(
         oneHandBuffer = null
         fullSignBuffer = null
         calibrationLabel = ""
+        calibrationExportMode = CalibrationExportMode.ASL
+        calibrationSignerId = ""
+        calibrationDeviceSessionTag = ""
         calibrationBuffer = null
         calibrationMissingPoseCount = 0
         calibrationMissingHandCount = 0
+    }
+
+    private fun labelsForExportMode(exportMode: CalibrationExportMode): List<String> {
+        return when (exportMode) {
+            CalibrationExportMode.ASL -> OneHandCalibrationConfig.CALIBRATION_LABELS
+            CalibrationExportMode.FSL -> OneHandCalibrationConfig.FSL_EXPORT_LABELS
+        }
+    }
+
+    private fun safeCalibrationToken(value: String, fallback: String): String {
+        val clean = value.trim().replace(Regex("[^A-Za-z0-9_-]+"), "_").trim('_')
+        return clean.ifBlank { fallback }
+    }
+
+    private fun defaultDeviceSessionTag(): String {
+        val device = safeCalibrationToken(Build.MODEL ?: "ANDROID", "ANDROID")
+        return "${device}_${SESSION_DATE.format(Date())}"
     }
 
     private fun postStatus(status: String) {
@@ -572,6 +728,10 @@ class VoxGestCameraRecognitionController(
 
     private fun postFeedback(feedback: RecognitionFeedback) {
         mainExecutor.execute { onRecognitionFeedback(feedback) }
+    }
+
+    private fun postSkeletonFrame(frame: LandmarkFrame?) {
+        mainExecutor.execute { onSkeletonFrame(frame) }
     }
 
     private fun statusForRejection(reason: String): DetectionStatus {
@@ -708,6 +868,8 @@ class VoxGestCameraRecognitionController(
         signingStatusStartedAtMs = 0L
         collectionInvalidStartedAtMs = 0L
         collectionLostHandFrames = 0
+        previousOneHandFrame = null
+        resetSlidingWindowState()
     }
 
     private fun postCollectionProgress(profile: RecognitionProfile?, framesCollected: Int) {
@@ -758,7 +920,7 @@ class VoxGestCameraRecognitionController(
     private fun statusTextForRejection(reason: String): String {
         return when (reason) {
             "LOW_CONFIDENCE" -> "Low confidence"
-            "LOW_MARGIN", "NAME_NEEDS_SECOND_WINDOW", "UNSTABLE_LANDMARKS" -> "Hold hand clearer"
+            "LOW_MARGIN", "NAME_NEEDS_SECOND_WINDOW", "SLIDING_WINDOW_NEEDS_SECOND_MATCH", "UNSTABLE_LANDMARKS" -> "Hold hand clearer"
             "LOW_HAND_PRESENCE", "BAD_SEQUENCE", "SHAPE_MISMATCH" -> "Hold hand clearer"
             else -> "Try again"
         }
@@ -818,5 +980,8 @@ class VoxGestCameraRecognitionController(
         private const val LOST_HAND_ABORT_FRAMES = 8
         private const val STATUS_RESET_DELAY_MS = 1000L
         private const val DEBUG_EXPECTED_ONEHAND_LABEL = ""
+        private val SESSION_DATE = SimpleDateFormat("yyyyMMdd", Locale.US)
     }
 }
+
+

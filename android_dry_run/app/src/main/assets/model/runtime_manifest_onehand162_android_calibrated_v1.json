@@ -17,14 +17,14 @@
       "training_report": "model/tcn_training_report_onehand162_android_calibrated_v1.json",
       "input_shape": [
         1,
-        30,
+        20,
         162
       ],
       "output_shape": [
         1,
         5
       ],
-      "sequence_length": 30,
+      "sequence_length": 20,
       "feature_size": 162,
       "labels": [
         "WHAT",

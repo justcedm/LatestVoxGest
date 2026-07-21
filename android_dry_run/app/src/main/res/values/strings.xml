@@ -86,7 +86,7 @@
     <string name="mode_word_sign">WORD SIGN</string>
     <string name="prediction_letter_sample">A</string>
     <string name="prediction_word_sample">[WATER]</string>
-    <string name="prediction_confidence_sample">94% confidence</string>
+    <string name="prediction_confidence_sample">94%% confidence</string>
     <string name="label_building">Building:</string>
     <string name="label_hold_steady">Hold steady</string>
     <string name="sign_word_buffer_sample">HEL|</string>
