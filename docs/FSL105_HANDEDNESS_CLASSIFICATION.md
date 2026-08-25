@@ -1,6 +1,6 @@
 # FSL-105 Handedness Classification
 
-Generated: 2026-06-30T12:38:50
+Generated: 2026-07-01T16:45:13
 
 ## Scope
 
@@ -10,21 +10,8 @@ This report is produced by `scripts_ml/93_classify_fsl105_handedness.py`. It ins
 - Output directory: `C:\BSIT 3RD YEAR\New VovGest\reports`
 - Metadata files read: 3
 - Metadata labels found: 105
-- Videos processed in this run: 0 (limited run, max_videos=1)
+- Videos processed in this run: 2130 (full discovered set)
 - Failed videos: 0
-
-## Current Dataset Status
-
-The script did not run MediaPipe over videos because extracted video files were not available.
-
-```text
-ERROR: No extracted FSL-105 video files were found.
-Searched under: C:\BSIT 3RD YEAR\New VovGest\FSL-105 A dataset for recognizing 105 Filipino sign language videos
-Expected extensions: .avi, .m4v, .mkv, .mov, .mp4, .webm
-Found archive(s) instead:
-- C:\BSIT 3RD YEAR\New VovGest\FSL-105 A dataset for recognizing 105 Filipino sign language videos\FSL-105 A dataset for recognizing 105 Filipino sign language videos\clips.zip: 2130 video entries
-Extract clips.zip first so metadata paths like clips\17\6.MOV exist. This script will not unzip or modify the dataset.
-```
 
 ## Statistics Used
 
@@ -63,50 +50,50 @@ None recorded in this run.
 | AUNTIE | 0 | AMBIGUOUS | manual_review:no_processed_videos_for_label | 0 | 0 | 0 |
 | BEER | 0 | AMBIGUOUS | manual_review:no_processed_videos_for_label | 0 | 0 | 0 |
 | BLACK | 0 | AMBIGUOUS | manual_review:no_processed_videos_for_label | 0 | 0 | 0 |
-| BLIND | 0 | AMBIGUOUS | manual_review:no_processed_videos_for_label | 0 | 0 | 0 |
+| BLIND | 105 | AMBIGUOUS | manual_review:ambiguous_majority:74/105 | 11 | 20 | 74 |
 | BLUE | 0 | AMBIGUOUS | manual_review:no_processed_videos_for_label | 0 | 0 | 0 |
 | BOY | 0 | AMBIGUOUS | manual_review:no_processed_videos_for_label | 0 | 0 | 0 |
 | BREAD | 0 | AMBIGUOUS | manual_review:no_processed_videos_for_label | 0 | 0 | 0 |
 | BROWN | 0 | AMBIGUOUS | manual_review:no_processed_videos_for_label | 0 | 0 | 0 |
 | CHICKEN | 0 | AMBIGUOUS | manual_review:no_processed_videos_for_label | 0 | 0 | 0 |
 | COFFEE | 0 | AMBIGUOUS | manual_review:no_processed_videos_for_label | 0 | 0 | 0 |
-| COLD | 0 | AMBIGUOUS | manual_review:no_processed_videos_for_label | 0 | 0 | 0 |
+| COLD | 105 | AMBIGUOUS | manual_review:ambiguous_majority:73/105 | 16 | 16 | 73 |
 | CORRECT | 0 | AMBIGUOUS | manual_review:no_processed_videos_for_label | 0 | 0 | 0 |
-| COUSIN | 0 | AMBIGUOUS | manual_review:no_processed_videos_for_label | 0 | 0 | 0 |
+| COUSIN | 105 | AMBIGUOUS | manual_review:ambiguous_majority:93/105 | 1 | 11 | 93 |
 | CRAB | 0 | AMBIGUOUS | manual_review:no_processed_videos_for_label | 0 | 0 | 0 |
 | DARK | 0 | AMBIGUOUS | manual_review:no_processed_videos_for_label | 0 | 0 | 0 |
 | DAUGHTER | 0 | AMBIGUOUS | manual_review:no_processed_videos_for_label | 0 | 0 | 0 |
 | DEAF | 0 | AMBIGUOUS | manual_review:no_processed_videos_for_label | 0 | 0 | 0 |
-| DEAF BLIND | 0 | AMBIGUOUS | manual_review:no_processed_videos_for_label | 0 | 0 | 0 |
+| DEAF BLIND | 105 | AMBIGUOUS | manual_review:ambiguous_majority:66/105 | 16 | 23 | 66 |
 | DECEMBER | 0 | AMBIGUOUS | manual_review:no_processed_videos_for_label | 0 | 0 | 0 |
-| DON’T KNOW | 0 | AMBIGUOUS | manual_review:no_processed_videos_for_label | 0 | 0 | 0 |
+| DON’T KNOW | 105 | AMBIGUOUS | manual_review:ambiguous_majority:97/105 | 3 | 5 | 97 |
 | DON’T UNDERSTAND | 0 | AMBIGUOUS | manual_review:no_processed_videos_for_label | 0 | 0 | 0 |
 | EGG | 0 | AMBIGUOUS | manual_review:no_processed_videos_for_label | 0 | 0 | 0 |
 | EIGHT | 0 | AMBIGUOUS | manual_review:no_processed_videos_for_label | 0 | 0 | 0 |
 | FAST | 0 | AMBIGUOUS | manual_review:no_processed_videos_for_label | 0 | 0 | 0 |
-| FATHER | 0 | AMBIGUOUS | manual_review:no_processed_videos_for_label | 0 | 0 | 0 |
-| FEBRUARY | 0 | AMBIGUOUS | manual_review:no_processed_videos_for_label | 0 | 0 | 0 |
+| FATHER | 105 | AMBIGUOUS | manual_review:ambiguous_majority:89/105 | 4 | 12 | 89 |
+| FEBRUARY | 105 | AMBIGUOUS | manual_review:ambiguous_majority:79/105 | 10 | 16 | 79 |
 | FISH | 0 | AMBIGUOUS | manual_review:no_processed_videos_for_label | 0 | 0 | 0 |
 | FIVE | 0 | AMBIGUOUS | manual_review:no_processed_videos_for_label | 0 | 0 | 0 |
 | FOUR | 0 | AMBIGUOUS | manual_review:no_processed_videos_for_label | 0 | 0 | 0 |
 | FRIDAY | 0 | AMBIGUOUS | manual_review:no_processed_videos_for_label | 0 | 0 | 0 |
 | GIRL | 0 | AMBIGUOUS | manual_review:no_processed_videos_for_label | 0 | 0 | 0 |
 | GOOD AFTERNOON | 0 | AMBIGUOUS | manual_review:no_processed_videos_for_label | 0 | 0 | 0 |
-| GOOD EVENING | 0 | AMBIGUOUS | manual_review:no_processed_videos_for_label | 0 | 0 | 0 |
+| GOOD EVENING | 6 | AMBIGUOUS | manual_review:ambiguous_majority:3/6 | 1 | 2 | 3 |
 | GOOD MORNING | 0 | AMBIGUOUS | manual_review:no_processed_videos_for_label | 0 | 0 | 0 |
 | GRANDFATHER | 0 | AMBIGUOUS | manual_review:no_processed_videos_for_label | 0 | 0 | 0 |
 | GRANDMOTHER | 0 | AMBIGUOUS | manual_review:no_processed_videos_for_label | 0 | 0 | 0 |
 | GRAY | 0 | AMBIGUOUS | manual_review:no_processed_videos_for_label | 0 | 0 | 0 |
-| GREEN | 0 | AMBIGUOUS | manual_review:no_processed_videos_for_label | 0 | 0 | 0 |
-| HARD OF HEARING | 0 | AMBIGUOUS | manual_review:no_processed_videos_for_label | 0 | 0 | 0 |
+| GREEN | 104 | AMBIGUOUS | manual_review:ambiguous_majority:78/104 | 9 | 17 | 78 |
+| HARD OF HEARING | 105 | AMBIGUOUS | manual_review:ambiguous_majority:100/105 | 0 | 5 | 100 |
 | HELLO | 0 | AMBIGUOUS | manual_review:no_processed_videos_for_label | 0 | 0 | 0 |
 | HOT | 0 | AMBIGUOUS | manual_review:no_processed_videos_for_label | 0 | 0 | 0 |
 | HOW ARE YOU | 0 | AMBIGUOUS | manual_review:no_processed_videos_for_label | 0 | 0 | 0 |
-| IM FINE | 0 | AMBIGUOUS | manual_review:no_processed_videos_for_label | 0 | 0 | 0 |
+| IM FINE | 103 | AMBIGUOUS | manual_review:ambiguous_majority:73/103 | 15 | 15 | 73 |
 | JANUARY | 0 | AMBIGUOUS | manual_review:no_processed_videos_for_label | 0 | 0 | 0 |
 | JUICE | 0 | AMBIGUOUS | manual_review:no_processed_videos_for_label | 0 | 0 | 0 |
 | JULY | 0 | AMBIGUOUS | manual_review:no_processed_videos_for_label | 0 | 0 | 0 |
-| JUNE | 0 | AMBIGUOUS | manual_review:no_processed_videos_for_label | 0 | 0 | 0 |
+| JUNE | 105 | AMBIGUOUS | manual_review:ambiguous_majority:84/105 | 5 | 16 | 84 |
 | KNOW | 0 | AMBIGUOUS | manual_review:no_processed_videos_for_label | 0 | 0 | 0 |
 | LIGHT | 0 | AMBIGUOUS | manual_review:no_processed_videos_for_label | 0 | 0 | 0 |
 | LONGANISA | 0 | AMBIGUOUS | manual_review:no_processed_videos_for_label | 0 | 0 | 0 |
@@ -116,13 +103,13 @@ None recorded in this run.
 | MAY | 0 | AMBIGUOUS | manual_review:no_processed_videos_for_label | 0 | 0 | 0 |
 | MEAT | 0 | AMBIGUOUS | manual_review:no_processed_videos_for_label | 0 | 0 | 0 |
 | MILK | 0 | AMBIGUOUS | manual_review:no_processed_videos_for_label | 0 | 0 | 0 |
-| MONDAY | 0 | AMBIGUOUS | manual_review:no_processed_videos_for_label | 0 | 0 | 0 |
-| MOTHER | 0 | AMBIGUOUS | manual_review:no_processed_videos_for_label | 0 | 0 | 0 |
+| MONDAY | 105 | AMBIGUOUS | manual_review:ambiguous_majority:94/105 | 1 | 10 | 94 |
+| MOTHER | 105 | AMBIGUOUS | manual_review:ambiguous_majority:89/105 | 3 | 13 | 89 |
 | NICE TO MEET YOU | 0 | AMBIGUOUS | manual_review:no_processed_videos_for_label | 0 | 0 | 0 |
 | NINE | 0 | AMBIGUOUS | manual_review:no_processed_videos_for_label | 0 | 0 | 0 |
 | NO | 0 | AMBIGUOUS | manual_review:no_processed_videos_for_label | 0 | 0 | 0 |
 | NO SUGAR | 0 | AMBIGUOUS | manual_review:no_processed_videos_for_label | 0 | 0 | 0 |
-| NOVEMBER | 0 | AMBIGUOUS | manual_review:no_processed_videos_for_label | 0 | 0 | 0 |
+| NOVEMBER | 105 | AMBIGUOUS | manual_review:ambiguous_majority:84/105 | 9 | 12 | 84 |
 | OCTOBER | 0 | AMBIGUOUS | manual_review:no_processed_videos_for_label | 0 | 0 | 0 |
 | ONE | 0 | AMBIGUOUS | manual_review:no_processed_videos_for_label | 0 | 0 | 0 |
 | ORANGE | 0 | AMBIGUOUS | manual_review:no_processed_videos_for_label | 0 | 0 | 0 |
@@ -133,7 +120,7 @@ None recorded in this run.
 | SATURDAY | 0 | AMBIGUOUS | manual_review:no_processed_videos_for_label | 0 | 0 | 0 |
 | SEE YOU TOMORROW | 0 | AMBIGUOUS | manual_review:no_processed_videos_for_label | 0 | 0 | 0 |
 | SEPTEMBER | 0 | AMBIGUOUS | manual_review:no_processed_videos_for_label | 0 | 0 | 0 |
-| SEVEN | 0 | AMBIGUOUS | manual_review:no_processed_videos_for_label | 0 | 0 | 0 |
+| SEVEN | 27 | AMBIGUOUS | manual_review:ambiguous_majority:21/27 | 3 | 3 | 21 |
 | SHRIMP | 0 | AMBIGUOUS | manual_review:no_processed_videos_for_label | 0 | 0 | 0 |
 | SIX | 0 | AMBIGUOUS | manual_review:no_processed_videos_for_label | 0 | 0 | 0 |
 | SLOW | 0 | AMBIGUOUS | manual_review:no_processed_videos_for_label | 0 | 0 | 0 |
