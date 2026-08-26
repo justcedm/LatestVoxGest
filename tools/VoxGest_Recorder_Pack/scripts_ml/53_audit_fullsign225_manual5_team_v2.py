@@ -13,16 +13,16 @@ ROOT = Path(__file__).resolve().parents[1]
 DATASET_ROOT = ROOT / "external_datasets" / "fullsign225_manual5_team_features_v2"
 REPORT_DIR = ROOT / "reports"
 
-EXPECTED_LABELS = ["EAT", "WATER", "HELLO", "THANKYOU", "NOTHING"]
+EXPECTED_LABELS = ["EAT", "WATER", "HELLO", "THANKYOU", "NSAC"]
 EXPECTED_SHAPE = (30, 225)
-MIN_TARGET = {"EAT": 80, "WATER": 80, "HELLO": 80, "THANKYOU": 80, "NOTHING": 120}
-PREFERRED_TARGET = {"EAT": 120, "WATER": 120, "HELLO": 120, "THANKYOU": 120, "NOTHING": 180}
+MIN_TARGET = {"EAT": 80, "WATER": 80, "HELLO": 80, "THANKYOU": 80, "NSAC": 120}
+PREFERRED_TARGET = {"EAT": 120, "WATER": 120, "HELLO": 120, "THANKYOU": 120, "NSAC": 180}
 
 
 def parse_name(file_name):
     stem = Path(file_name).stem
     match = re.match(
-        r"(?P<signer>[A-Z0-9]+)_(?P<batch>.+?)_(?P<label>EAT|WATER|HELLO|THANKYOU|NOTHING)_\d+_",
+        r"(?P<signer>[A-Z0-9]+)_(?P<batch>.+?)_(?P<label>EAT|WATER|HELLO|THANKYOU|NSAC)_\d+_",
         stem,
     )
     if not match:
@@ -176,7 +176,7 @@ def audit():
             "",
             "## Per Signer Per Label",
             "",
-            "| Signer | EAT | WATER | HELLO | THANKYOU | NOTHING | Total |",
+            "| Signer | EAT | WATER | HELLO | THANKYOU | NSAC | Total |",
             "| --- | ---: | ---: | ---: | ---: | ---: | ---: |",
         ]
     )
@@ -184,13 +184,13 @@ def audit():
         counts = per_signer_label[signer]
         total = sum(counts.values())
         lines.append(
-            "| {signer} | {eat} | {water} | {hello} | {thankyou} | {nothing} | {total} |".format(
+            "| {signer} | {eat} | {water} | {hello} | {thankyou} | {nsac} | {total} |".format(
                 signer=signer,
                 eat=counts.get("EAT", 0),
                 water=counts.get("WATER", 0),
                 hello=counts.get("HELLO", 0),
                 thankyou=counts.get("THANKYOU", 0),
-                nothing=counts.get("NOTHING", 0),
+                nsac=counts.get("NSAC", 0),
                 total=total,
             )
         )

@@ -53,7 +53,7 @@ An FSL model remains experimental until all of the following are true:
   threshold established before examining the final test set;
 - float32 TFLite prediction agreement with Keras is effectively exact and
   float16 degradation is documented and acceptable;
-- a representative `NOTHING`/background dataset has been collected and the
+- a representative `NSAC`/background dataset has been collected and the
   existing rejection/gating logic has been calibrated without arbitrary
   threshold changes;
 - Android preprocessing passes golden-vector parity against the Python builder.

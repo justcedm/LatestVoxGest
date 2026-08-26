@@ -109,7 +109,7 @@ def record_label(label, holistic, metadata):
     source_id = f"{label}/{source_stamp}"
 
     print(f"\nRecording motion letter {label}")
-    if label == "NOTHING":
+    if label == "NSAC":
         print("  Record idle, hand entering/leaving, partial J/Z starts, and accidental movement.")
     else:
         print("  Draw the full motion naturally, including start and finish positions.")
@@ -148,7 +148,7 @@ def record_label(label, holistic, metadata):
             frames_since_save += 1
             if len(frame_buffer) == SEQ_LEN and frames_since_save >= STRIDE_FRAMES:
                 hand_frames = sum(1 for item in hand_buffer if item)
-                if label == "NOTHING" or hand_frames >= MIN_HAND_FRAMES:
+                if label == "NSAC" or hand_frames >= MIN_HAND_FRAMES:
                     seq = np.array(list(frame_buffer), dtype=np.float32)
                     file_name = f"{source_stamp}_seq{saved:04d}.npy"
                     np.save(label_dir / file_name, seq)

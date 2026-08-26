@@ -32,7 +32,7 @@ JSON_OUT = REPORT_DIR / "fullsign225_manual5_audit.json"
 MD_OUT = REPORT_DIR / "fullsign225_manual5_audit.md"
 EXPECTED_SHAPE = (SEQ_LEN, FEAT_SIZE)
 MIN_WORD_SAMPLES = 30
-MIN_NOTHING_SAMPLES = 100
+MIN_NSAC_SAMPLES = 100
 
 
 def load_metadata():
@@ -89,7 +89,7 @@ def audit_label(word, metadata):
         valid += 1
         groups.add(group_id(word, path, metadata))
 
-    min_required = MIN_NOTHING_SAMPLES if word in NEGATIVE_WORDS else MIN_WORD_SAMPLES
+    min_required = MIN_NSAC_SAMPLES if word in NEGATIVE_WORDS else MIN_WORD_SAMPLES
     return {
         "label": word,
         "samples": valid,
@@ -141,7 +141,7 @@ def write_markdown(payload):
         f"- Total valid samples: {payload['totals']['valid_samples']}",
         f"- Missing labels: {', '.join(payload['missing_labels']) if payload['missing_labels'] else 'none'}",
         f"- Labels under minimum: {', '.join(payload['labels_under_minimum']) if payload['labels_under_minimum'] else 'none'}",
-        f"- NOTHING samples: {payload['nothing_count']}",
+        f"- NSAC samples: {payload['nsac_count']}",
         f"- Rejected/failed samples logged: {payload['rejected_count']}",
         f"- Ready to train TCN: {'YES' if readiness['ready_to_train'] else 'NO'}",
         "",
@@ -149,7 +149,7 @@ def write_markdown(payload):
         "",
         f"- Every manual5 label exists: {'PASS' if readiness['all_labels_exist'] else 'FAIL'}",
         f"- Normal labels have at least {MIN_WORD_SAMPLES} samples: {'PASS' if readiness['normal_labels_at_least_minimum'] else 'FAIL'}",
-        f"- NOTHING has at least {MIN_NOTHING_SAMPLES} samples: {'PASS' if readiness['nothing_at_least_minimum'] else 'FAIL'}",
+        f"- NSAC has at least {MIN_NSAC_SAMPLES} samples: {'PASS' if readiness['nsac_at_least_minimum'] else 'FAIL'}",
         f"- No wrong-shape or unreadable files: {'PASS' if readiness['no_wrong_shape_or_unreadable'] else 'FAIL'}",
         "",
         "## Per Label",
@@ -184,7 +184,7 @@ def main():
     rows = [audit_label(word, metadata) for word in TRAINING_WORDS]
     missing = [row["label"] for row in rows if row["missing"]]
     under_minimum = [row["label"] for row in rows if row["under_minimum"]]
-    nothing_count = next((row["samples"] for row in rows if row["label"] == "NOTHING"), 0)
+    nsac_count = next((row["samples"] for row in rows if row["label"] == "NSAC"), 0)
     wrong_or_unreadable = sum(row["wrong_shape_files"] + row["unreadable_files"] for row in rows)
     normal_under_minimum = [
         row["label"]
@@ -194,7 +194,7 @@ def main():
     readiness = {
         "all_labels_exist": len(missing) == 0,
         "normal_labels_at_least_minimum": len(normal_under_minimum) == 0,
-        "nothing_at_least_minimum": nothing_count >= MIN_NOTHING_SAMPLES,
+        "nsac_at_least_minimum": nsac_count >= MIN_NSAC_SAMPLES,
         "no_wrong_shape_or_unreadable": wrong_or_unreadable == 0,
     }
     readiness["ready_to_train"] = all(readiness.values())
@@ -211,7 +211,7 @@ def main():
         "per_label": rows,
         "missing_labels": missing,
         "labels_under_minimum": under_minimum,
-        "nothing_count": nothing_count,
+        "nsac_count": nsac_count,
         "rejected_count": len(rejected),
         "rejected_examples": rejected[:20],
         "readiness": readiness,
@@ -235,7 +235,7 @@ def main():
     print(f"Valid samples : {payload['totals']['valid_samples']}")
     print(f"Missing labels: {missing if missing else 'none'}")
     print(f"Under minimum : {under_minimum if under_minimum else 'none'}")
-    print(f"NOTHING count : {nothing_count}")
+    print(f"NSAC count : {nsac_count}")
     print(f"Rejected log  : {len(rejected)}")
     print(f"Ready to train: {readiness['ready_to_train']}")
     print(f"Wrote: {CSV_OUT}")

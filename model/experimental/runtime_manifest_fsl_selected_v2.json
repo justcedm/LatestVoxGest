@@ -139,7 +139,7 @@
   "deployment_eligible": false,
   "rejection_policy": "stable_runtime_policy_unchanged_not_calibrated_for_this_model",
   "deployment_blockers": [
-    "No NOTHING/background class in FSL-105.",
+    "No NSAC/background class in FSL-105.",
     "Cross-device Samsung and webcam validation not complete.",
     "Rejection thresholds have not been calibrated for this model."
   ]

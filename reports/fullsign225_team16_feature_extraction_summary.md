@@ -19,7 +19,7 @@ Augmentations per passing video: 8
 | HELP | 26 | 234 | 26 | ready |
 | NAME | 25 | 225 | 25 | ready |
 | NO | 24 | 216 | 24 | ready |
-| NOTHING | 17 | 153 | 17 | ready |
+| NSAC | 17 | 153 | 17 | ready |
 | PAIN | 19 | 171 | 19 | ready |
 | PLEASE | 25 | 225 | 25 | ready |
 | SORRY | 31 | 279 | 31 | ready |
@@ -32,9 +32,9 @@ Augmentations per passing video: 8
 
 ## Skipped Videos
 
-- NOTHING_fullsign225_011.mp4
-- NOTHING_fullsign225_018.mp4
+- NSAC_fullsign225_011.mp4
+- NSAC_fullsign225_018.mp4
 
 ## Notes
 
-The two failed NOTHING videos from the audit are skipped. This dataset is experimental and does not replace demo10 or onehand162.
+The two failed NSAC videos from the audit are skipped. This dataset is experimental and does not replace demo10 or onehand162.

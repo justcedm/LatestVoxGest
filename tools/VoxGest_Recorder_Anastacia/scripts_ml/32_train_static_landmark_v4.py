@@ -1,6 +1,6 @@
 """Train static alphabet landmark model v4.
 
-Input contract stays [1, 63]. Labels stay A-Z, del, space, nothing.
+Input contract stays [1, 63]. Labels stay A-Z, del, space, nsac.
 The trainer uses group-aware validation when webcam calibration sessions are
 present so one recording session cannot leak into both train and validation.
 """
@@ -24,7 +24,7 @@ from tensorflow.keras.utils import to_categorical
 
 
 ROOT = Path(__file__).resolve().parents[1]
-LABELS = list("ABCDEFGHIJKLMNOPQRSTUVWXYZ") + ["del", "space", "nothing"]
+LABELS = list("ABCDEFGHIJKLMNOPQRSTUVWXYZ") + ["del", "space", "nsac"]
 DATASET_ENV = os.environ.get("VOXGEST_STATIC_DATASETS", "")
 DATA_DIRS = [
     Path(item.strip())

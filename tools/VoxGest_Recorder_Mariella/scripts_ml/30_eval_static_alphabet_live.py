@@ -1,6 +1,6 @@
 """Live static alphabet evaluation protocol.
 
-Tests A-Z, del, space, and nothing with the current webcam/camera setup.
+Tests A-Z, del, space, and nsac with the current webcam/camera setup.
 Outputs per-class accuracy plus a confusion table under reports/.
 """
 
@@ -32,7 +32,7 @@ CAPTURE_STRIDE = int(os.environ.get("VOXGEST_STATIC_EVAL_CAPTURE_STRIDE_FRAMES",
 THRESHOLD = float(os.environ.get("VOXGEST_STATIC_THRESHOLD", "0.55"))
 MIRROR_INPUT = True
 
-TARGET_LABELS = list("ABCDEFGHIJKLMNOPQRSTUVWXYZ") + ["del", "space", "nothing"]
+TARGET_LABELS = list("ABCDEFGHIJKLMNOPQRSTUVWXYZ") + ["del", "space", "nsac"]
 
 
 def load_label_maps(path):
@@ -48,7 +48,7 @@ def load_label_maps(path):
 def predict_static(model, idx_to_label, results):
     hand = select_hand_landmarks(results, mirrored_input=MIRROR_INPUT)
     if hand is None:
-        return "nothing", 1.0, "no_hand"
+        return "nsac", 1.0, "no_hand"
     vec = normalize_static_hand(hand.landmark)
     probs = model.predict(vec[np.newaxis, :], verbose=0)[0]
     idx, conf, margin = top_prediction(probs)
@@ -83,10 +83,10 @@ def draw(frame, label, saved, recording, last_pred):
         (180, 180, 180),
         1,
     )
-    if label == "nothing":
+    if label == "nsac":
         cv2.putText(
             frame,
-            "For nothing: test idle/no hand plus neutral no-output hand poses.",
+            "For nsac: test idle/no hand plus neutral no-output hand poses.",
             (15, h - 18),
             cv2.FONT_HERSHEY_SIMPLEX,
             0.48,
@@ -205,7 +205,7 @@ def main():
                 frames_since_capture += 1
                 if frames_since_capture >= CAPTURE_STRIDE:
                     predicted, conf, note = predict_static(model, idx_to_label, results)
-                    if expected != "nothing" and predicted == "nothing":
+                    if expected != "nsac" and predicted == "nsac":
                         last_pred = "no hand; not counted"
                     else:
                         label_counts[expected] += 1

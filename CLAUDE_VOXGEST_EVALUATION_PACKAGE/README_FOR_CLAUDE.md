@@ -11,7 +11,7 @@ MY
 WHAT
 YOUR
 NAME
-NOTHING
+NSAC
 
 Pipeline:
 1. Android camera captures the signer.
@@ -19,7 +19,7 @@ Pipeline:
 3. OneHand162FeatureBuilder converts landmarks into 162 features per frame.
 4. LandmarkSequenceBuffer collects 30 frames.
 5. TFLite model predicts one label.
-6. DynamicWordAcceptanceGate checks confidence, margin, hand presence, duplicate/cooldown, and NOTHING.
+6. DynamicWordAcceptanceGate checks confidence, margin, hand presence, duplicate/cooldown, and NSAC.
 7. VoxGestPresentationApp displays accepted words and sentence output.
 
 Main files:
@@ -37,4 +37,4 @@ Main files:
 - android_ui/VoxGestPresentationApp.kt
 
 Question to evaluate:
-How does VoxGest process recorded Android sign gesture samples, convert them into 30x162 landmark sequences, train/load the model, and decide whether to output MY, WHAT, YOUR, NAME, or NOTHING?
+How does VoxGest process recorded Android sign gesture samples, convert them into 30x162 landmark sequences, train/load the model, and decide whether to output MY, WHAT, YOUR, NAME, or NSAC?

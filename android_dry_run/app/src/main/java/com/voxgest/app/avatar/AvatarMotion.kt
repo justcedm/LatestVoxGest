@@ -63,7 +63,7 @@ object AvatarMotion {
 
         return normalized.split(" ")
             .map { normalizeWord(it) }
-            .filter { it.isNotBlank() && it != "NOTHING" }
+            .filter { it.isNotBlank() && it != "NSAC" }
             .take(4)
     }
 

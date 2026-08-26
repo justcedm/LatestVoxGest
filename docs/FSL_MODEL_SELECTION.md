@@ -9,4 +9,4 @@ Selected experimental model: **RDTCN**.
 
 Selection is deterministic and validation-only: validation macro-F1, then validation accuracy, then smaller parameter count. The held-out test set is used only for final reporting, not architecture selection.
 
-This selection does not promote a model to Android. The stable model, class mapping, and rejection thresholds remain unchanged because the FSL-105 subset has no NOTHING/background class and cross-device validation is incomplete.
+This selection does not promote a model to Android. The stable model, class mapping, and rejection thresholds remain unchanged because the FSL-105 subset has no NSAC/background class and cross-device validation is incomplete.

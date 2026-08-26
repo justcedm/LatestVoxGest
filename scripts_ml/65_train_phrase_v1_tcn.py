@@ -239,8 +239,8 @@ def write_manifest(config, paths, report, input_shape, output_shape):
                 "sequence_length": config.expected_shape[0],
                 "feature_size": config.expected_shape[1],
                 "labels": list(config.labels),
-                "negative_label": "NOTHING",
-                "nothing_policy": "ignore_no_output",
+                "negative_label": "NSAC",
+                "nsac_policy": "ignore_no_output",
             }
         },
         "dataset": {
@@ -255,7 +255,7 @@ def write_manifest(config, paths, report, input_shape, output_shape):
         "runtime_policy": {
             "input_policy": "accepted_predictions_only",
             "raw_prediction_policy": "never_update_sentence_output_directly",
-            "nothing_policy": "NOTHING remains no-output",
+            "nsac_policy": "NSAC remains no-output",
         },
     }
     paths["manifest"].write_text(json.dumps(manifest, indent=2), encoding="utf-8")

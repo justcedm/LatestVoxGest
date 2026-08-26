@@ -24,7 +24,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SOURCE_ROOT = ROOT / "external_datasets" / "android_phone_exports" / "VoxGestCalibration" / "onehand162_phrase_v1"
 OUTPUT_ROOT = ROOT / "external_datasets" / "android_onehand162_phrase_v1_features"
 REPORTS_DIR = ROOT / "reports"
-LABELS = ("WHAT", "YOUR", "NAME", "MY", "NOTHING")
+LABELS = ("WHAT", "YOUR", "NAME", "MY", "NSAC")
 EXPECTED_SHAPE = (30, 162)
 
 

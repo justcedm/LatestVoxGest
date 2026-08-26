@@ -54,7 +54,7 @@ DEMO10_LABELS = {
     "DOCTOR",
     "NAME",
     "THANKYOU",
-    "NOTHING",
+    "NSAC",
 }
 
 
@@ -193,7 +193,7 @@ def audit_label(label, metadata):
         guidance.append(f"add {row['need_groups']}+ separate recording groups")
     if row["missing_hand_metadata"]:
         guidance.append("archive or replace metadata-less manual samples")
-    if label == "NOTHING":
+    if label == "NSAC":
         guidance.append("include idle, partial, incomplete, transition, and hand-enter/leave hard negatives")
     elif label in FOCUS_WORDS:
         guidance.append("prioritize clean webcam calibration and live-test this class")
@@ -245,17 +245,17 @@ def main():
         "trainable_label_count": trainable_label_count,
         "target_label_count_including_negative": len(REQUIRED_LABELS),
         "wrong_shape_files": wrong_shape_total,
-        "nothing_present": "NOTHING" in ready,
+        "nsac_present": "NSAC" in ready,
         "demo10_labels_preserved_in_profile": not missing_demo10,
         "missing_demo10_labels_from_profile": missing_demo10,
         "training_readiness_passed": (
             len(blocked) == 0
-            and "NOTHING" in ready
+            and "NSAC" in ready
             and not missing_demo10
             and wrong_shape_total == 0
         ),
         "hard_negative_guidance": (
-            "Record NOTHING from idle, partial/incomplete signs, transitions, "
+            "Record NSAC from idle, partial/incomplete signs, transitions, "
             "aborted signs, and hands entering/leaving frame."
         ),
         "model_reports": {
@@ -328,7 +328,7 @@ def write_markdown_summary(summary, rows):
             "",
             "## Readiness Gates",
             "",
-            f"- NOTHING present and trainable: {'NOTHING' in summary['ready_labels']}",
+            f"- NSAC present and trainable: {'NSAC' in summary['ready_labels']}",
             f"- Demo10 labels preserved in profile: {summary['demo10_labels_preserved_in_profile']}",
             f"- Wrong-shape files in required labels: {summary['wrong_shape_files']}",
             f"- Blocked labels: {', '.join(summary['blocked_labels']) if summary['blocked_labels'] else 'none'}",

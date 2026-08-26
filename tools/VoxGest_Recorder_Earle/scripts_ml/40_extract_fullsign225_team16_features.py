@@ -68,7 +68,7 @@ TEAM16_LABELS = [
     "HELP",
     "NAME",
     "NO",
-    "NOTHING",
+    "NSAC",
     "PAIN",
     "PLEASE",
     "SORRY",
@@ -81,8 +81,8 @@ TEAM16_LABELS = [
 ]
 
 SKIP_FILE_NAMES = {
-    "NOTHING_fullsign225_011.mp4",
-    "NOTHING_fullsign225_018.mp4",
+    "NSAC_fullsign225_011.mp4",
+    "NSAC_fullsign225_018.mp4",
 }
 VIDEO_EXTENSIONS = {".mp4"}
 MAX_SAMPLED_FRAMES = int(os.environ.get("VOXGEST_FULLSIGN225_EXTRACT_MAX_FRAMES", "60"))
@@ -388,7 +388,7 @@ def write_reports(rows, per_label, skipped_files):
             "",
             "## Notes",
             "",
-            "The two failed NOTHING videos from the audit are skipped. This dataset is experimental and does not replace demo10 or onehand162.",
+            "The two failed NSAC videos from the audit are skipped. This dataset is experimental and does not replace demo10 or onehand162.",
         ]
     )
     with open(MD_OUT, "w", encoding="utf-8") as f:

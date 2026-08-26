@@ -13,10 +13,10 @@ import numpy as np
 ROOT = Path(__file__).resolve().parents[1]
 DATASET_ROOT = ROOT / "external_datasets" / "android_onehand162_phrase_v1_features"
 REPORTS_DIR = ROOT / "reports"
-LABELS = ("WHAT", "YOUR", "NAME", "MY", "NOTHING")
+LABELS = ("WHAT", "YOUR", "NAME", "MY", "NSAC")
 EXPECTED_SHAPE = (30, 162)
-MINIMUMS = {"MY": 50, "WHAT": 50, "YOUR": 50, "NAME": 50, "NOTHING": 100}
-PREFERRED = {"MY": 80, "WHAT": 80, "YOUR": 80, "NAME": 80, "NOTHING": 150}
+MINIMUMS = {"MY": 50, "WHAT": 50, "YOUR": 50, "NAME": 50, "NSAC": 100}
+PREFERRED = {"MY": 80, "WHAT": 80, "YOUR": 80, "NAME": 80, "NSAC": 150}
 
 
 def mean(values):

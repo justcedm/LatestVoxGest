@@ -14,7 +14,7 @@ The pack records:
 - `WATER`
 - `HELLO`
 - `THANKYOU`
-- `NOTHING`
+- `NSAC`
 
 The pack profile is `fullsign225_manual5_team`, which uses the same 30-frame, 225-feature contract as the manual FullSign225 experiments.
 
@@ -59,7 +59,7 @@ external_datasets/
     WATER/
     HELLO/
     THANKYOU/
-    NOTHING/
+    NSAC/
     metadata_lstm_v2.json
     rejected_samples.jsonl
 ```

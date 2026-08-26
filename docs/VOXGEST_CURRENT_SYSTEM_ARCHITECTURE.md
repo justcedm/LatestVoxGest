@@ -67,7 +67,7 @@ CameraX frame
 | Camera/landmarks | `ImageProxy` -> `LandmarkFrame` | front camera mirror policy; pose/hand task assets | `VoxGestCameraRecognitionController.kt`, `LandmarkExtractor.kt` | IMPLEMENTED |
 | Feature building | landmarks -> `(162,)` | 99 pose + 63 selected hand | `OneHand162FeatureBuilder.kt` | IMPLEMENTED |
 | Temporal buffer | vectors -> `(20,162)` | drops oldest frame when full | `LandmarkSequenceBuffer.kt` | IMPLEMENTED |
-| TFLite recognition | `[1,20,162]` requested -> probabilities | labels `WHAT,YOUR,NAME,MY,NOTHING` | `VoxGestTfliteRecognizer.kt` | IMPLEMENTED code; BLOCKED by bundled 30-frame model |
+| TFLite recognition | `[1,20,162]` requested -> probabilities | labels `WHAT,YOUR,NAME,MY,NSAC` | `VoxGestTfliteRecognizer.kt` | IMPLEMENTED code; BLOCKED by bundled 30-frame model |
 | Acceptance | raw result -> accepted/rejected token | confidence, margin, hand presence, stable consecutive windows, duplicate/cooldown rules | `DynamicWordAcceptanceGate.kt` | IMPLEMENTED for five-label onehand profile |
 | Presentation | accepted token -> UI/history/TTS/avatar path | raw/rejected predictions must not alter sentence output | controller and Android UI/avatar classes | IMPLEMENTED/partly UNVERIFIED live |
 
@@ -188,7 +188,7 @@ The extractor protects the supplied FSL test split by not reading it (`train.csv
 | Extraction | COMPLETE for configured source: 1,038 completed training videos, 16,146 saved windows. |
 | Sequence shape | All generated FSL windows audit as `(20,162)`; extraction summary reports zero shape mismatches, metadata errors, missing, unexpected, or orphan output files. |
 | Class counts | Every 64 confirmed class has 180-366 FSL windows; all exceed audit minimum 100. No supplemental phone data is present. |
-| Missing from onehand pipeline | 41 two-handed labels are intentionally excluded. In addition, many desired FSL app labels (`WHAT`, `YOUR`, `NAME`, `MY`, `NOTHING`, `WATER`, etc.) have no FSL-105 onehand windows in this extraction. |
+| Missing from onehand pipeline | 41 two-handed labels are intentionally excluded. In addition, many desired FSL app labels (`WHAT`, `YOUR`, `NAME`, `MY`, `NSAC`, `WATER`, etc.) have no FSL-105 onehand windows in this extraction. |
 | Phone data | `fsl_import_report.json`: 0 imported. `device_diversity_report.json` flags 20 low-diversity labels. |
 | Training readiness | **NOT READY for the current FSL trainer.** `fsl_config.py` lists 25 labels, of which only `HELLO`, `YES`, `NO`, and `UNDERSTAND` have extracted FSL-105 data and meet minima. The trainer requires at least five ready labels. |
 | FSL model/TFLite/Android integration | NOT IMPLEMENTED; manifest status `pending_training`. |
@@ -210,7 +210,7 @@ Landmark detection -> normalized feature sequence -> temporal model softmax
 -> top class probability + top-2 margin -> quality/consistency gates -> accepted token/output
 ```
 
-For the Android five-label onehand path, `VoxGestTfliteRecognizer` ranks output probabilities, derives confidence/top-1 and margin `(top1 - top2)`, and returns top-3. `DynamicWordAcceptanceGate` rejects blank/`NOTHING`/unsupported labels, wrong input shape, low hand presence, low confidence, low margin, insufficient consecutive matches, duplicates, and cooldown conflicts. Only accepted results are sent downstream; `NOTHING` is explicitly no-output. This logic exists, but cannot reach usable inference with the retained 30-frame model detected under the 20-frame profile.
+For the Android five-label onehand path, `VoxGestTfliteRecognizer` ranks output probabilities, derives confidence/top-1 and margin `(top1 - top2)`, and returns top-3. `DynamicWordAcceptanceGate` rejects blank/`NSAC`/unsupported labels, wrong input shape, low hand presence, low confidence, low margin, insufficient consecutive matches, duplicates, and cooldown conflicts. Only accepted results are sent downstream; `NSAC` is explicitly no-output. This logic exists, but cannot reach usable inference with the retained 30-frame model detected under the 20-frame profile.
 
 No FSL class-probability thresholds, FSL decision gate, or FSL output token mapping were found.
 

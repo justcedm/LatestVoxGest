@@ -24,7 +24,7 @@ OUTPUT_ROOT = ROOT / "external_datasets" / "fullsign225_manual5_team_features_v2
 REPORT_DIR = ROOT / "reports"
 
 FEATURE_FOLDER = "fullsign225_manual5_team_features"
-EXPECTED_LABELS = ["EAT", "WATER", "HELLO", "THANKYOU", "NOTHING"]
+EXPECTED_LABELS = ["EAT", "WATER", "HELLO", "THANKYOU", "NSAC"]
 EXPECTED_SHAPE = (30, 225)
 SKIP_PARTS = {"_rejected", "recorder_env", "__pycache__", ".git"}
 SKIP_FILE_NAMES = {"readme", "requirements", "metadata"}
@@ -188,7 +188,7 @@ def write_reports(rows, source_folders, duplicate_sources, metadata_path):
             "",
             "## Counts Per Signer Per Label",
             "",
-            "| Signer | EAT | WATER | HELLO | THANKYOU | NOTHING | Total |",
+            "| Signer | EAT | WATER | HELLO | THANKYOU | NSAC | Total |",
             "| --- | ---: | ---: | ---: | ---: | ---: | ---: |",
         ]
     )
@@ -196,13 +196,13 @@ def write_reports(rows, source_folders, duplicate_sources, metadata_path):
         counts = per_signer_label[signer]
         total = sum(counts.values())
         lines.append(
-            "| {signer} | {eat} | {water} | {hello} | {thankyou} | {nothing} | {total} |".format(
+            "| {signer} | {eat} | {water} | {hello} | {thankyou} | {nsac} | {total} |".format(
                 signer=signer,
                 eat=counts.get("EAT", 0),
                 water=counts.get("WATER", 0),
                 hello=counts.get("HELLO", 0),
                 thankyou=counts.get("THANKYOU", 0),
-                nothing=counts.get("NOTHING", 0),
+                nsac=counts.get("NSAC", 0),
                 total=total,
             )
         )

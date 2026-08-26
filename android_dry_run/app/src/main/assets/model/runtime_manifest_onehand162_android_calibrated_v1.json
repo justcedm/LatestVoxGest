@@ -31,10 +31,10 @@
         "YOUR",
         "NAME",
         "MY",
-        "NOTHING"
+        "NSAC"
       ],
-      "negative_label": "NOTHING",
-      "nothing_policy": "ignore_no_output"
+      "negative_label": "NSAC",
+      "nsac_policy": "ignore_no_output"
     }
   },
   "dataset": {
@@ -68,7 +68,7 @@
         "minimum_ready": true,
         "preferred_ready": true
       },
-      "NOTHING": {
+      "NSAC": {
         "sequences": 108,
         "minimum": 100,
         "preferred": 150,
@@ -81,19 +81,19 @@
       "WHAT": 50,
       "YOUR": 50,
       "NAME": 50,
-      "NOTHING": 100
+      "NSAC": 100
     },
     "preferred": {
       "MY": 80,
       "WHAT": 80,
       "YOUR": 80,
       "NAME": 80,
-      "NOTHING": 150
+      "NSAC": 150
     }
   },
   "runtime_policy": {
     "input_policy": "android_camera_feature_arrays_recorded_before_inference",
-    "nothing_policy": "NOTHING remains no-output",
+    "nsac_policy": "NSAC remains no-output",
     "android_flag": "USE_ANDROID_CALIBRATED_ONEHAND_MODEL"
   }
 }

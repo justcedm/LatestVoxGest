@@ -45,7 +45,7 @@ reported separately.
 The present work does not support claims of full 105-class FSL recognition,
 two-handed recognition, alphabet recognition accuracy, signer independence
 beyond the audited grouping, cross-device robustness, real-world rejection
-quality, or Android deployment. FSL-105 supplies no `NOTHING`/background class,
+quality, or Android deployment. FSL-105 supplies no `NSAC`/background class,
 and the newly requested four-signer alphabet recordings have not yet been
 collected.
 

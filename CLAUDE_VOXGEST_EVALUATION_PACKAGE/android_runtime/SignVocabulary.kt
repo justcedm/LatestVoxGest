@@ -121,7 +121,7 @@ object SignVocabulary {
                 index += 1
             }
         }
-        return output.filter { it.isNotBlank() && it != "NOTHING" }
+        return output.filter { it.isNotBlank() && it != "NSAC" }
     }
 
     fun playbackLabel(entry: SignEntry): String {

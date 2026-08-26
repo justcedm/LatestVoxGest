@@ -281,7 +281,7 @@ fun VoxGestPresentationApp() {
             ?.let { SignVocabulary.normalizeRuntimeLabel(it.label) }
             ?: raw.uppercase(Locale.US)
         when (clean) {
-            "", "NOTHING" -> return
+            "", "NSAC" -> return
             "DEL" -> {
                 val nextTokens = demoTokenBuffer.toDemoTokens().dropLast(1)
                 demoTokenBuffer = nextTokens.joinToString("|")
@@ -540,15 +540,15 @@ private fun exportAccuracyReport(
 }
 
 private fun isMeaningfulOutput(text: String): Boolean {
-    return text.trim().isNotBlank() && text.trim().uppercase(Locale.US) != "NOTHING"
+    return text.trim().isNotBlank() && text.trim().uppercase(Locale.US) != "NSAC"
 }
 
 private fun String.toDemoTokens(): List<String> {
-    return split("|").map { it.trim() }.filter { it.isNotBlank() && it != "NOTHING" }
+    return split("|").map { it.trim() }.filter { it.isNotBlank() && it != "NSAC" }
 }
 
 private fun demoSentenceForTokens(tokens: List<String>): String? {
-    val clean = tokens.map { it.uppercase(Locale.US) }.filter { it.isNotBlank() && it != "NOTHING" }
+    val clean = tokens.map { it.uppercase(Locale.US) }.filter { it.isNotBlank() && it != "NSAC" }
     val nameStart = clean.indexOfLastMyNameIs()
     if (nameStart >= 0 && clean.size > nameStart + 3) {
         val letters = clean.drop(nameStart + 3)
@@ -1546,7 +1546,7 @@ private fun DemoTokenPanel(
                         DemoTokenButton(
                             label = token,
                             tint = when (token) {
-                                "NOTHING" -> TextFaint
+                                "NSAC" -> TextFaint
                                 "CLEAR" -> Red
                                 else -> Primary
                             },
@@ -1803,7 +1803,7 @@ private fun ListenScreen(
             onStop = { avatarController.stop() },
             onDebugWord = { word ->
                 if (!avatarController.playWord(word)) {
-                    avatarState = AvatarPlaybackState(label = "Ready", detail = "NOTHING ignored", currentWord = "")
+                    avatarState = AvatarPlaybackState(label = "Ready", detail = "NSAC ignored", currentWord = "")
                 }
             }
         )

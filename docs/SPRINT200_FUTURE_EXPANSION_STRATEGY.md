@@ -17,7 +17,7 @@ manual hardening before the next vocabulary jump.
 - Enough videos per class from WLASL, ASL Citizen, or another verified source.
 - Enough signer/environment diversity.
 - Enough manual calibration groups for the actual demo camera.
-- A strong `NOTHING` class containing idle, transition, partial, and aborted
+- A strong `NSAC` class containing idle, transition, partial, and aborted
   signs.
 - No phrase-intent data mixed into the 30-frame word model.
 
@@ -36,7 +36,7 @@ manual hardening before the next vocabulary jump.
 - Add larger profiles as optional manifests.
 - Require exact label JSON and output shape checks before loading a model.
 - Never let raw predictions enter the token composer.
-- Keep `NOTHING` as no-output across every profile.
+- Keep `NSAC` as no-output across every profile.
 
 ## Responsible Dataset Use
 

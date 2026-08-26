@@ -15,10 +15,10 @@ INCOMING_ROOT = ROOT / "external_datasets" / "team_incoming_recorded_features"
 REPORT_DIR = ROOT / "reports"
 
 EXPECTED_SIGNERS = ["CED", "ANASTACIA", "MARIELLA", "EARLE"]
-EXPECTED_LABELS = ["EAT", "WATER", "HELLO", "THANKYOU", "NOTHING"]
+EXPECTED_LABELS = ["EAT", "WATER", "HELLO", "THANKYOU", "NSAC"]
 EXPECTED_SHAPE = (30, 225)
-MIN_TARGET = {"EAT": 80, "WATER": 80, "HELLO": 80, "THANKYOU": 80, "NOTHING": 120}
-PREFERRED_TARGET = {"EAT": 120, "WATER": 120, "HELLO": 120, "THANKYOU": 120, "NOTHING": 180}
+MIN_TARGET = {"EAT": 80, "WATER": 80, "HELLO": 80, "THANKYOU": 80, "NSAC": 120}
+PREFERRED_TARGET = {"EAT": 120, "WATER": 120, "HELLO": 120, "THANKYOU": 120, "NSAC": 180}
 
 
 def infer_signer(file_name):
@@ -172,20 +172,20 @@ def audit():
             "",
             "## Per Signer Counts",
             "",
-            "| Signer | EAT | WATER | HELLO | THANKYOU | NOTHING |",
+            "| Signer | EAT | WATER | HELLO | THANKYOU | NSAC |",
             "| --- | ---: | ---: | ---: | ---: | ---: |",
         ]
     )
     for signer in EXPECTED_SIGNERS + sorted(set(per_signer_label) - set(EXPECTED_SIGNERS)):
         counts = per_signer_label.get(signer, {})
         lines.append(
-            "| {signer} | {eat} | {water} | {hello} | {thankyou} | {nothing} |".format(
+            "| {signer} | {eat} | {water} | {hello} | {thankyou} | {nsac} |".format(
                 signer=signer,
                 eat=counts.get("EAT", 0),
                 water=counts.get("WATER", 0),
                 hello=counts.get("HELLO", 0),
                 thankyou=counts.get("THANKYOU", 0),
-                nothing=counts.get("NOTHING", 0),
+                nsac=counts.get("NSAC", 0),
             )
         )
 

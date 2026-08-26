@@ -32,7 +32,7 @@
       "diversity_score": 0.0,
       "status": "LOW_DIVERSITY"
     },
-    "NOTHING": {
+    "NSAC": {
       "sequence_count": 0,
       "unique_device_models": [],
       "unique_signer_ids": [],
@@ -332,7 +332,7 @@
     "YOUR",
     "NAME",
     "MY",
-    "NOTHING",
+    "NSAC",
     "WATER",
     "EAT",
     "HELP",

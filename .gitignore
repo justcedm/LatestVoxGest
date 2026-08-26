@@ -74,6 +74,9 @@ reports/live_log_comparison.*
 !reports/fsl_rdtcn_evaluation.json
 !reports/fsl_model_comparison.csv
 !reports/fsl_artifact_validation.json
+!reports/activity_detector_v1_evaluation.json
+!reports/fsl_rejection_calibration.json
+!reports/autonomous_sprint_validation.json
 reports/smoke/
 
 # Keep only completed experimental model artifacts; smoke outputs are local QA.

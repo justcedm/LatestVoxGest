@@ -2,7 +2,7 @@
 cd /d "%~dp0"
 
 echo ============================================================
-echo  VoxGest FullSign225 Phrase V1 - NOTHING
+echo  VoxGest FullSign225 Phrase V1 - NSAC
 echo ============================================================
 
 if not exist recorder_env\Scripts\python.exe (
@@ -22,11 +22,11 @@ set VOXGEST_RECORDER_OUTPUT_ROOT=recorded_features\fullsign225_phrase_v1_feature
 echo Signer ID       : %VOXGEST_SIGNER_ID%
 echo Profile         : fullsign225_phrase_v1
 echo Feature profile : fullsign225
-echo Word            : NOTHING
+echo Word            : NSAC
 echo Target          : 100 accepted samples
 echo.
 
-recorder_env\Scripts\python.exe scripts_ml\41_record_manual_fullsign225_words.py NOTHING
+recorder_env\Scripts\python.exe scripts_ml\41_record_manual_fullsign225_words.py NSAC
 if errorlevel 1 (
     echo.
     echo ERROR: Recording failed. Screenshot this window and send it to Ced.
@@ -35,6 +35,6 @@ if errorlevel 1 (
 )
 
 echo.
-echo Done recording FullSign225 NOTHING.
+echo Done recording FullSign225 NSAC.
 pause
 

@@ -430,7 +430,7 @@ def train(architecture: str, args: argparse.Namespace) -> dict[str, Any]:
             "android_default_changed": False,
             "eligible": False,
             "blockers": [
-                "No NOTHING/background class in FSL-105.",
+                "No NSAC/background class in FSL-105.",
                 "Cross-device Samsung and webcam validation not complete.",
                 "Rejection thresholds have not been calibrated for this model.",
             ],

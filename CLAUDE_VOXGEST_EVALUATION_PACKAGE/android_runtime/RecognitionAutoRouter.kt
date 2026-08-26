@@ -6,7 +6,7 @@ enum class RecognitionRoute {
     STATIC,
     ONEHAND,
     FULLSIGN,
-    NOTHING
+    NSAC
 }
 
 data class RouterDecision(
@@ -33,7 +33,7 @@ class RecognitionAutoRouter {
         if (frame == null || !frame.hasAnyHand) {
             reset()
             return RouterDecision(
-                route = RecognitionRoute.NOTHING,
+                route = RecognitionRoute.NSAC,
                 statusText = "Looking for hand",
                 reason = "no_hand",
                 handPresence = 0f,
@@ -72,18 +72,18 @@ class RecognitionAutoRouter {
 
         val bothHands = frame.hasLeftHand && frame.hasRightHand
         val route = when {
-            !frame.hasPose && stableFrames < STATIC_ROUTE_FRAMES -> RecognitionRoute.NOTHING
+            !frame.hasPose && stableFrames < STATIC_ROUTE_FRAMES -> RecognitionRoute.NSAC
             !bothHands && stableFrames >= STATIC_ROUTE_FRAMES -> RecognitionRoute.STATIC
             bothHands && frame.hasPose && movingFrames >= FULLSIGN_ROUTE_FRAMES -> RecognitionRoute.FULLSIGN
             bothHands && frame.hasPose && stableFrames < STATIC_ROUTE_FRAMES -> RecognitionRoute.FULLSIGN
             !bothHands && frame.hasPose && movingFrames >= ONEHAND_ROUTE_FRAMES -> RecognitionRoute.ONEHAND
-            else -> RecognitionRoute.NOTHING
+            else -> RecognitionRoute.NSAC
         }
 
         val status = when (route) {
             RecognitionRoute.STATIC -> "Hold steady"
             RecognitionRoute.ONEHAND, RecognitionRoute.FULLSIGN -> "Signing..."
-            RecognitionRoute.NOTHING -> if (stableFrames > 0) "Hold steady" else "Looking for hand"
+            RecognitionRoute.NSAC -> if (stableFrames > 0) "Hold steady" else "Looking for hand"
         }
         return RouterDecision(
             route = route,

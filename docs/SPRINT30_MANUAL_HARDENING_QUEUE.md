@@ -11,7 +11,7 @@ $env:VOXGEST_WORD_PROFILE='sprint30'
 $env:VOXGEST_SINGLE_HAND_POSE='1'
 $env:VOXGEST_DOMINANT_HAND='right'
 $env:VOXGEST_MANUAL_SEQUENCES_PER_WORD='60'
-.\voxgest_env\Scripts\python.exe scripts_ml\16_record_manual_words.py THANKYOU STOP DOCTOR UNDERSTAND NOTHING
+.\voxgest_env\Scripts\python.exe scripts_ml\16_record_manual_words.py THANKYOU STOP DOCTOR UNDERSTAND NSAC
 ```
 
 ```powershell
@@ -20,7 +20,7 @@ $env:VOXGEST_WORD_PROFILE='sprint30'
 $env:VOXGEST_SINGLE_HAND_POSE='1'
 $env:VOXGEST_DOMINANT_HAND='right'
 $env:VOXGEST_MANUAL_SEQUENCES_PER_WORD='60'
-.\voxgest_env\Scripts\python.exe scripts_ml\16_record_manual_words.py PAIN GO FINE TIME MEDICINE NOTHING
+.\voxgest_env\Scripts\python.exe scripts_ml\16_record_manual_words.py PAIN GO FINE TIME MEDICINE NSAC
 ```
 
 ```powershell
@@ -29,7 +29,7 @@ $env:VOXGEST_WORD_PROFILE='sprint30'
 $env:VOXGEST_SINGLE_HAND_POSE='1'
 $env:VOXGEST_DOMINANT_HAND='right'
 $env:VOXGEST_MANUAL_SEQUENCES_PER_WORD='60'
-.\voxgest_env\Scripts\python.exe scripts_ml\16_record_manual_words.py PLEASE WATER EAT WANT NOTHING
+.\voxgest_env\Scripts\python.exe scripts_ml\16_record_manual_words.py PLEASE WATER EAT WANT NSAC
 ```
 
 ## Left-Hand Queue
@@ -40,7 +40,7 @@ $env:VOXGEST_WORD_PROFILE='sprint30'
 $env:VOXGEST_SINGLE_HAND_POSE='1'
 $env:VOXGEST_DOMINANT_HAND='left'
 $env:VOXGEST_MANUAL_SEQUENCES_PER_WORD='60'
-.\voxgest_env\Scripts\python.exe scripts_ml\16_record_manual_words.py THANKYOU STOP DOCTOR UNDERSTAND PAIN NOTHING
+.\voxgest_env\Scripts\python.exe scripts_ml\16_record_manual_words.py THANKYOU STOP DOCTOR UNDERSTAND PAIN NSAC
 ```
 
 ```powershell
@@ -49,10 +49,10 @@ $env:VOXGEST_WORD_PROFILE='sprint30'
 $env:VOXGEST_SINGLE_HAND_POSE='1'
 $env:VOXGEST_DOMINANT_HAND='left'
 $env:VOXGEST_MANUAL_SEQUENCES_PER_WORD='60'
-.\voxgest_env\Scripts\python.exe scripts_ml\16_record_manual_words.py GO FINE EAT TIME WANT MEDICINE NOTHING
+.\voxgest_env\Scripts\python.exe scripts_ml\16_record_manual_words.py GO FINE EAT TIME WANT MEDICINE NSAC
 ```
 
-## NOTHING Hard-Negative Queue
+## NSAC Hard-Negative Queue
 
 ```powershell
 $env:VOXGEST_ENABLE_PHRASE='0'
@@ -60,7 +60,7 @@ $env:VOXGEST_WORD_PROFILE='sprint30'
 $env:VOXGEST_SINGLE_HAND_POSE='1'
 $env:VOXGEST_DOMINANT_HAND='right'
 $env:VOXGEST_MANUAL_SEQUENCES_PER_WORD='120'
-.\voxgest_env\Scripts\python.exe scripts_ml\16_record_manual_words.py NOTHING
+.\voxgest_env\Scripts\python.exe scripts_ml\16_record_manual_words.py NSAC
 ```
 
 Record:

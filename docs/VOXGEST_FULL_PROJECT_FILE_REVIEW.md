@@ -70,7 +70,7 @@ The complete Python file-by-file inventory is in `docs/VOXGEST_ALL_PYTHON_FILES_
 |---|---|---|
 | Android asset `runtime_manifest_onehand162_android_calibrated_v1.json` | Current Android calibrated profile manifest; declares `[1,20,162]`. | ACTIVE |
 | Android asset `voxgest_tcn_onehand162_android_calibrated_v1.tflite` | Bundled calibrated model artifact. Verify internal input shape before defense. | ACTIVE/GENERATED |
-| Android asset `class_labels_tcn_onehand162_android_calibrated_v1.json` | Labels `WHAT`, `YOUR`, `NAME`, `MY`, `NOTHING`. | ACTIVE |
+| Android asset `class_labels_tcn_onehand162_android_calibrated_v1.json` | Labels `WHAT`, `YOUR`, `NAME`, `MY`, `NSAC`. | ACTIVE |
 | Root `model/runtime_manifest_onehand162_android_calibrated_v1.json` | Root manifest still declares `[1,30,162]`; not synced with Android asset copy. | GENERATED/NEEDS_SYNC |
 | Root `model/voxgest_tcn_onehand162_android_calibrated_v1.tflite` | Root calibrated TFLite artifact. | GENERATED/EXPERIMENTAL |
 | `model/runtime_manifest_fsl_rdtcn_v1.json` | Future FSL manifest, pending training. | EXPERIMENTAL |

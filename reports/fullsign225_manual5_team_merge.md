@@ -6,7 +6,7 @@
 
 ## Accepted Samples
 
-| Signer | EAT | WATER | HELLO | THANKYOU | NOTHING |
+| Signer | EAT | WATER | HELLO | THANKYOU | NSAC |
 | --- | ---: | ---: | ---: | ---: | ---: |
 | CED | 0 | 0 | 0 | 0 | 0 |
 | ANASTACIA | 31 | 30 | 30 | 30 | 50 |

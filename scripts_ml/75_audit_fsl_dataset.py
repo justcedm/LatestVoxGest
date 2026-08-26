@@ -160,7 +160,7 @@ def write_readiness_doc(report: dict[str, Any]) -> None:
             "## Deployment warning",
             "",
             "This audit can authorize a closed-set experimental training run only. "
-            "FSL-105 contains no canonical `NOTHING`/background class, so the "
+            "FSL-105 contains no canonical `NSAC`/background class, so the "
             "existing rejection policy must remain active and no Android default "
             "model or thresholds may be replaced from these results alone.",
             "",
@@ -262,7 +262,7 @@ def run_audit(dataset_root: Path) -> dict[str, Any]:
         f"Signer/source-video leakage audit passed: {split_info['leakage']['passed']}.",
         f"Exact duplicate-content records excluded from training: {len(duplicate_exclusions)}.",
         f"Duplicate audit passed after exclusion: {duplicates['post_exclusion']['passed']}.",
-        "Deployment remains blocked because no NOTHING/background class is present and cross-device validation is pending.",
+        "Deployment remains blocked because no NSAC/background class is present and cross-device validation is pending.",
     ]
     report = {
         "generated_at_utc": datetime.now(timezone.utc).isoformat(),

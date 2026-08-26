@@ -149,7 +149,7 @@
         "status": "EMPTY"
       },
       {
-        "label_directory": "NOTHING",
+        "label_directory": "NSAC",
         "sequence_count": 0,
         "status": "EMPTY"
       },
@@ -2458,7 +2458,7 @@
       "Signer/source-video leakage audit passed: True.",
       "Exact duplicate-content records excluded from training: 42.",
       "Duplicate audit passed after exclusion: True.",
-      "Deployment remains blocked because no NOTHING/background class is present and cross-device validation is pending."
+      "Deployment remains blocked because no NSAC/background class is present and cross-device validation is pending."
     ]
   },
   "artifacts": {

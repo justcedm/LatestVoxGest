@@ -13,8 +13,8 @@
   "dominant_hand": "right",
   "mirrored_input": true,
   "labels": [],
-  "negative_label": "NOTHING",
-  "nothing_policy": "ignore_no_output",
+  "negative_label": "NSAC",
+  "nsac_policy": "ignore_no_output",
   "device_invariant_normalization": true,
   "wrist_mcp_scale_normalized": true,
   "z_damping": 0.3

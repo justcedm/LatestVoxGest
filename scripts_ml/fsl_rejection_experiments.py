@@ -2,7 +2,7 @@
 
 This module deliberately defines no thresholds. The stable Android quality,
 confidence, margin, consistency, and cooldown settings remain authoritative
-until a dataset containing NOTHING/background activity is evaluated.
+until a dataset containing NSAC/background activity is evaluated.
 """
 
 from __future__ import annotations
@@ -13,7 +13,7 @@ from typing import Iterable
 
 
 class RejectionExperiment(str, Enum):
-    FSL_PLUS_NOTHING = "fsl_plus_nothing"
+    FSL_PLUS_NSAC = "fsl_plus_nsac"
     ACTIVITY_THEN_FSL = "activity_then_fsl"
     ACTIVITY_THEN_FSL_PLUS_REJECT = "activity_then_fsl_plus_reject"
 
@@ -58,7 +58,7 @@ def accept_with_measured_thresholds(
         and evidence.classifier_margin >= thresholds.margin
         and evidence.temporal_consistency >= thresholds.temporal_consistency
     )
-    if strategy == RejectionExperiment.FSL_PLUS_NOTHING:
+    if strategy == RejectionExperiment.FSL_PLUS_NSAC:
         return classifier_accepts
     if thresholds.activity is None or evidence.activity_probability is None:
         raise ValueError("activity strategies require measured activity evidence/threshold")

@@ -38,7 +38,7 @@ object AvatarAnimationLibrary {
 
     fun resolve(word: String): AvatarAnimation {
         val normalized = AvatarMotion.normalizeWord(word)
-        if (normalized.isBlank() || normalized == "NOTHING") {
+        if (normalized.isBlank() || normalized == "NSAC") {
             return AvatarAnimation(normalized, AvatarAnimationKind.NONE, 0L)
         }
         return canvasAnimations[normalized]

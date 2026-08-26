@@ -47,7 +47,7 @@ public final class AvatarPlaybackController {
             return;
         }
         String upper = cleaned.toUpperCase(Locale.US);
-        if ("NOTHING".equals(upper)) {
+        if ("NSAC".equals(upper)) {
             return;
         }
         if (VoxGestContract.WORD_SET.contains(upper)) {

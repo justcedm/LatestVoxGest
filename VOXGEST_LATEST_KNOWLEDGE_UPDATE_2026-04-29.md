@@ -44,9 +44,9 @@ Dynamic word recognition:
 
 Negative dynamic class:
 
-- `NOTHING`
+- `NSAC`
 
-`NOTHING` is used to reduce false recognition during idle, neutral, or transition movement. It should not be shown as a spoken output word.
+`NSAC` is used to reduce false recognition during idle, neutral, or transition movement. It should not be shown as a spoken output word.
 
 ## Current Model Contract
 
@@ -82,7 +82,7 @@ Current label order:
 8. `DOCTOR`
 9. `NAME`
 10. `THANKYOU`
-11. `NOTHING`
+11. `NSAC`
 
 ## Latest Training Report Snapshot
 
@@ -313,7 +313,7 @@ Updated:
 
 - uses physical-hand mirror mapping
 - prints active hand, pose, and mirror settings
-- keeps `NOTHING` as a no-output dynamic class
+- keeps `NSAC` as a no-output dynamic class
 - uses lighter live gates for compact/weak signs
 
 Purpose:
@@ -507,7 +507,7 @@ Compact signs currently have lighter gates:
 - `WATER`
 - `THANKYOU`
 
-`NOTHING` has a no-output rule.
+`NSAC` has a no-output rule.
 
 This helps live responsiveness, but it does not replace clean data. If a word was trained with the wrong motion style, threshold tuning cannot fully solve it.
 
@@ -528,7 +528,7 @@ Required Android behavior:
 - append selected hand landmarks
 - send `[1, 30, 162]` into the LSTM
 - read `[1, 11]` output
-- treat `NOTHING` as no output
+- treat `NSAC` as no output
 
 Current Android contract source:
 
@@ -580,7 +580,7 @@ Observed after one retrain:
 Dataset audit showed:
 
 - clean right/left metadata existed for `DOCTOR`, `YES`, `NO`, `WATER`, and `THANKYOU`
-- old metadata-less manual samples still existed for `HELP`, `PLEASE`, `HELLO`, `STOP`, `NAME`, and `NOTHING`
+- old metadata-less manual samples still existed for `HELP`, `PLEASE`, `HELLO`, `STOP`, `NAME`, and `NSAC`
 
 Correction added:
 
@@ -593,4 +593,4 @@ The system used to know which hand landmarks to read, but the body pose data sti
 
 ## Current Status In One Paragraph
 
-VoxGest now has an 11-class dynamic LSTM model with 10 communication words plus `NOTHING`, a single-hand dominant feature policy, mirrored-webcam hand correction, sample-aware training metadata, and a safe archiving workflow for contaminated manual recordings. The next required work is data cleanup and clean re-recording for `DOCTOR`, `WATER`, `THANKYOU`, `YES`, and `NO`, followed by extraction, retraining, saved-data testing, and live right/left-hand testing.
+VoxGest now has an 11-class dynamic LSTM model with 10 communication words plus `NSAC`, a single-hand dominant feature policy, mirrored-webcam hand correction, sample-aware training metadata, and a safe archiving workflow for contaminated manual recordings. The next required work is data cleanup and clean re-recording for `DOCTOR`, `WATER`, `THANKYOU`, `YES`, and `NO`, followed by extraction, retraining, saved-data testing, and live right/left-hand testing.

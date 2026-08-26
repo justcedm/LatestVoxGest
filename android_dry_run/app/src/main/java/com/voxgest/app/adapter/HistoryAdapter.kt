@@ -41,14 +41,14 @@ object VoxHistoryStore {
 
     fun add(type: HistoryType, text: String, detail: String) {
         val clean = text.trim()
-        if (clean.isBlank() || clean.equals("NOTHING", ignoreCase = true)) return
+        if (clean.isBlank() || clean.equals("NSAC", ignoreCase = true)) return
         items.add(0, HistoryEntry(type, clean, timeFormat.format(Date()), detail, "Today"))
         notifyChanged()
     }
 
     fun addPhrase(text: String, emergency: Boolean) {
         val clean = text.trim()
-        if (clean.isBlank() || clean.equals("NOTHING", ignoreCase = true)) return
+        if (clean.isBlank() || clean.equals("NSAC", ignoreCase = true)) return
         add(if (emergency) HistoryType.Phrase else HistoryType.Phrase, clean, "Shown in signs")
     }
 

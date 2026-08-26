@@ -10,7 +10,7 @@ public final class TokenComposer {
     private static final Set<String> NO_OUTPUT_LABELS = new HashSet<>();
 
     static {
-        NO_OUTPUT_LABELS.add("NOTHING");
+        NO_OUTPUT_LABELS.add("NSAC");
         NO_OUTPUT_LABELS.add("IDLE");
         NO_OUTPUT_LABELS.add("REST");
         NO_OUTPUT_LABELS.add("NO_WORD");

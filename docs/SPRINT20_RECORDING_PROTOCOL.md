@@ -11,7 +11,7 @@ Sprint20 recording starts only after:
 
 - `NAME` is at least 4/5 correct.
 - `STOP` remains at least 4/5 correct.
-- `NOTHING` does not create false word outputs.
+- `NSAC` does not create false word outputs.
 - `PLEASE` does not frequently become `STOP`.
 
 Until then, run the demo10 repair protocol instead.
@@ -22,7 +22,7 @@ Until then, run the demo10 repair protocol instead.
 SORRY, AGAIN, MORE, UNDERSTAND, PAIN, SICK, HURT, MEDICINE, HOSPITAL, EAT
 ```
 
-`NOTHING` remains required. Phrase recognition remains disabled.
+`NSAC` remains required. Phrase recognition remains disabled.
 
 ## Controlled Recording Rules
 
@@ -33,7 +33,7 @@ SORRY, AGAIN, MORE, UNDERSTAND, PAIN, SICK, HURT, MEDICINE, HOSPITAL, EAT
 - Start neutral, perform the sign, return neutral.
 - Record clean examples first, then speed/distance variations.
 - Put partial signs, aborted signs, transitions, and uncertain attempts into
-  `NOTHING`.
+  `NSAC`.
 
 ## Right-Hand Sprint20 Recording
 
@@ -45,7 +45,7 @@ $env:VOXGEST_WORD_PROFILE='sprint20'
 $env:VOXGEST_SINGLE_HAND_POSE='1'
 $env:VOXGEST_DOMINANT_HAND='right'
 $env:VOXGEST_MANUAL_SEQUENCES_PER_WORD='60'
-.\voxgest_env\Scripts\python.exe scripts_ml\16_record_manual_words.py SORRY AGAIN MORE UNDERSTAND PAIN SICK HURT MEDICINE HOSPITAL EAT NOTHING
+.\voxgest_env\Scripts\python.exe scripts_ml\16_record_manual_words.py SORRY AGAIN MORE UNDERSTAND PAIN SICK HURT MEDICINE HOSPITAL EAT NSAC
 ```
 
 ## Left-Hand Sprint20 Recording
@@ -59,12 +59,12 @@ $env:VOXGEST_WORD_PROFILE='sprint20'
 $env:VOXGEST_SINGLE_HAND_POSE='1'
 $env:VOXGEST_DOMINANT_HAND='left'
 $env:VOXGEST_MANUAL_SEQUENCES_PER_WORD='60'
-.\voxgest_env\Scripts\python.exe scripts_ml\16_record_manual_words.py SORRY AGAIN MORE UNDERSTAND PAIN SICK HURT MEDICINE HOSPITAL EAT NOTHING
+.\voxgest_env\Scripts\python.exe scripts_ml\16_record_manual_words.py SORRY AGAIN MORE UNDERSTAND PAIN SICK HURT MEDICINE HOSPITAL EAT NSAC
 ```
 
-## NOTHING For Sprint20
+## NSAC For Sprint20
 
-Record `NOTHING` hard negatives for:
+Record `NSAC` hard negatives for:
 
 - hand entering frame
 - hand leaving frame
@@ -100,7 +100,7 @@ $env:VOXGEST_WORD_PROFILE='sprint20'
 ```
 
 Do not train if the audit shows missing classes, weak group coverage, missing
-`NOTHING`, or label/output-shape mismatch risk.
+`NSAC`, or label/output-shape mismatch risk.
 
 ## Training Commands After Readiness Passes
 
@@ -129,4 +129,4 @@ $env:VOXGEST_SINGLE_HAND_POSE='1'
 
 Keep Android defaulted to demo10 until sprint20 passes live Python testing. A
 sprint20 model is not demo-safe until the live logger confirms the expanded
-label set without breaking demo10 words or `NOTHING`.
+label set without breaking demo10 words or `NSAC`.

@@ -7,16 +7,16 @@
   "feature_size": 162,
   "training_labels": [
     "ASK_NAME",
-    "NOTHING",
+    "NSAC",
     "PARTIAL_ASK_NAME"
   ],
   "required_labels": [
     "ASK_NAME",
-    "NOTHING"
+    "NSAC"
   ],
   "classes": [
     "ASK_NAME",
-    "NOTHING"
+    "NSAC"
   ],
   "missing_required_labels": [],
   "ignored_wrong_shape_files": 0,
@@ -30,7 +30,7 @@
       "need_sequences": 0,
       "need_groups": 0
     },
-    "NOTHING": {
+    "NSAC": {
       "sequences": 120,
       "groups": 3,
       "used": true,
@@ -50,7 +50,7 @@
       "total": 30,
       "accuracy": 100.0
     },
-    "NOTHING": {
+    "NSAC": {
       "correct": 60,
       "total": 60,
       "accuracy": 100.0
@@ -58,6 +58,6 @@
   },
   "top_miss": {
     "ASK_NAME": "-",
-    "NOTHING": "-"
+    "NSAC": "-"
   }
 }

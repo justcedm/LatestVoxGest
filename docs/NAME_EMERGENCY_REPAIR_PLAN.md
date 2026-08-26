@@ -12,7 +12,7 @@ Latest right-hand TCN log: `reports/live_word_test_log_20260515_222007.json`
 - `NAME`: 0/5 correct
 - 3 trials were accepted as `THANKYOU`
 - 2 trials were rejected as low-confidence `PLEASE`
-- `STOP`, `THANKYOU`, `PLEASE`, and `NOTHING` were otherwise correct in that
+- `STOP`, `THANKYOU`, `PLEASE`, and `NSAC` were otherwise correct in that
   latest focused run
 
 Historical live-log comparison still ranks `NAME` as the weakest label:
@@ -172,10 +172,10 @@ $env:VOXGEST_WORD_PROFILE='demo10'
 $env:VOXGEST_SINGLE_HAND_POSE='1'
 $env:VOXGEST_DOMINANT_HAND='right'
 $env:VOXGEST_MANUAL_SEQUENCES_PER_WORD='60'
-.\voxgest_env\Scripts\python.exe scripts_ml\16_record_manual_words.py STOP THANKYOU PLEASE NOTHING
+.\voxgest_env\Scripts\python.exe scripts_ml\16_record_manual_words.py STOP THANKYOU PLEASE NSAC
 ```
 
-For `NOTHING`, record:
+For `NSAC`, record:
 
 - partial `NAME`
 - aborted `NAME`
@@ -236,8 +236,8 @@ THANKYOU
 PLEASE
 PLEASE
 PLEASE
-NOTHING
-NOTHING
+NSAC
+NSAC
 NAME
 STOP
 THANKYOU
@@ -252,7 +252,7 @@ $env:VOXGEST_WORD_PROFILE='demo10'
 $env:VOXGEST_DYNAMIC_MODEL='auto'
 $env:VOXGEST_DOMINANT_HAND='right'
 $env:VOXGEST_MODE='WORDS'
-.\voxgest_env\Scripts\python.exe scripts_ml\33_live_word_test_logger.py NAME NAME NAME NAME NAME STOP STOP STOP THANKYOU THANKYOU THANKYOU PLEASE PLEASE PLEASE NOTHING NOTHING NAME STOP THANKYOU PLEASE
+.\voxgest_env\Scripts\python.exe scripts_ml\33_live_word_test_logger.py NAME NAME NAME NAME NAME STOP STOP STOP THANKYOU THANKYOU THANKYOU PLEASE PLEASE PLEASE NSAC NSAC NAME STOP THANKYOU PLEASE
 ```
 
 Pass condition:
@@ -261,7 +261,7 @@ Pass condition:
 - `STOP` at least 3/3 correct
 - `THANKYOU` at least 3/3 correct
 - `PLEASE` at least 2/3 correct
-- `NOTHING` must not output false words
+- `NSAC` must not output false words
 
 ## If NAME Still Fails
 
@@ -274,7 +274,7 @@ If `NAME` fails this emergency repair:
 5. Keep the reliable demo set as:
 
 ```text
-YES, NO, PLEASE, WATER, HELLO, HELP, STOP, DOCTOR, THANKYOU, NOTHING
+YES, NO, PLEASE, WATER, HELLO, HELP, STOP, DOCTOR, THANKYOU, NSAC
 ```
 
 `NAME` can remain in the Python training contract temporarily to avoid changing

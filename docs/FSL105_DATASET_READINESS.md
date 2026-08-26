@@ -35,11 +35,11 @@ READY_FOR_DEPLOYMENT = NO
 - Signer/source-video leakage audit passed: True.
 - Exact duplicate-content records excluded from training: 42.
 - Duplicate audit passed after exclusion: True.
-- Deployment remains blocked because no NOTHING/background class is present and cross-device validation is pending.
+- Deployment remains blocked because no NSAC/background class is present and cross-device validation is pending.
 
 ## Deployment warning
 
-This audit can authorize a closed-set experimental training run only. FSL-105 contains no canonical `NOTHING`/background class, so the existing rejection policy must remain active and no Android default model or thresholds may be replaced from these results alone.
+This audit can authorize a closed-set experimental training run only. FSL-105 contains no canonical `NSAC`/background class, so the existing rejection policy must remain active and no Android default model or thresholds may be replaced from these results alone.
 
 ## Provenance note
 

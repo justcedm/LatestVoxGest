@@ -10,7 +10,7 @@ PHRASE_OUTPUTS = {
 
 # Negative labels are trained by the phrase model but never displayed as text.
 PHRASE_NEGATIVE_LABELS = [
-    "NOTHING",
+    "NSAC",
     "PARTIAL_ASK_NAME",
 ]
 
@@ -19,7 +19,7 @@ PHRASE_TRAINING_LABELS = PHRASE_INTENT_LABELS + PHRASE_NEGATIVE_LABELS
 PHRASE_RECORDABLE_LABELS = PHRASE_TRAINING_LABELS
 PHRASE_REQUIRED_LABELS = [
     "ASK_NAME",
-    "NOTHING",
+    "NSAC",
 ]
 
 

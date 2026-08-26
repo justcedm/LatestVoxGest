@@ -137,7 +137,7 @@ def main() -> int:
         "",
         "This selection does not promote a model to Android. The stable model, "
         "class mapping, and rejection thresholds remain unchanged because the "
-        "FSL-105 subset has no NOTHING/background class and cross-device "
+        "FSL-105 subset has no NSAC/background class and cross-device "
         "validation is incomplete.",
         "",
     ]

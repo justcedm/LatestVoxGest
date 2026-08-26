@@ -40,10 +40,10 @@ ROOT = Path(__file__).resolve().parents[1]
 DATASET_ROOT = ROOT / "external_datasets" / "android_onehand162_phrase_v1_features"
 MODEL_DIR = ROOT / "model"
 PROFILE = "onehand162_android_calibrated_v1"
-LABELS = ("WHAT", "YOUR", "NAME", "MY", "NOTHING")
+LABELS = ("WHAT", "YOUR", "NAME", "MY", "NSAC")
 EXPECTED_SHAPE = (30, 162)
-MINIMUMS = {"MY": 50, "WHAT": 50, "YOUR": 50, "NAME": 50, "NOTHING": 100}
-PREFERRED = {"MY": 80, "WHAT": 80, "YOUR": 80, "NAME": 80, "NOTHING": 150}
+MINIMUMS = {"MY": 50, "WHAT": 50, "YOUR": 50, "NAME": 50, "NSAC": 100}
+PREFERRED = {"MY": 80, "WHAT": 80, "YOUR": 80, "NAME": 80, "NSAC": 150}
 EPOCHS = int(os.environ.get("VOXGEST_ANDROID_ONEHAND_EPOCHS", "90"))
 BATCH_SIZE = int(os.environ.get("VOXGEST_ANDROID_ONEHAND_BATCH_SIZE", "32"))
 VAL_SPLIT = float(os.environ.get("VOXGEST_ANDROID_ONEHAND_VAL_SPLIT", "0.20"))
@@ -203,8 +203,8 @@ def write_manifest(report, input_shape, output_shape):
                 "sequence_length": EXPECTED_SHAPE[0],
                 "feature_size": EXPECTED_SHAPE[1],
                 "labels": list(LABELS),
-                "negative_label": "NOTHING",
-                "nothing_policy": "ignore_no_output",
+                "negative_label": "NSAC",
+                "nsac_policy": "ignore_no_output",
             }
         },
         "dataset": {
@@ -215,7 +215,7 @@ def write_manifest(report, input_shape, output_shape):
         },
         "runtime_policy": {
             "input_policy": "android_camera_feature_arrays_recorded_before_inference",
-            "nothing_policy": "NOTHING remains no-output",
+            "nsac_policy": "NSAC remains no-output",
             "android_flag": "USE_ANDROID_CALIBRATED_ONEHAND_MODEL",
         },
     }

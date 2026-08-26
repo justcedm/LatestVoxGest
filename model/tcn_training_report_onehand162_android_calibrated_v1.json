@@ -19,7 +19,7 @@
     "YOUR",
     "NAME",
     "MY",
-    "NOTHING"
+    "NSAC"
   ],
   "class_stats": {
     "WHAT": {
@@ -50,7 +50,7 @@
       "minimum_ready": true,
       "preferred_ready": true
     },
-    "NOTHING": {
+    "NSAC": {
       "sequences": 108,
       "minimum": 100,
       "preferred": 150,
@@ -63,14 +63,14 @@
     "WHAT": 50,
     "YOUR": 50,
     "NAME": 50,
-    "NOTHING": 100
+    "NSAC": 100
   },
   "preferred": {
     "MY": 80,
     "WHAT": 80,
     "YOUR": 80,
     "NAME": 80,
-    "NOTHING": 150
+    "NSAC": 150
   },
   "train_sequences": 410,
   "val_sequences": 102,
@@ -95,7 +95,7 @@
       "train": 82,
       "val": 20
     },
-    "NOTHING": {
+    "NSAC": {
       "mode": "stratified_random",
       "train": 86,
       "val": 22
@@ -123,7 +123,7 @@
       "total": 20,
       "accuracy": 100.0
     },
-    "NOTHING": {
+    "NSAC": {
       "correct": 22,
       "total": 22,
       "accuracy": 100.0

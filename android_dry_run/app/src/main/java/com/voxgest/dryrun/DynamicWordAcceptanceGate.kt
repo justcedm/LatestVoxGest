@@ -34,7 +34,7 @@ class DynamicWordAcceptanceGate {
         consecutiveMatches: Int = 1
     ): DynamicWordGateResult {
         val label = raw.label.trim().uppercase(Locale.US)
-        if (decision.route == RecognitionRoute.NOTHING && decision.handPresence <= 0f) {
+        if (decision.route == RecognitionRoute.NSAC && decision.handPresence <= 0f) {
             noteNoOutputState()
             return reject(label, raw, "LOW_HAND_PRESENCE")
         }
@@ -48,9 +48,9 @@ class DynamicWordAcceptanceGate {
             resetStableCandidate()
             return reject(label, raw, "BAD_SEQUENCE")
         }
-        if (label == "NOTHING") {
+        if (label == "NSAC") {
             noteNoOutputState()
-            return reject(label, raw, "NOTHING")
+            return reject(label, raw, "NSAC")
         }
         if (label !in ALLOWED_ONEHAND_LABELS) {
             resetStableCandidate()

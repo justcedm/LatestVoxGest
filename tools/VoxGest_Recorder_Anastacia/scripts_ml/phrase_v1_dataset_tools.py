@@ -61,20 +61,20 @@ ONEHAND162_PHRASE_V1 = PhraseDatasetConfig(
         "STUDENT",
         "WHERE",
         "LIVE",
-        "NOTHING",
+        "NSAC",
     ),
     expected_shape=(30, 162),
     minimums={
         "WHAT": 80,
         "YOUR": 80,
         "NAME": 80,
-        "NOTHING": 120,
+        "NSAC": 120,
     },
     preferred={
         "WHAT": 120,
         "YOUR": 120,
         "NAME": 120,
-        "NOTHING": 180,
+        "NSAC": 180,
     },
     source_folders=("onehand162_phrase_v1_features", "dataset_words_lstm"),
 )
@@ -94,7 +94,7 @@ FULLSIGN225_PHRASE_V1 = PhraseDatasetConfig(
         "STUDENT",
         "WHERE",
         "LIVE",
-        "NOTHING",
+        "NSAC",
     ),
     expected_shape=(30, 225),
     minimums={
@@ -107,7 +107,7 @@ FULLSIGN225_PHRASE_V1 = PhraseDatasetConfig(
         "STUDENT": 80,
         "WHERE": 80,
         "LIVE": 80,
-        "NOTHING": 180,
+        "NSAC": 180,
     },
     source_folders=("fullsign225_phrase_v1_features", "fullsign225_manual16_features"),
 )

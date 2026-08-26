@@ -165,7 +165,7 @@ WORDS_MODE_WORD_RULES = {
     "DOCTOR": {"conf": 0.70, "margin": 0.15, "motion": 0.020, "path": 0.20},
     "NAME": {"conf": 0.55, "margin": 0.05, "motion": 0.020, "path": 0.20},
     "THANKYOU": {"conf": 0.52, "margin": 0.03, "motion": 0.010, "path": 0.08, "stable": 6},
-    "NOTHING": {"conf": 0.55, "margin": 0.05, "motion": 0.000, "path": 0.00, "presence": 0.00, "stable": 4},
+    "NSAC": {"conf": 0.55, "margin": 0.05, "motion": 0.000, "path": 0.00, "presence": 0.00, "stable": 4},
 }
 
 PHRASE_THRESHOLD = float(os.environ.get("VOXGEST_PHRASE_THRESHOLD", "0.78"))
@@ -236,7 +236,7 @@ def is_word(label, lstm_label_to_idx):
 
 
 def is_noop_label(label):
-    return label.lower() in {"nothing", "idle", "rest", "no_word", "none"}
+    return label.lower() in {"nsac", "idle", "rest", "no_word", "none"}
 
 
 def label_contract_matches(label_to_idx):
@@ -365,9 +365,9 @@ for candidate_name, candidate_model, candidate_labels in dynamic_model_candidate
         dynamic_model_name = candidate_name
         dynamic_model_path = candidate_model
         print(f"  {dynamic_model_name} words: {sorted(lstm_label_to_idx.keys())}")
-        if "NOTHING" not in lstm_label_to_idx:
+        if "NSAC" not in lstm_label_to_idx:
             print(
-                f"  NOTE: {dynamic_model_name} has no NOTHING class; "
+                f"  NOTE: {dynamic_model_name} has no NSAC class; "
                 "idle/transition control will be weaker."
             )
         break
@@ -386,7 +386,7 @@ if os.path.exists(MOTION_LETTER_MODEL) and os.path.exists(MOTION_LETTER_LABELS):
     try:
         motion_letter_model = tf.keras.models.load_model(MOTION_LETTER_MODEL)
         motion_letter_label_to_idx, motion_letter_idx_to_label = load_label_maps(MOTION_LETTER_LABELS)
-        required_motion_letters = set(MOTION_LETTER_OUTPUTS) | {"NOTHING"}
+        required_motion_letters = set(MOTION_LETTER_OUTPUTS) | {"NSAC"}
         missing_motion_letters = sorted(required_motion_letters - set(motion_letter_label_to_idx))
         if missing_motion_letters:
             motion_letter_last_error = f"missing labels: {missing_motion_letters}"

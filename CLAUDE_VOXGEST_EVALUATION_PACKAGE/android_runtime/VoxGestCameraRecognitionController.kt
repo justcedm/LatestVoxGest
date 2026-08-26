@@ -58,7 +58,7 @@ class VoxGestCameraRecognitionController(
     @Volatile private var lastAnalyzeAtMs: Long = 0L
     @Volatile private var lastStatus: String = ""
     @Volatile private var lastStatusAtMs: Long = 0L
-    @Volatile private var lastRoute: RecognitionRoute = RecognitionRoute.NOTHING
+    @Volatile private var lastRoute: RecognitionRoute = RecognitionRoute.NSAC
     @Volatile private var missingPoseCount: Int = 0
     @Volatile private var missingHandCount: Int = 0
     @Volatile private var lastHandMappingLogAtMs: Long = 0L
@@ -546,7 +546,7 @@ class VoxGestCameraRecognitionController(
             RecognitionRoute.STATIC -> Log.i(TAG, "router=STATIC camera_output=ONEHAND_ONLY alphabet_disabled=true")
             RecognitionRoute.ONEHAND -> Log.i(TAG, "router=ONEHAND camera_output=onehand162_phrase_v1")
             RecognitionRoute.FULLSIGN -> Log.i(TAG, "router=FULLSIGN camera_output=ONEHAND_ONLY fullsign_disabled=true")
-            RecognitionRoute.NOTHING -> Log.i(TAG, "router=NOTHING camera_output=ONEHAND_BUFFER_HELD until hand leaves frame")
+            RecognitionRoute.NSAC -> Log.i(TAG, "router=NSAC camera_output=ONEHAND_BUFFER_HELD until hand leaves frame")
         }
         lastRoute = route
     }
@@ -565,7 +565,7 @@ class VoxGestCameraRecognitionController(
         router.reset()
         dynamicGate.reset()
         oneHandBuffer?.clear()
-        lastRoute = RecognitionRoute.NOTHING
+        lastRoute = RecognitionRoute.NSAC
         resetFeatureQualityCounters()
         clearSequenceState()
         statusToken += 1L

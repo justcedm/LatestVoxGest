@@ -46,7 +46,7 @@ public final class VoxGestContract {
             "DOCTOR",
             "NAME",
             "THANKYOU",
-            "NOTHING"
+            "NSAC"
     );
 
     public static final Set<String> WORD_SET = new HashSet<>(WORDS);
