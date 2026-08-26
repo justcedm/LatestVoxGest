@@ -1,0 +1,2470 @@
+{
+  "generated_at_utc": "2026-08-26T02:54:36.358042+00:00",
+  "dataset_root": "D:\\BSIT 3RD YEAR\\New VovGest\\external_datasets\\fsl_features",
+  "dataset_version": "fsl105_train64_onehand162_v2_audit1",
+  "feature_contract": {
+    "feature_version": "onehand162_20f_nose_mcp_z03_v2",
+    "shape": [
+      20,
+      162
+    ],
+    "dtype": "float32",
+    "layout": {
+      "pose": [
+        0,
+        99
+      ],
+      "selected_hand": [
+        99,
+        162
+      ]
+    },
+    "normalization": {
+      "coordinate_reference": "pose_nose_landmark_0",
+      "pose_order": "mediapipe_pose_0_through_32_xyz",
+      "hand_order": "mediapipe_selected_hand_0_through_20_xyz",
+      "hand_scale": "euclidean_wrist_0_to_middle_finger_mcp_9",
+      "minimum_hand_scale": 0.001,
+      "z_damping": 0.3,
+      "missing_landmarks": "deterministic_zero_fill_no_slot_shift"
+    },
+    "handedness_policy": "fixed anatomical right hand for FSL-105 extraction"
+  },
+  "label_count": 64,
+  "labels": [
+    "AUNTIE",
+    "BEER",
+    "BLACK",
+    "BLIND",
+    "BLUE",
+    "BOY",
+    "CHICKEN",
+    "COUSIN",
+    "DEAF",
+    "DEAF BLIND",
+    "DON’T KNOW",
+    "DON’T UNDERSTAND",
+    "EIGHT",
+    "FAST",
+    "FATHER",
+    "FISH",
+    "FIVE",
+    "FOUR",
+    "FRIDAY",
+    "GIRL",
+    "GOOD AFTERNOON",
+    "GOOD EVENING",
+    "GOOD MORNING",
+    "GRANDFATHER",
+    "GRANDMOTHER",
+    "GREEN",
+    "HARD OF HEARING",
+    "HELLO",
+    "HOT",
+    "IM FINE",
+    "KNOW",
+    "MAN",
+    "MILK",
+    "MONDAY",
+    "MOTHER",
+    "NINE",
+    "NO",
+    "NO SUGAR",
+    "ONE",
+    "ORANGE",
+    "PARENTS",
+    "PINK",
+    "RED",
+    "SEE YOU TOMORROW",
+    "SEVEN",
+    "SIX",
+    "SUGAR",
+    "TEN",
+    "THREE",
+    "THURSDAY",
+    "TOMORROW",
+    "TUESDAY",
+    "TWO",
+    "UNCLE",
+    "UNDERSTAND",
+    "WEDNESDAY",
+    "WHITE",
+    "WINE",
+    "WOMAN",
+    "WRONG",
+    "YELLOW",
+    "YES",
+    "YESTERDAY",
+    "YOURE WELCOME"
+  ],
+  "missing_classes": [],
+  "valid_sequence_count": 16104,
+  "source_valid_sequence_count": 16146,
+  "training_eligible_sequence_count": 16104,
+  "excluded_duplicate_sequence_count": 42,
+  "invalid_files": [],
+  "labels_below_minimum": [],
+  "unscoped_directories": {
+    "directory_count": 22,
+    "sequence_count": 0,
+    "directories": [
+      {
+        "label_directory": "A",
+        "sequence_count": 0,
+        "status": "EMPTY"
+      },
+      {
+        "label_directory": "BATHROOM",
+        "sequence_count": 0,
+        "status": "EMPTY"
+      },
+      {
+        "label_directory": "DOCTOR",
+        "sequence_count": 0,
+        "status": "EMPTY"
+      },
+      {
+        "label_directory": "EAT",
+        "sequence_count": 0,
+        "status": "EMPTY"
+      },
+      {
+        "label_directory": "HELP",
+        "sequence_count": 0,
+        "status": "EMPTY"
+      },
+      {
+        "label_directory": "HOW",
+        "sequence_count": 0,
+        "status": "EMPTY"
+      },
+      {
+        "label_directory": "MY",
+        "sequence_count": 0,
+        "status": "EMPTY"
+      },
+      {
+        "label_directory": "NAME",
+        "sequence_count": 0,
+        "status": "EMPTY"
+      },
+      {
+        "label_directory": "NOTHING",
+        "sequence_count": 0,
+        "status": "EMPTY"
+      },
+      {
+        "label_directory": "PAIN",
+        "sequence_count": 0,
+        "status": "EMPTY"
+      },
+      {
+        "label_directory": "PLEASE",
+        "sequence_count": 0,
+        "status": "EMPTY"
+      },
+      {
+        "label_directory": "SICK",
+        "sequence_count": 0,
+        "status": "EMPTY"
+      },
+      {
+        "label_directory": "SLEEP",
+        "sequence_count": 0,
+        "status": "EMPTY"
+      },
+      {
+        "label_directory": "SORRY",
+        "sequence_count": 0,
+        "status": "EMPTY"
+      },
+      {
+        "label_directory": "STOP",
+        "sequence_count": 0,
+        "status": "EMPTY"
+      },
+      {
+        "label_directory": "THANKYOU",
+        "sequence_count": 0,
+        "status": "EMPTY"
+      },
+      {
+        "label_directory": "WATER",
+        "sequence_count": 0,
+        "status": "EMPTY"
+      },
+      {
+        "label_directory": "WHAT",
+        "sequence_count": 0,
+        "status": "EMPTY"
+      },
+      {
+        "label_directory": "WHEN",
+        "sequence_count": 0,
+        "status": "EMPTY"
+      },
+      {
+        "label_directory": "WHERE",
+        "sequence_count": 0,
+        "status": "EMPTY"
+      },
+      {
+        "label_directory": "WHO",
+        "sequence_count": 0,
+        "status": "EMPTY"
+      },
+      {
+        "label_directory": "YOUR",
+        "sequence_count": 0,
+        "status": "EMPTY"
+      }
+    ],
+    "mixed_into_training": false
+  },
+  "source_counts": {
+    "fsl105": 16104
+  },
+  "device_counts": {
+    "FSL105_VIDEO": 16104
+  },
+  "signer_count": 22,
+  "source_video_count": 1032,
+  "total_videos": 1038,
+  "videos_with_eligible_sequences": 1032,
+  "class_imbalance": {
+    "minimum_sequences": 180,
+    "maximum_sequences": 366,
+    "maximum_to_minimum_ratio": 2.033333333333333,
+    "counts": {
+      "AUNTIE": 214,
+      "BEER": 267,
+      "BLACK": 238,
+      "BLIND": 216,
+      "BLUE": 213,
+      "BOY": 276,
+      "CHICKEN": 274,
+      "COUSIN": 232,
+      "DEAF": 255,
+      "DEAF BLIND": 318,
+      "DON’T KNOW": 243,
+      "DON’T UNDERSTAND": 282,
+      "EIGHT": 233,
+      "FAST": 268,
+      "FATHER": 248,
+      "FISH": 263,
+      "FIVE": 196,
+      "FOUR": 209,
+      "FRIDAY": 290,
+      "GIRL": 242,
+      "GOOD AFTERNOON": 352,
+      "GOOD EVENING": 366,
+      "GOOD MORNING": 327,
+      "GRANDFATHER": 251,
+      "GRANDMOTHER": 218,
+      "GREEN": 216,
+      "HARD OF HEARING": 205,
+      "HELLO": 219,
+      "HOT": 250,
+      "IM FINE": 227,
+      "KNOW": 264,
+      "MAN": 290,
+      "MILK": 258,
+      "MONDAY": 293,
+      "MOTHER": 180,
+      "NINE": 231,
+      "NO": 254,
+      "NO SUGAR": 317,
+      "ONE": 216,
+      "ORANGE": 195,
+      "PARENTS": 247,
+      "PINK": 232,
+      "RED": 200,
+      "SEE YOU TOMORROW": 320,
+      "SEVEN": 253,
+      "SIX": 256,
+      "SUGAR": 263,
+      "TEN": 229,
+      "THREE": 230,
+      "THURSDAY": 288,
+      "TOMORROW": 245,
+      "TUESDAY": 283,
+      "TWO": 198,
+      "UNCLE": 227,
+      "UNDERSTAND": 257,
+      "WEDNESDAY": 285,
+      "WHITE": 222,
+      "WINE": 261,
+      "WOMAN": 272,
+      "WRONG": 265,
+      "YELLOW": 211,
+      "YES": 239,
+      "YESTERDAY": 238,
+      "YOURE WELCOME": 277
+    }
+  },
+  "presence": {
+    "pose": {
+      "minimum": 1.0,
+      "mean": 1.0,
+      "maximum": 1.0
+    },
+    "selected_hand": {
+      "minimum": 0.65,
+      "mean": 0.9590474416294088,
+      "maximum": 1.0
+    }
+  },
+  "per_label": {
+    "AUNTIE": {
+      "total_sequences": 214,
+      "signer_count": 16,
+      "source_video_count": 16,
+      "split_counts": {
+        "test": 41,
+        "train": 149,
+        "val": 24
+      },
+      "pose_presence": {
+        "minimum": 1.0,
+        "mean": 1.0,
+        "maximum": 1.0
+      },
+      "hand_presence": {
+        "minimum": 0.65,
+        "mean": 0.9567757009345794,
+        "maximum": 1.0
+      },
+      "minimum_required": 100,
+      "minimum_met": true
+    },
+    "BEER": {
+      "total_sequences": 267,
+      "signer_count": 16,
+      "source_video_count": 16,
+      "split_counts": {
+        "test": 59,
+        "train": 177,
+        "val": 31
+      },
+      "pose_presence": {
+        "minimum": 1.0,
+        "mean": 1.0,
+        "maximum": 1.0
+      },
+      "hand_presence": {
+        "minimum": 0.65,
+        "mean": 0.952247191011236,
+        "maximum": 1.0
+      },
+      "minimum_required": 100,
+      "minimum_met": true
+    },
+    "BLACK": {
+      "total_sequences": 238,
+      "signer_count": 16,
+      "source_video_count": 16,
+      "split_counts": {
+        "test": 54,
+        "train": 139,
+        "val": 45
+      },
+      "pose_presence": {
+        "minimum": 1.0,
+        "mean": 1.0,
+        "maximum": 1.0
+      },
+      "hand_presence": {
+        "minimum": 0.65,
+        "mean": 0.9525210084033613,
+        "maximum": 1.0
+      },
+      "minimum_required": 100,
+      "minimum_met": true
+    },
+    "BLIND": {
+      "total_sequences": 216,
+      "signer_count": 16,
+      "source_video_count": 16,
+      "split_counts": {
+        "test": 43,
+        "train": 160,
+        "val": 13
+      },
+      "pose_presence": {
+        "minimum": 1.0,
+        "mean": 1.0,
+        "maximum": 1.0
+      },
+      "hand_presence": {
+        "minimum": 0.65,
+        "mean": 0.9564814814814815,
+        "maximum": 1.0
+      },
+      "minimum_required": 100,
+      "minimum_met": true
+    },
+    "BLUE": {
+      "total_sequences": 213,
+      "signer_count": 16,
+      "source_video_count": 16,
+      "split_counts": {
+        "test": 33,
+        "train": 141,
+        "val": 39
+      },
+      "pose_presence": {
+        "minimum": 1.0,
+        "mean": 1.0,
+        "maximum": 1.0
+      },
+      "hand_presence": {
+        "minimum": 0.65,
+        "mean": 0.9528169014084507,
+        "maximum": 1.0
+      },
+      "minimum_required": 100,
+      "minimum_met": true
+    },
+    "BOY": {
+      "total_sequences": 276,
+      "signer_count": 17,
+      "source_video_count": 17,
+      "split_counts": {
+        "test": 60,
+        "train": 176,
+        "val": 40
+      },
+      "pose_presence": {
+        "minimum": 1.0,
+        "mean": 1.0,
+        "maximum": 1.0
+      },
+      "hand_presence": {
+        "minimum": 0.65,
+        "mean": 0.9561594202898551,
+        "maximum": 1.0
+      },
+      "minimum_required": 100,
+      "minimum_met": true
+    },
+    "CHICKEN": {
+      "total_sequences": 274,
+      "signer_count": 16,
+      "source_video_count": 16,
+      "split_counts": {
+        "test": 60,
+        "train": 199,
+        "val": 15
+      },
+      "pose_presence": {
+        "minimum": 1.0,
+        "mean": 1.0,
+        "maximum": 1.0
+      },
+      "hand_presence": {
+        "minimum": 0.65,
+        "mean": 0.9651459854014599,
+        "maximum": 1.0
+      },
+      "minimum_required": 100,
+      "minimum_met": true
+    },
+    "COUSIN": {
+      "total_sequences": 232,
+      "signer_count": 16,
+      "source_video_count": 16,
+      "split_counts": {
+        "train": 175,
+        "val": 27,
+        "test": 30
+      },
+      "pose_presence": {
+        "minimum": 1.0,
+        "mean": 1.0,
+        "maximum": 1.0
+      },
+      "hand_presence": {
+        "minimum": 0.65,
+        "mean": 0.9556034482758621,
+        "maximum": 1.0
+      },
+      "minimum_required": 100,
+      "minimum_met": true
+    },
+    "DEAF": {
+      "total_sequences": 255,
+      "signer_count": 17,
+      "source_video_count": 17,
+      "split_counts": {
+        "test": 50,
+        "train": 176,
+        "val": 29
+      },
+      "pose_presence": {
+        "minimum": 1.0,
+        "mean": 1.0,
+        "maximum": 1.0
+      },
+      "hand_presence": {
+        "minimum": 0.65,
+        "mean": 0.9572549019607843,
+        "maximum": 1.0
+      },
+      "minimum_required": 100,
+      "minimum_met": true
+    },
+    "DEAF BLIND": {
+      "total_sequences": 318,
+      "signer_count": 16,
+      "source_video_count": 16,
+      "split_counts": {
+        "test": 22,
+        "train": 236,
+        "val": 60
+      },
+      "pose_presence": {
+        "minimum": 1.0,
+        "mean": 1.0,
+        "maximum": 1.0
+      },
+      "hand_presence": {
+        "minimum": 0.65,
+        "mean": 0.9702830188679246,
+        "maximum": 1.0
+      },
+      "minimum_required": 100,
+      "minimum_met": true
+    },
+    "DON’T KNOW": {
+      "total_sequences": 243,
+      "signer_count": 16,
+      "source_video_count": 16,
+      "split_counts": {
+        "test": 51,
+        "train": 149,
+        "val": 43
+      },
+      "pose_presence": {
+        "minimum": 1.0,
+        "mean": 1.0,
+        "maximum": 1.0
+      },
+      "hand_presence": {
+        "minimum": 0.65,
+        "mean": 0.9547325102880658,
+        "maximum": 1.0
+      },
+      "minimum_required": 100,
+      "minimum_met": true
+    },
+    "DON’T UNDERSTAND": {
+      "total_sequences": 282,
+      "signer_count": 17,
+      "source_video_count": 17,
+      "split_counts": {
+        "test": 38,
+        "train": 211,
+        "val": 33
+      },
+      "pose_presence": {
+        "minimum": 1.0,
+        "mean": 1.0,
+        "maximum": 1.0
+      },
+      "hand_presence": {
+        "minimum": 0.65,
+        "mean": 0.9620567375886525,
+        "maximum": 1.0
+      },
+      "minimum_required": 100,
+      "minimum_met": true
+    },
+    "EIGHT": {
+      "total_sequences": 233,
+      "signer_count": 16,
+      "source_video_count": 16,
+      "split_counts": {
+        "test": 30,
+        "train": 160,
+        "val": 43
+      },
+      "pose_presence": {
+        "minimum": 1.0,
+        "mean": 1.0,
+        "maximum": 1.0
+      },
+      "hand_presence": {
+        "minimum": 0.65,
+        "mean": 0.9566523605150214,
+        "maximum": 1.0
+      },
+      "minimum_required": 100,
+      "minimum_met": true
+    },
+    "FAST": {
+      "total_sequences": 268,
+      "signer_count": 17,
+      "source_video_count": 17,
+      "split_counts": {
+        "test": 48,
+        "train": 191,
+        "val": 29
+      },
+      "pose_presence": {
+        "minimum": 1.0,
+        "mean": 1.0,
+        "maximum": 1.0
+      },
+      "hand_presence": {
+        "minimum": 0.65,
+        "mean": 0.9656716417910448,
+        "maximum": 1.0
+      },
+      "minimum_required": 100,
+      "minimum_met": true
+    },
+    "FATHER": {
+      "total_sequences": 248,
+      "signer_count": 16,
+      "source_video_count": 16,
+      "split_counts": {
+        "test": 28,
+        "train": 173,
+        "val": 47
+      },
+      "pose_presence": {
+        "minimum": 1.0,
+        "mean": 1.0,
+        "maximum": 1.0
+      },
+      "hand_presence": {
+        "minimum": 0.65,
+        "mean": 0.9540322580645161,
+        "maximum": 1.0
+      },
+      "minimum_required": 100,
+      "minimum_met": true
+    },
+    "FISH": {
+      "total_sequences": 263,
+      "signer_count": 16,
+      "source_video_count": 16,
+      "split_counts": {
+        "test": 51,
+        "train": 178,
+        "val": 34
+      },
+      "pose_presence": {
+        "minimum": 1.0,
+        "mean": 1.0,
+        "maximum": 1.0
+      },
+      "hand_presence": {
+        "minimum": 0.65,
+        "mean": 0.964638783269962,
+        "maximum": 1.0
+      },
+      "minimum_required": 100,
+      "minimum_met": true
+    },
+    "FIVE": {
+      "total_sequences": 196,
+      "signer_count": 16,
+      "source_video_count": 16,
+      "split_counts": {
+        "test": 25,
+        "train": 160,
+        "val": 11
+      },
+      "pose_presence": {
+        "minimum": 1.0,
+        "mean": 1.0,
+        "maximum": 1.0
+      },
+      "hand_presence": {
+        "minimum": 0.65,
+        "mean": 0.9538265306122449,
+        "maximum": 1.0
+      },
+      "minimum_required": 100,
+      "minimum_met": true
+    },
+    "FOUR": {
+      "total_sequences": 209,
+      "signer_count": 16,
+      "source_video_count": 16,
+      "split_counts": {
+        "test": 28,
+        "train": 137,
+        "val": 44
+      },
+      "pose_presence": {
+        "minimum": 1.0,
+        "mean": 1.0,
+        "maximum": 1.0
+      },
+      "hand_presence": {
+        "minimum": 0.65,
+        "mean": 0.9614832535885167,
+        "maximum": 1.0
+      },
+      "minimum_required": 100,
+      "minimum_met": true
+    },
+    "FRIDAY": {
+      "total_sequences": 290,
+      "signer_count": 16,
+      "source_video_count": 16,
+      "split_counts": {
+        "test": 61,
+        "train": 189,
+        "val": 40
+      },
+      "pose_presence": {
+        "minimum": 1.0,
+        "mean": 1.0,
+        "maximum": 1.0
+      },
+      "hand_presence": {
+        "minimum": 0.65,
+        "mean": 0.9687931034482758,
+        "maximum": 1.0
+      },
+      "minimum_required": 100,
+      "minimum_met": true
+    },
+    "GIRL": {
+      "total_sequences": 242,
+      "signer_count": 16,
+      "source_video_count": 16,
+      "split_counts": {
+        "test": 27,
+        "train": 172,
+        "val": 43
+      },
+      "pose_presence": {
+        "minimum": 1.0,
+        "mean": 1.0,
+        "maximum": 1.0
+      },
+      "hand_presence": {
+        "minimum": 0.65,
+        "mean": 0.9345041322314049,
+        "maximum": 1.0
+      },
+      "minimum_required": 100,
+      "minimum_met": true
+    },
+    "GOOD AFTERNOON": {
+      "total_sequences": 352,
+      "signer_count": 17,
+      "source_video_count": 17,
+      "split_counts": {
+        "test": 65,
+        "train": 230,
+        "val": 57
+      },
+      "pose_presence": {
+        "minimum": 1.0,
+        "mean": 1.0,
+        "maximum": 1.0
+      },
+      "hand_presence": {
+        "minimum": 0.65,
+        "mean": 0.9694602272727273,
+        "maximum": 1.0
+      },
+      "minimum_required": 100,
+      "minimum_met": true
+    },
+    "GOOD EVENING": {
+      "total_sequences": 366,
+      "signer_count": 17,
+      "source_video_count": 17,
+      "split_counts": {
+        "train": 263,
+        "val": 67,
+        "test": 36
+      },
+      "pose_presence": {
+        "minimum": 1.0,
+        "mean": 1.0,
+        "maximum": 1.0
+      },
+      "hand_presence": {
+        "minimum": 0.65,
+        "mean": 0.9722677595628415,
+        "maximum": 1.0
+      },
+      "minimum_required": 100,
+      "minimum_met": true
+    },
+    "GOOD MORNING": {
+      "total_sequences": 327,
+      "signer_count": 16,
+      "source_video_count": 16,
+      "split_counts": {
+        "test": 45,
+        "train": 243,
+        "val": 39
+      },
+      "pose_presence": {
+        "minimum": 1.0,
+        "mean": 1.0,
+        "maximum": 1.0
+      },
+      "hand_presence": {
+        "minimum": 0.65,
+        "mean": 0.9746177370030581,
+        "maximum": 1.0
+      },
+      "minimum_required": 100,
+      "minimum_met": true
+    },
+    "GRANDFATHER": {
+      "total_sequences": 251,
+      "signer_count": 14,
+      "source_video_count": 14,
+      "split_counts": {
+        "test": 42,
+        "train": 175,
+        "val": 34
+      },
+      "pose_presence": {
+        "minimum": 1.0,
+        "mean": 1.0,
+        "maximum": 1.0
+      },
+      "hand_presence": {
+        "minimum": 0.65,
+        "mean": 0.9665338645418327,
+        "maximum": 1.0
+      },
+      "minimum_required": 100,
+      "minimum_met": true
+    },
+    "GRANDMOTHER": {
+      "total_sequences": 218,
+      "signer_count": 15,
+      "source_video_count": 15,
+      "split_counts": {
+        "test": 44,
+        "train": 129,
+        "val": 45
+      },
+      "pose_presence": {
+        "minimum": 1.0,
+        "mean": 1.0,
+        "maximum": 1.0
+      },
+      "hand_presence": {
+        "minimum": 0.65,
+        "mean": 0.9518348623853211,
+        "maximum": 1.0
+      },
+      "minimum_required": 100,
+      "minimum_met": true
+    },
+    "GREEN": {
+      "total_sequences": 216,
+      "signer_count": 17,
+      "source_video_count": 17,
+      "split_counts": {
+        "test": 15,
+        "train": 161,
+        "val": 40
+      },
+      "pose_presence": {
+        "minimum": 1.0,
+        "mean": 1.0,
+        "maximum": 1.0
+      },
+      "hand_presence": {
+        "minimum": 0.65,
+        "mean": 0.9541666666666667,
+        "maximum": 1.0
+      },
+      "minimum_required": 100,
+      "minimum_met": true
+    },
+    "HARD OF HEARING": {
+      "total_sequences": 205,
+      "signer_count": 16,
+      "source_video_count": 16,
+      "split_counts": {
+        "train": 150,
+        "val": 26,
+        "test": 29
+      },
+      "pose_presence": {
+        "minimum": 1.0,
+        "mean": 1.0,
+        "maximum": 1.0
+      },
+      "hand_presence": {
+        "minimum": 0.65,
+        "mean": 0.92,
+        "maximum": 1.0
+      },
+      "minimum_required": 100,
+      "minimum_met": true
+    },
+    "HELLO": {
+      "total_sequences": 219,
+      "signer_count": 16,
+      "source_video_count": 16,
+      "split_counts": {
+        "test": 44,
+        "train": 148,
+        "val": 27
+      },
+      "pose_presence": {
+        "minimum": 1.0,
+        "mean": 1.0,
+        "maximum": 1.0
+      },
+      "hand_presence": {
+        "minimum": 0.65,
+        "mean": 0.9531963470319634,
+        "maximum": 1.0
+      },
+      "minimum_required": 100,
+      "minimum_met": true
+    },
+    "HOT": {
+      "total_sequences": 250,
+      "signer_count": 16,
+      "source_video_count": 16,
+      "split_counts": {
+        "test": 33,
+        "train": 175,
+        "val": 42
+      },
+      "pose_presence": {
+        "minimum": 1.0,
+        "mean": 1.0,
+        "maximum": 1.0
+      },
+      "hand_presence": {
+        "minimum": 0.65,
+        "mean": 0.9591999999999999,
+        "maximum": 1.0
+      },
+      "minimum_required": 100,
+      "minimum_met": true
+    },
+    "IM FINE": {
+      "total_sequences": 227,
+      "signer_count": 16,
+      "source_video_count": 16,
+      "split_counts": {
+        "test": 50,
+        "train": 129,
+        "val": 48
+      },
+      "pose_presence": {
+        "minimum": 1.0,
+        "mean": 1.0,
+        "maximum": 1.0
+      },
+      "hand_presence": {
+        "minimum": 0.65,
+        "mean": 0.9530837004405286,
+        "maximum": 1.0
+      },
+      "minimum_required": 100,
+      "minimum_met": true
+    },
+    "KNOW": {
+      "total_sequences": 264,
+      "signer_count": 17,
+      "source_video_count": 17,
+      "split_counts": {
+        "test": 36,
+        "train": 194,
+        "val": 34
+      },
+      "pose_presence": {
+        "minimum": 1.0,
+        "mean": 1.0,
+        "maximum": 1.0
+      },
+      "hand_presence": {
+        "minimum": 0.65,
+        "mean": 0.959280303030303,
+        "maximum": 1.0
+      },
+      "minimum_required": 100,
+      "minimum_met": true
+    },
+    "MAN": {
+      "total_sequences": 290,
+      "signer_count": 16,
+      "source_video_count": 16,
+      "split_counts": {
+        "test": 40,
+        "train": 215,
+        "val": 35
+      },
+      "pose_presence": {
+        "minimum": 1.0,
+        "mean": 1.0,
+        "maximum": 1.0
+      },
+      "hand_presence": {
+        "minimum": 0.65,
+        "mean": 0.9641379310344828,
+        "maximum": 1.0
+      },
+      "minimum_required": 100,
+      "minimum_met": true
+    },
+    "MILK": {
+      "total_sequences": 258,
+      "signer_count": 16,
+      "source_video_count": 16,
+      "split_counts": {
+        "test": 54,
+        "train": 174,
+        "val": 30
+      },
+      "pose_presence": {
+        "minimum": 1.0,
+        "mean": 1.0,
+        "maximum": 1.0
+      },
+      "hand_presence": {
+        "minimum": 0.65,
+        "mean": 0.9608527131782946,
+        "maximum": 1.0
+      },
+      "minimum_required": 100,
+      "minimum_met": true
+    },
+    "MONDAY": {
+      "total_sequences": 293,
+      "signer_count": 16,
+      "source_video_count": 16,
+      "split_counts": {
+        "test": 60,
+        "train": 193,
+        "val": 40
+      },
+      "pose_presence": {
+        "minimum": 1.0,
+        "mean": 1.0,
+        "maximum": 1.0
+      },
+      "hand_presence": {
+        "minimum": 0.65,
+        "mean": 0.9677474402730375,
+        "maximum": 1.0
+      },
+      "minimum_required": 100,
+      "minimum_met": true
+    },
+    "MOTHER": {
+      "total_sequences": 180,
+      "signer_count": 15,
+      "source_video_count": 15,
+      "split_counts": {
+        "train": 124,
+        "val": 38,
+        "test": 18
+      },
+      "pose_presence": {
+        "minimum": 1.0,
+        "mean": 1.0,
+        "maximum": 1.0
+      },
+      "hand_presence": {
+        "minimum": 0.65,
+        "mean": 0.9258333333333333,
+        "maximum": 1.0
+      },
+      "minimum_required": 100,
+      "minimum_met": true
+    },
+    "NINE": {
+      "total_sequences": 231,
+      "signer_count": 16,
+      "source_video_count": 16,
+      "split_counts": {
+        "test": 47,
+        "train": 142,
+        "val": 42
+      },
+      "pose_presence": {
+        "minimum": 1.0,
+        "mean": 1.0,
+        "maximum": 1.0
+      },
+      "hand_presence": {
+        "minimum": 0.65,
+        "mean": 0.9634199134199134,
+        "maximum": 1.0
+      },
+      "minimum_required": 100,
+      "minimum_met": true
+    },
+    "NO": {
+      "total_sequences": 254,
+      "signer_count": 17,
+      "source_video_count": 17,
+      "split_counts": {
+        "test": 46,
+        "train": 192,
+        "val": 16
+      },
+      "pose_presence": {
+        "minimum": 1.0,
+        "mean": 1.0,
+        "maximum": 1.0
+      },
+      "hand_presence": {
+        "minimum": 0.65,
+        "mean": 0.9624015748031496,
+        "maximum": 1.0
+      },
+      "minimum_required": 100,
+      "minimum_met": true
+    },
+    "NO SUGAR": {
+      "total_sequences": 317,
+      "signer_count": 16,
+      "source_video_count": 16,
+      "split_counts": {
+        "train": 235,
+        "val": 61,
+        "test": 21
+      },
+      "pose_presence": {
+        "minimum": 1.0,
+        "mean": 1.0,
+        "maximum": 1.0
+      },
+      "hand_presence": {
+        "minimum": 0.65,
+        "mean": 0.9727129337539432,
+        "maximum": 1.0
+      },
+      "minimum_required": 100,
+      "minimum_met": true
+    },
+    "ONE": {
+      "total_sequences": 216,
+      "signer_count": 16,
+      "source_video_count": 16,
+      "split_counts": {
+        "test": 21,
+        "train": 166,
+        "val": 29
+      },
+      "pose_presence": {
+        "minimum": 1.0,
+        "mean": 1.0,
+        "maximum": 1.0
+      },
+      "hand_presence": {
+        "minimum": 0.65,
+        "mean": 0.95625,
+        "maximum": 1.0
+      },
+      "minimum_required": 100,
+      "minimum_met": true
+    },
+    "ORANGE": {
+      "total_sequences": 195,
+      "signer_count": 16,
+      "source_video_count": 16,
+      "split_counts": {
+        "train": 142,
+        "val": 27,
+        "test": 26
+      },
+      "pose_presence": {
+        "minimum": 1.0,
+        "mean": 1.0,
+        "maximum": 1.0
+      },
+      "hand_presence": {
+        "minimum": 0.65,
+        "mean": 0.9497435897435897,
+        "maximum": 1.0
+      },
+      "minimum_required": 100,
+      "minimum_met": true
+    },
+    "PARENTS": {
+      "total_sequences": 247,
+      "signer_count": 15,
+      "source_video_count": 15,
+      "split_counts": {
+        "test": 50,
+        "train": 150,
+        "val": 47
+      },
+      "pose_presence": {
+        "minimum": 1.0,
+        "mean": 1.0,
+        "maximum": 1.0
+      },
+      "hand_presence": {
+        "minimum": 0.65,
+        "mean": 0.9366396761133603,
+        "maximum": 1.0
+      },
+      "minimum_required": 100,
+      "minimum_met": true
+    },
+    "PINK": {
+      "total_sequences": 232,
+      "signer_count": 16,
+      "source_video_count": 16,
+      "split_counts": {
+        "train": 171,
+        "val": 31,
+        "test": 30
+      },
+      "pose_presence": {
+        "minimum": 1.0,
+        "mean": 1.0,
+        "maximum": 1.0
+      },
+      "hand_presence": {
+        "minimum": 0.65,
+        "mean": 0.9530172413793103,
+        "maximum": 1.0
+      },
+      "minimum_required": 100,
+      "minimum_met": true
+    },
+    "RED": {
+      "total_sequences": 200,
+      "signer_count": 16,
+      "source_video_count": 16,
+      "split_counts": {
+        "test": 37,
+        "train": 138,
+        "val": 25
+      },
+      "pose_presence": {
+        "minimum": 1.0,
+        "mean": 1.0,
+        "maximum": 1.0
+      },
+      "hand_presence": {
+        "minimum": 0.65,
+        "mean": 0.953,
+        "maximum": 1.0
+      },
+      "minimum_required": 100,
+      "minimum_met": true
+    },
+    "SEE YOU TOMORROW": {
+      "total_sequences": 320,
+      "signer_count": 16,
+      "source_video_count": 16,
+      "split_counts": {
+        "test": 59,
+        "train": 200,
+        "val": 61
+      },
+      "pose_presence": {
+        "minimum": 1.0,
+        "mean": 1.0,
+        "maximum": 1.0
+      },
+      "hand_presence": {
+        "minimum": 0.65,
+        "mean": 0.97015625,
+        "maximum": 1.0
+      },
+      "minimum_required": 100,
+      "minimum_met": true
+    },
+    "SEVEN": {
+      "total_sequences": 253,
+      "signer_count": 17,
+      "source_video_count": 17,
+      "split_counts": {
+        "test": 38,
+        "train": 186,
+        "val": 29
+      },
+      "pose_presence": {
+        "minimum": 1.0,
+        "mean": 1.0,
+        "maximum": 1.0
+      },
+      "hand_presence": {
+        "minimum": 0.65,
+        "mean": 0.9590909090909091,
+        "maximum": 1.0
+      },
+      "minimum_required": 100,
+      "minimum_met": true
+    },
+    "SIX": {
+      "total_sequences": 256,
+      "signer_count": 16,
+      "source_video_count": 16,
+      "split_counts": {
+        "test": 55,
+        "train": 174,
+        "val": 27
+      },
+      "pose_presence": {
+        "minimum": 1.0,
+        "mean": 1.0,
+        "maximum": 1.0
+      },
+      "hand_presence": {
+        "minimum": 0.65,
+        "mean": 0.962109375,
+        "maximum": 1.0
+      },
+      "minimum_required": 100,
+      "minimum_met": true
+    },
+    "SUGAR": {
+      "total_sequences": 263,
+      "signer_count": 17,
+      "source_video_count": 17,
+      "split_counts": {
+        "test": 21,
+        "train": 197,
+        "val": 45
+      },
+      "pose_presence": {
+        "minimum": 1.0,
+        "mean": 1.0,
+        "maximum": 1.0
+      },
+      "hand_presence": {
+        "minimum": 0.65,
+        "mean": 0.9667300380228137,
+        "maximum": 1.0
+      },
+      "minimum_required": 100,
+      "minimum_met": true
+    },
+    "TEN": {
+      "total_sequences": 229,
+      "signer_count": 16,
+      "source_video_count": 16,
+      "split_counts": {
+        "train": 154,
+        "val": 45,
+        "test": 30
+      },
+      "pose_presence": {
+        "minimum": 1.0,
+        "mean": 1.0,
+        "maximum": 1.0
+      },
+      "hand_presence": {
+        "minimum": 0.65,
+        "mean": 0.9626637554585152,
+        "maximum": 1.0
+      },
+      "minimum_required": 100,
+      "minimum_met": true
+    },
+    "THREE": {
+      "total_sequences": 230,
+      "signer_count": 16,
+      "source_video_count": 16,
+      "split_counts": {
+        "test": 51,
+        "train": 141,
+        "val": 38
+      },
+      "pose_presence": {
+        "minimum": 1.0,
+        "mean": 1.0,
+        "maximum": 1.0
+      },
+      "hand_presence": {
+        "minimum": 0.65,
+        "mean": 0.9517391304347826,
+        "maximum": 1.0
+      },
+      "minimum_required": 100,
+      "minimum_met": true
+    },
+    "THURSDAY": {
+      "total_sequences": 288,
+      "signer_count": 16,
+      "source_video_count": 16,
+      "split_counts": {
+        "test": 35,
+        "train": 200,
+        "val": 53
+      },
+      "pose_presence": {
+        "minimum": 1.0,
+        "mean": 1.0,
+        "maximum": 1.0
+      },
+      "hand_presence": {
+        "minimum": 0.65,
+        "mean": 0.9666666666666667,
+        "maximum": 1.0
+      },
+      "minimum_required": 100,
+      "minimum_met": true
+    },
+    "TOMORROW": {
+      "total_sequences": 245,
+      "signer_count": 17,
+      "source_video_count": 17,
+      "split_counts": {
+        "test": 45,
+        "train": 187,
+        "val": 13
+      },
+      "pose_presence": {
+        "minimum": 1.0,
+        "mean": 1.0,
+        "maximum": 1.0
+      },
+      "hand_presence": {
+        "minimum": 0.65,
+        "mean": 0.9651020408163266,
+        "maximum": 1.0
+      },
+      "minimum_required": 100,
+      "minimum_met": true
+    },
+    "TUESDAY": {
+      "total_sequences": 283,
+      "signer_count": 16,
+      "source_video_count": 16,
+      "split_counts": {
+        "test": 35,
+        "train": 198,
+        "val": 50
+      },
+      "pose_presence": {
+        "minimum": 1.0,
+        "mean": 1.0,
+        "maximum": 1.0
+      },
+      "hand_presence": {
+        "minimum": 0.65,
+        "mean": 0.9689045936395759,
+        "maximum": 1.0
+      },
+      "minimum_required": 100,
+      "minimum_met": true
+    },
+    "TWO": {
+      "total_sequences": 198,
+      "signer_count": 16,
+      "source_video_count": 16,
+      "split_counts": {
+        "test": 13,
+        "train": 147,
+        "val": 38
+      },
+      "pose_presence": {
+        "minimum": 1.0,
+        "mean": 1.0,
+        "maximum": 1.0
+      },
+      "hand_presence": {
+        "minimum": 0.65,
+        "mean": 0.9525252525252526,
+        "maximum": 1.0
+      },
+      "minimum_required": 100,
+      "minimum_met": true
+    },
+    "UNCLE": {
+      "total_sequences": 227,
+      "signer_count": 16,
+      "source_video_count": 16,
+      "split_counts": {
+        "test": 41,
+        "train": 142,
+        "val": 44
+      },
+      "pose_presence": {
+        "minimum": 1.0,
+        "mean": 1.0,
+        "maximum": 1.0
+      },
+      "hand_presence": {
+        "minimum": 0.65,
+        "mean": 0.9570484581497798,
+        "maximum": 1.0
+      },
+      "minimum_required": 100,
+      "minimum_met": true
+    },
+    "UNDERSTAND": {
+      "total_sequences": 257,
+      "signer_count": 16,
+      "source_video_count": 16,
+      "split_counts": {
+        "test": 54,
+        "train": 171,
+        "val": 32
+      },
+      "pose_presence": {
+        "minimum": 1.0,
+        "mean": 1.0,
+        "maximum": 1.0
+      },
+      "hand_presence": {
+        "minimum": 0.65,
+        "mean": 0.9608949416342413,
+        "maximum": 1.0
+      },
+      "minimum_required": 100,
+      "minimum_met": true
+    },
+    "WEDNESDAY": {
+      "total_sequences": 285,
+      "signer_count": 16,
+      "source_video_count": 16,
+      "split_counts": {
+        "test": 57,
+        "train": 172,
+        "val": 56
+      },
+      "pose_presence": {
+        "minimum": 1.0,
+        "mean": 1.0,
+        "maximum": 1.0
+      },
+      "hand_presence": {
+        "minimum": 0.65,
+        "mean": 0.9666666666666667,
+        "maximum": 1.0
+      },
+      "minimum_required": 100,
+      "minimum_met": true
+    },
+    "WHITE": {
+      "total_sequences": 222,
+      "signer_count": 16,
+      "source_video_count": 16,
+      "split_counts": {
+        "test": 41,
+        "train": 155,
+        "val": 26
+      },
+      "pose_presence": {
+        "minimum": 1.0,
+        "mean": 1.0,
+        "maximum": 1.0
+      },
+      "hand_presence": {
+        "minimum": 0.65,
+        "mean": 0.9466216216216217,
+        "maximum": 1.0
+      },
+      "minimum_required": 100,
+      "minimum_met": true
+    },
+    "WINE": {
+      "total_sequences": 261,
+      "signer_count": 16,
+      "source_video_count": 16,
+      "split_counts": {
+        "test": 59,
+        "train": 153,
+        "val": 49
+      },
+      "pose_presence": {
+        "minimum": 1.0,
+        "mean": 1.0,
+        "maximum": 1.0
+      },
+      "hand_presence": {
+        "minimum": 0.65,
+        "mean": 0.9578544061302682,
+        "maximum": 1.0
+      },
+      "minimum_required": 100,
+      "minimum_met": true
+    },
+    "WOMAN": {
+      "total_sequences": 272,
+      "signer_count": 16,
+      "source_video_count": 16,
+      "split_counts": {
+        "test": 39,
+        "train": 180,
+        "val": 53
+      },
+      "pose_presence": {
+        "minimum": 1.0,
+        "mean": 1.0,
+        "maximum": 1.0
+      },
+      "hand_presence": {
+        "minimum": 0.65,
+        "mean": 0.9650735294117647,
+        "maximum": 1.0
+      },
+      "minimum_required": 100,
+      "minimum_met": true
+    },
+    "WRONG": {
+      "total_sequences": 265,
+      "signer_count": 17,
+      "source_video_count": 17,
+      "split_counts": {
+        "test": 33,
+        "train": 197,
+        "val": 35
+      },
+      "pose_presence": {
+        "minimum": 1.0,
+        "mean": 1.0,
+        "maximum": 1.0
+      },
+      "hand_presence": {
+        "minimum": 0.65,
+        "mean": 0.9632075471698113,
+        "maximum": 1.0
+      },
+      "minimum_required": 100,
+      "minimum_met": true
+    },
+    "YELLOW": {
+      "total_sequences": 211,
+      "signer_count": 16,
+      "source_video_count": 16,
+      "split_counts": {
+        "test": 30,
+        "train": 145,
+        "val": 36
+      },
+      "pose_presence": {
+        "minimum": 1.0,
+        "mean": 1.0,
+        "maximum": 1.0
+      },
+      "hand_presence": {
+        "minimum": 0.65,
+        "mean": 0.9535545023696682,
+        "maximum": 1.0
+      },
+      "minimum_required": 100,
+      "minimum_met": true
+    },
+    "YES": {
+      "total_sequences": 239,
+      "signer_count": 16,
+      "source_video_count": 16,
+      "split_counts": {
+        "test": 37,
+        "train": 154,
+        "val": 48
+      },
+      "pose_presence": {
+        "minimum": 1.0,
+        "mean": 1.0,
+        "maximum": 1.0
+      },
+      "hand_presence": {
+        "minimum": 0.65,
+        "mean": 0.9583682008368201,
+        "maximum": 1.0
+      },
+      "minimum_required": 100,
+      "minimum_met": true
+    },
+    "YESTERDAY": {
+      "total_sequences": 238,
+      "signer_count": 16,
+      "source_video_count": 16,
+      "split_counts": {
+        "test": 29,
+        "train": 174,
+        "val": 35
+      },
+      "pose_presence": {
+        "minimum": 1.0,
+        "mean": 1.0,
+        "maximum": 1.0
+      },
+      "hand_presence": {
+        "minimum": 0.65,
+        "mean": 0.9632352941176471,
+        "maximum": 1.0
+      },
+      "minimum_required": 100,
+      "minimum_met": true
+    },
+    "YOURE WELCOME": {
+      "total_sequences": 277,
+      "signer_count": 16,
+      "source_video_count": 16,
+      "split_counts": {
+        "test": 54,
+        "train": 194,
+        "val": 29
+      },
+      "pose_presence": {
+        "minimum": 1.0,
+        "mean": 1.0,
+        "maximum": 1.0
+      },
+      "hand_presence": {
+        "minimum": 0.65,
+        "mean": 0.9454873646209386,
+        "maximum": 1.0
+      },
+      "minimum_required": 100,
+      "minimum_met": true
+    }
+  },
+  "handedness_classification": {
+    "one_handed": 64,
+    "two_handed": 41,
+    "ambiguous": 0
+  },
+  "provenance": {
+    "contract_proof": {
+      "verified": true,
+      "checks": {
+        "source_is_fsl105": true,
+        "sequence_length_is_20": true,
+        "feature_size_is_162": true,
+        "shape_is_20x162": true,
+        "config_feature_width_is_162": true,
+        "source_partition_is_train_csv_only": true,
+        "right_hand_minimum_is_13": true,
+        "wrist_mcp_scale_is_0001": true,
+        "z_damping_is_03": true,
+        "shape_mismatches_zero": true,
+        "metadata_errors_zero": true,
+        "output_integrity_clean": true
+      },
+      "summary_total_sequences": 16146,
+      "summary_train_video_count": 1038,
+      "summary_completed_video_count": 1038,
+      "inference": "Unversioned FSL-105 sidecars are accepted only because the committed extraction summary and feature-builder parity test prove equivalent pose[0:33]+right-hand[0:21] normalization math."
+    },
+    "explicit_feature_version_count": 0,
+    "inferred_feature_version_count": 16146,
+    "inventory_matches_extraction_summary": true
+  },
+  "duplicates": {
+    "policy": "duplicate_path_source_window_and_exact_float32_content_sha256",
+    "duplicate_path_count": 0,
+    "duplicate_source_window_count": 0,
+    "duplicate_content_hash_count": 21,
+    "duplicate_paths": [],
+    "duplicate_source_windows": [],
+    "duplicate_content": [
+      {
+        "sha256": "0bfe4468dd53ab2ef2fc0bd7476acb72eeea22107e04887d0e490812e792bae4",
+        "count": 2,
+        "paths": [
+          "external_datasets\\fsl_features\\PARENTS\\fsl105_6_w27.npy",
+          "external_datasets\\fsl_features\\UNCLE\\fsl105_6_w27.npy"
+        ]
+      },
+      {
+        "sha256": "11197bfa09d78f100320891e5b859649cbb43159432f3f3593b305b90f7f9c95",
+        "count": 2,
+        "paths": [
+          "external_datasets\\fsl_features\\PARENTS\\fsl105_6_w18.npy",
+          "external_datasets\\fsl_features\\UNCLE\\fsl105_6_w18.npy"
+        ]
+      },
+      {
+        "sha256": "126c0c313e64d39048bd8728f2da044cc12065a97f07297bb3c1d00fd300326c",
+        "count": 2,
+        "paths": [
+          "external_datasets\\fsl_features\\PARENTS\\fsl105_6_w21.npy",
+          "external_datasets\\fsl_features\\UNCLE\\fsl105_6_w21.npy"
+        ]
+      },
+      {
+        "sha256": "219f8a5f74322b6aee518cede3e248857d6a0c4a43ceacb4263ad7baa6a98ec5",
+        "count": 2,
+        "paths": [
+          "external_datasets\\fsl_features\\COUSIN\\fsl105_9_w16.npy",
+          "external_datasets\\fsl_features\\GRANDMOTHER\\fsl105_9_w16.npy"
+        ]
+      },
+      {
+        "sha256": "258975c5a095db1a481dff1743785073c2a315f95a54a6388854558d502b0635",
+        "count": 2,
+        "paths": [
+          "external_datasets\\fsl_features\\COUSIN\\fsl105_9_w14.npy",
+          "external_datasets\\fsl_features\\GRANDMOTHER\\fsl105_9_w14.npy"
+        ]
+      },
+      {
+        "sha256": "3881b258100541388b890c134bfe2ee4f9b25e9f132a3a9d437482dc561294a1",
+        "count": 2,
+        "paths": [
+          "external_datasets\\fsl_features\\COUSIN\\fsl105_9_w20.npy",
+          "external_datasets\\fsl_features\\GRANDMOTHER\\fsl105_9_w20.npy"
+        ]
+      },
+      {
+        "sha256": "46139ebfc0515fbaba0981649559fdd588bf1dff87967c743defe4c3e10a8f22",
+        "count": 2,
+        "paths": [
+          "external_datasets\\fsl_features\\COUSIN\\fsl105_9_w13.npy",
+          "external_datasets\\fsl_features\\GRANDMOTHER\\fsl105_9_w13.npy"
+        ]
+      },
+      {
+        "sha256": "52e8c64fb1ec982982e4958d44876dee8a44962f50f5966ed0cdce7328a48447",
+        "count": 2,
+        "paths": [
+          "external_datasets\\fsl_features\\PARENTS\\fsl105_6_w25.npy",
+          "external_datasets\\fsl_features\\UNCLE\\fsl105_6_w25.npy"
+        ]
+      },
+      {
+        "sha256": "53f43e2f04309097c568843b5d8f9e3852b2c2c8a9b8fe803d865686abcbe7de",
+        "count": 2,
+        "paths": [
+          "external_datasets\\fsl_features\\PARENTS\\fsl105_6_w20.npy",
+          "external_datasets\\fsl_features\\UNCLE\\fsl105_6_w20.npy"
+        ]
+      },
+      {
+        "sha256": "607819a0a97956a28def5ccd7b9d32fbdfebd1bf8c3773f0c408edb4d14e8594",
+        "count": 2,
+        "paths": [
+          "external_datasets\\fsl_features\\COUSIN\\fsl105_9_w19.npy",
+          "external_datasets\\fsl_features\\GRANDMOTHER\\fsl105_9_w19.npy"
+        ]
+      },
+      {
+        "sha256": "6e535daf81840ae8fb9f20a4c8f9c089299d775fb5a8e23f2cc0df53e8d48467",
+        "count": 2,
+        "paths": [
+          "external_datasets\\fsl_features\\COUSIN\\fsl105_9_w15.npy",
+          "external_datasets\\fsl_features\\GRANDMOTHER\\fsl105_9_w15.npy"
+        ]
+      },
+      {
+        "sha256": "70fd8fa68c79b080f8f4fa4948fe1b5c5bdd543b621e39ffd3761b0dba014d5a",
+        "count": 2,
+        "paths": [
+          "external_datasets\\fsl_features\\PARENTS\\fsl105_6_w24.npy",
+          "external_datasets\\fsl_features\\UNCLE\\fsl105_6_w24.npy"
+        ]
+      },
+      {
+        "sha256": "72f423872c1e002eb4a27f0cee57073653cefedd8fc93353dd782f694f9134bd",
+        "count": 2,
+        "paths": [
+          "external_datasets\\fsl_features\\PARENTS\\fsl105_6_w19.npy",
+          "external_datasets\\fsl_features\\UNCLE\\fsl105_6_w19.npy"
+        ]
+      },
+      {
+        "sha256": "8c180076c0b8db8ba22af7522d731e022d0f3d3e3a6933386c9d405505a8831a",
+        "count": 2,
+        "paths": [
+          "external_datasets\\fsl_features\\PARENTS\\fsl105_6_w26.npy",
+          "external_datasets\\fsl_features\\UNCLE\\fsl105_6_w26.npy"
+        ]
+      },
+      {
+        "sha256": "8d8056ffe3a60d063ed0ec002320f14fc6fe3683af54ab9f84cab6363c7c71ca",
+        "count": 2,
+        "paths": [
+          "external_datasets\\fsl_features\\PARENTS\\fsl105_6_w17.npy",
+          "external_datasets\\fsl_features\\UNCLE\\fsl105_6_w17.npy"
+        ]
+      },
+      {
+        "sha256": "b974338225ffa659c7aaa78af40c68384c6728fee62fb48282a7f449c408e39d",
+        "count": 2,
+        "paths": [
+          "external_datasets\\fsl_features\\COUSIN\\fsl105_9_w11.npy",
+          "external_datasets\\fsl_features\\GRANDMOTHER\\fsl105_9_w11.npy"
+        ]
+      },
+      {
+        "sha256": "bb022932e15c67204240d080621b719ec090ddcb6f707226fac352fa470579c4",
+        "count": 2,
+        "paths": [
+          "external_datasets\\fsl_features\\PARENTS\\fsl105_6_w23.npy",
+          "external_datasets\\fsl_features\\UNCLE\\fsl105_6_w23.npy"
+        ]
+      },
+      {
+        "sha256": "d8bd4e5de5bb70f76592e4dec396c49d7868a6d073f411464d53a0d6984518f5",
+        "count": 2,
+        "paths": [
+          "external_datasets\\fsl_features\\COUSIN\\fsl105_9_w12.npy",
+          "external_datasets\\fsl_features\\GRANDMOTHER\\fsl105_9_w12.npy"
+        ]
+      },
+      {
+        "sha256": "dd8479923e399f5935752ca7edfcf2ffc186e6b597f5bd959e6dba0e6f0a89ff",
+        "count": 2,
+        "paths": [
+          "external_datasets\\fsl_features\\COUSIN\\fsl105_9_w18.npy",
+          "external_datasets\\fsl_features\\GRANDMOTHER\\fsl105_9_w18.npy"
+        ]
+      },
+      {
+        "sha256": "e00014bc1f7d58b5d57ceff12f6185dc34d9a6b7717264da4e05364aacb2ba99",
+        "count": 2,
+        "paths": [
+          "external_datasets\\fsl_features\\COUSIN\\fsl105_9_w17.npy",
+          "external_datasets\\fsl_features\\GRANDMOTHER\\fsl105_9_w17.npy"
+        ]
+      },
+      {
+        "sha256": "e4d9bc486a686f1533730e4f60e8789a7919908b9268cab6b1feade5d73334d7",
+        "count": 2,
+        "paths": [
+          "external_datasets\\fsl_features\\PARENTS\\fsl105_6_w22.npy",
+          "external_datasets\\fsl_features\\UNCLE\\fsl105_6_w22.npy"
+        ]
+      }
+    ],
+    "excluded_paths": [
+      "external_datasets\\fsl_features\\COUSIN\\fsl105_9_w11.npy",
+      "external_datasets\\fsl_features\\COUSIN\\fsl105_9_w12.npy",
+      "external_datasets\\fsl_features\\COUSIN\\fsl105_9_w13.npy",
+      "external_datasets\\fsl_features\\COUSIN\\fsl105_9_w14.npy",
+      "external_datasets\\fsl_features\\COUSIN\\fsl105_9_w15.npy",
+      "external_datasets\\fsl_features\\COUSIN\\fsl105_9_w16.npy",
+      "external_datasets\\fsl_features\\COUSIN\\fsl105_9_w17.npy",
+      "external_datasets\\fsl_features\\COUSIN\\fsl105_9_w18.npy",
+      "external_datasets\\fsl_features\\COUSIN\\fsl105_9_w19.npy",
+      "external_datasets\\fsl_features\\COUSIN\\fsl105_9_w20.npy",
+      "external_datasets\\fsl_features\\GRANDMOTHER\\fsl105_9_w11.npy",
+      "external_datasets\\fsl_features\\GRANDMOTHER\\fsl105_9_w12.npy",
+      "external_datasets\\fsl_features\\GRANDMOTHER\\fsl105_9_w13.npy",
+      "external_datasets\\fsl_features\\GRANDMOTHER\\fsl105_9_w14.npy",
+      "external_datasets\\fsl_features\\GRANDMOTHER\\fsl105_9_w15.npy",
+      "external_datasets\\fsl_features\\GRANDMOTHER\\fsl105_9_w16.npy",
+      "external_datasets\\fsl_features\\GRANDMOTHER\\fsl105_9_w17.npy",
+      "external_datasets\\fsl_features\\GRANDMOTHER\\fsl105_9_w18.npy",
+      "external_datasets\\fsl_features\\GRANDMOTHER\\fsl105_9_w19.npy",
+      "external_datasets\\fsl_features\\GRANDMOTHER\\fsl105_9_w20.npy",
+      "external_datasets\\fsl_features\\PARENTS\\fsl105_6_w17.npy",
+      "external_datasets\\fsl_features\\PARENTS\\fsl105_6_w18.npy",
+      "external_datasets\\fsl_features\\PARENTS\\fsl105_6_w19.npy",
+      "external_datasets\\fsl_features\\PARENTS\\fsl105_6_w20.npy",
+      "external_datasets\\fsl_features\\PARENTS\\fsl105_6_w21.npy",
+      "external_datasets\\fsl_features\\PARENTS\\fsl105_6_w22.npy",
+      "external_datasets\\fsl_features\\PARENTS\\fsl105_6_w23.npy",
+      "external_datasets\\fsl_features\\PARENTS\\fsl105_6_w24.npy",
+      "external_datasets\\fsl_features\\PARENTS\\fsl105_6_w25.npy",
+      "external_datasets\\fsl_features\\PARENTS\\fsl105_6_w26.npy",
+      "external_datasets\\fsl_features\\PARENTS\\fsl105_6_w27.npy",
+      "external_datasets\\fsl_features\\UNCLE\\fsl105_6_w17.npy",
+      "external_datasets\\fsl_features\\UNCLE\\fsl105_6_w18.npy",
+      "external_datasets\\fsl_features\\UNCLE\\fsl105_6_w19.npy",
+      "external_datasets\\fsl_features\\UNCLE\\fsl105_6_w20.npy",
+      "external_datasets\\fsl_features\\UNCLE\\fsl105_6_w21.npy",
+      "external_datasets\\fsl_features\\UNCLE\\fsl105_6_w22.npy",
+      "external_datasets\\fsl_features\\UNCLE\\fsl105_6_w23.npy",
+      "external_datasets\\fsl_features\\UNCLE\\fsl105_6_w24.npy",
+      "external_datasets\\fsl_features\\UNCLE\\fsl105_6_w25.npy",
+      "external_datasets\\fsl_features\\UNCLE\\fsl105_6_w26.npy",
+      "external_datasets\\fsl_features\\UNCLE\\fsl105_6_w27.npy"
+    ],
+    "source_is_duplicate_free": false,
+    "safe_after_exclusion": true,
+    "post_exclusion": {
+      "duplicate_path_count": 0,
+      "duplicate_source_window_count": 0,
+      "duplicate_content_hash_count": 0,
+      "passed": true
+    }
+  },
+  "split": {
+    "method": "global_signer_grouped_70_15_15_greedy_label_coverage",
+    "seed": 42,
+    "group_hierarchy": [
+      "signer_id",
+      "recording_session",
+      "source_video"
+    ],
+    "actual_group_key": "signer_id",
+    "groups": {
+      "train": [
+        "fsl105_1",
+        "fsl105_10",
+        "fsl105_11",
+        "fsl105_12",
+        "fsl105_13",
+        "fsl105_15",
+        "fsl105_16",
+        "fsl105_18",
+        "fsl105_2",
+        "fsl105_20",
+        "fsl105_21",
+        "fsl105_3",
+        "fsl105_4",
+        "fsl105_6",
+        "fsl105_7",
+        "fsl105_9"
+      ],
+      "val": [
+        "fsl105_14",
+        "fsl105_19",
+        "fsl105_5"
+      ],
+      "test": [
+        "fsl105_0",
+        "fsl105_17",
+        "fsl105_8"
+      ]
+    },
+    "sequence_counts": {
+      "test": 2584,
+      "train": 11108,
+      "val": 2412
+    },
+    "label_counts": {
+      "train": {
+        "AUNTIE": 149,
+        "BEER": 177,
+        "BLACK": 139,
+        "BLIND": 160,
+        "BLUE": 141,
+        "BOY": 176,
+        "CHICKEN": 199,
+        "COUSIN": 175,
+        "DEAF": 176,
+        "DEAF BLIND": 236,
+        "DON’T KNOW": 149,
+        "DON’T UNDERSTAND": 211,
+        "EIGHT": 160,
+        "FAST": 191,
+        "FATHER": 173,
+        "FISH": 178,
+        "FIVE": 160,
+        "FOUR": 137,
+        "FRIDAY": 189,
+        "GIRL": 172,
+        "GOOD AFTERNOON": 230,
+        "GOOD EVENING": 263,
+        "GOOD MORNING": 243,
+        "GRANDFATHER": 175,
+        "GRANDMOTHER": 129,
+        "GREEN": 161,
+        "HARD OF HEARING": 150,
+        "HELLO": 148,
+        "HOT": 175,
+        "IM FINE": 129,
+        "KNOW": 194,
+        "MAN": 215,
+        "MILK": 174,
+        "MONDAY": 193,
+        "MOTHER": 124,
+        "NINE": 142,
+        "NO": 192,
+        "NO SUGAR": 235,
+        "ONE": 166,
+        "ORANGE": 142,
+        "PARENTS": 150,
+        "PINK": 171,
+        "RED": 138,
+        "SEE YOU TOMORROW": 200,
+        "SEVEN": 186,
+        "SIX": 174,
+        "SUGAR": 197,
+        "TEN": 154,
+        "THREE": 141,
+        "THURSDAY": 200,
+        "TOMORROW": 187,
+        "TUESDAY": 198,
+        "TWO": 147,
+        "UNCLE": 142,
+        "UNDERSTAND": 171,
+        "WEDNESDAY": 172,
+        "WHITE": 155,
+        "WINE": 153,
+        "WOMAN": 180,
+        "WRONG": 197,
+        "YELLOW": 145,
+        "YES": 154,
+        "YESTERDAY": 174,
+        "YOURE WELCOME": 194
+      },
+      "val": {
+        "AUNTIE": 24,
+        "BEER": 31,
+        "BLACK": 45,
+        "BLIND": 13,
+        "BLUE": 39,
+        "BOY": 40,
+        "CHICKEN": 15,
+        "COUSIN": 27,
+        "DEAF": 29,
+        "DEAF BLIND": 60,
+        "DON’T KNOW": 43,
+        "DON’T UNDERSTAND": 33,
+        "EIGHT": 43,
+        "FAST": 29,
+        "FATHER": 47,
+        "FISH": 34,
+        "FIVE": 11,
+        "FOUR": 44,
+        "FRIDAY": 40,
+        "GIRL": 43,
+        "GOOD AFTERNOON": 57,
+        "GOOD EVENING": 67,
+        "GOOD MORNING": 39,
+        "GRANDFATHER": 34,
+        "GRANDMOTHER": 45,
+        "GREEN": 40,
+        "HARD OF HEARING": 26,
+        "HELLO": 27,
+        "HOT": 42,
+        "IM FINE": 48,
+        "KNOW": 34,
+        "MAN": 35,
+        "MILK": 30,
+        "MONDAY": 40,
+        "MOTHER": 38,
+        "NINE": 42,
+        "NO": 16,
+        "NO SUGAR": 61,
+        "ONE": 29,
+        "ORANGE": 27,
+        "PARENTS": 47,
+        "PINK": 31,
+        "RED": 25,
+        "SEE YOU TOMORROW": 61,
+        "SEVEN": 29,
+        "SIX": 27,
+        "SUGAR": 45,
+        "TEN": 45,
+        "THREE": 38,
+        "THURSDAY": 53,
+        "TOMORROW": 13,
+        "TUESDAY": 50,
+        "TWO": 38,
+        "UNCLE": 44,
+        "UNDERSTAND": 32,
+        "WEDNESDAY": 56,
+        "WHITE": 26,
+        "WINE": 49,
+        "WOMAN": 53,
+        "WRONG": 35,
+        "YELLOW": 36,
+        "YES": 48,
+        "YESTERDAY": 35,
+        "YOURE WELCOME": 29
+      },
+      "test": {
+        "AUNTIE": 41,
+        "BEER": 59,
+        "BLACK": 54,
+        "BLIND": 43,
+        "BLUE": 33,
+        "BOY": 60,
+        "CHICKEN": 60,
+        "COUSIN": 30,
+        "DEAF": 50,
+        "DEAF BLIND": 22,
+        "DON’T KNOW": 51,
+        "DON’T UNDERSTAND": 38,
+        "EIGHT": 30,
+        "FAST": 48,
+        "FATHER": 28,
+        "FISH": 51,
+        "FIVE": 25,
+        "FOUR": 28,
+        "FRIDAY": 61,
+        "GIRL": 27,
+        "GOOD AFTERNOON": 65,
+        "GOOD EVENING": 36,
+        "GOOD MORNING": 45,
+        "GRANDFATHER": 42,
+        "GRANDMOTHER": 44,
+        "GREEN": 15,
+        "HARD OF HEARING": 29,
+        "HELLO": 44,
+        "HOT": 33,
+        "IM FINE": 50,
+        "KNOW": 36,
+        "MAN": 40,
+        "MILK": 54,
+        "MONDAY": 60,
+        "MOTHER": 18,
+        "NINE": 47,
+        "NO": 46,
+        "NO SUGAR": 21,
+        "ONE": 21,
+        "ORANGE": 26,
+        "PARENTS": 50,
+        "PINK": 30,
+        "RED": 37,
+        "SEE YOU TOMORROW": 59,
+        "SEVEN": 38,
+        "SIX": 55,
+        "SUGAR": 21,
+        "TEN": 30,
+        "THREE": 51,
+        "THURSDAY": 35,
+        "TOMORROW": 45,
+        "TUESDAY": 35,
+        "TWO": 13,
+        "UNCLE": 41,
+        "UNDERSTAND": 54,
+        "WEDNESDAY": 57,
+        "WHITE": 41,
+        "WINE": 59,
+        "WOMAN": 39,
+        "WRONG": 33,
+        "YELLOW": 30,
+        "YES": 37,
+        "YESTERDAY": 29,
+        "YOURE WELCOME": 54
+      }
+    },
+    "label_coverage": {
+      "train": [
+        "AUNTIE",
+        "BEER",
+        "BLACK",
+        "BLIND",
+        "BLUE",
+        "BOY",
+        "CHICKEN",
+        "COUSIN",
+        "DEAF",
+        "DEAF BLIND",
+        "DON’T KNOW",
+        "DON’T UNDERSTAND",
+        "EIGHT",
+        "FAST",
+        "FATHER",
+        "FISH",
+        "FIVE",
+        "FOUR",
+        "FRIDAY",
+        "GIRL",
+        "GOOD AFTERNOON",
+        "GOOD EVENING",
+        "GOOD MORNING",
+        "GRANDFATHER",
+        "GRANDMOTHER",
+        "GREEN",
+        "HARD OF HEARING",
+        "HELLO",
+        "HOT",
+        "IM FINE",
+        "KNOW",
+        "MAN",
+        "MILK",
+        "MONDAY",
+        "MOTHER",
+        "NINE",
+        "NO",
+        "NO SUGAR",
+        "ONE",
+        "ORANGE",
+        "PARENTS",
+        "PINK",
+        "RED",
+        "SEE YOU TOMORROW",
+        "SEVEN",
+        "SIX",
+        "SUGAR",
+        "TEN",
+        "THREE",
+        "THURSDAY",
+        "TOMORROW",
+        "TUESDAY",
+        "TWO",
+        "UNCLE",
+        "UNDERSTAND",
+        "WEDNESDAY",
+        "WHITE",
+        "WINE",
+        "WOMAN",
+        "WRONG",
+        "YELLOW",
+        "YES",
+        "YESTERDAY",
+        "YOURE WELCOME"
+      ],
+      "val": [
+        "AUNTIE",
+        "BEER",
+        "BLACK",
+        "BLIND",
+        "BLUE",
+        "BOY",
+        "CHICKEN",
+        "COUSIN",
+        "DEAF",
+        "DEAF BLIND",
+        "DON’T KNOW",
+        "DON’T UNDERSTAND",
+        "EIGHT",
+        "FAST",
+        "FATHER",
+        "FISH",
+        "FIVE",
+        "FOUR",
+        "FRIDAY",
+        "GIRL",
+        "GOOD AFTERNOON",
+        "GOOD EVENING",
+        "GOOD MORNING",
+        "GRANDFATHER",
+        "GRANDMOTHER",
+        "GREEN",
+        "HARD OF HEARING",
+        "HELLO",
+        "HOT",
+        "IM FINE",
+        "KNOW",
+        "MAN",
+        "MILK",
+        "MONDAY",
+        "MOTHER",
+        "NINE",
+        "NO",
+        "NO SUGAR",
+        "ONE",
+        "ORANGE",
+        "PARENTS",
+        "PINK",
+        "RED",
+        "SEE YOU TOMORROW",
+        "SEVEN",
+        "SIX",
+        "SUGAR",
+        "TEN",
+        "THREE",
+        "THURSDAY",
+        "TOMORROW",
+        "TUESDAY",
+        "TWO",
+        "UNCLE",
+        "UNDERSTAND",
+        "WEDNESDAY",
+        "WHITE",
+        "WINE",
+        "WOMAN",
+        "WRONG",
+        "YELLOW",
+        "YES",
+        "YESTERDAY",
+        "YOURE WELCOME"
+      ],
+      "test": [
+        "AUNTIE",
+        "BEER",
+        "BLACK",
+        "BLIND",
+        "BLUE",
+        "BOY",
+        "CHICKEN",
+        "COUSIN",
+        "DEAF",
+        "DEAF BLIND",
+        "DON’T KNOW",
+        "DON’T UNDERSTAND",
+        "EIGHT",
+        "FAST",
+        "FATHER",
+        "FISH",
+        "FIVE",
+        "FOUR",
+        "FRIDAY",
+        "GIRL",
+        "GOOD AFTERNOON",
+        "GOOD EVENING",
+        "GOOD MORNING",
+        "GRANDFATHER",
+        "GRANDMOTHER",
+        "GREEN",
+        "HARD OF HEARING",
+        "HELLO",
+        "HOT",
+        "IM FINE",
+        "KNOW",
+        "MAN",
+        "MILK",
+        "MONDAY",
+        "MOTHER",
+        "NINE",
+        "NO",
+        "NO SUGAR",
+        "ONE",
+        "ORANGE",
+        "PARENTS",
+        "PINK",
+        "RED",
+        "SEE YOU TOMORROW",
+        "SEVEN",
+        "SIX",
+        "SUGAR",
+        "TEN",
+        "THREE",
+        "THURSDAY",
+        "TOMORROW",
+        "TUESDAY",
+        "TWO",
+        "UNCLE",
+        "UNDERSTAND",
+        "WEDNESDAY",
+        "WHITE",
+        "WINE",
+        "WOMAN",
+        "WRONG",
+        "YELLOW",
+        "YES",
+        "YESTERDAY",
+        "YOURE WELCOME"
+      ]
+    },
+    "all_labels_covered": true,
+    "leakage": {
+      "signer_overlap": {
+        "train_val": [],
+        "train_test": [],
+        "val_test": []
+      },
+      "source_video_overlap": {
+        "train_val": [],
+        "train_test": [],
+        "val_test": []
+      },
+      "signer_overlap_count": 0,
+      "source_video_overlap_count": 0,
+      "passed": true
+    },
+    "assignment_sha256": "cdbf63a5c6400b8933fb2d8e963f722fa5c27f40cae54a11fbd85980b3e4ba54"
+  },
+  "readiness": {
+    "ready_for_training": "YES",
+    "ready_for_deployment": "NO",
+    "reasons": [
+      "Feature provenance verified: True.",
+      "Inventory matches extraction summary: True.",
+      "All 64 labels meet 100 sequences: True.",
+      "All train/validation/test label coverage complete: True.",
+      "Signer/source-video leakage audit passed: True.",
+      "Exact duplicate-content records excluded from training: 42.",
+      "Duplicate audit passed after exclusion: True.",
+      "Deployment remains blocked because no NOTHING/background class is present and cross-device validation is pending."
+    ]
+  },
+  "artifacts": {
+    "audit_json": "D:\\BSIT 3RD YEAR\\New VovGest\\reports\\fsl105_dataset_audit.json",
+    "audit_csv": "D:\\BSIT 3RD YEAR\\New VovGest\\reports\\fsl105_dataset_audit.csv",
+    "split_manifest": "D:\\BSIT 3RD YEAR\\New VovGest\\reports\\fsl105_split_manifest.csv",
+    "readiness_doc": "D:\\BSIT 3RD YEAR\\New VovGest\\docs\\FSL105_DATASET_READINESS.md"
+  }
+}

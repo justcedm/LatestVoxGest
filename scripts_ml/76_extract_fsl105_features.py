@@ -20,6 +20,14 @@ from typing import Any
 import numpy as np
 
 from fsl_config import FSL_FEATURE_SIZE, FSL_SEQUENCE_LENGTH
+from voxgest_feature_builder import (
+    FEATURE_LAYOUT,
+    FEATURE_VERSION,
+    MIN_WRIST_MCP_SCALE,
+    NORMALIZATION_POLICY,
+    Z_DAMPING,
+    extract_frame_features,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -31,12 +39,8 @@ OUTPUT_ROOT = ROOT / "external_datasets" / "fsl_features"
 SUMMARY_PATH = ROOT / "reports" / "fsl" / "extraction_summary.json"
 CHECKPOINT_PATH = ROOT / "reports" / "fsl" / "extraction_progress.json"
 
-POSE_LANDMARK_COUNT = 33
-HAND_LANDMARK_COUNT = 21
 WINDOW_STRIDE = 5
 MIN_RIGHT_HAND_FRAMES = 13
-MIN_WRIST_MCP_SCALE = 0.001
-Z_DAMPING = 0.3
 MODEL_COMPLEXITY = 1
 MIN_DETECTION_CONFIDENCE = 0.5
 MIN_TRACKING_CONFIDENCE = 0.5
@@ -158,8 +162,14 @@ def build_config(labels: list[str], output_root: Path) -> dict[str, Any]:
         "stride": WINDOW_STRIDE,
         "minimum_right_hand_frames": MIN_RIGHT_HAND_FRAMES,
         "minimum_hand_presence_ratio": MIN_RIGHT_HAND_FRAMES / FSL_SEQUENCE_LENGTH,
+        "feature_version": FEATURE_VERSION,
+        "feature_layout": FEATURE_LAYOUT,
+        "normalization": NORMALIZATION_POLICY,
         "wrist_mcp_scale_threshold": MIN_WRIST_MCP_SCALE,
         "z_damping": Z_DAMPING,
+        "selected_hand": "right",
+        "handedness_policy": "fixed_anatomical_right_holistic_slot",
+        "mirrored_input": False,
         "model_complexity": MODEL_COMPLEXITY,
         "min_detection_confidence": MIN_DETECTION_CONFIDENCE,
         "min_tracking_confidence": MIN_TRACKING_CONFIDENCE,
@@ -242,7 +252,11 @@ def load_checkpoint(config: dict[str, Any]) -> dict[str, dict[str, Any]]:
         payload = json.loads(CHECKPOINT_PATH.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError):
         return {}
-    if payload.get("config") != config:
+    checkpoint_config = payload.get("config")
+    compatible = isinstance(checkpoint_config, dict) and all(
+        config.get(key) == value for key, value in checkpoint_config.items()
+    )
+    if not compatible:
         raise SystemExit(
             "Existing extraction checkpoint has a different configuration. "
             "Run once with --clean-existing-fsl105 to start a fresh extraction."
@@ -290,47 +304,9 @@ def initialize_worker() -> None:
     )
 
 
-def landmarks_to_array(landmarks: Any, expected_count: int) -> np.ndarray | None:
-    if landmarks is None or len(landmarks.landmark) != expected_count:
-        return None
-    return np.asarray(
-        [[landmark.x, landmark.y, landmark.z] for landmark in landmarks.landmark],
-        dtype=np.float32,
-    )
-
-
 def build_frame_features(results: Any) -> tuple[np.ndarray, bool, bool]:
-    pose = landmarks_to_array(results.pose_landmarks, POSE_LANDMARK_COUNT)
-    right_hand = landmarks_to_array(results.right_hand_landmarks, HAND_LANDMARK_COUNT)
-    if pose is None:
-        # Keep decoded-frame continuity. Without a nose reference neither pose
-        # nor hand can be transformed safely, so the whole frame is zeroed.
-        return (
-            np.zeros(FSL_FEATURE_SIZE, dtype=np.float32),
-            right_hand is not None,
-            False,
-        )
-
-    nose = pose[0].copy()
-    pose_values = pose - nose[np.newaxis, :]
-    pose_values.reshape(-1)[0:3] = 0.0
-
-    hand_present = right_hand is not None
-    if right_hand is None:
-        hand_values = np.zeros((HAND_LANDMARK_COUNT, 3), dtype=np.float32)
-    else:
-        hand_values = right_hand - nose[np.newaxis, :]
-        scale = float(np.linalg.norm(hand_values[0] - hand_values[9]))
-        if scale > MIN_WRIST_MCP_SCALE:
-            hand_values = hand_values / scale
-
-    output = np.concatenate(
-        [pose_values.reshape(-1), hand_values.reshape(-1)]
-    ).astype(np.float32)
-    output[2::3] *= Z_DAMPING
-    if output.shape != (FSL_FEATURE_SIZE,):
-        raise RuntimeError(f"Unexpected frame feature shape: {output.shape}")
-    return output, hand_present, True
+    """Canonical right-hand OneHand162 wrapper retained for worker callers."""
+    return extract_frame_features(results, selected_hand="right")
 
 
 def remove_canonical_video_outputs(label_dir: Path, video_stem: str) -> None:
@@ -402,9 +378,18 @@ def process_video(task: dict[str, str], output_root_text: str) -> dict[str, Any]
             "signer_id": f"fsl105_{video_stem}",
             "device_model": "FSL105_VIDEO",
             "sequence_length_at_export": FSL_SEQUENCE_LENGTH,
+            "feature_version": FEATURE_VERSION,
+            "feature_profile": "onehand162",
+            "feature_layout": FEATURE_LAYOUT,
+            "normalization": NORMALIZATION_POLICY,
+            "dtype": "float32",
+            "selected_hand": "right",
+            "handedness_policy": "fixed_anatomical_right_holistic_slot",
+            "mirrored_input": False,
             "fsl_mode": True,
             "window_start_frame": start,
             "hand_presence_ratio": right_hand_frames / FSL_SEQUENCE_LENGTH,
+            "pose_presence_ratio": sum(pose_presence[start:end]) / FSL_SEQUENCE_LENGTH,
             "source_video": task["relative_video"],
         }
         save_npy_atomic(npy_path, sequence)

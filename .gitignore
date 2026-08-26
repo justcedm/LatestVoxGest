@@ -67,6 +67,17 @@ reports/*.json
 reports/live_word_test_log_*
 reports/live_log_comparison.*
 !reports/*.md
+!reports/fsl105_dataset_audit.json
+!reports/fsl105_dataset_audit.csv
+!reports/fsl105_split_manifest.csv
+!reports/fsl_tcn_evaluation.json
+!reports/fsl_rdtcn_evaluation.json
+!reports/fsl_model_comparison.csv
+!reports/fsl_artifact_validation.json
+reports/smoke/
+
+# Keep only completed experimental model artifacts; smoke outputs are local QA.
+model/experimental/smoke/
 
 # Archives and temporary output
 *.zip

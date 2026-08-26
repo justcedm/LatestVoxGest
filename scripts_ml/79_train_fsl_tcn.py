@@ -1,10 +1,10 @@
-"""Train the residual dilated FSL TCN candidate."""
+"""Train the clean non-residual FSL TCN baseline."""
 
 from fsl_train_common import parse_args, print_result, train
 
 
 def main() -> int:
-    report = train("rdtcn", parse_args(__doc__))
+    report = train("tcn", parse_args(__doc__))
     print_result(report)
     return 0
 

@@ -11,12 +11,13 @@ from pathlib import Path
 
 import numpy as np
 
-from fsl_config import FSL_EXPECTED_SHAPE, FSL_LABELS, FSL_SEQUENCE_LENGTH
+from fsl_config import FSL_EXPECTED_SHAPE, FSL_RECORDING_LABELS, FSL_SEQUENCE_LENGTH
+from voxgest_feature_builder import FEATURE_LAYOUT, FEATURE_VERSION, NORMALIZATION_POLICY, validate_sequence
 
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE_ROOT = ROOT / "external_datasets" / "fsl_phone_exports" / "VoxGestCalibration" / "fsl_phrase_v1"
-OUTPUT_ROOT = ROOT / "external_datasets" / "fsl_features"
+OUTPUT_ROOT = ROOT / "external_datasets" / "fsl_onehand162_20f_v2" / "recorded"
 REPORTS_DIR = ROOT / "reports" / "fsl"
 DEVICE_REGISTRY_PATH = REPORTS_DIR / "device_registry.json"
 
@@ -38,6 +39,19 @@ def unique_path(path: Path) -> Path:
         if not candidate.exists():
             return candidate
     raise RuntimeError(f"Could not create unique path for {path}")
+
+
+def save_npy_atomic(path: Path, array: np.ndarray) -> None:
+    temporary = path.with_suffix(path.suffix + ".tmp")
+    with temporary.open("wb") as handle:
+        np.save(handle, array, allow_pickle=False)
+    temporary.replace(path)
+
+
+def write_json_atomic(path: Path, payload: dict) -> None:
+    temporary = path.with_suffix(path.suffix + ".tmp")
+    temporary.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+    temporary.replace(path)
 
 
 def iter_exports(source_root: Path):
@@ -75,7 +89,7 @@ def load_device_registry() -> dict[str, list[str]]:
 def save_device_registry(registry: dict[str, list[str]]) -> None:
     REPORTS_DIR.mkdir(parents=True, exist_ok=True)
     ordered = {device: sorted(set(stems)) for device, stems in sorted(registry.items())}
-    DEVICE_REGISTRY_PATH.write_text(json.dumps(ordered, indent=2), encoding="utf-8")
+    write_json_atomic(DEVICE_REGISTRY_PATH, ordered)
 
 
 def signer_id_for(path: Path, data: dict) -> str:
@@ -110,8 +124,18 @@ def import_exports(source_root: Path, output_root: Path):
             skipped_reasons[reason] += 1
             continue
 
-        if label not in FSL_LABELS:
+        if label not in FSL_RECORDING_LABELS:
             reason = f"unsupported_label:{label}"
+            skip(skipped, path, reason)
+            skipped_reasons[reason] += 1
+            continue
+
+        found_feature_version = str(data.get("feature_version", "")).strip()
+        if found_feature_version != FEATURE_VERSION:
+            reason = (
+                f"feature_version_mismatch expected={FEATURE_VERSION} "
+                f"found={found_feature_version or 'MISSING'}"
+            )
             skip(skipped, path, reason)
             skipped_reasons[reason] += 1
             continue
@@ -134,8 +158,9 @@ def import_exports(source_root: Path, output_root: Path):
                 skipped_reasons[reason] += 1
                 continue
 
-        if tuple(arr.shape) != FSL_EXPECTED_SHAPE:
-            reason = f"shape:{list(arr.shape)}"
+        validation_issues = validate_sequence(arr.astype(np.float32, copy=False))
+        if validation_issues:
+            reason = f"invalid_sequence:{';'.join(validation_issues)}"
             skip(skipped, path, reason)
             skipped_reasons[reason] += 1
             continue
@@ -148,17 +173,23 @@ def import_exports(source_root: Path, output_root: Path):
         device_model = safe_name(data.get("device_model") or "UNKNOWN_DEVICE")
         signer_id = signer_id_for(path, data)
 
-        np.save(npy_path, arr.astype(np.float32), allow_pickle=False)
+        save_npy_atomic(npy_path, arr.astype(np.float32))
         meta = {
             "source_json": relative_text(path),
+            "source": "voxgest_calibration_export",
             "label": label,
             "timestamp": data.get("timestamp"),
             "device_model": device_model,
             "device_session_tag": data.get("device_session_tag"),
+            "recording_session": data.get("recording_session") or data.get("device_session_tag"),
             "signer_id": signer_id,
             "fsl_mode": bool(data.get("fsl_mode", True)),
             "active_profile": data.get("active_profile"),
             "feature_profile": data.get("feature_profile"),
+            "feature_version": FEATURE_VERSION,
+            "feature_layout": data.get("feature_layout") or FEATURE_LAYOUT,
+            "normalization": data.get("normalization") or NORMALIZATION_POLICY,
+            "dtype": "float32",
             "input_shape": data.get("input_shape"),
             "sequence_length_at_export": data.get("sequence_length_at_export"),
             "dominant_hand": data.get("dominant_hand"),
@@ -171,7 +202,11 @@ def import_exports(source_root: Path, output_root: Path):
             "wrist_path": data.get("wrist_path"),
             "imported_at": datetime.now().isoformat(timespec="seconds"),
         }
-        meta_path.write_text(json.dumps(meta, indent=2), encoding="utf-8")
+        try:
+            write_json_atomic(meta_path, meta)
+        except Exception:
+            npy_path.unlink(missing_ok=True)
+            raise
 
         counts[label] += 1
         per_device[device_model] += 1
@@ -194,9 +229,10 @@ def import_exports(source_root: Path, output_root: Path):
         "source_root": str(source_root),
         "output_root": str(output_root),
         "expected_shape": list(FSL_EXPECTED_SHAPE),
-        "labels": list(FSL_LABELS),
+        "feature_version": FEATURE_VERSION,
+        "labels": list(FSL_RECORDING_LABELS),
         "imported_count": len(imported),
-        "counts": {label: int(counts.get(label, 0)) for label in FSL_LABELS},
+        "counts": {label: int(counts.get(label, 0)) for label in FSL_RECORDING_LABELS},
         "per_device": dict(sorted(per_device.items())),
         "skipped_count": len(skipped),
         "skipped_reasons": dict(sorted(skipped_reasons.items())),
@@ -204,7 +240,7 @@ def import_exports(source_root: Path, output_root: Path):
         "device_registry": str(DEVICE_REGISTRY_PATH),
     }
     report_path = REPORTS_DIR / "fsl_import_report.json"
-    report_path.write_text(json.dumps(report, indent=2), encoding="utf-8")
+    write_json_atomic(report_path, report)
     return report, report_path
 
 
@@ -214,7 +250,7 @@ def print_summary(report: dict, report_path: Path) -> None:
     print(f"Skipped : {report['skipped_count']}")
     print("")
     print("Per-label count")
-    for label in FSL_LABELS:
+    for label in FSL_RECORDING_LABELS:
         print(f"{label:<12} {report['counts'].get(label, 0)}")
     print("")
     print("Per-device count")

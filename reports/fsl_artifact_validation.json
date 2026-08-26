@@ -1,0 +1,140 @@
+{
+  "generated_at_utc": "2026-08-26T02:55:10.270432+00:00",
+  "feature_version": "onehand162_20f_nose_mcp_z03_v2",
+  "benchmark_sequences": 64,
+  "latency_input": "deterministic_synthetic_float32_contract_benchmark",
+  "models": {
+    "tcn": {
+      "keras": {
+        "path": "model\\experimental\\voxgest_fsl_tcn_v2.keras",
+        "sha256": "888cb8e30334b0200e4e03b1870e7f5ceeee6a1683f81a2adf1f4961a8707d67",
+        "size_bytes": 843718,
+        "input_shape": [
+          null,
+          20,
+          162
+        ],
+        "output_shape": [
+          null,
+          64
+        ],
+        "batched_cpu_latency_ms_per_sequence": 1.1703224999997985,
+        "contract_passed": true
+      },
+      "float32_tflite": {
+        "path": "model\\experimental\\voxgest_fsl_tcn_v2_float32.tflite",
+        "sha256": "1bcbeedffeb2578af718fe044adeee909f0ecf442cb3a63835794cd7d036066f",
+        "size_bytes": 280380,
+        "input_shape": [
+          1,
+          20,
+          162
+        ],
+        "input_shape_signature": [
+          -1,
+          20,
+          162
+        ],
+        "input_dtype": "float32",
+        "output_shape": [
+          1,
+          64
+        ],
+        "output_dtype": "float32",
+        "mean_single_sequence_latency_ms": 0.20897343749837205,
+        "contract_passed": true
+      },
+      "float16_tflite": {
+        "path": "model\\experimental\\voxgest_fsl_tcn_v2_float16.tflite",
+        "sha256": "b5ae91775c4953ee97b515d878cf896fe78a8187f30f7af4c0e580fa13c517a8",
+        "size_bytes": 154052,
+        "input_shape": [
+          1,
+          20,
+          162
+        ],
+        "input_shape_signature": [
+          -1,
+          20,
+          162
+        ],
+        "input_dtype": "float32",
+        "output_shape": [
+          1,
+          64
+        ],
+        "output_dtype": "float32",
+        "mean_single_sequence_latency_ms": 0.19157031249861234,
+        "contract_passed": true
+      },
+      "passed": true
+    },
+    "rdtcn": {
+      "keras": {
+        "path": "model\\experimental\\voxgest_fsl_rdtcn_v2.keras",
+        "sha256": "2d24b293f0942429176f57495aa0ce87d133d4029008440f9af2985537be7324",
+        "size_bytes": 1465417,
+        "input_shape": [
+          null,
+          20,
+          162
+        ],
+        "output_shape": [
+          null,
+          64
+        ],
+        "batched_cpu_latency_ms_per_sequence": 1.129957187499997,
+        "contract_passed": true
+      },
+      "float32_tflite": {
+        "path": "model\\experimental\\voxgest_fsl_rdtcn_v2_float32.tflite",
+        "sha256": "0fa21105427214ea77cc0ceaec4319dc86d8c281a1fa6f372c5da6ebc8bcc4d9",
+        "size_bytes": 490992,
+        "input_shape": [
+          1,
+          20,
+          162
+        ],
+        "input_shape_signature": [
+          -1,
+          20,
+          162
+        ],
+        "input_dtype": "float32",
+        "output_shape": [
+          1,
+          64
+        ],
+        "output_dtype": "float32",
+        "mean_single_sequence_latency_ms": 0.31748125000063965,
+        "contract_passed": true
+      },
+      "float16_tflite": {
+        "path": "model\\experimental\\voxgest_fsl_rdtcn_v2_float16.tflite",
+        "sha256": "8673eac3f7bf4da7b98570afe09e9cb6aeafd97f29927eee89eda9f809f3372d",
+        "size_bytes": 271016,
+        "input_shape": [
+          1,
+          20,
+          162
+        ],
+        "input_shape_signature": [
+          -1,
+          20,
+          162
+        ],
+        "input_dtype": "float32",
+        "output_shape": [
+          1,
+          64
+        ],
+        "output_dtype": "float32",
+        "mean_single_sequence_latency_ms": 0.3301921875014102,
+        "contract_passed": true
+      },
+      "passed": true
+    }
+  },
+  "all_passed": true,
+  "android_benchmark_performed": false
+}

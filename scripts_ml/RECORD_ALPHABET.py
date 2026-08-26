@@ -1,8 +1,8 @@
-"""
-VoxGest FSL Alphabet Recorder
-==============================
-Just run: python RECORD_ALPHABET.py
-Requires: Python 3.8+  (installs packages automatically)
+"""LEGACY/INCOMPATIBLE alphabet recorder retained for provenance only.
+
+Do not use this script for new training data. It does not reliably select the
+fixed anatomical hand and does not emit canonical feature-version metadata.
+Use ``scripts_ml/collect_fsl_alphabet_seq.py`` instead.
 """
 
 import subprocess, sys, getpass
@@ -236,4 +236,3 @@ def run():
 
 if __name__ == "__main__":
     run()
-    

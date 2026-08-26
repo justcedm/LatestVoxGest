@@ -12,16 +12,20 @@ from pathlib import Path
 
 import numpy as np
 
-from fsl_config import FSL_FEATURE_SIZE, FSL_LABELS, FSL_SEQUENCE_LENGTH
+from fsl_config import FSL_FEATURE_SIZE, FSL_RECORDING_LABELS, FSL_SEQUENCE_LENGTH
+from voxgest_feature_builder import (
+    FEATURE_LAYOUT,
+    FEATURE_VERSION,
+    NORMALIZATION_POLICY,
+    extract_frame_features,
+    validate_sequence,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
 EXPORT_ROOT = ROOT / "external_datasets" / "fsl_phone_exports" / "VoxGestCalibration" / "fsl_phrase_v1"
-POSE_LANDMARK_COUNT = 33
-HAND_LANDMARK_COUNT = 21
-MIN_WRIST_MCP_SCALE = 0.001
-Z_DAMPING = 0.3
 MIN_HAND_PRESENCE = 0.65
+MIN_POSE_PRESENCE = 0.65
 cv2 = None
 mp = None
 
@@ -46,38 +50,9 @@ def safe_name(value: object) -> str:
     return text.strip("_") or "sample"
 
 
-def landmarks_to_array(landmarks, count: int) -> np.ndarray | None:
-    if landmarks is None or len(landmarks.landmark) != count:
-        return None
-    return np.asarray([[lm.x, lm.y, lm.z] for lm in landmarks.landmark], dtype=np.float32)
-
-
 def build_frame_features(results) -> tuple[np.ndarray, bool, bool]:
-    pose = landmarks_to_array(results.pose_landmarks, POSE_LANDMARK_COUNT)
-    if pose is None:
-        return np.zeros((FSL_FEATURE_SIZE,), dtype=np.float32), False, False
-
-    nose = pose[0].copy()
-    pose_values = pose - nose[np.newaxis, :]
-
-    right_hand = landmarks_to_array(results.right_hand_landmarks, HAND_LANDMARK_COUNT)
-    hand_present = right_hand is not None
-    if right_hand is None:
-        hand_values = np.zeros((HAND_LANDMARK_COUNT, 3), dtype=np.float32)
-    else:
-        hand_values = right_hand - nose[np.newaxis, :]
-        scale = float(np.linalg.norm(hand_values[0] - hand_values[9]))
-        if scale > MIN_WRIST_MCP_SCALE:
-            hand_values = hand_values / scale
-
-    output = np.concatenate([pose_values.reshape(-1), hand_values.reshape(-1)]).astype(np.float32)
-    output[0:3] = 0.0
-    output[2::3] *= Z_DAMPING
-    return output, hand_present, True
-
-
-def has_all_zero_frame(seq: np.ndarray) -> bool:
-    return bool(np.any(np.all(np.isclose(seq, 0.0), axis=1)))
+    """Canonical fixed-right OneHand162 wrapper for PC capture."""
+    return extract_frame_features(results, selected_hand="right")
 
 
 def compute_motion_score(seq: np.ndarray) -> float:
@@ -103,7 +78,7 @@ def compute_wrist_path(seq: np.ndarray) -> float:
     return total
 
 
-def save_export(label: str, signer_id: str, device_model: str, seq: np.ndarray, hand_presence_ratio: float, index: int) -> Path:
+def save_export(label: str, signer_id: str, device_model: str, seq: np.ndarray, hand_presence_ratio: float, pose_presence_ratio: float, index: int) -> Path:
     timestamp_ms = int(time.time() * 1000)
     timestamp_text = datetime.fromtimestamp(timestamp_ms / 1000.0).strftime("%Y%m%d_%H%M%S_%f")[:-3]
     label_dir = EXPORT_ROOT / label
@@ -119,12 +94,18 @@ def save_export(label: str, signer_id: str, device_model: str, seq: np.ndarray, 
         "device_session_tag": device_session_tag,
         "active_profile": "fsl_pc_webcam_v1",
         "feature_profile": "onehand162",
+        "feature_version": FEATURE_VERSION,
+        "feature_layout": FEATURE_LAYOUT,
+        "normalization": NORMALIZATION_POLICY,
         "input_shape": [FSL_SEQUENCE_LENGTH, FSL_FEATURE_SIZE],
+        "dtype": "float32",
         "sequence_length_at_export": FSL_SEQUENCE_LENGTH,
         "dominant_hand": "right",
-        "mirrored_input": True,
+        "mirrored_input": False,
         "selected_hand_slot": "right",
+        "handedness_policy": "fixed_anatomical_right_holistic_slot",
         "hand_presence_ratio": hand_presence_ratio,
+        "pose_presence_ratio": pose_presence_ratio,
         "missing_pose_count": int(np.sum(np.all(np.isclose(seq, 0.0), axis=1))),
         "missing_hand_count": int(round((1.0 - hand_presence_ratio) * FSL_SEQUENCE_LENGTH)),
         "motion_score": compute_motion_score(seq),
@@ -166,6 +147,7 @@ def record_webcam(label: str, signer_id: str, target_count: int, camera_index: i
     recording = False
     frames: list[np.ndarray] = []
     hand_flags: list[bool] = []
+    pose_flags: list[bool] = []
     status_text = "SPACE to record | Q to quit"
     status_color = (255, 255, 255)
 
@@ -181,21 +163,35 @@ def record_webcam(label: str, signer_id: str, target_count: int, camera_index: i
                 break
             rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             results = holistic.process(rgb)
-            vector, hand_present, _pose_present = build_frame_features(results)
+            vector, hand_present, pose_present = build_frame_features(results)
             draw_overlay(frame, results)
 
             if recording:
                 frames.append(vector)
                 hand_flags.append(hand_present)
+                pose_flags.append(pose_present)
                 status_text = f"Recording {len(frames)}/{FSL_SEQUENCE_LENGTH}"
                 status_color = (0, 255, 255)
                 if len(frames) == FSL_SEQUENCE_LENGTH:
                     seq = np.asarray(frames, dtype=np.float32)
                     hand_presence_ratio = sum(hand_flags) / FSL_SEQUENCE_LENGTH
-                    accepted = hand_presence_ratio >= MIN_HAND_PRESENCE and not has_all_zero_frame(seq)
+                    pose_presence_ratio = sum(pose_flags) / FSL_SEQUENCE_LENGTH
+                    accepted = (
+                        not validate_sequence(seq)
+                        and hand_presence_ratio >= MIN_HAND_PRESENCE
+                        and pose_presence_ratio >= MIN_POSE_PRESENCE
+                    )
                     if accepted:
                         saved += 1
-                        path = save_export(label, signer_id, device_model, seq, hand_presence_ratio, saved)
+                        path = save_export(
+                            label,
+                            signer_id,
+                            device_model,
+                            seq,
+                            hand_presence_ratio,
+                            pose_presence_ratio,
+                            saved,
+                        )
                         status_text = f"ACCEPTED saved {path.name} ({saved}/{target_count})"
                         status_color = (0, 220, 0)
                     else:
@@ -204,6 +200,7 @@ def record_webcam(label: str, signer_id: str, target_count: int, camera_index: i
                     recording = False
                     frames = []
                     hand_flags = []
+                    pose_flags = []
 
             put_status(frame, status_text, status_color)
             cv2.imshow("VoxGest FSL PC Recorder", frame)
@@ -214,6 +211,7 @@ def record_webcam(label: str, signer_id: str, target_count: int, camera_index: i
                 recording = True
                 frames = []
                 hand_flags = []
+                pose_flags = []
                 status_text = "Recording 0/20"
                 status_color = (0, 255, 255)
             if saved >= target_count:
@@ -234,11 +232,14 @@ def main() -> None:
     args = parser.parse_args()
 
     label = args.label.strip().upper()
-    if label not in FSL_LABELS:
-        raise SystemExit(f"Unsupported FSL label: {label}. Expected one of: {', '.join(FSL_LABELS)}")
-    signer_id = safe_name(args.signer_id)
-    if not signer_id:
+    if label not in FSL_RECORDING_LABELS:
+        raise SystemExit(
+            f"Unsupported FSL label: {label}. Expected one of: "
+            f"{', '.join(FSL_RECORDING_LABELS)}"
+        )
+    if not args.signer_id.strip():
         raise SystemExit("--signer_id must not be blank")
+    signer_id = safe_name(args.signer_id)
 
     saved = record_webcam(label, signer_id, args.count, args.camera)
     print(f"Saved {saved} accepted FSL webcam exports for label={label} signer_id={signer_id}")

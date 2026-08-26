@@ -1,6 +1,8 @@
-# extract_fsl105.py
-# Extracts MediaPipe landmarks from FSL-105 dataset
-# Maps numbered folders to word labels using labels.csv
+"""LEGACY/INCOMPATIBLE 30-frame, hand-only FSL-105 extractor.
+
+Retained for provenance. Do not use it for OneHand162 training; the active
+versioned extractor is ``scripts_ml/76_extract_fsl105_features.py``.
+"""
 
 import os
 os.environ['PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION'] = 'python'
