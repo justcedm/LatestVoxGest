@@ -77,6 +77,7 @@ reports/live_log_comparison.*
 !reports/activity_detector_v1_evaluation.json
 !reports/fsl_rejection_calibration.json
 !reports/autonomous_sprint_validation.json
+!reports/android_fsl_integration_audit.json
 reports/smoke/
 
 # Keep only completed experimental model artifacts; smoke outputs are local QA.
