@@ -31,6 +31,7 @@ private data class OneHandCaptureResult(
 
 enum class CameraRecognitionRuntime {
     STANDARD_FSL105,
+    MAPUA14_RESCUE_V1,
     LEGACY_DEMO
 }
 
@@ -40,7 +41,7 @@ class VoxGestCameraRecognitionController(
     private val onStatus: (String) -> Unit,
     initialUseBackCamera: Boolean = false,
     initialLandmarkVisualizationEnabled: Boolean = false,
-    private val runtimeMode: CameraRecognitionRuntime = CameraRecognitionRuntime.STANDARD_FSL105,
+    private val runtimeMode: CameraRecognitionRuntime = DeveloperRecognitionOverride.runtime(),
     private val onRecognitionFeedback: (RecognitionFeedback) -> Unit = {},
     private val onSkeletonFrame: (LandmarkVisualizationFrame?) -> Unit = {},
     private val onAcceptedResult: (RecognitionResult) -> Unit
@@ -57,6 +58,7 @@ class VoxGestCameraRecognitionController(
 
     @Volatile private var cameraProvider: ProcessCameraProvider? = null
     @Volatile private var standardController: StandardFslCameraRecognitionController? = null
+    @Volatile private var mapua14Controller: Mapua14RescueCameraRecognitionController? = null
     @Volatile private var imageAnalysis: ImageAnalysis? = null
     @Volatile private var extractor: LandmarkExtractor? = null
     @Volatile private var alphabetClassifier: AlphabetClassifier? = null
@@ -100,6 +102,10 @@ class VoxGestCameraRecognitionController(
         postStatus("Starting Camera")
         if (runtimeMode == CameraRecognitionRuntime.STANDARD_FSL105) {
             startStandardFsl(previewView)
+            return
+        }
+        if (runtimeMode == CameraRecognitionRuntime.MAPUA14_RESCUE_V1) {
+            startMapua14Rescue(previewView)
             return
         }
         Log.i(TAG, "LEGACY_DEMO_RUNTIME active=true standard_fsl105=false")
@@ -154,6 +160,12 @@ class VoxGestCameraRecognitionController(
             postStatus("Recognition Paused")
             return
         }
+        if (runtimeMode == CameraRecognitionRuntime.MAPUA14_RESCUE_V1) {
+            mapua14Controller?.release()
+            mapua14Controller = null
+            postStatus("Recognition Paused")
+            return
+        }
         mainExecutor.execute {
             imageAnalysis?.clearAnalyzer()
             imageAnalysis = null
@@ -193,7 +205,7 @@ class VoxGestCameraRecognitionController(
         signerId: String,
         deviceSessionTag: String
     ) {
-        if (runtimeMode == CameraRecognitionRuntime.STANDARD_FSL105) {
+        if (runtimeMode != CameraRecognitionRuntime.LEGACY_DEMO) {
             postStatus("Calibration is available in Legacy Demo mode only")
             return
         }
@@ -237,7 +249,7 @@ class VoxGestCameraRecognitionController(
     }
 
     fun cancelCalibration() {
-        if (runtimeMode == CameraRecognitionRuntime.STANDARD_FSL105) return
+        if (runtimeMode != CameraRecognitionRuntime.LEGACY_DEMO) return
         analyzerExecutor.execute {
             calibrationLabel = ""
             calibrationExportMode = CalibrationExportMode.ASL
@@ -252,7 +264,7 @@ class VoxGestCameraRecognitionController(
     }
 
     fun switchCamera(previewView: PreviewView) {
-        if (runtimeMode == CameraRecognitionRuntime.STANDARD_FSL105) {
+        if (runtimeMode != CameraRecognitionRuntime.LEGACY_DEMO) {
             postStatus("Use the camera switch control")
             return
         }
@@ -340,6 +352,49 @@ class VoxGestCameraRecognitionController(
                 "FEATURE_COUNT=225 TEMPORAL_FRAMES=20 DEMO_ALLOWLIST_APPLIED=false"
         )
         standard.start(previewView)
+    }
+
+    private fun startMapua14Rescue(previewView: PreviewView) {
+        analysisMirroredForVisualization = false
+        val controller = Mapua14RescueCameraRecognitionController(
+            context = appContext,
+            lifecycleOwner = lifecycleOwner,
+            onState = { state ->
+                state.blockedEvidence?.let { Log.e(TAG, "MAPUA14_BLOCKED evidence=$it") }
+                val detection = when {
+                    state.decision?.accepted == true -> DetectionStatus.RECOGNIZED
+                    state.inference != null -> DetectionStatus.DETECTING
+                    state.tracking == StandardFslTrackingState.READY -> DetectionStatus.DETECTING
+                    else -> DetectionStatus.SEARCHING
+                }
+                postFeedback(cleanFeedback(detection, state.inference?.top1?.label.orEmpty()))
+                postStatus(if (state.blockedEvidence != null) "Recognition unavailable" else if (state.tracking == StandardFslTrackingState.READY) "Ready" else "Hold sign clearly")
+            },
+            onAccepted = { accepted ->
+                val result = RecognitionResult(
+                    accepted.label,
+                    accepted.confidence,
+                    accepted.margin,
+                    true,
+                    "mapua14_rescue_v1_accepted",
+                    accepted.top5.take(3).map { RecognitionResult.TopPrediction(it.label, it.probability) },
+                    RecognitionResult.Source.MAPUA14_RESCUE_V1
+                )
+                Log.i(
+                    TAG,
+                    "MAPUA14_EMIT label=${accepted.label} confidence=${accepted.confidence} margin=${accepted.margin} " +
+                        "source=${result.source} demo_allowlist_applied=false"
+                )
+                postFeedback(cleanFeedback(DetectionStatus.RECOGNIZED, accepted.label))
+                mainExecutor.execute { onAcceptedResult(result) }
+                postStatus("Accepted: ${accepted.label}")
+            },
+            initialUseBackCamera = useBackCamera,
+            onFrame = ::postSkeletonFrame
+        )
+        mapua14Controller = controller
+        Log.i(TAG, "ACTIVE_PROFILE=${Mapua14RescueProfile.ID} activation=debug_intent_only standard_default_unchanged=true")
+        controller.start(previewView)
     }
 
     private fun mirrorCameraFrameFor(profile: RecognitionProfile): Boolean {

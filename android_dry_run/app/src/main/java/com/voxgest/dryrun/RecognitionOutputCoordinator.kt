@@ -28,8 +28,9 @@ class RecognitionOutputCoordinator(
 
     @Synchronized
     fun handleRecognition(result: RecognitionResult?): RecognitionOutputUpdate {
-        val standardRuntime = result?.source == RecognitionResult.Source.STANDARD_FSL105
-        val allowlistDecision = if (standardRuntime) {
+        val verifiedFullSignRuntime = result?.source == RecognitionResult.Source.STANDARD_FSL105 ||
+            result?.source == RecognitionResult.Source.MAPUA14_RESCUE_V1
+        val allowlistDecision = if (verifiedFullSignRuntime) {
             evaluateStandardResult(requireNotNull(result))
         } else {
             allowlistPolicy.evaluate(result)
@@ -43,7 +44,7 @@ class RecognitionOutputCoordinator(
             )
         }
 
-        val tokenResult = if (standardRuntime) {
+        val tokenResult = if (verifiedFullSignRuntime) {
             composer.acceptVerifiedWord(allowlistDecision.canonicalLabel)
         } else {
             composer.accept(allowlistDecision.canonicalLabel)
@@ -76,10 +77,15 @@ class RecognitionOutputCoordinator(
             label.isBlank() -> DemoAllowlistReason.EMPTY_LABEL
             DemoAllowlistPolicy.isReservedOutputToken(label) ->
                 DemoAllowlistReason.NON_CANONICAL_LABEL
-            else -> DemoAllowlistReason.STANDARD_FSL105_QUALIFIED
+            else -> if (result.source == RecognitionResult.Source.MAPUA14_RESCUE_V1) {
+                DemoAllowlistReason.MAPUA14_RESCUE_QUALIFIED
+            } else {
+                DemoAllowlistReason.STANDARD_FSL105_QUALIFIED
+            }
         }
         return DemoAllowlistDecision(
-            userFacing = reason == DemoAllowlistReason.STANDARD_FSL105_QUALIFIED,
+            userFacing = reason == DemoAllowlistReason.STANDARD_FSL105_QUALIFIED ||
+                reason == DemoAllowlistReason.MAPUA14_RESCUE_QUALIFIED,
             canonicalLabel = label,
             reason = reason,
             confidence = result.confidence,

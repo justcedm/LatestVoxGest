@@ -89,6 +89,26 @@ class RecognitionOutputCoordinatorTest {
         assertEquals(DemoAllowlistReason.NOT_DEMO_QUALIFIED.name, update.reason)
     }
 
+    @Test
+    fun verifiedMapua14ResultUsesItsOwnNonDemoQualificationLane() {
+        val fixture = fixture(allowlist = emptySet(), composerLabels = emptySet())
+        val result = RecognitionResult(
+            "THANK_YOU",
+            0.91f,
+            0.44f,
+            true,
+            "mapua14_rescue_v1_accepted",
+            emptyList(),
+            RecognitionResult.Source.MAPUA14_RESCUE_V1
+        )
+
+        val update = fixture.coordinator.handleRecognition(result)
+
+        assertTrue(update.userFacingAccepted)
+        assertEquals(DemoAllowlistReason.MAPUA14_RESCUE_QUALIFIED.name, update.reason)
+        assertEquals(listOf("THANK_YOU"), update.snapshot.tokens)
+    }
+
     private fun fixture(allowlist: Set<String>, composerLabels: Set<String>): Fixture {
         val settings = SentenceSuggestionSettings(MemoryStore())
         return Fixture(

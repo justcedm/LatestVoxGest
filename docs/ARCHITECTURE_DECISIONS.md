@@ -139,3 +139,19 @@ experiments belong in separate reports.
 - Consequence: Their expected semantic-token count is zero. They may calibrate
   or evaluate rejection only under participant/source-disjoint splits and may
   never be emitted as recognized words.
+
+## ADR-013 - Mapua-14 rescue experiment is authorized and isolated
+
+- Status: Accepted
+- Date: 2026-09-12
+- Decision: Explicit authorization was granted for one controlled PASS-only
+  engineering experiment over the 14 exact-text Mapua/FSL-105 overlap labels.
+  The frozen source-video split uses a 15% sealed clip test and four-fold
+  development comparison of exactly RD-TCN32, GRU32, RD-TCN48, and GRU48.
+- Boundary: Signer IDs are unavailable, so all offline results are
+  EXPLORATORY_CLIP_LEVEL_METRICS and are not signer-independent evidence.
+  Raw videos, re-extracted features, caches, and checkpoints stay outside Git
+  under C:\VOXGEST_TRAINING\MAPUA14_RESCUE_V1.
+- Consequence: Any passing model is exposed only as the debug/diagnostic
+  MAPUA14_RESCUE_V1 profile. Standard FSL-105 remains unchanged and is the
+  rollback; promotion requires physical unseen-Samsung evidence.

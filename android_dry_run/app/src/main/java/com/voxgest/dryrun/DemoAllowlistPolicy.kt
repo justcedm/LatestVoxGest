@@ -7,6 +7,7 @@ import java.util.LinkedHashSet
 enum class DemoAllowlistReason {
     DEMO_QUALIFIED,
     STANDARD_FSL105_QUALIFIED,
+    MAPUA14_RESCUE_QUALIFIED,
     MISSING_RESULT,
     UPSTREAM_REJECTED,
     NON_FINITE_SCORE,

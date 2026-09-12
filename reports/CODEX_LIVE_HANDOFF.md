@@ -1,141 +1,127 @@
 # VoxGest Live Handoff
 
-This is the canonical operational checkpoint. Every meaningful future task
-must update all fields below before handoff. Record failed checks explicitly;
-do not replace missing evidence with assumptions.
+TIMESTAMP=2026-09-12T22:00:10+08:00
 
-TIMESTAMP=2026-09-12T14:43:49+08:00
+BRANCH=recognition/mapua14-rescue-v1
 
-BRANCH=recognition/recovery-20260912
+COMMIT=PENDING_SUBSTANTIVE_COMMIT
 
-COMMIT=92217d8c9eb69ea7c86c396f2938a99aee0d59a6 (substantive dataset-package commit described by this handoff)
+SOURCE_BASE_COMMIT=7929cd28027feb34b83eb3ad0649f39f5fb00abe
 
-SOURCE_BASE_COMMIT=5b3b241020fef1518b5006b06115661371441c8f
+HANDOFF_UPDATE_COMMIT=PENDING
 
-HANDOFF_UPDATE_COMMIT=92217d8c9eb69ea7c86c396f2938a99aee0d59a6
+BRANCH_HEAD=PENDING
 
-BRANCH_HEAD=92217d8c9eb69ea7c86c396f2938a99aee0d59a6 (audited content snapshot; the metadata-only commit carrying these resolved fields follows it)
-
-CURRENT_GOAL=Complete the Mapúa raw-video audit and publish a safe retraining-decision package without training or changing Android/UI/Avatar.
+CURRENT_GOAL=Train and package the explicitly authorized PASS-only Mapua-14 rescue recognizer, preserve Standard FSL-105, and stop at the physical Samsung boundary when no device is connected.
 
 WORK_COMPLETED=
 
-- Resumed the saved raw MediaPipe checkpoint at 970/1,107 and processed only
-  the 137 missing videos. Final presence audit: 1,107 unique rows, zero errors.
-- Added a separate resumable raw-video motion pass because the prior checkpoint
-  did not retain trajectories. Completed all 1,107 videos and simulated complete
-  trajectory resampling at 20, 32, and 48 samples.
-- Assigned per-video PASS/REVIEW/REJECT_TECHNICAL with exact technical reasons;
-  preserved all raw files and all external per-video evidence outside Git.
-- Audited exact hashes and nine-frame perceptual near-duplicate candidates.
-- Searched safe C: locations for FSL-105 raw clips/archive; none were found.
-- Built the complete 116-row Mapúa/FSL-105 mapping, 117-concept review-gated
-  presentation ontology, controlled A/B/C benchmark specification, and non-sign
-  OOD capture protocol.
-- Recorded authoritative dataset/ontology/temporal/OOD decisions. No training
-  or Android, Listen, Avatar, model, feature, or UI edit was made.
+- Created the isolated branch and C:\VOXGEST_TRAINING\MAPUA14_RESCUE_V1 workspace.
+- Froze a source-video split before training: 311 development, 56 sealed test,
+  four class-stratified development folds, zero source-video overlap, and zero
+  selected audited exact/perceptual duplicate crossings.
+- Re-extracted 367/367 PASS raw MP4s with MediaPipe 0.10.9 into canonical,
+  unmirrored FullSign225 complete-trajectory sequences at 32 and 48 frames.
+- Proved the Python FullSign225 frame builder against all five existing Android
+  golden cases with exact fixed anatomical slots and mirror rejection.
+- Trained exactly A=RD-TCN32, B=GRU32, C=RD-TCN48, D=GRU48. All four completed;
+  no failed run was hidden. Selection used development folds only.
+- Selected C=RD-TCN48, retrained it on all development clips for 87 epochs,
+  opened the sealed clip test once, and exported float32 TFLite.
+- Added the separate MAPUA14_RESCUE_V1 debug-intent lane, runtime asset/hash/
+  shape checks, Android golden parity, 48-frame rolling window, raw top-3 and
+  gate-reason logging, duplicate suppression, and exact 14-label presentation
+  mappings. Standard and Legacy Demo routing remain separate.
+- Ran the full Android unit suite and assembled the debug APK successfully.
+- Checked ADB twice. No Samsung was connected, so installation and physical
+  live/negative trials were not performed and no live claim is made.
 
 FILES_CHANGED=
 
-- .gitignore
+- training_configs/mapua14_rescue_v1.json
+- scripts_ml/fullsign225_feature_builder.py
+- scripts_ml/94_prepare_mapua14_rescue.py
+- scripts_ml/95_train_mapua14_rescue.py
+- tests/test_fullsign225_feature_builder.py
+- reports/mapua14_rescue_v1/*
+- android_dry_run/app/src/main/assets/model/mapua14_rescue_v1/*
+- android_dry_run/app/src/main/java/com/voxgest/app/MainActivity.kt
+- android_dry_run/app/src/main/java/com/voxgest/dryrun/Mapua14RescueRuntime.kt
+- android_dry_run/app/src/main/java/com/voxgest/dryrun/Mapua14RescueCameraRecognitionController.kt
+- android_dry_run/app/src/main/java/com/voxgest/dryrun/VoxGestCameraRecognitionController.kt
+- android_dry_run/app/src/main/java/com/voxgest/dryrun/RecognitionResult.java
+- android_dry_run/app/src/main/java/com/voxgest/dryrun/RecognitionOutputCoordinator.kt
+- android_dry_run/app/src/main/java/com/voxgest/dryrun/DemoAllowlistPolicy.kt
+- android_dry_run/app/src/main/java/com/voxgest/dryrun/ui/VoxGestLocalization.kt
+- android_dry_run/app/src/test/java/com/voxgest/dryrun/Mapua14RescueGateTest.kt
+- android_dry_run/app/src/test/java/com/voxgest/dryrun/RecognitionOutputCoordinatorTest.kt
 - docs/ARCHITECTURE_DECISIONS.md
-- docs/NONSIGN_CAPTURE_PROTOCOL.md
 - reports/CODEX_LIVE_HANDOFF.md
-- reports/dataset_engineering/CONTROLLED_BENCHMARK_SPEC.md
-- reports/dataset_engineering/FILIPINO_PRESENTATION_ONTOLOGY.csv
-- reports/dataset_engineering/FILIPINO_PRESENTATION_ONTOLOGY.md
-- reports/dataset_engineering/FSL105_RAW_AUDIT_LIMITATION.md
-- reports/dataset_engineering/MAPUA_CLASS_QUALITY_SUMMARY.csv
-- reports/dataset_engineering/MAPUA_FSL105_LABEL_MAPPING.csv
-- reports/dataset_engineering/MAPUA_RAW_AUDIT_SUMMARY.md
-- reports/dataset_engineering/TEMPORAL_SPEED_STUDY.md
 
 COMMANDS/TESTS=
 
-- Resume script imported 970 unique checkpoint rows and reported
-  `mediapipe 1107/1107`; final unique rows 1,107 and errors 0.
-- Raw motion script reported `motion 1107/1107`; unique rows 1,107 and errors 0.
-- External finalizer hashed 1,107/1,107 MP4s and verified class/status sums.
-- Safe C: FSL-105 search: Downloads, C:\VOXGEST_DATASETS,
-  C:\VOXGEST_RECOVERY_20260910, and C:\BSIT 3RD YEAR; raw match count 0.
-- Mapping schema/count: 116 rows; statuses 14 exact, 1 semantic candidate,
-  11 Mapúa-only, 90 FSL105-only.
-- Ontology: 117 unique canonical IDs; zero empty Filipino display cells; all
-  review-gated.
-- Class summary: 26 rows; VIDEO_COUNT sum 1,107; technical-status sum 1,107.
-- `git diff --name-only -- android_dry_run`: empty.
+- `python -m unittest tests.test_fullsign225_feature_builder -v`: 3/3 PASS.
+- `94_prepare_mapua14_rescue.py --workers 3`: 367/367 extracted; 0 failures.
+- Idempotent cached extraction verification: 367/367; duplicate crossings 0.
+- `95_train_mapua14_rescue.py`: four candidates PASS; sealed test opened once;
+  TF/TFLite numeric parity PASS.
+- Architecture/TFLite smoke conversion: RD-TCN 125326 parameters; GRU 100592.
+- `gradlew testDebugUnitTest`: PASS.
+- `gradlew testDebugUnitTest assembleDebug`: BUILD SUCCESSFUL.
+- Protected deployed model path diff: empty.
+- `adb devices -l`: zero connected devices on both checks.
 
-DATASET_STATUS=
+DATASET_STATUS=PASS-only Mapua-14 source count 367. Counts: EIGHT=33, FIVE=32, FOUR=27, HELLO=19, NINE=27, NO=33, ONE=21, SEVEN=25, SIX=25, TEN=22, THANK_YOU=24, THREE=28, TWO=25, YES=26. HELLO is the smallest class. Signer IDs remain unavailable; offline metrics are not signer independent.
 
-- Mapúa Transactional FSL v1 external workspace:
-  C:\VOXGEST_DATASETS\TRANSACTIONAL_FSL_V1. Raw audit complete: 1,107 MP4,
-  26 classes, 83,025 decoded frames, zero corrupted videos, all 640×480,
-  25 FPS, and 3.0 seconds.
-- Source/copy SHA-256:
-  51333B36E8CCA082BC5ECB1B53B0242E1C91D9D00393C2A75E18DCE27CEB48DE.
-- Technical decisions: PASS 670, REVIEW 408, REJECT_TECHNICAL 29. Exact video
-  duplicate groups 0; 66 perceptual candidates affect 95 videos and require
-  human review.
-- Signer count is not recoverable from supplied metadata.
-- FSL-105 remains 1,704 train + 426 test references, 105 labels. Raw MOV files
-  are absent; same-method raw audit and overlap trajectory comparison are
-  BLOCKED_RAW_SOURCE_MISSING.
+TRAINING_STATUS=OFFLINE_PASS. Winner C=RD-TCN48, 125326 parameters. Final bundle mapua14_fullsign225_48f_v1. TFLite parity PASS. Model is experimental and not approved for Standard promotion before physical unseen-Samsung qualification.
 
-TRAINING_STATUS=NOT_STARTED. READY_FOR_CONTROLLED_TRAINING=NO. No training process was launched.
-
-SAMSUNG_STATUS=No device work was requested or performed in this dataset-audit task. Preserve prior status: physical recognition qualification remains incomplete; do not claim current Samsung evidence.
+SAMSUNG_STATUS=BLOCKED_DEVICE_NOT_CONNECTED. APK build passed, but install/launch, 70 sign attempts, nine negative categories, live latency, wrong-accept, rejection, and false-accept measurements remain NOT_YET_TESTED.
 
 METRICS=
 
-- Mapúa raw pose/any-hand/left/right/both-hand detection:
-  1.000000 / 0.779283 / 0.765059 / 0.169997 / 0.155772.
-- Internal landmark dropout/body-in-frame/hand-in-frame:
-  0.022066 / 1.000000 / 0.774827.
-- Detected motion duration ms: P05 640, median 2,400, P95 3,000.
-- Landmark frames: P05 15, median 58, P95 75.
-- Temporal retained-variation median: 20=0.931925, 32=0.969269,
-  48=0.986112. Recommendation: EXPERIMENT_REQUIRED.
-- Fast descriptive classes: COIN, DISCOUNT, HELLO, HOW_MANY, HOW_MUCH,
-  THANK_YOU, WELCOME. Their trajectory-completion rate is 0.931596; speed alone
-  is never a failure criterion.
-- Existing deployed FSL-105 offline metrics remain unchanged: test accuracy
-  0.9364375461936437, macro-F1 0.9385262654349393, TFLite top-1 agreement 1.0.
+- A RD-TCN32 development macro-F1=0.9783081997367711.
+- B GRU32 development macro-F1=0.8832048932626663.
+- C RD-TCN48 development macro-F1=0.9824349261849262.
+- D GRU48 development macro-F1=0.8980770950571371.
+- Exploratory sealed clip accuracy=0.9821428571428571.
+- Exploratory sealed clip macro-F1=0.979591836734694.
+- Only sealed confusion: YES -> TEN, count 1.
+- TF/TFLite top-1 agreement=1.0; maximum probability difference=4.76837158203125e-07.
+- Model SHA-256=f850c5d414c5c253ef9131bae5a85bb3ed5ad5412abdf9936df510c6ec043dcc.
+- Label SHA-256=af398236fd62da6c5bafbe0b60d21bc8a155c48aeb45987090c1b14a20cb9ef0.
 
 FAILURES=
 
-- FSL-105 raw source is missing, blocking same-method raw audit and MODEL_A/C.
-- Mapúa signer IDs are absent, blocking defensible signer-disjoint MODEL_B/C
-  splits until independent grouping/annotation.
-- Text matches do not prove sign equivalence; 14 exact-text overlaps and
-  WELCOME versus YOURE WELCOME require qualified FSL review.
-- 29 Mapúa videos cross conservative technical-reject gates; 408 require review.
-- The 66 perceptual near-duplicate pairs are candidates, not confirmed
-  duplicates; 42 are cross-class and may reflect common neutral/background
-  frames.
-- Audit NumPy 2.4.6 differs from repository pin 1.26.4; future training
-  extraction requires a locked environment and golden feature parity.
-- Physical Samsung recognition/negative/duplicate/composer qualification remains
-  outside this task and incomplete.
+- Samsung absent from ADB; physical generalization and negative rejection are
+  unmeasured. This is a required stop, not a model pass/fail conclusion.
+- Mapua signer IDs are unavailable. High offline clip metrics may reflect
+  signer/background/session regularities and must not be called signer-independent.
+- The first extraction launch used the transaction root rather than its
+  `extracted` child and failed closed with FileNotFoundError before producing
+  tensors. Path resolution was corrected; the frozen split was unchanged; the
+  successful pass completed 367/367.
+- The first Gradle launch lacked JAVA_HOME. Rerun with the existing Android
+  Studio JBR passed.
 
-CURRENT_HYPOTHESIS=Mapúa provides technically usable raw evidence for a controlled experiment, but the current evidence cannot justify merging sources or retraining: raw FSL-105 clips, Mapúa signer groups, linguistic equivalence review, and explicit training authorization are missing. The 20-frame representation loses more reconstructed trajectory variation than 32/48, but model selection is still experimental.
+CURRENT_HYPOTHESIS=Complete-trajectory FullSign225 plus RD-TCN48 materially fits the Mapua clip distribution, but only an unseen Samsung signer can establish whether this is a useful rescue foundation. Gate performance must be reported separately from raw top-1.
 
-NEXT_ACTION=Human-review the 29 rejects, 408 review clips, and 66 perceptual candidates; recover/annotate Mapúa signer groups; restore the original FSL-105 raw MOV source; obtain qualified FSL review of all overlap candidates and the presentation ontology; then request explicit approval before executing the existing audited A/B/C RD-TCN/GRU temporal grid.
+NEXT_ACTION=Connect and authorize the Samsung, install the current debug APK, launch MAPUA14_RESCUE_V1 using both required debug extras, verify on-device golden parity, then interactively capture five attempts for each of 14 signs and the nine prescribed negative categories. Do not promote to Standard before those results.
 
 DO_NOT_MODIFY=
 
 - Do not access or write the retired D: workspace.
 - Do not force-push or rewrite GitHub history.
-- Do not stage raw datasets, archives, per-frame evidence, APK/AAB/build output,
-  environments, caches, secrets, device evidence, patches, or checkpoints.
-- Do not train until explicitly approved after the listed blockers are resolved.
-- Do not redesign or modify the frozen white/teal UI, Listen, or CORE3 Avatar.
-- Do not replace the deployed FSL-105 model; preserve it as rollback.
-- Do not mirror canonical ML input or swap anatomical hand slots.
-- Preserve (System.nanoTime() / 1_000_000L).
+- Do not stage raw videos, external features, checkpoints, caches, environments,
+  APK/AAB/build output, device captures, secrets, or local configuration.
+- Do not replace the deployed FSL-105 model, its 105 labels, or Standard profile.
+- Do not change UI layout/styling, Avatar, or Listen.
+- Do not mirror canonical ML input or swap anatomical left/right slots.
+- Preserve `(System.nanoTime() / 1_000_000L)`.
+- Do not claim signer-independent or live accuracy from this experiment.
 
 ## Future update contract
 
-Every meaningful task must refresh: TIMESTAMP, BRANCH, COMMIT,
+Every meaningful task must refresh TIMESTAMP, BRANCH, COMMIT,
 SOURCE_BASE_COMMIT, HANDOFF_UPDATE_COMMIT, BRANCH_HEAD, CURRENT_GOAL,
 WORK_COMPLETED, FILES_CHANGED, COMMANDS/TESTS, DATASET_STATUS, TRAINING_STATUS,
 SAMSUNG_STATUS, METRICS, FAILURES, CURRENT_HYPOTHESIS, NEXT_ACTION, and

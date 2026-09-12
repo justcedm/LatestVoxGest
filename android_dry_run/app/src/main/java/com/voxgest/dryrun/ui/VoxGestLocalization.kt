@@ -121,20 +121,34 @@ internal object VoxGestOfflineMessagePresenter {
         "WHAT" to "Ano",
         "YOUR" to "Iyong",
         "NAME" to "Pangalan",
-        "MY" to "Aking"
+        "MY" to "Aking",
+        "EIGHT" to "Walo",
+        "FIVE" to "Lima",
+        "FOUR" to "Apat",
+        "HELLO" to "Kumusta",
+        "NINE" to "Siyam",
+        "NO" to "Hindi",
+        "ONE" to "Isa",
+        "SEVEN" to "Pito",
+        "SIX" to "Anim",
+        "TEN" to "Sampu",
+        "THREE" to "Tatlo",
+        "TWO" to "Dalawa",
+        "YES" to "Oo"
     )
 
     private val phraseTranslations = mapOf(
         "WHAT YOUR NAME" to "Ano ang pangalan mo?",
         "WHAT IS YOUR NAME" to "Ano ang pangalan mo?",
-        "MY NAME" to "Ang pangalan ko"
+        "MY NAME" to "Ang pangalan ko",
+        "THANK YOU" to "Salamat"
     )
 
     fun present(raw: String): BilingualMessage {
         val source = raw.trim().replace(Regex("\\s+"), " ")
         if (source.isBlank()) return BilingualMessage("", "", null)
-        val normalized = source.uppercase(Locale.US)
-        val english = source.lowercase(Locale.US).replaceFirstChar { it.titlecase(Locale.US) }
+        val normalized = source.uppercase(Locale.US).replace('_', ' ')
+        val english = normalized.lowercase(Locale.US).replaceFirstChar { it.titlecase(Locale.US) }
         val filipino = phraseTranslations[normalized] ?: normalized.split(' ')
             .map { tokenTranslations[it] }
             .takeIf { translated -> translated.all { it != null } }

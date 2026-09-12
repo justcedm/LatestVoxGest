@@ -1,0 +1,7835 @@
+{
+  "android_profile_status": "NOT_YET_ADDED",
+  "candidate_results": [
+    {
+      "candidate": {
+        "architecture": "RD-TCN",
+        "id": "A",
+        "temporal_length": 32
+      },
+      "combined_out_of_fold_metrics": {
+        "accuracy": 0.9807073954983923,
+        "balanced_accuracy": 0.9816269393132747,
+        "confusion_matrix": [
+          [
+            28,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            27,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            23,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            16,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            0,
+            22,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            0,
+            0,
+            0,
+            27,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            18,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            21,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            21,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            19,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            20,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            23,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            21,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            3,
+            0,
+            0,
+            0,
+            19
+          ]
+        ],
+        "expected_calibration_error_10bin": 0.027476525958328002,
+        "macro_f1": 0.9808472841930904,
+        "macro_precision": 0.9818443051201672,
+        "macro_recall": 0.9816269393132747,
+        "negative_log_likelihood": 0.11576720327138901,
+        "per_class": {
+          "EIGHT": {
+            "f1": 0.9824561403508771,
+            "precision": 0.9655172413793104,
+            "recall": 1.0,
+            "support": 28
+          },
+          "FIVE": {
+            "f1": 0.9818181818181818,
+            "precision": 0.9642857142857143,
+            "recall": 1.0,
+            "support": 27
+          },
+          "FOUR": {
+            "f1": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "support": 23
+          },
+          "HELLO": {
+            "f1": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "support": 16
+          },
+          "NINE": {
+            "f1": 0.9777777777777777,
+            "precision": 1.0,
+            "recall": 0.9565217391304348,
+            "support": 23
+          },
+          "NO": {
+            "f1": 0.9818181818181818,
+            "precision": 1.0,
+            "recall": 0.9642857142857143,
+            "support": 28
+          },
+          "ONE": {
+            "f1": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "support": 18
+          },
+          "SEVEN": {
+            "f1": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "support": 21
+          },
+          "SIX": {
+            "f1": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "support": 21
+          },
+          "TEN": {
+            "f1": 0.926829268292683,
+            "precision": 0.8636363636363636,
+            "recall": 1.0,
+            "support": 19
+          },
+          "THANK_YOU": {
+            "f1": 0.975609756097561,
+            "precision": 0.9523809523809523,
+            "recall": 1.0,
+            "support": 20
+          },
+          "THREE": {
+            "f1": 0.9787234042553191,
+            "precision": 1.0,
+            "recall": 0.9583333333333334,
+            "support": 24
+          },
+          "TWO": {
+            "f1": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "support": 21
+          },
+          "YES": {
+            "f1": 0.926829268292683,
+            "precision": 1.0,
+            "recall": 0.8636363636363636,
+            "support": 22
+          }
+        },
+        "top_confusions": [
+          {
+            "count": 3,
+            "predicted": "TEN",
+            "true": "YES"
+          },
+          {
+            "count": 1,
+            "predicted": "FIVE",
+            "true": "NINE"
+          },
+          {
+            "count": 1,
+            "predicted": "EIGHT",
+            "true": "NO"
+          },
+          {
+            "count": 1,
+            "predicted": "THANK_YOU",
+            "true": "THREE"
+          }
+        ],
+        "weakest_class_f1": 0.926829268292683
+      },
+      "folds": [
+        {
+          "accuracy": 1.0,
+          "balanced_accuracy": 1.0,
+          "best_epoch": 60,
+          "candidate": {
+            "architecture": "RD-TCN",
+            "id": "A",
+            "temporal_length": 32
+          },
+          "confusion_matrix": [
+            [
+              7,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              7,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              6,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              4,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              6,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              7,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              6,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              6,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              6,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              6,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              6
+            ]
+          ],
+          "contract": {
+            "numpy_version": "1.26.4",
+            "split_manifest_sha256": "5ee4ba671d1022ab02fd0068804f391450fe477a0f5f83ee4e689f6210fdbc09",
+            "tensorflow_version": "2.15.0",
+            "training_config_sha256": "e107fcdc49cae1249802e842dfbf92b2a6b090866f0c3569097289f07672780f"
+          },
+          "epochs_run": 70,
+          "expected_calibration_error_10bin": 0.0376946475447678,
+          "fold": 0,
+          "macro_f1": 1.0,
+          "macro_precision": 1.0,
+          "macro_recall": 1.0,
+          "negative_log_likelihood": 0.043319862335920334,
+          "overfit_gap": -0.03202331066131592,
+          "parameter_count": 125326,
+          "per_class": {
+            "EIGHT": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 7
+            },
+            "FIVE": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 7
+            },
+            "FOUR": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 6
+            },
+            "HELLO": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 4
+            },
+            "NINE": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 6
+            },
+            "NO": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 7
+            },
+            "ONE": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 5
+            },
+            "SEVEN": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 6
+            },
+            "SIX": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 6
+            },
+            "TEN": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 5
+            },
+            "THANK_YOU": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 5
+            },
+            "THREE": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 6
+            },
+            "TWO": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 6
+            },
+            "YES": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 6
+            }
+          },
+          "seed": 20267477,
+          "top_confusions": [],
+          "training_accuracy_at_best_epoch": 0.9679766893386841,
+          "training_seconds": 39.93303569999989,
+          "training_source_count_before_augmentation": 229,
+          "training_tensor_count_after_augmentation": 687,
+          "validation_accuracy_at_best_epoch": 1.0,
+          "validation_source_count": 82,
+          "weakest_class_f1": 1.0
+        },
+        {
+          "accuracy": 1.0,
+          "balanced_accuracy": 1.0,
+          "best_epoch": 69,
+          "candidate": {
+            "architecture": "RD-TCN",
+            "id": "A",
+            "temporal_length": 32
+          },
+          "confusion_matrix": [
+            [
+              7,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              7,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              6,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              4,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              6,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              7,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              6,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              6
+            ]
+          ],
+          "contract": {
+            "numpy_version": "1.26.4",
+            "split_manifest_sha256": "5ee4ba671d1022ab02fd0068804f391450fe477a0f5f83ee4e689f6210fdbc09",
+            "tensorflow_version": "2.15.0",
+            "training_config_sha256": "e107fcdc49cae1249802e842dfbf92b2a6b090866f0c3569097289f07672780f"
+          },
+          "epochs_run": 79,
+          "expected_calibration_error_10bin": 0.02374106192890602,
+          "fold": 1,
+          "macro_f1": 1.0,
+          "macro_precision": 1.0,
+          "macro_recall": 1.0,
+          "negative_log_likelihood": 0.026033874601125717,
+          "overfit_gap": -0.0201149582862854,
+          "parameter_count": 125326,
+          "per_class": {
+            "EIGHT": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 7
+            },
+            "FIVE": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 7
+            },
+            "FOUR": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 6
+            },
+            "HELLO": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 4
+            },
+            "NINE": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 6
+            },
+            "NO": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 7
+            },
+            "ONE": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 5
+            },
+            "SEVEN": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 5
+            },
+            "SIX": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 5
+            },
+            "TEN": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 5
+            },
+            "THANK_YOU": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 5
+            },
+            "THREE": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 6
+            },
+            "TWO": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 5
+            },
+            "YES": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 6
+            }
+          },
+          "seed": 20267478,
+          "top_confusions": [],
+          "training_accuracy_at_best_epoch": 0.9798850417137146,
+          "training_seconds": 45.40500290002092,
+          "training_source_count_before_augmentation": 232,
+          "training_tensor_count_after_augmentation": 696,
+          "validation_accuracy_at_best_epoch": 1.0,
+          "validation_source_count": 79,
+          "weakest_class_f1": 1.0
+        },
+        {
+          "accuracy": 1.0,
+          "balanced_accuracy": 1.0,
+          "best_epoch": 94,
+          "candidate": {
+            "architecture": "RD-TCN",
+            "id": "A",
+            "temporal_length": 32
+          },
+          "confusion_matrix": [
+            [
+              7,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              7,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              6,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              4,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              6,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              7,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              4,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              6,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5
+            ]
+          ],
+          "contract": {
+            "numpy_version": "1.26.4",
+            "split_manifest_sha256": "5ee4ba671d1022ab02fd0068804f391450fe477a0f5f83ee4e689f6210fdbc09",
+            "tensorflow_version": "2.15.0",
+            "training_config_sha256": "e107fcdc49cae1249802e842dfbf92b2a6b090866f0c3569097289f07672780f"
+          },
+          "epochs_run": 100,
+          "expected_calibration_error_10bin": 0.01935183692288089,
+          "fold": 2,
+          "macro_f1": 1.0,
+          "macro_precision": 1.0,
+          "macro_recall": 1.0,
+          "negative_log_likelihood": 0.02124188467860222,
+          "overfit_gap": -0.012820541858673096,
+          "parameter_count": 125326,
+          "per_class": {
+            "EIGHT": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 7
+            },
+            "FIVE": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 7
+            },
+            "FOUR": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 6
+            },
+            "HELLO": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 4
+            },
+            "NINE": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 6
+            },
+            "NO": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 7
+            },
+            "ONE": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 4
+            },
+            "SEVEN": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 5
+            },
+            "SIX": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 5
+            },
+            "TEN": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 5
+            },
+            "THANK_YOU": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 5
+            },
+            "THREE": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 6
+            },
+            "TWO": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 5
+            },
+            "YES": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 5
+            }
+          },
+          "seed": 20267479,
+          "top_confusions": [],
+          "training_accuracy_at_best_epoch": 0.9871794581413269,
+          "training_seconds": 54.84151219998603,
+          "training_source_count_before_augmentation": 234,
+          "training_tensor_count_after_augmentation": 702,
+          "validation_accuracy_at_best_epoch": 1.0,
+          "validation_source_count": 77,
+          "weakest_class_f1": 1.0
+        },
+        {
+          "accuracy": 0.9178082191780822,
+          "balanced_accuracy": 0.9207482993197279,
+          "best_epoch": 40,
+          "candidate": {
+            "architecture": "RD-TCN",
+            "id": "A",
+            "temporal_length": 32
+          },
+          "confusion_matrix": [
+            [
+              7,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              6,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              5,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              4,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0,
+              0,
+              4,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              1,
+              0,
+              0,
+              0,
+              0,
+              6,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              4,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              4,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              1,
+              5,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              3,
+              0,
+              0,
+              0,
+              2
+            ]
+          ],
+          "contract": {
+            "numpy_version": "1.26.4",
+            "split_manifest_sha256": "5ee4ba671d1022ab02fd0068804f391450fe477a0f5f83ee4e689f6210fdbc09",
+            "tensorflow_version": "2.15.0",
+            "training_config_sha256": "e107fcdc49cae1249802e842dfbf92b2a6b090866f0c3569097289f07672780f"
+          },
+          "epochs_run": 50,
+          "expected_calibration_error_10bin": 0.05263553825143265,
+          "fold": 3,
+          "macro_f1": 0.9132327989470844,
+          "macro_precision": 0.9383503401360545,
+          "macro_recall": 0.9207482993197279,
+          "negative_log_likelihood": 0.3939598798751831,
+          "overfit_gap": 0.03737384080886841,
+          "parameter_count": 125326,
+          "per_class": {
+            "EIGHT": {
+              "f1": 0.9333333333333333,
+              "precision": 0.875,
+              "recall": 1.0,
+              "support": 7
+            },
+            "FIVE": {
+              "f1": 0.9230769230769231,
+              "precision": 0.8571428571428571,
+              "recall": 1.0,
+              "support": 6
+            },
+            "FOUR": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 5
+            },
+            "HELLO": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 4
+            },
+            "NINE": {
+              "f1": 0.8888888888888888,
+              "precision": 1.0,
+              "recall": 0.8,
+              "support": 5
+            },
+            "NO": {
+              "f1": 0.9230769230769231,
+              "precision": 1.0,
+              "recall": 0.8571428571428571,
+              "support": 7
+            },
+            "ONE": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 4
+            },
+            "SEVEN": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 5
+            },
+            "SIX": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 5
+            },
+            "TEN": {
+              "f1": 0.7272727272727273,
+              "precision": 0.5714285714285714,
+              "recall": 1.0,
+              "support": 4
+            },
+            "THANK_YOU": {
+              "f1": 0.9090909090909091,
+              "precision": 0.8333333333333334,
+              "recall": 1.0,
+              "support": 5
+            },
+            "THREE": {
+              "f1": 0.9090909090909091,
+              "precision": 1.0,
+              "recall": 0.8333333333333334,
+              "support": 6
+            },
+            "TWO": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 5
+            },
+            "YES": {
+              "f1": 0.5714285714285714,
+              "precision": 1.0,
+              "recall": 0.4,
+              "support": 5
+            }
+          },
+          "seed": 20267480,
+          "top_confusions": [
+            {
+              "count": 3,
+              "predicted": "TEN",
+              "true": "YES"
+            },
+            {
+              "count": 1,
+              "predicted": "FIVE",
+              "true": "NINE"
+            },
+            {
+              "count": 1,
+              "predicted": "EIGHT",
+              "true": "NO"
+            },
+            {
+              "count": 1,
+              "predicted": "THANK_YOU",
+              "true": "THREE"
+            }
+          ],
+          "training_accuracy_at_best_epoch": 0.9551820755004883,
+          "training_seconds": 33.31664120001369,
+          "training_source_count_before_augmentation": 238,
+          "training_tensor_count_after_augmentation": 714,
+          "validation_accuracy_at_best_epoch": 0.9178082346916199,
+          "validation_source_count": 73,
+          "weakest_class_f1": 0.5714285714285714
+        }
+      ],
+      "mean_development_accuracy": 0.9794520547945206,
+      "mean_development_balanced_accuracy": 0.980187074829932,
+      "mean_development_ece": 0.03335577116199684,
+      "mean_development_macro_f1": 0.9783081997367711,
+      "mean_development_macro_precision": 0.9845875850340136,
+      "mean_development_macro_recall": 0.980187074829932,
+      "mean_development_weakest_class_f1": 0.8928571428571428,
+      "mean_overfit_gap": -0.0068962424993515015,
+      "parameter_count": 125326,
+      "status": "PASS",
+      "total_training_seconds": 173.49619200002053
+    },
+    {
+      "candidate": {
+        "architecture": "GRU",
+        "id": "B",
+        "temporal_length": 32
+      },
+      "combined_out_of_fold_metrics": {
+        "accuracy": 0.8906752411575563,
+        "balanced_accuracy": 0.8881546368980987,
+        "confusion_matrix": [
+          [
+            27,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            27,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            21,
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            1,
+            15,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            0,
+            21,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            0,
+            0,
+            0,
+            25,
+            0,
+            0,
+            0,
+            0,
+            0,
+            2,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            17,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            21,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            20,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            11,
+            0,
+            0,
+            0,
+            8
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            20,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            5,
+            0,
+            0,
+            1,
+            0,
+            1,
+            16,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            4,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            16,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            2,
+            0,
+            0,
+            0,
+            20
+          ]
+        ],
+        "expected_calibration_error_10bin": 0.06162972503919694,
+        "macro_f1": 0.8898940791776077,
+        "macro_precision": 0.9023228568203138,
+        "macro_recall": 0.8881546368980987,
+        "negative_log_likelihood": 0.3569735884666443,
+        "per_class": {
+          "EIGHT": {
+            "f1": 0.9642857142857143,
+            "precision": 0.9642857142857143,
+            "recall": 0.9642857142857143,
+            "support": 28
+          },
+          "FIVE": {
+            "f1": 0.9473684210526315,
+            "precision": 0.9,
+            "recall": 1.0,
+            "support": 27
+          },
+          "FOUR": {
+            "f1": 0.9333333333333333,
+            "precision": 0.9545454545454546,
+            "recall": 0.9130434782608695,
+            "support": 23
+          },
+          "HELLO": {
+            "f1": 0.9375,
+            "precision": 0.9375,
+            "recall": 0.9375,
+            "support": 16
+          },
+          "NINE": {
+            "f1": 0.9545454545454546,
+            "precision": 1.0,
+            "recall": 0.9130434782608695,
+            "support": 23
+          },
+          "NO": {
+            "f1": 0.7936507936507936,
+            "precision": 0.7142857142857143,
+            "recall": 0.8928571428571429,
+            "support": 28
+          },
+          "ONE": {
+            "f1": 0.9714285714285714,
+            "precision": 1.0,
+            "recall": 0.9444444444444444,
+            "support": 18
+          },
+          "SEVEN": {
+            "f1": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "support": 21
+          },
+          "SIX": {
+            "f1": 0.9302325581395349,
+            "precision": 0.9090909090909091,
+            "recall": 0.9523809523809523,
+            "support": 21
+          },
+          "TEN": {
+            "f1": 0.6875,
+            "precision": 0.8461538461538461,
+            "recall": 0.5789473684210527,
+            "support": 19
+          },
+          "THANK_YOU": {
+            "f1": 0.9523809523809523,
+            "precision": 0.9090909090909091,
+            "recall": 1.0,
+            "support": 20
+          },
+          "THREE": {
+            "f1": 0.7441860465116279,
+            "precision": 0.8421052631578947,
+            "recall": 0.6666666666666666,
+            "support": 24
+          },
+          "TWO": {
+            "f1": 0.8421052631578947,
+            "precision": 0.9411764705882353,
+            "recall": 0.7619047619047619,
+            "support": 21
+          },
+          "YES": {
+            "f1": 0.8,
+            "precision": 0.7142857142857143,
+            "recall": 0.9090909090909091,
+            "support": 22
+          }
+        },
+        "top_confusions": [
+          {
+            "count": 8,
+            "predicted": "YES",
+            "true": "TEN"
+          },
+          {
+            "count": 5,
+            "predicted": "NO",
+            "true": "THREE"
+          },
+          {
+            "count": 4,
+            "predicted": "NO",
+            "true": "TWO"
+          },
+          {
+            "count": 2,
+            "predicted": "THREE",
+            "true": "NO"
+          },
+          {
+            "count": 2,
+            "predicted": "TEN",
+            "true": "YES"
+          },
+          {
+            "count": 1,
+            "predicted": "FIVE",
+            "true": "EIGHT"
+          },
+          {
+            "count": 1,
+            "predicted": "HELLO",
+            "true": "FOUR"
+          },
+          {
+            "count": 1,
+            "predicted": "SIX",
+            "true": "FOUR"
+          },
+          {
+            "count": 1,
+            "predicted": "FOUR",
+            "true": "HELLO"
+          },
+          {
+            "count": 1,
+            "predicted": "FIVE",
+            "true": "NINE"
+          },
+          {
+            "count": 1,
+            "predicted": "THANK_YOU",
+            "true": "NINE"
+          },
+          {
+            "count": 1,
+            "predicted": "EIGHT",
+            "true": "NO"
+          },
+          {
+            "count": 1,
+            "predicted": "NO",
+            "true": "ONE"
+          },
+          {
+            "count": 1,
+            "predicted": "FIVE",
+            "true": "SIX"
+          },
+          {
+            "count": 1,
+            "predicted": "SIX",
+            "true": "THREE"
+          },
+          {
+            "count": 1,
+            "predicted": "THANK_YOU",
+            "true": "THREE"
+          },
+          {
+            "count": 1,
+            "predicted": "TWO",
+            "true": "THREE"
+          },
+          {
+            "count": 1,
+            "predicted": "THREE",
+            "true": "TWO"
+          }
+        ],
+        "weakest_class_f1": 0.6875
+      },
+      "folds": [
+        {
+          "accuracy": 0.9390243902439024,
+          "balanced_accuracy": 0.9357142857142858,
+          "best_epoch": 78,
+          "candidate": {
+            "architecture": "GRU",
+            "id": "B",
+            "temporal_length": 32
+          },
+          "confusion_matrix": [
+            [
+              7,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              7,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              6,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              4,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              6,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              7,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              1,
+              4,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              6,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              4,
+              0,
+              0,
+              0,
+              1
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              6
+            ]
+          ],
+          "contract": {
+            "numpy_version": "1.26.4",
+            "split_manifest_sha256": "5ee4ba671d1022ab02fd0068804f391450fe477a0f5f83ee4e689f6210fdbc09",
+            "tensorflow_version": "2.15.0",
+            "training_config_sha256": "e107fcdc49cae1249802e842dfbf92b2a6b090866f0c3569097289f07672780f"
+          },
+          "epochs_run": 88,
+          "expected_calibration_error_10bin": 0.11402487609444593,
+          "fold": 0,
+          "macro_f1": 0.9417850123732476,
+          "macro_precision": 0.9594387755102041,
+          "macro_recall": 0.9357142857142858,
+          "negative_log_likelihood": 0.24239175021648407,
+          "overfit_gap": -0.07002878189086914,
+          "parameter_count": 100592,
+          "per_class": {
+            "EIGHT": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 7
+            },
+            "FIVE": {
+              "f1": 0.9333333333333333,
+              "precision": 0.875,
+              "recall": 1.0,
+              "support": 7
+            },
+            "FOUR": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 6
+            },
+            "HELLO": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 4
+            },
+            "NINE": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 6
+            },
+            "NO": {
+              "f1": 0.8235294117647058,
+              "precision": 0.7,
+              "recall": 1.0,
+              "support": 7
+            },
+            "ONE": {
+              "f1": 0.8888888888888888,
+              "precision": 1.0,
+              "recall": 0.8,
+              "support": 5
+            },
+            "SEVEN": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 6
+            },
+            "SIX": {
+              "f1": 0.9090909090909091,
+              "precision": 1.0,
+              "recall": 0.8333333333333334,
+              "support": 6
+            },
+            "TEN": {
+              "f1": 0.8888888888888888,
+              "precision": 1.0,
+              "recall": 0.8,
+              "support": 5
+            },
+            "THANK_YOU": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 5
+            },
+            "THREE": {
+              "f1": 0.9090909090909091,
+              "precision": 1.0,
+              "recall": 0.8333333333333334,
+              "support": 6
+            },
+            "TWO": {
+              "f1": 0.9090909090909091,
+              "precision": 1.0,
+              "recall": 0.8333333333333334,
+              "support": 6
+            },
+            "YES": {
+              "f1": 0.9230769230769231,
+              "precision": 0.8571428571428571,
+              "recall": 1.0,
+              "support": 6
+            }
+          },
+          "seed": 20267578,
+          "top_confusions": [
+            {
+              "count": 1,
+              "predicted": "NO",
+              "true": "ONE"
+            },
+            {
+              "count": 1,
+              "predicted": "FIVE",
+              "true": "SIX"
+            },
+            {
+              "count": 1,
+              "predicted": "YES",
+              "true": "TEN"
+            },
+            {
+              "count": 1,
+              "predicted": "NO",
+              "true": "THREE"
+            },
+            {
+              "count": 1,
+              "predicted": "NO",
+              "true": "TWO"
+            }
+          ],
+          "training_accuracy_at_best_epoch": 0.8689956068992615,
+          "training_seconds": 43.85213779998594,
+          "training_source_count_before_augmentation": 229,
+          "training_tensor_count_after_augmentation": 687,
+          "validation_accuracy_at_best_epoch": 0.9390243887901306,
+          "validation_source_count": 82,
+          "weakest_class_f1": 0.8235294117647058
+        },
+        {
+          "accuracy": 0.9620253164556962,
+          "balanced_accuracy": 0.9595238095238097,
+          "best_epoch": 87,
+          "candidate": {
+            "architecture": "GRU",
+            "id": "B",
+            "temporal_length": 32
+          },
+          "confusion_matrix": [
+            [
+              7,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              7,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              6,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              4,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              6,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              7,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              4,
+              0,
+              0,
+              0,
+              1
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              4,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              6
+            ]
+          ],
+          "contract": {
+            "numpy_version": "1.26.4",
+            "split_manifest_sha256": "5ee4ba671d1022ab02fd0068804f391450fe477a0f5f83ee4e689f6210fdbc09",
+            "tensorflow_version": "2.15.0",
+            "training_config_sha256": "e107fcdc49cae1249802e842dfbf92b2a6b090866f0c3569097289f07672780f"
+          },
+          "epochs_run": 97,
+          "expected_calibration_error_10bin": 0.1114484086821351,
+          "fold": 1,
+          "macro_f1": 0.9632104007104008,
+          "macro_precision": 0.9739229024943311,
+          "macro_recall": 0.9595238095238097,
+          "negative_log_likelihood": 0.24883387982845306,
+          "overfit_gap": -0.0927724838256836,
+          "parameter_count": 100592,
+          "per_class": {
+            "EIGHT": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 7
+            },
+            "FIVE": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 7
+            },
+            "FOUR": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 6
+            },
+            "HELLO": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 4
+            },
+            "NINE": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 6
+            },
+            "NO": {
+              "f1": 0.875,
+              "precision": 0.7777777777777778,
+              "recall": 1.0,
+              "support": 7
+            },
+            "ONE": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 5
+            },
+            "SEVEN": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 5
+            },
+            "SIX": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 5
+            },
+            "TEN": {
+              "f1": 0.8888888888888888,
+              "precision": 1.0,
+              "recall": 0.8,
+              "support": 5
+            },
+            "THANK_YOU": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 5
+            },
+            "THREE": {
+              "f1": 0.9090909090909091,
+              "precision": 1.0,
+              "recall": 0.8333333333333334,
+              "support": 6
+            },
+            "TWO": {
+              "f1": 0.8888888888888888,
+              "precision": 1.0,
+              "recall": 0.8,
+              "support": 5
+            },
+            "YES": {
+              "f1": 0.9230769230769231,
+              "precision": 0.8571428571428571,
+              "recall": 1.0,
+              "support": 6
+            }
+          },
+          "seed": 20267579,
+          "top_confusions": [
+            {
+              "count": 1,
+              "predicted": "YES",
+              "true": "TEN"
+            },
+            {
+              "count": 1,
+              "predicted": "NO",
+              "true": "THREE"
+            },
+            {
+              "count": 1,
+              "predicted": "NO",
+              "true": "TWO"
+            }
+          ],
+          "training_accuracy_at_best_epoch": 0.8692528605461121,
+          "training_seconds": 51.550772799993865,
+          "training_source_count_before_augmentation": 232,
+          "training_tensor_count_after_augmentation": 696,
+          "validation_accuracy_at_best_epoch": 0.9620253443717957,
+          "validation_source_count": 79,
+          "weakest_class_f1": 0.875
+        },
+        {
+          "accuracy": 0.935064935064935,
+          "balanced_accuracy": 0.9333333333333335,
+          "best_epoch": 99,
+          "candidate": {
+            "architecture": "GRU",
+            "id": "B",
+            "temporal_length": 32
+          },
+          "confusion_matrix": [
+            [
+              7,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              7,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              6,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              4,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              5,
+              0,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              7,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              4,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              3,
+              0,
+              0,
+              0,
+              2
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              4,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5
+            ]
+          ],
+          "contract": {
+            "numpy_version": "1.26.4",
+            "split_manifest_sha256": "5ee4ba671d1022ab02fd0068804f391450fe477a0f5f83ee4e689f6210fdbc09",
+            "tensorflow_version": "2.15.0",
+            "training_config_sha256": "e107fcdc49cae1249802e842dfbf92b2a6b090866f0c3569097289f07672780f"
+          },
+          "epochs_run": 100,
+          "expected_calibration_error_10bin": 0.10867939483035695,
+          "fold": 2,
+          "macro_f1": 0.9317099567099566,
+          "macro_precision": 0.9444727891156462,
+          "macro_recall": 0.9333333333333335,
+          "negative_log_likelihood": 0.22157242894172668,
+          "overfit_gap": -0.09033554792404175,
+          "parameter_count": 100592,
+          "per_class": {
+            "EIGHT": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 7
+            },
+            "FIVE": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 7
+            },
+            "FOUR": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 6
+            },
+            "HELLO": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 4
+            },
+            "NINE": {
+              "f1": 0.9090909090909091,
+              "precision": 1.0,
+              "recall": 0.8333333333333334,
+              "support": 6
+            },
+            "NO": {
+              "f1": 0.9333333333333333,
+              "precision": 0.875,
+              "recall": 1.0,
+              "support": 7
+            },
+            "ONE": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 4
+            },
+            "SEVEN": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 5
+            },
+            "SIX": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 5
+            },
+            "TEN": {
+              "f1": 0.75,
+              "precision": 1.0,
+              "recall": 0.6,
+              "support": 5
+            },
+            "THANK_YOU": {
+              "f1": 0.9090909090909091,
+              "precision": 0.8333333333333334,
+              "recall": 1.0,
+              "support": 5
+            },
+            "THREE": {
+              "f1": 0.9090909090909091,
+              "precision": 1.0,
+              "recall": 0.8333333333333334,
+              "support": 6
+            },
+            "TWO": {
+              "f1": 0.8,
+              "precision": 0.8,
+              "recall": 0.8,
+              "support": 5
+            },
+            "YES": {
+              "f1": 0.8333333333333334,
+              "precision": 0.7142857142857143,
+              "recall": 1.0,
+              "support": 5
+            }
+          },
+          "seed": 20267580,
+          "top_confusions": [
+            {
+              "count": 2,
+              "predicted": "YES",
+              "true": "TEN"
+            },
+            {
+              "count": 1,
+              "predicted": "THANK_YOU",
+              "true": "NINE"
+            },
+            {
+              "count": 1,
+              "predicted": "TWO",
+              "true": "THREE"
+            },
+            {
+              "count": 1,
+              "predicted": "NO",
+              "true": "TWO"
+            }
+          ],
+          "training_accuracy_at_best_epoch": 0.8447293639183044,
+          "training_seconds": 51.59978799999226,
+          "training_source_count_before_augmentation": 234,
+          "training_tensor_count_after_augmentation": 702,
+          "validation_accuracy_at_best_epoch": 0.9350649118423462,
+          "validation_source_count": 77,
+          "weakest_class_f1": 0.75
+        },
+        {
+          "accuracy": 0.7123287671232876,
+          "balanced_accuracy": 0.7103741496598639,
+          "best_epoch": 50,
+          "candidate": {
+            "architecture": "GRU",
+            "id": "B",
+            "temporal_length": 32
+          },
+          "confusion_matrix": [
+            [
+              6,
+              1,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              6,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              3,
+              1,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              1,
+              3,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0,
+              0,
+              4,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              1,
+              0,
+              0,
+              0,
+              0,
+              4,
+              0,
+              0,
+              0,
+              0,
+              0,
+              2,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              4,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              4
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              3,
+              0,
+              0,
+              1,
+              0,
+              1,
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0,
+              0,
+              0,
+              1,
+              3,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              2,
+              0,
+              0,
+              0,
+              3
+            ]
+          ],
+          "contract": {
+            "numpy_version": "1.26.4",
+            "split_manifest_sha256": "5ee4ba671d1022ab02fd0068804f391450fe477a0f5f83ee4e689f6210fdbc09",
+            "tensorflow_version": "2.15.0",
+            "training_config_sha256": "e107fcdc49cae1249802e842dfbf92b2a6b090866f0c3569097289f07672780f"
+          },
+          "epochs_run": 60,
+          "expected_calibration_error_10bin": 0.11648017984547027,
+          "fold": 3,
+          "macro_f1": 0.6961142032570603,
+          "macro_precision": 0.7023809523809524,
+          "macro_recall": 0.7103741496598639,
+          "negative_log_likelihood": 0.7455302476882935,
+          "overfit_gap": 0.12380564212799072,
+          "parameter_count": 100592,
+          "per_class": {
+            "EIGHT": {
+              "f1": 0.8571428571428571,
+              "precision": 0.8571428571428571,
+              "recall": 0.8571428571428571,
+              "support": 7
+            },
+            "FIVE": {
+              "f1": 0.8571428571428571,
+              "precision": 0.75,
+              "recall": 1.0,
+              "support": 6
+            },
+            "FOUR": {
+              "f1": 0.6666666666666666,
+              "precision": 0.75,
+              "recall": 0.6,
+              "support": 5
+            },
+            "HELLO": {
+              "f1": 0.75,
+              "precision": 0.75,
+              "recall": 0.75,
+              "support": 4
+            },
+            "NINE": {
+              "f1": 0.8888888888888888,
+              "precision": 1.0,
+              "recall": 0.8,
+              "support": 5
+            },
+            "NO": {
+              "f1": 0.5333333333333333,
+              "precision": 0.5,
+              "recall": 0.5714285714285714,
+              "support": 7
+            },
+            "ONE": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 4
+            },
+            "SEVEN": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 5
+            },
+            "SIX": {
+              "f1": 0.8333333333333334,
+              "precision": 0.7142857142857143,
+              "recall": 1.0,
+              "support": 5
+            },
+            "TEN": {
+              "f1": 0.0,
+              "precision": 0.0,
+              "recall": 0.0,
+              "support": 4
+            },
+            "THANK_YOU": {
+              "f1": 0.9090909090909091,
+              "precision": 0.8333333333333334,
+              "recall": 1.0,
+              "support": 5
+            },
+            "THREE": {
+              "f1": 0.2,
+              "precision": 0.25,
+              "recall": 0.16666666666666666,
+              "support": 6
+            },
+            "TWO": {
+              "f1": 0.75,
+              "precision": 1.0,
+              "recall": 0.6,
+              "support": 5
+            },
+            "YES": {
+              "f1": 0.5,
+              "precision": 0.42857142857142855,
+              "recall": 0.6,
+              "support": 5
+            }
+          },
+          "seed": 20267581,
+          "top_confusions": [
+            {
+              "count": 4,
+              "predicted": "YES",
+              "true": "TEN"
+            },
+            {
+              "count": 3,
+              "predicted": "NO",
+              "true": "THREE"
+            },
+            {
+              "count": 2,
+              "predicted": "THREE",
+              "true": "NO"
+            },
+            {
+              "count": 2,
+              "predicted": "TEN",
+              "true": "YES"
+            },
+            {
+              "count": 1,
+              "predicted": "FIVE",
+              "true": "EIGHT"
+            },
+            {
+              "count": 1,
+              "predicted": "HELLO",
+              "true": "FOUR"
+            },
+            {
+              "count": 1,
+              "predicted": "SIX",
+              "true": "FOUR"
+            },
+            {
+              "count": 1,
+              "predicted": "FOUR",
+              "true": "HELLO"
+            },
+            {
+              "count": 1,
+              "predicted": "FIVE",
+              "true": "NINE"
+            },
+            {
+              "count": 1,
+              "predicted": "EIGHT",
+              "true": "NO"
+            },
+            {
+              "count": 1,
+              "predicted": "SIX",
+              "true": "THREE"
+            },
+            {
+              "count": 1,
+              "predicted": "THANK_YOU",
+              "true": "THREE"
+            },
+            {
+              "count": 1,
+              "predicted": "NO",
+              "true": "TWO"
+            },
+            {
+              "count": 1,
+              "predicted": "THREE",
+              "true": "TWO"
+            }
+          ],
+          "training_accuracy_at_best_epoch": 0.8361344337463379,
+          "training_seconds": 39.28991479999968,
+          "training_source_count_before_augmentation": 238,
+          "training_tensor_count_after_augmentation": 714,
+          "validation_accuracy_at_best_epoch": 0.7123287916183472,
+          "validation_source_count": 73,
+          "weakest_class_f1": 0.0
+        }
+      ],
+      "mean_development_accuracy": 0.8871108522219553,
+      "mean_development_balanced_accuracy": 0.8847363945578233,
+      "mean_development_ece": 0.11265821486310205,
+      "mean_development_macro_f1": 0.8832048932626663,
+      "mean_development_macro_precision": 0.8950538548752835,
+      "mean_development_macro_recall": 0.8847363945578233,
+      "mean_development_weakest_class_f1": 0.6121323529411764,
+      "mean_overfit_gap": -0.03233279287815094,
+      "parameter_count": 100592,
+      "status": "PASS",
+      "total_training_seconds": 186.29261339997174
+    },
+    {
+      "candidate": {
+        "architecture": "RD-TCN",
+        "id": "C",
+        "temporal_length": 48
+      },
+      "combined_out_of_fold_metrics": {
+        "accuracy": 0.9839228295819936,
+        "balanced_accuracy": 0.983707238876412,
+        "confusion_matrix": [
+          [
+            28,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            27,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            23,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            16,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            23,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            0,
+            0,
+            0,
+            27,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            18,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            21,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            21,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            17,
+            0,
+            0,
+            0,
+            2
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            20,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            23,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            21,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            21
+          ]
+        ],
+        "expected_calibration_error_10bin": 0.011382668922951767,
+        "macro_f1": 0.9834444965464003,
+        "macro_precision": 0.9835981132240896,
+        "macro_recall": 0.983707238876412,
+        "negative_log_likelihood": 0.10628665238618851,
+        "per_class": {
+          "EIGHT": {
+            "f1": 0.9824561403508771,
+            "precision": 0.9655172413793104,
+            "recall": 1.0,
+            "support": 28
+          },
+          "FIVE": {
+            "f1": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "support": 27
+          },
+          "FOUR": {
+            "f1": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "support": 23
+          },
+          "HELLO": {
+            "f1": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "support": 16
+          },
+          "NINE": {
+            "f1": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "support": 23
+          },
+          "NO": {
+            "f1": 0.9818181818181818,
+            "precision": 1.0,
+            "recall": 0.9642857142857143,
+            "support": 28
+          },
+          "ONE": {
+            "f1": 0.972972972972973,
+            "precision": 0.9473684210526315,
+            "recall": 1.0,
+            "support": 18
+          },
+          "SEVEN": {
+            "f1": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "support": 21
+          },
+          "SIX": {
+            "f1": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "support": 21
+          },
+          "TEN": {
+            "f1": 0.918918918918919,
+            "precision": 0.9444444444444444,
+            "recall": 0.8947368421052632,
+            "support": 19
+          },
+          "THANK_YOU": {
+            "f1": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "support": 20
+          },
+          "THREE": {
+            "f1": 0.9787234042553191,
+            "precision": 1.0,
+            "recall": 0.9583333333333334,
+            "support": 24
+          },
+          "TWO": {
+            "f1": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "support": 21
+          },
+          "YES": {
+            "f1": 0.9333333333333333,
+            "precision": 0.9130434782608695,
+            "recall": 0.9545454545454546,
+            "support": 22
+          }
+        },
+        "top_confusions": [
+          {
+            "count": 2,
+            "predicted": "YES",
+            "true": "TEN"
+          },
+          {
+            "count": 1,
+            "predicted": "EIGHT",
+            "true": "NO"
+          },
+          {
+            "count": 1,
+            "predicted": "ONE",
+            "true": "THREE"
+          },
+          {
+            "count": 1,
+            "predicted": "TEN",
+            "true": "YES"
+          }
+        ],
+        "weakest_class_f1": 0.918918918918919
+      },
+      "folds": [
+        {
+          "accuracy": 1.0,
+          "balanced_accuracy": 1.0,
+          "best_epoch": 82,
+          "candidate": {
+            "architecture": "RD-TCN",
+            "id": "C",
+            "temporal_length": 48
+          },
+          "confusion_matrix": [
+            [
+              7,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              7,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              6,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              4,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              6,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              7,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              6,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              6,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              6,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              6,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              6
+            ]
+          ],
+          "contract": {
+            "numpy_version": "1.26.4",
+            "split_manifest_sha256": "5ee4ba671d1022ab02fd0068804f391450fe477a0f5f83ee4e689f6210fdbc09",
+            "tensorflow_version": "2.15.0",
+            "training_config_sha256": "e107fcdc49cae1249802e842dfbf92b2a6b090866f0c3569097289f07672780f"
+          },
+          "epochs_run": 92,
+          "expected_calibration_error_10bin": 0.033264974268471324,
+          "fold": 0,
+          "macro_f1": 1.0,
+          "macro_precision": 1.0,
+          "macro_recall": 1.0,
+          "negative_log_likelihood": 0.03750470653176308,
+          "overfit_gap": -0.021834075450897217,
+          "parameter_count": 125326,
+          "per_class": {
+            "EIGHT": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 7
+            },
+            "FIVE": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 7
+            },
+            "FOUR": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 6
+            },
+            "HELLO": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 4
+            },
+            "NINE": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 6
+            },
+            "NO": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 7
+            },
+            "ONE": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 5
+            },
+            "SEVEN": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 6
+            },
+            "SIX": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 6
+            },
+            "TEN": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 5
+            },
+            "THANK_YOU": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 5
+            },
+            "THREE": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 6
+            },
+            "TWO": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 6
+            },
+            "YES": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 6
+            }
+          },
+          "seed": 20267679,
+          "top_confusions": [],
+          "training_accuracy_at_best_epoch": 0.9781659245491028,
+          "training_seconds": 70.62232809999841,
+          "training_source_count_before_augmentation": 229,
+          "training_tensor_count_after_augmentation": 687,
+          "validation_accuracy_at_best_epoch": 1.0,
+          "validation_source_count": 82,
+          "weakest_class_f1": 1.0
+        },
+        {
+          "accuracy": 0.9873417721518988,
+          "balanced_accuracy": 0.9857142857142858,
+          "best_epoch": 92,
+          "candidate": {
+            "architecture": "RD-TCN",
+            "id": "C",
+            "temporal_length": 48
+          },
+          "confusion_matrix": [
+            [
+              7,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              7,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              6,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              4,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              6,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              7,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              4,
+              0,
+              0,
+              0,
+              1
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              6,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              6
+            ]
+          ],
+          "contract": {
+            "numpy_version": "1.26.4",
+            "split_manifest_sha256": "5ee4ba671d1022ab02fd0068804f391450fe477a0f5f83ee4e689f6210fdbc09",
+            "tensorflow_version": "2.15.0",
+            "training_config_sha256": "e107fcdc49cae1249802e842dfbf92b2a6b090866f0c3569097289f07672780f"
+          },
+          "epochs_run": 100,
+          "expected_calibration_error_10bin": 0.019167216518257237,
+          "fold": 1,
+          "macro_f1": 0.9865689865689866,
+          "macro_precision": 0.9897959183673469,
+          "macro_recall": 0.9857142857142858,
+          "negative_log_likelihood": 0.02928902581334114,
+          "overfit_gap": -0.01293104887008667,
+          "parameter_count": 125326,
+          "per_class": {
+            "EIGHT": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 7
+            },
+            "FIVE": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 7
+            },
+            "FOUR": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 6
+            },
+            "HELLO": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 4
+            },
+            "NINE": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 6
+            },
+            "NO": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 7
+            },
+            "ONE": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 5
+            },
+            "SEVEN": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 5
+            },
+            "SIX": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 5
+            },
+            "TEN": {
+              "f1": 0.8888888888888888,
+              "precision": 1.0,
+              "recall": 0.8,
+              "support": 5
+            },
+            "THANK_YOU": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 5
+            },
+            "THREE": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 6
+            },
+            "TWO": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 5
+            },
+            "YES": {
+              "f1": 0.9230769230769231,
+              "precision": 0.8571428571428571,
+              "recall": 1.0,
+              "support": 6
+            }
+          },
+          "seed": 20267680,
+          "top_confusions": [
+            {
+              "count": 1,
+              "predicted": "YES",
+              "true": "TEN"
+            }
+          ],
+          "training_accuracy_at_best_epoch": 0.9870689511299133,
+          "training_seconds": 79.31454299998586,
+          "training_source_count_before_augmentation": 232,
+          "training_tensor_count_after_augmentation": 696,
+          "validation_accuracy_at_best_epoch": 1.0,
+          "validation_source_count": 79,
+          "weakest_class_f1": 0.8888888888888888
+        },
+        {
+          "accuracy": 1.0,
+          "balanced_accuracy": 1.0,
+          "best_epoch": 95,
+          "candidate": {
+            "architecture": "RD-TCN",
+            "id": "C",
+            "temporal_length": 48
+          },
+          "confusion_matrix": [
+            [
+              7,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              7,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              6,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              4,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              6,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              7,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              4,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              6,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5
+            ]
+          ],
+          "contract": {
+            "numpy_version": "1.26.4",
+            "split_manifest_sha256": "5ee4ba671d1022ab02fd0068804f391450fe477a0f5f83ee4e689f6210fdbc09",
+            "tensorflow_version": "2.15.0",
+            "training_config_sha256": "e107fcdc49cae1249802e842dfbf92b2a6b090866f0c3569097289f07672780f"
+          },
+          "epochs_run": 100,
+          "expected_calibration_error_10bin": 0.011756859816514052,
+          "fold": 2,
+          "macro_f1": 1.0,
+          "macro_precision": 1.0,
+          "macro_recall": 1.0,
+          "negative_log_likelihood": 0.01259593479335308,
+          "overfit_gap": -0.021367549896240234,
+          "parameter_count": 125326,
+          "per_class": {
+            "EIGHT": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 7
+            },
+            "FIVE": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 7
+            },
+            "FOUR": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 6
+            },
+            "HELLO": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 4
+            },
+            "NINE": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 6
+            },
+            "NO": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 7
+            },
+            "ONE": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 4
+            },
+            "SEVEN": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 5
+            },
+            "SIX": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 5
+            },
+            "TEN": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 5
+            },
+            "THANK_YOU": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 5
+            },
+            "THREE": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 6
+            },
+            "TWO": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 5
+            },
+            "YES": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 5
+            }
+          },
+          "seed": 20267681,
+          "top_confusions": [],
+          "training_accuracy_at_best_epoch": 0.9786324501037598,
+          "training_seconds": 91.54486870000255,
+          "training_source_count_before_augmentation": 234,
+          "training_tensor_count_after_augmentation": 702,
+          "validation_accuracy_at_best_epoch": 1.0,
+          "validation_source_count": 77,
+          "weakest_class_f1": 1.0
+        },
+        {
+          "accuracy": 0.9452054794520548,
+          "balanced_accuracy": 0.945748299319728,
+          "best_epoch": 61,
+          "candidate": {
+            "architecture": "RD-TCN",
+            "id": "C",
+            "temporal_length": 48
+          },
+          "confusion_matrix": [
+            [
+              7,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              6,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              5,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              4,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              5,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              1,
+              0,
+              0,
+              0,
+              0,
+              6,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              4,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              3,
+              0,
+              0,
+              0,
+              1
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0,
+              0,
+              5,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0,
+              4
+            ]
+          ],
+          "contract": {
+            "numpy_version": "1.26.4",
+            "split_manifest_sha256": "5ee4ba671d1022ab02fd0068804f391450fe477a0f5f83ee4e689f6210fdbc09",
+            "tensorflow_version": "2.15.0",
+            "training_config_sha256": "e107fcdc49cae1249802e842dfbf92b2a6b090866f0c3569097289f07672780f"
+          },
+          "epochs_run": 71,
+          "expected_calibration_error_10bin": 0.041694298182448325,
+          "fold": 3,
+          "macro_f1": 0.9431707181707182,
+          "macro_precision": 0.9446428571428572,
+          "macro_recall": 0.945748299319728,
+          "negative_log_likelihood": 0.3656991720199585,
+          "overfit_gap": 0.0169793963432312,
+          "parameter_count": 125326,
+          "per_class": {
+            "EIGHT": {
+              "f1": 0.9333333333333333,
+              "precision": 0.875,
+              "recall": 1.0,
+              "support": 7
+            },
+            "FIVE": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 6
+            },
+            "FOUR": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 5
+            },
+            "HELLO": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 4
+            },
+            "NINE": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 5
+            },
+            "NO": {
+              "f1": 0.9230769230769231,
+              "precision": 1.0,
+              "recall": 0.8571428571428571,
+              "support": 7
+            },
+            "ONE": {
+              "f1": 0.8888888888888888,
+              "precision": 0.8,
+              "recall": 1.0,
+              "support": 4
+            },
+            "SEVEN": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 5
+            },
+            "SIX": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 5
+            },
+            "TEN": {
+              "f1": 0.75,
+              "precision": 0.75,
+              "recall": 0.75,
+              "support": 4
+            },
+            "THANK_YOU": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 5
+            },
+            "THREE": {
+              "f1": 0.9090909090909091,
+              "precision": 1.0,
+              "recall": 0.8333333333333334,
+              "support": 6
+            },
+            "TWO": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 5
+            },
+            "YES": {
+              "f1": 0.8,
+              "precision": 0.8,
+              "recall": 0.8,
+              "support": 5
+            }
+          },
+          "seed": 20267682,
+          "top_confusions": [
+            {
+              "count": 1,
+              "predicted": "EIGHT",
+              "true": "NO"
+            },
+            {
+              "count": 1,
+              "predicted": "YES",
+              "true": "TEN"
+            },
+            {
+              "count": 1,
+              "predicted": "ONE",
+              "true": "THREE"
+            },
+            {
+              "count": 1,
+              "predicted": "TEN",
+              "true": "YES"
+            }
+          ],
+          "training_accuracy_at_best_epoch": 0.9621848464012146,
+          "training_seconds": 66.31004979999852,
+          "training_source_count_before_augmentation": 238,
+          "training_tensor_count_after_augmentation": 714,
+          "validation_accuracy_at_best_epoch": 0.9452054500579834,
+          "validation_source_count": 73,
+          "weakest_class_f1": 0.75
+        }
+      ],
+      "mean_development_accuracy": 0.9831368129009883,
+      "mean_development_balanced_accuracy": 0.9828656462585035,
+      "mean_development_ece": 0.026470837196422736,
+      "mean_development_macro_f1": 0.9824349261849262,
+      "mean_development_macro_precision": 0.983609693877551,
+      "mean_development_macro_recall": 0.9828656462585035,
+      "mean_development_weakest_class_f1": 0.9097222222222222,
+      "mean_overfit_gap": -0.00978831946849823,
+      "parameter_count": 125326,
+      "status": "PASS",
+      "total_training_seconds": 307.79178959998535
+    },
+    {
+      "candidate": {
+        "architecture": "GRU",
+        "id": "D",
+        "temporal_length": 48
+      },
+      "combined_out_of_fold_metrics": {
+        "accuracy": 0.9035369774919614,
+        "balanced_accuracy": 0.901894921167968,
+        "confusion_matrix": [
+          [
+            26,
+            1,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            27,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            21,
+            2,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            1,
+            15,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            23,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            1,
+            26,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            18,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            20,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            20,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            13,
+            0,
+            0,
+            0,
+            6
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            19,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            4,
+            0,
+            0,
+            1,
+            0,
+            1,
+            18,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            2,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            18,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            4,
+            0,
+            0,
+            0,
+            17
+          ]
+        ],
+        "expected_calibration_error_10bin": 0.07761157996401527,
+        "macro_f1": 0.9019769718516688,
+        "macro_precision": 0.9057412677918093,
+        "macro_recall": 0.901894921167968,
+        "negative_log_likelihood": 0.362099826335907,
+        "per_class": {
+          "EIGHT": {
+            "f1": 0.9629629629629629,
+            "precision": 1.0,
+            "recall": 0.9285714285714286,
+            "support": 28
+          },
+          "FIVE": {
+            "f1": 0.9642857142857143,
+            "precision": 0.9310344827586207,
+            "recall": 1.0,
+            "support": 27
+          },
+          "FOUR": {
+            "f1": 0.9333333333333333,
+            "precision": 0.9545454545454546,
+            "recall": 0.9130434782608695,
+            "support": 23
+          },
+          "HELLO": {
+            "f1": 0.8823529411764706,
+            "precision": 0.8333333333333334,
+            "recall": 0.9375,
+            "support": 16
+          },
+          "NINE": {
+            "f1": 0.9583333333333334,
+            "precision": 0.92,
+            "recall": 1.0,
+            "support": 23
+          },
+          "NO": {
+            "f1": 0.8524590163934426,
+            "precision": 0.7878787878787878,
+            "recall": 0.9285714285714286,
+            "support": 28
+          },
+          "ONE": {
+            "f1": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "support": 18
+          },
+          "SEVEN": {
+            "f1": 0.975609756097561,
+            "precision": 1.0,
+            "recall": 0.9523809523809523,
+            "support": 21
+          },
+          "SIX": {
+            "f1": 0.9523809523809523,
+            "precision": 0.9523809523809523,
+            "recall": 0.9523809523809523,
+            "support": 21
+          },
+          "TEN": {
+            "f1": 0.7222222222222222,
+            "precision": 0.7647058823529411,
+            "recall": 0.6842105263157895,
+            "support": 19
+          },
+          "THANK_YOU": {
+            "f1": 0.95,
+            "precision": 0.95,
+            "recall": 0.95,
+            "support": 20
+          },
+          "THREE": {
+            "f1": 0.8181818181818182,
+            "precision": 0.9,
+            "recall": 0.75,
+            "support": 24
+          },
+          "TWO": {
+            "f1": 0.9,
+            "precision": 0.9473684210526315,
+            "recall": 0.8571428571428571,
+            "support": 21
+          },
+          "YES": {
+            "f1": 0.7555555555555555,
+            "precision": 0.7391304347826086,
+            "recall": 0.7727272727272727,
+            "support": 22
+          }
+        },
+        "top_confusions": [
+          {
+            "count": 6,
+            "predicted": "YES",
+            "true": "TEN"
+          },
+          {
+            "count": 4,
+            "predicted": "NO",
+            "true": "THREE"
+          },
+          {
+            "count": 4,
+            "predicted": "TEN",
+            "true": "YES"
+          },
+          {
+            "count": 2,
+            "predicted": "HELLO",
+            "true": "FOUR"
+          },
+          {
+            "count": 2,
+            "predicted": "NO",
+            "true": "TWO"
+          },
+          {
+            "count": 1,
+            "predicted": "FIVE",
+            "true": "EIGHT"
+          },
+          {
+            "count": 1,
+            "predicted": "HELLO",
+            "true": "EIGHT"
+          },
+          {
+            "count": 1,
+            "predicted": "FOUR",
+            "true": "HELLO"
+          },
+          {
+            "count": 1,
+            "predicted": "NINE",
+            "true": "NO"
+          },
+          {
+            "count": 1,
+            "predicted": "THREE",
+            "true": "NO"
+          },
+          {
+            "count": 1,
+            "predicted": "TWO",
+            "true": "SEVEN"
+          },
+          {
+            "count": 1,
+            "predicted": "FIVE",
+            "true": "SIX"
+          },
+          {
+            "count": 1,
+            "predicted": "NINE",
+            "true": "THANK_YOU"
+          },
+          {
+            "count": 1,
+            "predicted": "SIX",
+            "true": "THREE"
+          },
+          {
+            "count": 1,
+            "predicted": "THANK_YOU",
+            "true": "THREE"
+          },
+          {
+            "count": 1,
+            "predicted": "THREE",
+            "true": "TWO"
+          },
+          {
+            "count": 1,
+            "predicted": "NO",
+            "true": "YES"
+          }
+        ],
+        "weakest_class_f1": 0.7222222222222222
+      },
+      "folds": [
+        {
+          "accuracy": 0.9390243902439024,
+          "balanced_accuracy": 0.939795918367347,
+          "best_epoch": 66,
+          "candidate": {
+            "architecture": "GRU",
+            "id": "D",
+            "temporal_length": 48
+          },
+          "confusion_matrix": [
+            [
+              6,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              7,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              5,
+              1,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              4,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              6,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              7,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              1,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              4,
+              0,
+              0,
+              0,
+              1
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              6,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              6,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              6
+            ]
+          ],
+          "contract": {
+            "numpy_version": "1.26.4",
+            "split_manifest_sha256": "5ee4ba671d1022ab02fd0068804f391450fe477a0f5f83ee4e689f6210fdbc09",
+            "tensorflow_version": "2.15.0",
+            "training_config_sha256": "e107fcdc49cae1249802e842dfbf92b2a6b090866f0c3569097289f07672780f"
+          },
+          "epochs_run": 76,
+          "expected_calibration_error_10bin": 0.12877401673212283,
+          "fold": 0,
+          "macro_f1": 0.937051837051837,
+          "macro_precision": 0.9468537414965986,
+          "macro_recall": 0.939795918367347,
+          "negative_log_likelihood": 0.26196688413619995,
+          "overfit_gap": -0.10059642791748047,
+          "parameter_count": 100592,
+          "per_class": {
+            "EIGHT": {
+              "f1": 0.9230769230769231,
+              "precision": 1.0,
+              "recall": 0.8571428571428571,
+              "support": 7
+            },
+            "FIVE": {
+              "f1": 0.9333333333333333,
+              "precision": 0.875,
+              "recall": 1.0,
+              "support": 7
+            },
+            "FOUR": {
+              "f1": 0.9090909090909091,
+              "precision": 1.0,
+              "recall": 0.8333333333333334,
+              "support": 6
+            },
+            "HELLO": {
+              "f1": 0.8,
+              "precision": 0.6666666666666666,
+              "recall": 1.0,
+              "support": 4
+            },
+            "NINE": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 6
+            },
+            "NO": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 7
+            },
+            "ONE": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 5
+            },
+            "SEVEN": {
+              "f1": 0.9090909090909091,
+              "precision": 1.0,
+              "recall": 0.8333333333333334,
+              "support": 6
+            },
+            "SIX": {
+              "f1": 0.9090909090909091,
+              "precision": 1.0,
+              "recall": 0.8333333333333334,
+              "support": 6
+            },
+            "TEN": {
+              "f1": 0.8888888888888888,
+              "precision": 1.0,
+              "recall": 0.8,
+              "support": 5
+            },
+            "THANK_YOU": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 5
+            },
+            "THREE": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 6
+            },
+            "TWO": {
+              "f1": 0.9230769230769231,
+              "precision": 0.8571428571428571,
+              "recall": 1.0,
+              "support": 6
+            },
+            "YES": {
+              "f1": 0.9230769230769231,
+              "precision": 0.8571428571428571,
+              "recall": 1.0,
+              "support": 6
+            }
+          },
+          "seed": 20267780,
+          "top_confusions": [
+            {
+              "count": 1,
+              "predicted": "HELLO",
+              "true": "EIGHT"
+            },
+            {
+              "count": 1,
+              "predicted": "HELLO",
+              "true": "FOUR"
+            },
+            {
+              "count": 1,
+              "predicted": "TWO",
+              "true": "SEVEN"
+            },
+            {
+              "count": 1,
+              "predicted": "FIVE",
+              "true": "SIX"
+            },
+            {
+              "count": 1,
+              "predicted": "YES",
+              "true": "TEN"
+            }
+          ],
+          "training_accuracy_at_best_epoch": 0.8384279608726501,
+          "training_seconds": 68.24170770001365,
+          "training_source_count_before_augmentation": 229,
+          "training_tensor_count_after_augmentation": 687,
+          "validation_accuracy_at_best_epoch": 0.9390243887901306,
+          "validation_source_count": 82,
+          "weakest_class_f1": 0.8
+        },
+        {
+          "accuracy": 0.9367088607594937,
+          "balanced_accuracy": 0.9333333333333336,
+          "best_epoch": 76,
+          "candidate": {
+            "architecture": "GRU",
+            "id": "D",
+            "temporal_length": 48
+          },
+          "confusion_matrix": [
+            [
+              7,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              7,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              6,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              4,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              6,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              7,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              4,
+              0,
+              0,
+              0,
+              1
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0,
+              0,
+              0,
+              4,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              4,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0,
+              5
+            ]
+          ],
+          "contract": {
+            "numpy_version": "1.26.4",
+            "split_manifest_sha256": "5ee4ba671d1022ab02fd0068804f391450fe477a0f5f83ee4e689f6210fdbc09",
+            "tensorflow_version": "2.15.0",
+            "training_config_sha256": "e107fcdc49cae1249802e842dfbf92b2a6b090866f0c3569097289f07672780f"
+          },
+          "epochs_run": 86,
+          "expected_calibration_error_10bin": 0.0907755403579036,
+          "fold": 1,
+          "macro_f1": 0.9370199245199247,
+          "macro_precision": 0.9477324263038549,
+          "macro_recall": 0.9333333333333336,
+          "negative_log_likelihood": 0.28025561571121216,
+          "overfit_gap": -0.05739849805831909,
+          "parameter_count": 100592,
+          "per_class": {
+            "EIGHT": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 7
+            },
+            "FIVE": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 7
+            },
+            "FOUR": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 6
+            },
+            "HELLO": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 4
+            },
+            "NINE": {
+              "f1": 0.9230769230769231,
+              "precision": 0.8571428571428571,
+              "recall": 1.0,
+              "support": 6
+            },
+            "NO": {
+              "f1": 0.875,
+              "precision": 0.7777777777777778,
+              "recall": 1.0,
+              "support": 7
+            },
+            "ONE": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 5
+            },
+            "SEVEN": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 5
+            },
+            "SIX": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 5
+            },
+            "TEN": {
+              "f1": 0.8,
+              "precision": 0.8,
+              "recall": 0.8,
+              "support": 5
+            },
+            "THANK_YOU": {
+              "f1": 0.8888888888888888,
+              "precision": 1.0,
+              "recall": 0.8,
+              "support": 5
+            },
+            "THREE": {
+              "f1": 0.9090909090909091,
+              "precision": 1.0,
+              "recall": 0.8333333333333334,
+              "support": 6
+            },
+            "TWO": {
+              "f1": 0.8888888888888888,
+              "precision": 1.0,
+              "recall": 0.8,
+              "support": 5
+            },
+            "YES": {
+              "f1": 0.8333333333333334,
+              "precision": 0.8333333333333334,
+              "recall": 0.8333333333333334,
+              "support": 6
+            }
+          },
+          "seed": 20267781,
+          "top_confusions": [
+            {
+              "count": 1,
+              "predicted": "YES",
+              "true": "TEN"
+            },
+            {
+              "count": 1,
+              "predicted": "NINE",
+              "true": "THANK_YOU"
+            },
+            {
+              "count": 1,
+              "predicted": "NO",
+              "true": "THREE"
+            },
+            {
+              "count": 1,
+              "predicted": "NO",
+              "true": "TWO"
+            },
+            {
+              "count": 1,
+              "predicted": "TEN",
+              "true": "YES"
+            }
+          ],
+          "training_accuracy_at_best_epoch": 0.8793103694915771,
+          "training_seconds": 85.14760370002477,
+          "training_source_count_before_augmentation": 232,
+          "training_tensor_count_after_augmentation": 696,
+          "validation_accuracy_at_best_epoch": 0.9367088675498962,
+          "validation_source_count": 79,
+          "weakest_class_f1": 0.8
+        },
+        {
+          "accuracy": 0.948051948051948,
+          "balanced_accuracy": 0.9428571428571428,
+          "best_epoch": 96,
+          "candidate": {
+            "architecture": "GRU",
+            "id": "D",
+            "temporal_length": 48
+          },
+          "confusion_matrix": [
+            [
+              7,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              7,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              6,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              4,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              6,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              7,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              4,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              3,
+              0,
+              0,
+              0,
+              2
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              6,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              2,
+              0,
+              0,
+              0,
+              3
+            ]
+          ],
+          "contract": {
+            "numpy_version": "1.26.4",
+            "split_manifest_sha256": "5ee4ba671d1022ab02fd0068804f391450fe477a0f5f83ee4e689f6210fdbc09",
+            "tensorflow_version": "2.15.0",
+            "training_config_sha256": "e107fcdc49cae1249802e842dfbf92b2a6b090866f0c3569097289f07672780f"
+          },
+          "epochs_run": 100,
+          "expected_calibration_error_10bin": 0.09070964060820542,
+          "fold": 2,
+          "macro_f1": 0.9428571428571428,
+          "macro_precision": 0.9428571428571428,
+          "macro_recall": 0.9428571428571428,
+          "negative_log_likelihood": 0.1854235976934433,
+          "overfit_gap": -0.09192657470703125,
+          "parameter_count": 100592,
+          "per_class": {
+            "EIGHT": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 7
+            },
+            "FIVE": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 7
+            },
+            "FOUR": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 6
+            },
+            "HELLO": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 4
+            },
+            "NINE": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 6
+            },
+            "NO": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 7
+            },
+            "ONE": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 4
+            },
+            "SEVEN": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 5
+            },
+            "SIX": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 5
+            },
+            "TEN": {
+              "f1": 0.6,
+              "precision": 0.6,
+              "recall": 0.6,
+              "support": 5
+            },
+            "THANK_YOU": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 5
+            },
+            "THREE": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 6
+            },
+            "TWO": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 5
+            },
+            "YES": {
+              "f1": 0.6,
+              "precision": 0.6,
+              "recall": 0.6,
+              "support": 5
+            }
+          },
+          "seed": 20267782,
+          "top_confusions": [
+            {
+              "count": 2,
+              "predicted": "YES",
+              "true": "TEN"
+            },
+            {
+              "count": 2,
+              "predicted": "TEN",
+              "true": "YES"
+            }
+          ],
+          "training_accuracy_at_best_epoch": 0.8561253547668457,
+          "training_seconds": 110.20912449999014,
+          "training_source_count_before_augmentation": 234,
+          "training_tensor_count_after_augmentation": 702,
+          "validation_accuracy_at_best_epoch": 0.948051929473877,
+          "validation_source_count": 77,
+          "weakest_class_f1": 0.6
+        },
+        {
+          "accuracy": 0.7808219178082192,
+          "balanced_accuracy": 0.7848639455782312,
+          "best_epoch": 55,
+          "candidate": {
+            "architecture": "GRU",
+            "id": "D",
+            "temporal_length": 48
+          },
+          "confusion_matrix": [
+            [
+              6,
+              1,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              6,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              4,
+              1,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              1,
+              3,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              5,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              1,
+              5,
+              0,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              4,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              2,
+              0,
+              0,
+              0,
+              2
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              3,
+              0,
+              0,
+              1,
+              0,
+              1,
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0,
+              0,
+              0,
+              1,
+              3,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0,
+              3
+            ]
+          ],
+          "contract": {
+            "numpy_version": "1.26.4",
+            "split_manifest_sha256": "5ee4ba671d1022ab02fd0068804f391450fe477a0f5f83ee4e689f6210fdbc09",
+            "tensorflow_version": "2.15.0",
+            "training_config_sha256": "e107fcdc49cae1249802e842dfbf92b2a6b090866f0c3569097289f07672780f"
+          },
+          "epochs_run": 65,
+          "expected_calibration_error_10bin": 0.13565004320993815,
+          "fold": 3,
+          "macro_f1": 0.7753794757996438,
+          "macro_precision": 0.7862244897959184,
+          "macro_recall": 0.7848639455782312,
+          "negative_log_likelihood": 0.7495061755180359,
+          "overfit_gap": 0.06091475486755371,
+          "parameter_count": 100592,
+          "per_class": {
+            "EIGHT": {
+              "f1": 0.9230769230769231,
+              "precision": 1.0,
+              "recall": 0.8571428571428571,
+              "support": 7
+            },
+            "FIVE": {
+              "f1": 0.9230769230769231,
+              "precision": 0.8571428571428571,
+              "recall": 1.0,
+              "support": 6
+            },
+            "FOUR": {
+              "f1": 0.8,
+              "precision": 0.8,
+              "recall": 0.8,
+              "support": 5
+            },
+            "HELLO": {
+              "f1": 0.75,
+              "precision": 0.75,
+              "recall": 0.75,
+              "support": 4
+            },
+            "NINE": {
+              "f1": 0.9090909090909091,
+              "precision": 0.8333333333333334,
+              "recall": 1.0,
+              "support": 5
+            },
+            "NO": {
+              "f1": 0.5882352941176471,
+              "precision": 0.5,
+              "recall": 0.7142857142857143,
+              "support": 7
+            },
+            "ONE": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 4
+            },
+            "SEVEN": {
+              "f1": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "support": 5
+            },
+            "SIX": {
+              "f1": 0.9090909090909091,
+              "precision": 0.8333333333333334,
+              "recall": 1.0,
+              "support": 5
+            },
+            "TEN": {
+              "f1": 0.5714285714285714,
+              "precision": 0.6666666666666666,
+              "recall": 0.5,
+              "support": 4
+            },
+            "THANK_YOU": {
+              "f1": 0.9090909090909091,
+              "precision": 0.8333333333333334,
+              "recall": 1.0,
+              "support": 5
+            },
+            "THREE": {
+              "f1": 0.2222222222222222,
+              "precision": 0.3333333333333333,
+              "recall": 0.16666666666666666,
+              "support": 6
+            },
+            "TWO": {
+              "f1": 0.75,
+              "precision": 1.0,
+              "recall": 0.6,
+              "support": 5
+            },
+            "YES": {
+              "f1": 0.6,
+              "precision": 0.6,
+              "recall": 0.6,
+              "support": 5
+            }
+          },
+          "seed": 20267783,
+          "top_confusions": [
+            {
+              "count": 3,
+              "predicted": "NO",
+              "true": "THREE"
+            },
+            {
+              "count": 2,
+              "predicted": "YES",
+              "true": "TEN"
+            },
+            {
+              "count": 1,
+              "predicted": "FIVE",
+              "true": "EIGHT"
+            },
+            {
+              "count": 1,
+              "predicted": "HELLO",
+              "true": "FOUR"
+            },
+            {
+              "count": 1,
+              "predicted": "FOUR",
+              "true": "HELLO"
+            },
+            {
+              "count": 1,
+              "predicted": "NINE",
+              "true": "NO"
+            },
+            {
+              "count": 1,
+              "predicted": "THREE",
+              "true": "NO"
+            },
+            {
+              "count": 1,
+              "predicted": "SIX",
+              "true": "THREE"
+            },
+            {
+              "count": 1,
+              "predicted": "THANK_YOU",
+              "true": "THREE"
+            },
+            {
+              "count": 1,
+              "predicted": "NO",
+              "true": "TWO"
+            },
+            {
+              "count": 1,
+              "predicted": "THREE",
+              "true": "TWO"
+            },
+            {
+              "count": 1,
+              "predicted": "NO",
+              "true": "YES"
+            },
+            {
+              "count": 1,
+              "predicted": "TEN",
+              "true": "YES"
+            }
+          ],
+          "training_accuracy_at_best_epoch": 0.8417366743087769,
+          "training_seconds": 109.88066439999966,
+          "training_source_count_before_augmentation": 238,
+          "training_tensor_count_after_augmentation": 714,
+          "validation_accuracy_at_best_epoch": 0.7808219194412231,
+          "validation_source_count": 73,
+          "weakest_class_f1": 0.2222222222222222
+        }
+      ],
+      "mean_development_accuracy": 0.9011517792158908,
+      "mean_development_balanced_accuracy": 0.9002125850340137,
+      "mean_development_ece": 0.11147731022704249,
+      "mean_development_macro_f1": 0.8980770950571371,
+      "mean_development_macro_precision": 0.9059169501133786,
+      "mean_development_macro_recall": 0.9002125850340137,
+      "mean_development_weakest_class_f1": 0.6055555555555556,
+      "mean_overfit_gap": -0.047251686453819275,
+      "parameter_count": 100592,
+      "status": "PASS",
+      "total_training_seconds": 373.4791003000282
+    }
+  ],
+  "class_counts": {
+    "EIGHT": 33,
+    "FIVE": 32,
+    "FOUR": 27,
+    "HELLO": 19,
+    "NINE": 27,
+    "NO": 33,
+    "ONE": 21,
+    "SEVEN": 25,
+    "SIX": 25,
+    "TEN": 22,
+    "THANK_YOU": 24,
+    "THREE": 28,
+    "TWO": 25,
+    "YES": 26
+  },
+  "completed_utc": "2026-09-12T13:56:46.995482+00:00",
+  "contract": {
+    "numpy_version": "1.26.4",
+    "split_manifest_sha256": "5ee4ba671d1022ab02fd0068804f391450fe477a0f5f83ee4e689f6210fdbc09",
+    "tensorflow_version": "2.15.0",
+    "training_config_sha256": "e107fcdc49cae1249802e842dfbf92b2a6b090866f0c3569097289f07672780f"
+  },
+  "development_count": 311,
+  "experiment_id": "mapua14_rescue_v1",
+  "exploratory_clip_level_test_metrics": {
+    "accuracy": 0.9821428571428571,
+    "balanced_accuracy": 0.9821428571428571,
+    "confusion_matrix": [
+      [
+        5,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        5,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        4,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        3,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        4,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        5,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        3,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        4,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        4,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        3,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        4,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        4,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        4,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        3
+      ]
+    ],
+    "expected_calibration_error_10bin": 0.032707029155322524,
+    "macro_f1": 0.979591836734694,
+    "macro_precision": 0.9821428571428571,
+    "macro_recall": 0.9821428571428571,
+    "negative_log_likelihood": 0.08355853706598282,
+    "per_class": {
+      "EIGHT": {
+        "f1": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "support": 5
+      },
+      "FIVE": {
+        "f1": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "support": 5
+      },
+      "FOUR": {
+        "f1": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "support": 4
+      },
+      "HELLO": {
+        "f1": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "support": 3
+      },
+      "NINE": {
+        "f1": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "support": 4
+      },
+      "NO": {
+        "f1": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "support": 5
+      },
+      "ONE": {
+        "f1": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "support": 3
+      },
+      "SEVEN": {
+        "f1": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "support": 4
+      },
+      "SIX": {
+        "f1": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "support": 4
+      },
+      "TEN": {
+        "f1": 0.8571428571428571,
+        "precision": 0.75,
+        "recall": 1.0,
+        "support": 3
+      },
+      "THANK_YOU": {
+        "f1": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "support": 4
+      },
+      "THREE": {
+        "f1": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "support": 4
+      },
+      "TWO": {
+        "f1": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "support": 4
+      },
+      "YES": {
+        "f1": 0.8571428571428571,
+        "precision": 1.0,
+        "recall": 0.75,
+        "support": 4
+      }
+    },
+    "top_confusions": [
+      {
+        "count": 1,
+        "predicted": "TEN",
+        "true": "YES"
+      }
+    ],
+    "weakest_class_f1": 0.8571428571428571
+  },
+  "external_bundle": "C:\\VOXGEST_TRAINING\\MAPUA14_RESCUE_V1\\final\\mapua14_fullsign225_48f_v1",
+  "external_keras_model": "C:\\VOXGEST_TRAINING\\MAPUA14_RESCUE_V1\\final\\winner.keras",
+  "final_retrain_epochs": 87,
+  "final_training_seconds": 150.83399650000501,
+  "metric_scope": "EXPLORATORY_CLIP_LEVEL_METRICS_NOT_SIGNER_INDEPENDENT",
+  "pass_only_video_count": 367,
+  "samsung_test_status": "NOT_YET_TESTED",
+  "sealed_test_count": 56,
+  "sealed_test_evaluation_count": 1,
+  "signer_independent_claim": false,
+  "tflite_parity": {
+    "input_dtype": "<class 'numpy.float32'>",
+    "input_shape": [
+      1,
+      48,
+      225
+    ],
+    "label_sha256": "af398236fd62da6c5bafbe0b60d21bc8a155c48aeb45987090c1b14a20cb9ef0",
+    "maximum_allowed_probability_difference": 1e-05,
+    "maximum_probability_difference": 4.76837158203125e-07,
+    "model_path": "C:\\VOXGEST_TRAINING\\MAPUA14_RESCUE_V1\\final\\mapua14_fullsign225_48f_v1\\mapua14_fullsign225_float32.tflite",
+    "model_sha256": "f850c5d414c5c253ef9131bae5a85bb3ed5ad5412abdf9936df510c6ec043dcc",
+    "model_size_bytes": 541912,
+    "output_dtype": "<class 'numpy.float32'>",
+    "output_shape": [
+      1,
+      14
+    ],
+    "passed": true,
+    "required_top1_agreement": 1.0,
+    "tf_tflite_top1_agreement": 1.0
+  },
+  "winner": {
+    "architecture": "RD-TCN",
+    "id": "C",
+    "temporal_length": 48
+  },
+  "winner_parameter_count": 125326
+}
