@@ -91,3 +91,51 @@ experiments belong in separate reports.
   checkpoint and must be updated by every meaningful future task.
 - Consequence: Each update records the required state, evidence, failures,
   current hypothesis, next action, and protected areas before handoff.
+
+## ADR-009 — Raw-video dataset evidence boundary
+
+- Status: Accepted
+- Date: 2026-09-12
+- Decision: Dataset quality and cross-dataset comparisons use decoded raw video
+  processed by one disclosed method. Third-party landmark arrays and historical
+  post-filtered feature summaries are not substitutes for same-method raw-video
+  measurements.
+- Consequence: The Mapúa audit may establish technical computer-vision
+  usability only. FSL-105 raw quality remains blocked while its 2,130 referenced
+  MOV files are absent, and no computer-vision audit claims linguistic
+  correctness.
+
+## ADR-010 — Stable recognition identity and presentation ontology
+
+- Status: Accepted
+- Date: 2026-09-12
+- Decision: Model/source labels remain stable identifiers. English and Filipino
+  display text are presentation fields joined through a canonical concept; a
+  Filipino display translation does not replace an FSL label or imply that
+  Filipino grammar equals FSL grammar.
+- Consequence: Text overlap is never sufficient to merge datasets. All overlap
+  equivalence and the presentation ontology require qualified linguistic/FSL
+  review, especially WELCOME versus YOURE WELCOME.
+
+## ADR-011 — Complete-trajectory temporal experiments
+
+- Status: Accepted
+- Date: 2026-09-12
+- Decision: Temporal-length studies resample the complete detected sign-motion
+  trajectory to 20, 32, or 48 normalized timeline positions. They never take
+  only the first N camera frames.
+- Consequence: Reconstruction retention is supporting evidence, not a model
+  winner. Temporal length is selected by a controlled validation macro-F1 study,
+  sealed test evaluation, export parity, and physical Samsung results before any
+  Android change.
+
+## ADR-012 — Non-sign data is rejection/OOD evidence
+
+- Status: Accepted
+- Date: 2026-09-12
+- Decision: Idle, open palm, random motion, grooming, pointing, frame-entry/exit,
+  partial/incorrect attempts, and conversational gestures are non-sign/OOD audit
+  categories—not FSL vocabulary labels.
+- Consequence: Their expected semantic-token count is zero. They may calibrate
+  or evaluate rejection only under participant/source-disjoint splits and may
+  never be emitted as recognized words.

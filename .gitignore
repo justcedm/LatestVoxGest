@@ -51,6 +51,9 @@ tools/VoxGest_Recorder_Pack/recorder_env/
 tools/VoxGest_Recorder_*_FINAL_LAST/recorded_features/
 tools/VoxGest_Recorder_*_FINAL_LAST/recorder_env/
 dataset_*/
+!reports/dataset_engineering/
+!reports/dataset_engineering/*.md
+!reports/dataset_engineering/*.csv
 wlasl_videos/
 phrase_videos/
 asl_citizen*/
