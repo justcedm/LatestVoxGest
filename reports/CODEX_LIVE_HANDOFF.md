@@ -4,11 +4,11 @@ This is the canonical operational checkpoint. Every meaningful future task
 must update all fields below before handoff. Record failed checks explicitly;
 do not replace missing evidence with assumptions.
 
-TIMESTAMP=2026-09-12T13:12:12+08:00
+TIMESTAMP=2026-09-12T13:19:04+08:00
 
 BRANCH=recognition/recovery-20260912
 
-COMMIT=735686fa6bc6015bf11c8963fca6bc4298de4071 (session baseline; the recovery/handoff commit follows this record)
+COMMIT=2454ef87781c0f92f2715925ec7da12fc5a195e7 (published recovered-source commit described by this handoff)
 
 CURRENT_GOAL=Establish justcedm/LatestVoxGest as the shared GitHub source of truth and publish the safe recovered state without training or large/local artifacts.
 
@@ -28,6 +28,11 @@ WORK_COMPLETED=
   limit. The 159,736,124-byte debug APK is ignored and must not be pushed.
 - Ran the complete Android debug unit-test task and assembled the debug APK.
 - Added this handoff and the authoritative architecture-decision log.
+- Committed the audited recovered source and handoff infrastructure as
+  2454ef87781c0f92f2715925ec7da12fc5a195e7.
+- Pushed recognition/recovery-20260912 normally to
+  https://github.com/justcedm/LatestVoxGest.git and established upstream
+  tracking. Local and remote branch heads matched after publication.
 
 FILES_CHANGED=
 
