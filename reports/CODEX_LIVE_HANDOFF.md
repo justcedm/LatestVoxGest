@@ -4,13 +4,13 @@ TIMESTAMP=2026-09-12T22:00:10+08:00
 
 BRANCH=recognition/mapua14-rescue-v1
 
-COMMIT=PENDING_SUBSTANTIVE_COMMIT
+COMMIT=8f1794d0
 
 SOURCE_BASE_COMMIT=7929cd28027feb34b83eb3ad0649f39f5fb00abe
 
-HANDOFF_UPDATE_COMMIT=PENDING
+HANDOFF_UPDATE_COMMIT=8f1794d0
 
-BRANCH_HEAD=PENDING
+BRANCH_HEAD=8f1794d0 (audited offline package; metadata-only handoff commit follows)
 
 CURRENT_GOAL=Train and package the explicitly authorized PASS-only Mapua-14 rescue recognizer, preserve Standard FSL-105, and stop at the physical Samsung boundary when no device is connected.
 
