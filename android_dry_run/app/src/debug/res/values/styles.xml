@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+      The debug parity activity must not inherit the downloadable Poppins
+      provider font. Android 16 can throw while decoding that provider's
+      certificate resource before the activity can run its golden checks.
+    -->
+    <style name="FslDebugSystemTheme" parent="Theme.Material3.Light.NoActionBar">
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="fontFamily">sans-serif</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+    </style>
+</resources>

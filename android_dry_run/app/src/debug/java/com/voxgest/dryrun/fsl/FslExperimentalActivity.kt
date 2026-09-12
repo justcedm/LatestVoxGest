@@ -28,6 +28,7 @@ import androidx.core.content.ContextCompat
 import com.voxgest.dryrun.LandmarkFrame
 import com.voxgest.dryrun.LandmarkPoint
 import com.voxgest.dryrun.MediaPipeLandmarkExtractor
+import com.voxgest.dryrun.ExperimentalOneHand162CameraPipeline
 import java.security.MessageDigest
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -253,16 +254,20 @@ class FslExperimentalActivity : ComponentActivity() {
                 .build()
             analyzerExecutor.execute {
                 extractor?.close()
-                // MediaPipe Hands handedness assumes selfie/mirrored input. The fixed "right"
-                // output slot is therefore anatomical right for the front-camera probe.
-                extractor = MediaPipeLandmarkExtractor(applicationContext, true)
+                // Preview mirroring is a display concern. The 64-class model was
+                // extracted from unmirrored frames; correct MediaPipe handedness
+                // exactly once while leaving analysis pixels unchanged.
+                extractor = ExperimentalOneHand162CameraPipeline
+                    .createLandmarkExtractor(applicationContext)
             }
             analysis.setAnalyzer(analyzerExecutor) { image -> analyze(image) }
             provider.unbindAll()
             provider.bindToLifecycle(this, CameraSelector.DEFAULT_FRONT_CAMERA, preview, analysis)
             updateStatus(
                 if (expectedLabel == null) "Experimental FSL live diagnostic" else "Probe: $expectedLabel",
-                "profile=${FslContract.PROFILE_ID}\nready=0/${FslContract.SEQUENCE_LENGTH}\nactivity_state=UNVALIDATED_NO_BACKGROUND_CLASS"
+                "profile=${FslContract.PROFILE_ID}\nready=0/${FslContract.SEQUENCE_LENGTH}\n" +
+                    "preview_mirror=UX_ONLY analysis_mirrored=false selected_hand=anatomical_right\n" +
+                    "activity_state=UNVALIDATED_NO_BACKGROUND_CLASS"
             )
         }, ContextCompat.getMainExecutor(this))
     }
@@ -297,9 +302,17 @@ class FslExperimentalActivity : ComponentActivity() {
 
             val localRuntime = runtime ?: return
             val inference = localRuntime.infer(packets.map { it.canonical.vector })
-            val decision = gate?.evaluate(inference) ?: return
+            val quality = FslWindowQuality(
+                posePresenceRatio = packets.count { it.canonical.posePresent }.toFloat() /
+                    packets.size.coerceAtLeast(1),
+                selectedHandPresenceRatio = packets.count { it.canonical.handPresent }.toFloat() /
+                    packets.size.coerceAtLeast(1)
+            )
+            val decision = gate?.evaluate(inference, quality) ?: return
             postDiagnostic(canonical, inference, decision, decision.state)
-            recordProbeIfEnabled(inference, decision)
+            if (decision.reason != "TEMPORAL_STABILITY") {
+                recordProbeIfEnabled(inference, decision)
+            }
         } catch (error: Throwable) {
             Log.e(TAG, "FSL_LIVE_ERROR", error)
             packets.clear()
@@ -369,6 +382,7 @@ class FslExperimentalActivity : ComponentActivity() {
         val top1 = inference?.top1
         val top2 = inference?.top2
         val line = buildString {
+            append("timestamp_epoch_ms=${System.currentTimeMillis()} ")
             append("profile=${FslContract.PROFILE_ID}")
             append(" class=${top1?.label ?: "<pending>"}")
             append(" top1=${top1?.let { "${it.label}:${format(it.probability)}" } ?: "<pending>"}")
@@ -376,15 +390,20 @@ class FslExperimentalActivity : ComponentActivity() {
             append(" margin=${inference?.let { format(it.margin) } ?: "<pending>"}")
             append(" hand_present=${current.handPresent}")
             append(" pose_present=${current.posePresent}")
+            append(" left_hand_present=${packets.lastOrNull()?.frame?.hasLeftHand ?: false}")
+            append(" right_hand_present=${packets.lastOrNull()?.frame?.hasRightHand ?: false}")
+            append(" both_hands_present=${packets.lastOrNull()?.frame?.let { it.hasLeftHand && it.hasRightHand } ?: false}")
             append(" hand_ratio=${format(handRatio)}")
             append(" pose_ratio=${format(poseRatio)}")
             append(" readiness=${packets.size}/${FslContract.SEQUENCE_LENGTH}")
             append(" latency_ms=${inference?.let { "%.3f".format(Locale.US, it.latencyMs) } ?: "<pending>"}")
             append(" accepted=${decision?.accepted ?: false}")
+            append(" stable_windows=${decision?.stableWindowCount ?: 0}")
             append(" state=$state")
             append(" reason=${decision?.reason ?: "NONE"}")
             append(" activity_state=UNVALIDATED_NO_BACKGROUND_CLASS")
             append(" selected_hand=anatomical_right")
+            append(" analysis_mirrored=false")
         }
         Log.i(TAG, "FSL_LIVE_DIAGNOSTIC $line")
         val title = when {

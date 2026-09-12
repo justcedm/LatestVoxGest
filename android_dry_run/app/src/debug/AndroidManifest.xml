@@ -3,6 +3,17 @@
         <activity
             android:name="com.voxgest.dryrun.fsl.FslExperimentalActivity"
             android:exported="true"
-            android:label="VoxGest Experimental FSL" />
+            android:label="VoxGest Experimental FSL"
+            android:theme="@style/FslDebugSystemTheme" />
+        <activity
+            android:name="com.voxgest.dryrun.fullsign.StandardFslParityActivity"
+            android:exported="true"
+            android:label="VoxGest FullSign225 Parity"
+            android:theme="@style/FslDebugSystemTheme" />
+        <activity
+            android:name="com.voxgest.dryrun.fullsign.StandardFslLiveActivity"
+            android:exported="true"
+            android:label="VoxGest FullSign225 Live"
+            android:theme="@style/FslDebugSystemTheme" />
     </application>
 </manifest>

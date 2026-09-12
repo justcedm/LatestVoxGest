@@ -20,4 +20,21 @@
         <item name="motionDurationShort2">120</item>
         <item name="motionDurationMedium1">180</item>
     </style>
+
+    <!--
+      The quarantined Avatar preview deliberately avoids the downloadable-font
+      provider used by the legacy XML screens. This keeps an optional media
+      experiment from failing during TextView inflation when a device cannot
+      decode the provider certificate metadata.
+    -->
+    <style name="AvatarPreviewSystemTheme" parent="Theme.Material3.Light.NoActionBar">
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="fontFamily">sans-serif</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:statusBarColor">#111517</item>
+        <item name="android:navigationBarColor">#111517</item>
+        <item name="colorPrimary">#D96B32</item>
+        <item name="colorSecondary">#F2B84B</item>
+    </style>
 </resources>

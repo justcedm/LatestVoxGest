@@ -1,6 +1,5 @@
 package com.voxgest.dryrun
 
-import android.os.SystemClock
 import java.util.Locale
 
 data class DynamicWordGateResult(
@@ -77,9 +76,20 @@ class DynamicWordAcceptanceGate {
             return reject(label, raw, "SLIDING_WINDOW_NEEDS_SECOND_MATCH")
         }
 
+        // Duplicate suppression must run before every acceptance path. The
+        // calibrated high-confidence shortcut previously returned early here,
+        // allowing a held sign to bypass cooldown and movement reset.
+        val now = (System.nanoTime() / 1_000_000L)
+        if (label == lastAcceptedLabel && now < cooldownUntilMs) {
+            return reject(label, raw, "DUPLICATE_COOLDOWN", cooldownActive = true, duplicateBlocked = true)
+        }
+        if (label == lastAcceptedLabel && !movementResetSeen) {
+            return reject(label, raw, "DUPLICATE_COOLDOWN", duplicateBlocked = true)
+        }
+
         if (shouldAcceptCalibratedHighConfidence(label, raw, profile)) {
             lastAcceptedLabel = label
-            cooldownUntilMs = SystemClock.elapsedRealtime() + ACCEPTED_COOLDOWN_MS
+            cooldownUntilMs = now + ACCEPTED_COOLDOWN_MS
             movementResetSeen = false
             resetStableCandidate()
             return DynamicWordGateResult(true, label, raw.confidence, raw.margin, "HIGH_CONFIDENCE")
@@ -97,14 +107,6 @@ class DynamicWordAcceptanceGate {
             if (!highConfidenceSingleWindow && stableCandidateCount < NAME_REQUIRED_WINDOWS) {
                 return reject(label, raw, "NAME_NEEDS_SECOND_WINDOW")
             }
-        }
-
-        val now = SystemClock.elapsedRealtime()
-        if (label == lastAcceptedLabel && now < cooldownUntilMs) {
-            return reject(label, raw, "DUPLICATE_COOLDOWN", cooldownActive = true, duplicateBlocked = true)
-        }
-        if (label == lastAcceptedLabel && !movementResetSeen) {
-            return reject(label, raw, "DUPLICATE_COOLDOWN", duplicateBlocked = true)
         }
 
         movementResetSeen = label != lastAcceptedLabel || movementResetSeen

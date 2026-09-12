@@ -1,7 +1,10 @@
 ﻿package com.voxgest.dryrun.ui
 
 import android.Manifest
+import android.app.Activity
 import android.content.ContentValues
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -18,6 +21,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.camera.view.PreviewView
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.DrawableRes
@@ -61,6 +65,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -69,7 +75,9 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.Typography
+import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -80,16 +88,20 @@ import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.StrokeCap
@@ -97,6 +109,9 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.platform.LocalView
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.contentDescription
@@ -106,29 +121,53 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
+import androidx.compose.material3.windowsizeclass.WindowHeightSizeClass
 import androidx.core.content.ContextCompat
+import androidx.core.view.WindowCompat
 import androidx.lifecycle.LifecycleOwner
 import com.voxgest.app.avatar.AvatarController
 import com.voxgest.app.avatar.AvatarFeatureFlags
 import com.voxgest.app.avatar.AvatarPlaybackState
 import com.voxgest.app.avatar.AvatarStatus
 import com.voxgest.app.avatar.AvatarView
+import com.voxgest.app.avatar.Core3AvatarAssets
+import com.voxgest.app.avatar.Core3AvatarRuntimeController
+import com.voxgest.app.avatar.Core3AvatarState
+import com.voxgest.app.avatar.Core3AvatarStatus
+import com.voxgest.app.avatar.Core3FilamentHostView
+import com.voxgest.app.avatar.Core3ListenTranscriptResolver
 import com.voxgest.app.avatar.SceneAvatarHostView
 import com.voxgest.dryrun.BuildConfig
 import com.voxgest.dryrun.CalibrationExportMode
+import com.voxgest.dryrun.DemoAllowlistPolicy
 import com.voxgest.dryrun.DetectionStatus
 import com.voxgest.dryrun.LandmarkFrame
+import com.voxgest.dryrun.LandmarkVisualizationFrame
 import com.voxgest.dryrun.NamePhraseDetector
 import com.voxgest.dryrun.OneHandCalibrationConfig
 import com.voxgest.dryrun.OverlayLandmarkPoint
 import com.voxgest.dryrun.R
 import com.voxgest.dryrun.RecognitionFeedback
 import com.voxgest.dryrun.RecognitionMode
+import com.voxgest.dryrun.RecognitionOutputCoordinator
 import com.voxgest.dryrun.RecognitionResult
+import com.voxgest.dryrun.SentenceSuggestion
+import com.voxgest.dryrun.SentenceSuggestionEngine
+import com.voxgest.dryrun.SentenceSuggestionSettings
 import com.voxgest.dryrun.SignVocabulary
+import com.voxgest.dryrun.TokenComposer
+import com.voxgest.dryrun.PreferredCameraLens
+import com.voxgest.dryrun.RecognitionProfile
+import com.voxgest.dryrun.GradingRecognitionProfiles
+import com.voxgest.dryrun.VoxGestUserSettings
+import com.voxgest.dryrun.VoxGestUserSettingsSnapshot
+import com.voxgest.dryrun.VoxGestThemePreference
+import com.voxgest.dryrun.VoxGestMessageLanguage
 import com.voxgest.dryrun.VoxGestCameraRecognitionController
 import kotlinx.coroutines.delay
 import java.io.File
@@ -136,35 +175,35 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-private val Primary = Color(0xFF006C73)
-private val PrimaryLight = Color(0xFF00AFC1)
-private val AppBg = Color(0xFFF0F7F7)
+private val Primary = VoxGestDesignTokens.Terracotta
+private val PrimaryLight = VoxGestDesignTokens.SunGold
+private val AppBg = VoxGestDesignTokens.SoftCream
 private val CardWhite = Color(0xFFFFFFFF)
-private val SoftCyan = Color(0xFFEAF8F8)
-private val AccentGreen = Color(0xFF00C853)
-private val TextMain = Color(0xFF112B3A)
-private val TextMuted = Color(0xFF546E7A)
-private val TextFaint = Color(0xFF90A4AE)
-private val Border = Color(0xFFE1ECEF)
-private val DarkInk = Color(0xFFFFFFFF)
-private val Amber = Color(0xFFFFB300)
-private val Red = Color(0xFFE53935)
+private val SoftCyan = Color(0xFFFFEEE4)
+private val AccentGreen = VoxGestDesignTokens.Success
+private val TextMain = VoxGestDesignTokens.DeepCharcoal
+private val TextMuted = Color(0xFF5E666B)
+private val TextFaint = Color(0xFF7A8286)
+private val Border = Color(0xFFE6DCD4)
+private val DarkInk = VoxGestDesignTokens.DeepCharcoal
+private val Amber = Color(0xFFA76600)
+private val Red = VoxGestDesignTokens.Error
 private val Blue = Color(0xFF22A7D8)
 private val Purple = Color(0xFF7C5AA6)
-private val Green = Color(0xFF43A047)
+private val Green = VoxGestDesignTokens.Success
 private const val PRESENTATION_MODE = true
 private const val SHOW_DEBUG_TOOLS = true
 private const val ACCURACY_TEST_WINDOW_MS = 5000L
 private const val RECOGNITION_LOG_TAG = "VoxGestRecognition"
+private val STABLE_DEMO_ALLOWLIST = setOf("WHAT", "YOUR", "NAME", "MY")
 
 private enum class VoxTab(
-    val label: String,
     @DrawableRes val icon: Int
 ) {
-    Sign("Sign", R.drawable.ic_hand_gesture),
-    Listen("Listen", R.drawable.ic_mic),
-    Phrases("Phrases", R.drawable.ic_chat),
-    History("History", R.drawable.ic_history)
+    Sign(R.drawable.ic_hand_gesture),
+    Conversation(R.drawable.ic_chat),
+    Listen(R.drawable.ic_mic),
+    Guide(R.drawable.ic_book)
 }
 
 private data class HistoryUiEntry(
@@ -175,6 +214,29 @@ private data class HistoryUiEntry(
     val status: String,
     val icon: Int,
     val iconColor: Color
+)
+
+private enum class ConversationParticipant {
+    FSL_USER,
+    HEARING_USER
+}
+
+private enum class SpeechInputLanguage(val languageTag: String) {
+    ENGLISH("en-US"),
+    FILIPINO("fil-PH")
+}
+
+private enum class ConversationPresentationState {
+    SPOKEN_ALOUD,
+    SHOWN_AS_SIGNS
+}
+
+private data class ConversationUiEntry(
+    val id: Long,
+    val participant: ConversationParticipant,
+    val text: String,
+    val timestampMillis: Long,
+    val presentationState: ConversationPresentationState
 )
 
 private data class PhraseUi(
@@ -253,9 +315,21 @@ private val HAND_CONNECTIONS = listOf(
     0 to 17, 17 to 18, 18 to 19, 19 to 20
 )
 
+private val POSE_BODY_CONNECTIONS = listOf(
+    11 to 12,
+    11 to 13, 13 to 15, 15 to 17, 15 to 19, 15 to 21, 17 to 19,
+    12 to 14, 14 to 16, 16 to 18, 16 to 20, 16 to 22, 18 to 20,
+    11 to 23, 12 to 24, 23 to 24,
+    23 to 25, 25 to 27, 27 to 29, 29 to 31, 27 to 31,
+    24 to 26, 26 to 28, 28 to 30, 30 to 32, 28 to 32
+)
+
 @Composable
-fun VoxGestPresentationApp(windowSizeClass: WindowSizeClass) {
-    var selectedTab by remember { mutableStateOf(VoxTab.Sign) }
+fun VoxGestPresentationApp(
+    windowSizeClass: WindowSizeClass,
+    developerDiagnosticsEnabled: Boolean = false
+) {
+    var selectedTab by rememberSaveable { mutableStateOf(VoxTab.Sign) }
     var currentWord by remember { mutableStateOf("") }
     var sentence by remember { mutableStateOf("") }
     var demoTokenBuffer by remember { mutableStateOf("") }
@@ -265,13 +339,47 @@ fun VoxGestPresentationApp(windowSizeClass: WindowSizeClass) {
     var pendingAvatarText by remember { mutableStateOf("") }
     var pendingAvatarRequestId by remember { mutableStateOf(0) }
     var selectedPhrase by remember { mutableStateOf("") }
+    var latestRecognition by remember { mutableStateOf<RecognitionResult?>(null) }
+    var latestOutputReason by remember { mutableStateOf("NO_ACCEPTED_SIGN") }
+    var sentenceSuggestions by remember { mutableStateOf<List<SentenceSuggestion>>(emptyList()) }
+    var selectedSuggestion by remember { mutableStateOf<SentenceSuggestion?>(null) }
+    var settingsOpen by remember { mutableStateOf(false) }
+    var cameraExpanded by remember { mutableStateOf(false) }
     val history = remember { mutableStateListOf<HistoryUiEntry>() }
+    val conversationEntries = remember { mutableStateListOf<ConversationUiEntry>() }
+    var nextConversationEntryId by remember { mutableStateOf(1L) }
     val context = LocalContext.current
+    val haptic = LocalHapticFeedback.current
+    val userSettingsStore = remember(context) { VoxGestUserSettings(context) }
+    var userSettings by remember { mutableStateOf(userSettingsStore.load()) }
+    var showSplash by remember { mutableStateOf(true) }
+    val copy = copyFor(userSettings.appLanguage)
+    val useDarkTheme = when (userSettings.themePreference) {
+        VoxGestThemePreference.SYSTEM -> isSystemInDarkTheme()
+        VoxGestThemePreference.LIGHT -> false
+        VoxGestThemePreference.DARK -> true
+    }
+    val profilePresentations = remember(context) { packagedProfilePresentations(context) }
     val namePhraseDetector = remember { NamePhraseDetector() }
     val ttsRef = remember { mutableStateOf<TextToSpeech?>(null) }
-    fun speakNow(text: String) {
+    val suggestionSettings = remember(context) { SentenceSuggestionSettings(context) }
+    val tokenComposer = remember { TokenComposer(STABLE_DEMO_ALLOWLIST) }
+    val outputCoordinator = remember(context) {
+        RecognitionOutputCoordinator(
+            allowlistPolicy = DemoAllowlistPolicy(STABLE_DEMO_ALLOWLIST),
+            composer = tokenComposer,
+            suggestionEngine = SentenceSuggestionEngine(),
+            suggestionSettings = suggestionSettings
+        )
+    }
+    fun speakNow(text: String, language: Locale = Locale.US) {
         if (!isMeaningfulOutput(text)) return
-        ttsRef.value?.let { speak(it, text) }
+        ttsRef.value?.let { engine ->
+            if (engine.setLanguage(language) < TextToSpeech.LANG_AVAILABLE) {
+                engine.language = Locale.US
+            }
+            speak(engine, text)
+        }
     }
 
     fun queueAvatarPhrase(text: String) {
@@ -282,11 +390,79 @@ fun VoxGestPresentationApp(windowSizeClass: WindowSizeClass) {
     }
 
     fun clearDemoTokens() {
+        outputCoordinator.clear()
         demoTokenBuffer = ""
         currentWord = ""
         sentence = ""
+        latestRecognition = null
+        latestOutputReason = "CLEARED_BY_USER"
+        sentenceSuggestions = emptyList()
+        selectedSuggestion = null
         namePhraseHint = ""
         namePhraseDetector.reset()
+    }
+
+    fun addConversationEntry(
+        participant: ConversationParticipant,
+        text: String,
+        presentationState: ConversationPresentationState
+    ) {
+        val clean = text.trim()
+        if (!isMeaningfulOutput(clean)) return
+        conversationEntries.add(
+            ConversationUiEntry(
+                id = nextConversationEntryId++,
+                participant = participant,
+                text = clean,
+                timestampMillis = System.currentTimeMillis(),
+                presentationState = presentationState
+            )
+        )
+    }
+
+    fun applyComposerSnapshot() {
+        val snapshot = outputCoordinator.snapshot()
+        sentence = snapshot.sentence
+        currentWord = snapshot.tokens.lastOrNull().orEmpty()
+        sentenceSuggestions = outputCoordinator.currentSuggestions()
+        selectedSuggestion = null
+    }
+
+    fun acceptRecognitionForOutput(result: RecognitionResult) {
+        latestRecognition = result
+        val update = outputCoordinator.handleRecognition(result)
+        latestOutputReason = update.reason
+        if (!update.userFacingAccepted) {
+            Log.i(
+                RECOGNITION_LOG_TAG,
+                "ui_output_rejected label=${result.label} confidence=${result.confidence} " +
+                    "margin=${result.margin} reason=${update.reason}"
+            )
+            return
+        }
+        currentWord = update.allowlistDecision.canonicalLabel
+        sentence = update.snapshot.sentence
+        sentenceSuggestions = update.suggestions
+        selectedSuggestion = null
+        if (userSettings.hapticFeedback) {
+            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+        }
+        if (userSettings.autoSpeakAcceptedMessage && isMeaningfulOutput(update.snapshot.sentence)) {
+            speakNow(
+                VoxGestOfflineMessagePresenter.speechText(update.snapshot.sentence, userSettings.messageLanguage),
+                speechLocaleFor(update.snapshot.sentence, userSettings.messageLanguage)
+            )
+            addConversationEntry(
+                ConversationParticipant.FSL_USER,
+                update.snapshot.sentence,
+                ConversationPresentationState.SPOKEN_ALOUD
+            )
+        }
+        Log.i(
+            RECOGNITION_LOG_TAG,
+            "ui_output_accepted label=$currentWord confidence=${result.confidence} " +
+                "margin=${result.margin} sentence=$sentence"
+        )
     }
 
     fun applyNamePhraseUpdate(update: com.voxgest.dryrun.NamePhraseUpdate) {
@@ -392,6 +568,7 @@ fun VoxGestPresentationApp(windowSizeClass: WindowSizeClass) {
         val engine = TextToSpeech(context) { status ->
             if (status == TextToSpeech.SUCCESS) {
                 ttsRef.value?.language = Locale.US
+                ttsRef.value?.setSpeechRate(userSettings.ttsRate)
             }
         }
         ttsRef.value = engine
@@ -402,30 +579,70 @@ fun VoxGestPresentationApp(windowSizeClass: WindowSizeClass) {
         }
     }
 
-    CompositionLocalProvider(LocalWindowSizeClass provides windowSizeClass) {
+    LaunchedEffect(userSettings.ttsRate) {
+        ttsRef.value?.setSpeechRate(userSettings.ttsRate)
+    }
+
+    LaunchedEffect(userSettings.sentenceSuggestions) {
+        suggestionSettings.setEnabled(userSettings.sentenceSuggestions)
+        sentenceSuggestions = outputCoordinator.currentSuggestions()
+        if (!userSettings.sentenceSuggestions) selectedSuggestion = null
+    }
+
+    LaunchedEffect(Unit) {
+        delay(if (userSettings.reducedMotion) 350L else 1_150L)
+        showSplash = false
+    }
+
+    CompositionLocalProvider(
+        LocalWindowSizeClass provides windowSizeClass,
+        LocalVoxGestCopy provides copy
+    ) {
         MaterialTheme(
-            colorScheme = lightColorScheme(
-                primary = Primary,
-                onPrimary = DarkInk,
-                background = AppBg,
-                surface = CardWhite,
-                onSurface = TextMain
-            ),
-            typography = Typography()
+            colorScheme = voxGestColorScheme(userSettings.colorStyle, useDarkTheme),
+            typography = VoxGestTypography
         ) {
-            Scaffold(
-                containerColor = AppBg,
+            val view = LocalView.current
+            val statusBarColor = when {
+                showSplash -> MaterialTheme.colorScheme.primary
+                cameraExpanded -> Color.Black
+                else -> MaterialTheme.colorScheme.background
+            }
+            val navigationBarColor = when {
+                showSplash -> MaterialTheme.colorScheme.primary
+                cameraExpanded -> Color.Black
+                else -> MaterialTheme.colorScheme.surface
+            }
+            SideEffect {
+                val window = (view.context as? Activity)?.window ?: return@SideEffect
+                window.statusBarColor = statusBarColor.toArgb()
+                window.navigationBarColor = navigationBarColor.toArgb()
+                WindowCompat.getInsetsController(window, view).apply {
+                    isAppearanceLightStatusBars = !useDarkTheme && !showSplash && !cameraExpanded
+                    isAppearanceLightNavigationBars = !useDarkTheme && !showSplash && !cameraExpanded
+                }
+            }
+            if (showSplash) {
+                VoxGestSplashScreen(reducedMotion = userSettings.reducedMotion)
+            } else {
+                Scaffold(
+                containerColor = MaterialTheme.colorScheme.background,
                 bottomBar = {
-                    BottomNavBar(
-                        selectedTab = selectedTab,
-                        onTabSelected = { selectedTab = it }
-                    )
+                    if (!cameraExpanded || selectedTab != VoxTab.Sign) {
+                        BottomNavBar(
+                            selectedTab = selectedTab,
+                            onTabSelected = {
+                                cameraExpanded = false
+                                selectedTab = it
+                            }
+                        )
+                    }
                 }
             ) { innerPadding ->
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(AppBg)
+                        .background(MaterialTheme.colorScheme.background)
                         .padding(innerPadding)
                 ) {
                     Box(modifier = Modifier.weight(1f)) {
@@ -437,24 +654,53 @@ fun VoxGestPresentationApp(windowSizeClass: WindowSizeClass) {
                             recognitionStatus = recognitionStatus,
                             namePhraseHint = namePhraseHint,
                             presentationMode = PRESENTATION_MODE,
+                            latestRecognition = latestRecognition,
+                            latestOutputReason = latestOutputReason,
+                            suggestions = sentenceSuggestions,
+                            selectedSuggestion = selectedSuggestion,
+                            messageLanguage = userSettings.messageLanguage,
+                            developerDiagnosticsEnabled = developerDiagnosticsEnabled,
+                            showRuntimeMetrics = developerDiagnosticsEnabled || userSettings.runtimeDiagnostics,
+                            preferredCameraLens = userSettings.preferredCameraLens,
+                            trackingOverlayEnabled = userSettings.trackingOverlay,
+                            showAiLandmarks = userSettings.showAiLandmarks,
+                            mirrorFrontPreview = userSettings.mirrorFrontPreview,
+                            cameraExpanded = cameraExpanded,
+                            onCameraExpandedChange = { cameraExpanded = it },
+                            onPreferredCameraLensChange = { lens ->
+                                val updated = userSettings.copy(preferredCameraLens = lens)
+                                userSettingsStore.save(updated)
+                                userSettings = updated
+                            },
+                            onOpenSettings = { settingsOpen = true },
+                            onSuggestionSelected = { suggestion ->
+                                selectedSuggestion = outputCoordinator.selectSuggestion(suggestion.id)
+                            },
+                            onMessageLanguageChange = { language ->
+                                val updated = userSettings.copy(messageLanguage = language)
+                                userSettingsStore.save(updated)
+                                userSettings = updated
+                            },
                             onSpeak = {
-                                if (isMeaningfulOutput(sentence)) {
-                                    speakNow(sentence)
-                                    history.add(0, HistoryUiEntry("Today", "Sign", sentence, nowLabel(), "Spoken", R.drawable.ic_hand_gesture, PrimaryLight))
+                                val sourceText = selectedSuggestion?.text ?: sentence
+                                val spokenText = VoxGestOfflineMessagePresenter.speechText(
+                                    sourceText,
+                                    userSettings.messageLanguage
+                                )
+                                if (isMeaningfulOutput(sourceText)) {
+                                    speakNow(spokenText, speechLocaleFor(sourceText, userSettings.messageLanguage))
+                                    addConversationEntry(
+                                        ConversationParticipant.FSL_USER,
+                                        sourceText,
+                                        ConversationPresentationState.SPOKEN_ALOUD
+                                    )
+                                    history.add(0, HistoryUiEntry("Today", "Sign", sourceText, nowLabel(), "Spoken", R.drawable.ic_hand_gesture, PrimaryLight))
                                 }
                             },
                             onDelete = {
-                                val tokens = demoTokenBuffer.toDemoTokens()
-                                if (tokens.isNotEmpty()) {
-                                    val nextTokens = tokens.dropLast(1)
-                                    demoTokenBuffer = nextTokens.joinToString("|")
-                                    currentWord = nextTokens.lastOrNull() ?: ""
-                                    sentence = demoSentenceForTokens(nextTokens) ?: nextTokens.joinToString(" ")
-                                } else {
-                                    sentence = sentence.split(",").dropLast(1).joinToString(", ")
-                                }
-                                namePhraseHint = ""
-                                namePhraseDetector.reset()
+                                tokenComposer.accept("del")
+                                latestOutputReason = "UNDO_BY_USER"
+                                applyComposerSnapshot()
                             },
                             onClear = {
                                 clearDemoTokens()
@@ -469,42 +715,72 @@ fun VoxGestPresentationApp(windowSizeClass: WindowSizeClass) {
                                 recognitionStatus = "Recognition Paused"
                             },
                             onRecognitionStatus = { recognitionStatus = it },
-                            onAcceptedRecognition = { result -> addDemoToken(result.label) },
+                            onAcceptedRecognition = ::acceptRecognitionForOutput,
                             demoTokens = demoTokenBuffer.toDemoTokens(),
                             onDemoToken = { addDemoToken(it) }
                             )
                             VoxTab.Listen -> ListenScreen(
                             pendingAvatarText = pendingAvatarText,
                             pendingAvatarRequestId = pendingAvatarRequestId,
+                            recentEntries = conversationEntries.takeLast(3).reversed(),
+                            messageLanguage = userSettings.messageLanguage,
+                            reducedMotion = userSettings.reducedMotion,
+                            developerDiagnosticsEnabled = developerDiagnosticsEnabled,
+                            onOpenSettings = { settingsOpen = true },
                             onSpeechSaved = { text ->
                                 if (isMeaningfulOutput(text)) {
+                                    addConversationEntry(
+                                        ConversationParticipant.HEARING_USER,
+                                        text,
+                                        ConversationPresentationState.SHOWN_AS_SIGNS
+                                    )
                                     history.add(0, HistoryUiEntry("Today", "Speech", text, nowLabel(), "Shown in signs", R.drawable.ic_waveform, Primary))
                                 }
                             }
                             )
-                            VoxTab.Phrases -> PhrasesScreen(
-                            selectedPhrase = selectedPhrase,
-                            onPhrase = { phrase ->
-                                if (isMeaningfulOutput(phrase)) {
-                                    selectedPhrase = phrase
-                                    speakNow(phrase)
-                                    history.add(0, HistoryUiEntry("Today", "Phrase", phrase, nowLabel(), "From quick phrase", R.drawable.ic_chat, Amber))
-                                    queueAvatarPhrase(phrase)
+                            VoxTab.Conversation -> ConversationScreen(
+                            entries = conversationEntries,
+                            messageLanguage = userSettings.messageLanguage,
+                            onClearAll = { conversationEntries.clear() },
+                            onNewExchange = { selectedTab = VoxTab.Sign },
+                            onOpenSettings = { settingsOpen = true },
+                            onReplay = { entry ->
+                                if (isMeaningfulOutput(entry.text)) {
+                                    when (entry.participant) {
+                                        ConversationParticipant.FSL_USER -> speakNow(
+                                            VoxGestOfflineMessagePresenter.speechText(entry.text, userSettings.messageLanguage),
+                                            speechLocaleFor(entry.text, userSettings.messageLanguage)
+                                        )
+                                        ConversationParticipant.HEARING_USER -> queueAvatarPhrase(entry.text)
+                                    }
                                 }
                             }
                             )
-                            VoxTab.History -> HistoryScreen(
-                            entries = history,
-                            onClearAll = { history.clear() },
-                            onReplay = { entry ->
-                                if (isMeaningfulOutput(entry.text)) {
-                                    speakNow(entry.text)
-                                    queueAvatarPhrase(entry.text)
-                                }
-                            }
+                            VoxTab.Guide -> GuideScreen(
+                                reducedMotion = userSettings.reducedMotion,
+                                onOpenSettings = { settingsOpen = true }
                             )
                         }
                     }
+                }
+            }
+                if (settingsOpen) {
+                    VoxGestSettingsDialog(
+                    settings = userSettings,
+                    activeProfile = profilePresentations.first,
+                    experimentalProfiles = profilePresentations.second,
+                    appVersion = BuildConfig.VERSION_NAME,
+                    messagePreview = sentence,
+                    onSettingsChange = { updated ->
+                        userSettingsStore.save(updated)
+                        userSettings = updated
+                    },
+                    onClearConversation = { conversationEntries.clear() },
+                    onResetPreferences = {
+                        userSettings = userSettingsStore.reset()
+                    },
+                    onDismiss = { settingsOpen = false }
+                    )
                 }
             }
         }
@@ -520,6 +796,72 @@ private fun speak(tts: TextToSpeech, text: String) {
 
 private fun nowLabel(): String {
     return SimpleDateFormat("hh:mm a", Locale.US).format(Date())
+}
+
+private fun speechLocaleFor(sourceText: String, language: VoxGestMessageLanguage): Locale {
+    val hasFilipino = VoxGestOfflineMessagePresenter.present(sourceText).filipino != null
+    return if (language == VoxGestMessageLanguage.FILIPINO && hasFilipino) {
+        Locale.forLanguageTag("fil-PH")
+    } else {
+        Locale.US
+    }
+}
+
+private fun packagedProfilePresentations(
+    context: Context
+): Pair<PackagedProfilePresentation, List<PackagedProfilePresentation>> {
+    val active = runCatching { RecognitionProfile.loadDefault(context) }
+        .map { profile ->
+            PackagedProfilePresentation(
+                title = profile.id,
+                badge = "ACTIVE LAUNCHER",
+                model = profile.modelAsset.substringAfterLast('/'),
+                classCount = profile.labels.size,
+                contract = profile.featureProfile,
+                inputTensor = "${profile.shapeText()} float32",
+                modelSize = assetSizeLabel(context, profile.modelAsset),
+                orientation = if (profile.mirroredInput) "mirrored (active profile contract)" else "unmirrored"
+            )
+        }
+        .getOrElse { error ->
+            PackagedProfilePresentation(
+                title = "profile unavailable",
+                badge = "LOAD ERROR",
+                model = error.javaClass.simpleName,
+                classCount = 0,
+                contract = "unavailable",
+                inputTensor = "unavailable",
+                modelSize = "unavailable",
+                orientation = "unavailable"
+            )
+        }
+
+    val experimental = listOf(
+        GradingRecognitionProfiles.ACCESSIBLE_ONEHAND162,
+        GradingRecognitionProfiles.STANDARD_FSL_FULLSIGN225
+    ).map { spec ->
+        PackagedProfilePresentation(
+            title = spec.id.name,
+            badge = "EXPERIMENTAL Â· GATED",
+            model = spec.modelAsset.substringAfterLast('/'),
+            classCount = spec.classCount,
+            contract = spec.featureVersion,
+            inputTensor = "${spec.inputShape.contentToString()} float32",
+            modelSize = assetSizeLabel(context, spec.modelAsset),
+            orientation = spec.modelInputOrientation.name
+        )
+    }
+    return active to experimental
+}
+
+private fun assetSizeLabel(context: Context, assetPath: String): String {
+    val bytes = runCatching { context.assets.open(assetPath).use { it.available().toLong() } }
+        .getOrNull() ?: return "missing"
+    return if (bytes >= 1024L * 1024L) {
+        String.format(Locale.US, "%.2f MiB", bytes.toDouble() / (1024.0 * 1024.0))
+    } else {
+        String.format(Locale.US, "%.1f KiB", bytes.toDouble() / 1024.0)
+    }
 }
 
 private fun exportAccuracyReport(
@@ -613,54 +955,22 @@ private fun ScreenTopBar(
     title: String,
     @DrawableRes trailing: Int,
     secondTrailing: Int? = null,
+    compact: Boolean = false,
     showLogo: Boolean = false,
     onLogoLongPress: (() -> Unit)? = null,
     onTrailingClick: (() -> Unit)? = null
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 20.dp, end = 20.dp, top = 6.dp, bottom = 16.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        if (showLogo) {
-            Box(
-                modifier = Modifier
-                    .size(28.dp)
-                    .clip(CircleShape)
-                    .background(Primary)
-                    .pointerInput(onLogoLongPress) {
-                        detectTapGestures(onLongPress = { onLogoLongPress?.invoke() })
-                    },
-                contentAlignment = Alignment.Center
-            ) {
-                Text("V", color = Color.White, fontSize = 13.sp, fontWeight = FontWeight.Bold)
-            }
-        } else {
-            Spacer(Modifier.width(if (secondTrailing == null) 24.dp else 56.dp))
-        }
-        Text(
-            text = title,
-            color = Primary,
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Center,
-            letterSpacing = 0.sp,
-            modifier = Modifier.weight(1f)
-        )
-        Row(horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
-            secondTrailing?.let { VoxIcon(it, "$title action", Primary, Modifier.size(21.dp)) }
-            Box(
-                modifier = Modifier
-                    .size(32.dp)
-                    .clip(CircleShape)
-                    .clickable(enabled = onTrailingClick != null) { onTrailingClick?.invoke() },
-                contentAlignment = Alignment.Center
-            ) {
-                VoxIcon(trailing, "$title menu", Primary, Modifier.size(22.dp))
-            }
-        }
-    }
+    VoxGestCapstoneTopBar(
+        sectionTitle = title
+            .lowercase(Locale.US)
+            .replaceFirstChar { it.titlecase(Locale.US) }
+            .replace("Fsl", "FSL"),
+        trailingIcon = trailing,
+        secondTrailingIcon = secondTrailing,
+        compact = compact,
+        onBrandLongPress = onLogoLongPress.takeIf { showLogo || onLogoLongPress != null },
+        onTrailingClick = onTrailingClick
+    )
 }
 
 @Composable
@@ -671,6 +981,23 @@ private fun SignScreen(
     recognitionStatus: String,
     namePhraseHint: String,
     presentationMode: Boolean,
+    latestRecognition: RecognitionResult?,
+    latestOutputReason: String,
+    suggestions: List<SentenceSuggestion>,
+    selectedSuggestion: SentenceSuggestion?,
+    messageLanguage: VoxGestMessageLanguage,
+    developerDiagnosticsEnabled: Boolean,
+    showRuntimeMetrics: Boolean,
+    preferredCameraLens: PreferredCameraLens,
+    trackingOverlayEnabled: Boolean,
+    showAiLandmarks: Boolean,
+    mirrorFrontPreview: Boolean,
+    cameraExpanded: Boolean,
+    onCameraExpandedChange: (Boolean) -> Unit,
+    onPreferredCameraLensChange: (PreferredCameraLens) -> Unit,
+    onOpenSettings: () -> Unit,
+    onSuggestionSelected: (SentenceSuggestion) -> Unit,
+    onMessageLanguageChange: (VoxGestMessageLanguage) -> Unit,
     onSpeak: () -> Unit,
     onDelete: () -> Unit,
     onClear: () -> Unit,
@@ -681,48 +1008,105 @@ private fun SignScreen(
     demoTokens: List<String>,
     onDemoToken: (String) -> Unit
 ) {
+    val copy = LocalVoxGestCopy.current
     var showCalibrationPanel by remember { mutableStateOf(false) }
-    ScreenScroll {
-        ScreenTopBar(
-            "SIGN",
-            R.drawable.ic_settings,
-            onTrailingClick = {
-                if (BuildConfig.DEBUG && OneHandCalibrationConfig.ENABLE_ONEHAND_CALIBRATION_RECORDING) {
-                    showCalibrationPanel = !showCalibrationPanel
-                }
-            }
-        )
+    var diagnosticsExpanded by remember { mutableStateOf(false) }
+    BackHandler(enabled = cameraExpanded) { onCameraExpandedChange(false) }
+    Column(Modifier.fillMaxSize()) {
+        AnimatedVisibility(visible = !cameraExpanded) {
+            ScreenTopBar(
+                copy.sign,
+                R.drawable.ic_settings,
+                compact = true,
+                onTrailingClick = onOpenSettings
+            )
+        }
         RecognitionAreaCard(
+            modifier = if (cameraExpanded) {
+                Modifier.fillMaxSize()
+            } else {
+                Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp)
+            },
+            acceptedWord = currentWord,
+            acceptedConfidence = latestRecognition?.takeIf {
+                currentWord.isNotBlank() && it.label.equals(currentWord, ignoreCase = true)
+            }?.confidence,
+            message = sentence,
+            messageLanguage = messageLanguage,
             recognitionRunning = recognitionRunning,
             recognitionStatus = recognitionStatus,
             namePhraseHint = namePhraseHint,
             presentationMode = presentationMode,
             showCalibrationPanel = showCalibrationPanel,
+            developerDiagnosticsEnabled = developerDiagnosticsEnabled,
+            preferredCameraLens = preferredCameraLens,
+            trackingOverlayEnabled = trackingOverlayEnabled,
+            showAiLandmarks = showAiLandmarks,
+            mirrorFrontPreview = mirrorFrontPreview,
+            expanded = cameraExpanded,
+            onExpandedChange = onCameraExpandedChange,
+            onPreferredCameraLensChange = onPreferredCameraLensChange,
             onStartRecognition = onStartRecognition,
             onStopRecognition = onStopRecognition,
             onRecognitionStatus = onRecognitionStatus,
-            onAcceptedRecognition = onAcceptedRecognition
+            onAcceptedRecognition = onAcceptedRecognition,
+            onSpeak = onSpeak
         )
-        CurrentWordCard(currentWord)
-        SentenceCard(sentence, onSpeak)
-        if (SHOW_DEBUG_TOOLS) {
-            DemoTokenPanel(
-                tokens = demoTokens,
-                onToken = onDemoToken
-            )
+        if (!cameraExpanded) {
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .verticalScroll(rememberScrollState())
+            ) {
+                CurrentWordCard(
+                    word = currentWord,
+                    confidence = latestRecognition?.confidence,
+                    showConfidence = showRuntimeMetrics
+                )
+                SentenceCard(
+                    sentence = sentence,
+                    messageLanguage = messageLanguage,
+                    suggestions = suggestions,
+                    selectedSuggestion = selectedSuggestion,
+                    onSuggestionSelected = onSuggestionSelected,
+                    onMessageLanguageChange = onMessageLanguageChange
+                )
+                if (showRuntimeMetrics) {
+                    SignDiagnosticsPanel(
+                        expanded = diagnosticsExpanded,
+                        recognitionStatus = recognitionStatus,
+                        result = latestRecognition,
+                        outputReason = latestOutputReason,
+                        calibrationVisible = showCalibrationPanel,
+                        allowLegacyTools = developerDiagnosticsEnabled,
+                        onToggleExpanded = { diagnosticsExpanded = !diagnosticsExpanded },
+                        onToggleCalibration = {
+                            if (BuildConfig.DEBUG && OneHandCalibrationConfig.ENABLE_ONEHAND_CALIBRATION_RECORDING) {
+                                showCalibrationPanel = !showCalibrationPanel
+                            }
+                        }
+                    )
+                }
+                if (developerDiagnosticsEnabled && SHOW_DEBUG_TOOLS) {
+                    DemoTokenPanel(
+                        tokens = demoTokens,
+                        onToken = onDemoToken
+                    )
+                }
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 10.dp),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    VoxGestCapstoneAction(copy.undo, R.drawable.ic_delete_outline, false, Modifier.weight(1f), onClick = onDelete)
+                    VoxGestCapstoneAction(copy.speak, R.drawable.ic_volume_up, true, Modifier.weight(1f), onClick = onSpeak)
+                    VoxGestCapstoneAction(copy.clear, R.drawable.ic_cancel, false, Modifier.weight(1f), onClick = onClear)
+                }
+                if (developerDiagnosticsEnabled) PresentationBuildFooter()
+                Spacer(Modifier.height(12.dp))
+            }
         }
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 10.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            ActionButton(R.drawable.ic_volume_up, "Speak", Primary, Modifier.weight(1f), onSpeak)
-            ActionButton(R.drawable.ic_delete_outline, "Delete", TextMuted, Modifier.weight(1f), onDelete)
-            ActionButton(R.drawable.ic_cancel, "Clear", Red, Modifier.weight(1f), onClear)
-        }
-        PresentationBuildFooter()
-        Spacer(Modifier.height(12.dp))
     }
 }
 
@@ -878,7 +1262,7 @@ private fun AccuracyDebugPanel(
         Row(verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f)) {
                 Text("Live Accuracy Test", color = Primary, fontSize = 13.sp, fontWeight = FontWeight.Bold)
-                Text("Target: $target Â· ${remainingSeconds}s", color = TextMain, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                Text("Target: $target Ã‚Â· ${remainingSeconds}s", color = TextMain, fontSize = 18.sp, fontWeight = FontWeight.Bold)
                 Text("Overall: $overall% ($totalCorrect/$totalAttempts)", color = TextMuted, fontSize = 12.sp)
             }
             Button(
@@ -919,16 +1303,32 @@ private fun AccuracyDebugPanel(
 
 @Composable
 private fun RecognitionAreaCard(
+    modifier: Modifier = Modifier,
+    acceptedWord: String,
+    acceptedConfidence: Float?,
+    message: String,
+    messageLanguage: VoxGestMessageLanguage,
     recognitionRunning: Boolean,
     recognitionStatus: String,
     namePhraseHint: String,
     presentationMode: Boolean,
     showCalibrationPanel: Boolean,
+    developerDiagnosticsEnabled: Boolean,
+    preferredCameraLens: PreferredCameraLens,
+    trackingOverlayEnabled: Boolean,
+    showAiLandmarks: Boolean,
+    mirrorFrontPreview: Boolean,
+    expanded: Boolean,
+    onExpandedChange: (Boolean) -> Unit,
+    onPreferredCameraLensChange: (PreferredCameraLens) -> Unit,
     onStartRecognition: () -> Unit,
     onStopRecognition: () -> Unit,
     onRecognitionStatus: (String) -> Unit,
-    onAcceptedRecognition: (RecognitionResult) -> Unit
+    onAcceptedRecognition: (RecognitionResult) -> Unit,
+    onSpeak: () -> Unit
 ) {
+    val copy = LocalVoxGestCopy.current
+    val compactHeight = LocalWindowSizeClass.current.heightSizeClass == WindowHeightSizeClass.Compact
     val context = LocalContext.current
     val lifecycleOwner = context as LifecycleOwner
     val previewView = remember {
@@ -940,8 +1340,9 @@ private fun RecognitionAreaCard(
     val controllerRef = remember { mutableStateOf<VoxGestCameraRecognitionController?>(null) }
     var recognitionFeedback by remember { mutableStateOf(RecognitionFeedback.idle()) }
     var recognizedToast by remember { mutableStateOf("") }
-    var showSkeletonFeatureView by remember { mutableStateOf(false) }
-    var skeletonFrame by remember { mutableStateOf<LandmarkFrame?>(null) }
+    var showGrid by remember { mutableStateOf(false) }
+    var landmarkVisualizationFrame by remember { mutableStateOf<LandmarkVisualizationFrame?>(null) }
+    var cameraRestartKey by remember { mutableStateOf(0) }
     var hasCameraPermission by remember {
         mutableStateOf(
             ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
@@ -959,7 +1360,7 @@ private fun RecognitionAreaCard(
         }
     }
 
-    LaunchedEffect(recognitionRunning, hasCameraPermission, previewView) {
+    LaunchedEffect(recognitionRunning, hasCameraPermission, previewView, preferredCameraLens, cameraRestartKey) {
         if (!recognitionRunning) {
             controllerRef.value?.stop()
             return@LaunchedEffect
@@ -974,10 +1375,17 @@ private fun RecognitionAreaCard(
             context = context,
             lifecycleOwner = lifecycleOwner,
             onStatus = onRecognitionStatus,
+            initialUseBackCamera = preferredCameraLens == PreferredCameraLens.REAR,
+            initialLandmarkVisualizationEnabled = showAiLandmarks,
             onRecognitionFeedback = { recognitionFeedback = it },
-            onSkeletonFrame = { skeletonFrame = it },
+            onSkeletonFrame = { landmarkVisualizationFrame = it },
             onAcceptedResult = onAcceptedRecognition
         ).also { it.start(previewView) }
+    }
+
+    LaunchedEffect(showAiLandmarks) {
+        controllerRef.value?.setLandmarkVisualizationEnabled(showAiLandmarks)
+        if (!showAiLandmarks) landmarkVisualizationFrame = null
     }
 
     LaunchedEffect(recognitionFeedback.eventId) {
@@ -996,109 +1404,140 @@ private fun RecognitionAreaCard(
     }
 
     val buttonTextSize = adaptiveSp(12, 14, 16)
-    VoxGestCard(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp)
+    val cameraUnavailable = recognitionRunning && hasCameraPermission && listOf(
+        "error",
+        "failed",
+        "unavailable"
+    ).any { marker -> recognitionStatus.contains(marker, ignoreCase = true) }
+    val publicTrackingState = when {
+        !recognitionRunning || !hasCameraPermission || cameraUnavailable -> copy.holdSignClearly
+        recognitionFeedback.detectionStatus == DetectionStatus.DETECTING -> copy.ready
+        recognitionFeedback.detectionStatus == DetectionStatus.RECOGNIZED -> copy.ready
+        else -> copy.holdSignClearly
+    }
+    val cameraShape = RoundedCornerShape(if (expanded) 0.dp else 22.dp)
+
+    Card(
+        modifier = modifier,
+        shape = cameraShape,
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        elevation = CardDefaults.cardElevation(defaultElevation = if (expanded) 0.dp else 3.dp),
+        border = if (expanded) null else BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
     ) {
-        AnimatedVisibility(visible = namePhraseHint.isNotBlank()) {
+        Column(
+            modifier = if (expanded) {
+                Modifier.fillMaxSize()
+            } else {
+                Modifier.fillMaxWidth().padding(if (compactHeight) 10.dp else 18.dp)
+            }
+        ) {
+        AnimatedVisibility(visible = !expanded && namePhraseHint.isNotBlank()) {
             Text(
                 namePhraseHint,
-                color = Primary,
+                color = MaterialTheme.colorScheme.primary,
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(bottom = 10.dp)
             )
         }
         Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .aspectRatio(4f / 3f)
-                .clip(RoundedCornerShape(22.dp))
+            modifier = when {
+                expanded -> Modifier.fillMaxSize()
+                compactHeight -> Modifier.fillMaxWidth().height(118.dp)
+                else -> Modifier.fillMaxWidth().aspectRatio(4f / 3f)
+            }
+                .clip(cameraShape)
                 .background(Color.Black)
-                .border(1.dp, Border, RoundedCornerShape(22.dp))
+                .then(
+                    if (expanded) Modifier
+                    else Modifier.border(1.dp, MaterialTheme.colorScheme.outlineVariant, cameraShape)
+                )
                 .semantics {
                     liveRegion = LiveRegionMode.Polite
-                    contentDescription = "Recognition status: $recognitionStatus"
+                    contentDescription = "Recognition status: $publicTrackingState"
                 }
         ) {
+            // One stable PreviewView host is resized in place. It is never moved into another window.
             AndroidView(
                 factory = { previewView },
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier
+                    .fillMaxSize()
+                    // Preview mirroring is display-only. ImageAnalysis/model input remains untouched.
+                    .graphicsLayer(
+                        scaleX = if (
+                            !mirrorFrontPreview && preferredCameraLens == PreferredCameraLens.FRONT
+                        ) -1f else 1f
+                    )
             )
-            if (showSkeletonFeatureView) {
+            if (showAiLandmarks && recognitionRunning && hasCameraPermission && !cameraUnavailable) {
                 SkeletonFeatureOverlay(
-                    frame = skeletonFrame,
+                    visualizationFrame = landmarkVisualizationFrame,
+                    previewMirrored = preferredCameraLens == PreferredCameraLens.FRONT && mirrorFrontPreview,
+                    hudTopPadding = if (expanded) 84.dp else 62.dp,
                     modifier = Modifier.fillMaxSize()
                 )
             }
-            if (!recognitionRunning || !hasCameraPermission) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(SoftCyan),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        VoxIcon(
-                            R.drawable.ic_camera_off,
-                            "Recognition status",
-                            TextMuted,
-                            Modifier.size(46.dp)
-                        )
-                        Text(
-                            if (hasCameraPermission) "Camera preview appears here" else "Camera permission needed",
-                            color = TextMain,
-                            fontSize = 18.sp,
-                            lineHeight = 23.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier.padding(top = 14.dp)
-                        )
-                        Text(
-                            recognitionStatus,
-                            color = TextMuted,
-                            fontSize = 13.sp,
-                            lineHeight = 18.sp,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier.padding(top = 7.dp, start = 24.dp, end = 24.dp)
-                        )
-                    }
-                }
-            }
-            CleanRecognitionGuide(
-                recognitionStatus = recognitionStatus,
-                recognitionRunning = recognitionRunning && hasCameraPermission,
-                modifier = Modifier.fillMaxSize()
-            )
-            StatusChip(
-                label = recognitionStatus,
-                dotColor = if (recognitionRunning) AccentGreen else Amber,
-                containerColor = if (recognitionRunning) Color(0xFFE8F7EE) else Color(0xFFFFF7ED),
-                contentColor = if (recognitionRunning) Green else Amber,
-                modifier = Modifier
-                    .align(Alignment.TopStart)
-                    .padding(14.dp)
-            )
-            Surface(
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(14.dp)
-                    .clickable { showSkeletonFeatureView = !showSkeletonFeatureView },
-                shape = RoundedCornerShape(999.dp),
-                color = if (showSkeletonFeatureView) Primary.copy(alpha = 0.92f) else Color.Black.copy(alpha = 0.45f),
-                border = BorderStroke(1.dp, Color.White.copy(alpha = 0.32f))
-            ) {
-                Text(
-                    if (showSkeletonFeatureView) "Simple Camera" else "162 Feature View",
-                    color = Color.White,
-                    fontSize = 11.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
+            if (showGrid && expanded) CameraGridOverlay(Modifier.fillMaxSize())
+            if (!recognitionRunning || !hasCameraPermission || cameraUnavailable) {
+                CameraStateOverlay(
+                    hasCameraPermission = hasCameraPermission,
+                    cameraUnavailable = cameraUnavailable,
+                    recognitionStatus = recognitionStatus,
+                    developerDiagnosticsEnabled = developerDiagnosticsEnabled,
+                    showAction = expanded || !hasCameraPermission || cameraUnavailable,
+                    compactFullscreen = expanded && compactHeight,
+                    onAction = {
+                        if (cameraUnavailable) {
+                            onRecognitionStatus("Restarting Camera")
+                            cameraRestartKey += 1
+                        } else {
+                            onStartRecognition()
+                        }
+                    },
+                    modifier = Modifier.fillMaxSize()
                 )
             }
+            if (!expanded && trackingOverlayEnabled && !cameraUnavailable) {
+                CleanRecognitionGuide(
+                    recognitionStatus = publicTrackingState,
+                    recognitionRunning = recognitionRunning && hasCameraPermission,
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
+            if (expanded) {
+                FullscreenCameraChrome(
+                    publicTrackingState = publicTrackingState,
+                    acceptedWord = acceptedWord,
+                    acceptedConfidence = acceptedConfidence.takeIf { developerDiagnosticsEnabled },
+                    message = message,
+                    messageLanguage = messageLanguage,
+                    onGridToggle = { showGrid = !showGrid },
+                    onSwitchCamera = {
+                        onPreferredCameraLensChange(
+                            if (preferredCameraLens == PreferredCameraLens.FRONT) PreferredCameraLens.REAR else PreferredCameraLens.FRONT
+                        )
+                    },
+                    onSpeak = onSpeak,
+                    onMinimize = { onExpandedChange(false) }
+                )
+            } else {
+                StatusChip(
+                    label = publicTrackingState,
+                    dotColor = if (publicTrackingState == copy.ready) AccentGreen else Amber,
+                    containerColor = if (publicTrackingState == copy.ready) Color(0xFFE8F7EE) else Color(0xFFFFF7ED),
+                    contentColor = if (publicTrackingState == copy.ready) Green else Amber,
+                    modifier = Modifier.align(Alignment.TopStart).padding(14.dp)
+                )
+                Column(
+                    modifier = Modifier.align(Alignment.TopEnd).padding(14.dp),
+                    horizontalAlignment = Alignment.End,
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    CameraOverlayControl(R.drawable.ic_expand, copy.expand) { onExpandedChange(true) }
+                }
+            }
         }
-        AnimatedVisibility(visible = recognizedToast.isNotBlank()) {
+        AnimatedVisibility(visible = !expanded && developerDiagnosticsEnabled && recognizedToast.isNotBlank()) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -1107,12 +1546,12 @@ private fun RecognitionAreaCard(
             ) {
                 Surface(
                     shape = RoundedCornerShape(999.dp),
-                    color = Primary.copy(alpha = 0.94f),
+                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.94f),
                     shadowElevation = 4.dp
                 ) {
                     Text(
                         recognizedToast,
-                        color = Color.White,
+                        color = MaterialTheme.colorScheme.onPrimary,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
@@ -1120,7 +1559,7 @@ private fun RecognitionAreaCard(
                 }
             }
         }
-        if (BuildConfig.DEBUG && OneHandCalibrationConfig.ENABLE_ONEHAND_CALIBRATION_RECORDING) {
+        if (!expanded && developerDiagnosticsEnabled && BuildConfig.DEBUG && OneHandCalibrationConfig.ENABLE_ONEHAND_CALIBRATION_RECORDING) {
             AnimatedVisibility(visible = showCalibrationPanel) {
                 OneHandCalibrationPanel(
                     recognitionRunning = recognitionRunning && hasCameraPermission,
@@ -1132,11 +1571,11 @@ private fun RecognitionAreaCard(
                 )
             }
         }
-        if (presentationMode) {
+        if (!expanded && presentationMode) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 14.dp),
+                    .padding(top = if (compactHeight) 8.dp else 14.dp),
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 Button(
@@ -1150,12 +1589,12 @@ private fun RecognitionAreaCard(
                         .weight(1f)
                         .height(48.dp),
                     shape = RoundedCornerShape(14.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Primary),
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
                     contentPadding = PaddingValues(horizontal = 6.dp, vertical = 0.dp)
                 ) {
-                    VoxIcon(R.drawable.ic_play_arrow, "Start Recognition", DarkInk, Modifier.size(18.dp))
+                    VoxIcon(R.drawable.ic_play_arrow, "Start Recognition", MaterialTheme.colorScheme.onPrimary, Modifier.size(18.dp))
                     Spacer(Modifier.width(7.dp))
-                    Text("Start", color = DarkInk, fontSize = buttonTextSize, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    Text(copy.start, color = MaterialTheme.colorScheme.onPrimary, fontSize = buttonTextSize, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 }
                 Button(
                     onClick = {
@@ -1166,32 +1605,38 @@ private fun RecognitionAreaCard(
                         .weight(1f)
                         .height(48.dp),
                     shape = RoundedCornerShape(14.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = CardWhite, contentColor = Primary),
-                    border = BorderStroke(1.dp, Border),
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surface, contentColor = MaterialTheme.colorScheme.primary),
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
                     contentPadding = PaddingValues(horizontal = 6.dp, vertical = 0.dp)
                 ) {
-                    VoxIcon(R.drawable.ic_cancel, "Stop Recognition", Primary, Modifier.size(18.dp))
+                    VoxIcon(R.drawable.ic_cancel, "Stop Recognition", MaterialTheme.colorScheme.primary, Modifier.size(18.dp))
                     Spacer(Modifier.width(7.dp))
-                    Text("Stop", color = Primary, fontSize = buttonTextSize, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    Text(copy.stop, color = MaterialTheme.colorScheme.primary, fontSize = buttonTextSize, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 }
                 Button(
                     onClick = {
-                        controllerRef.value?.switchCamera(previewView)
-                            ?: Toast.makeText(context, "Start recognition first", Toast.LENGTH_SHORT).show()
+                        onPreferredCameraLensChange(
+                            if (preferredCameraLens == PreferredCameraLens.FRONT) {
+                                PreferredCameraLens.REAR
+                            } else {
+                                PreferredCameraLens.FRONT
+                            }
+                        )
                     },
                     modifier = Modifier
                         .weight(1f)
                         .height(48.dp),
                     shape = RoundedCornerShape(14.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = CardWhite, contentColor = Primary),
-                    border = BorderStroke(1.dp, Border),
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surface, contentColor = MaterialTheme.colorScheme.primary),
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
                     contentPadding = PaddingValues(horizontal = 6.dp, vertical = 0.dp)
                 ) {
-                    VoxIcon(R.drawable.ic_camera_off, "Switch Camera", Primary, Modifier.size(18.dp))
+                    VoxIcon(R.drawable.ic_flip_camera, "Switch Camera", MaterialTheme.colorScheme.primary, Modifier.size(18.dp))
                     Spacer(Modifier.width(7.dp))
-                    Text("Switch", color = Primary, fontSize = buttonTextSize, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    Text(copy.switchCamera, color = MaterialTheme.colorScheme.primary, fontSize = buttonTextSize, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 }
             }
+        }
         }
     }
 }
@@ -1362,7 +1807,7 @@ private fun CleanRecognitionGuide(
     if (!recognitionRunning) return
     val guideText = when {
         recognitionStatus.contains("Looking", ignoreCase = true) -> "Place hand in frame"
-        recognitionStatus.contains("Hold", ignoreCase = true) -> "Hold steady"
+        recognitionStatus.contains("Hold", ignoreCase = true) -> ""
         recognitionStatus.contains("Signing", ignoreCase = true) -> "Signing..."
         recognitionStatus.contains("Recognizing", ignoreCase = true) -> "Recognizing..."
         recognitionStatus.contains("Accepted", ignoreCase = true) -> "Accepted"
@@ -1529,121 +1974,165 @@ private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawHandSkeleton(
 
 @Composable
 private fun SkeletonFeatureOverlay(
-    frame: LandmarkFrame?,
+    visualizationFrame: LandmarkVisualizationFrame?,
+    previewMirrored: Boolean,
+    hudTopPadding: Dp,
     modifier: Modifier = Modifier
 ) {
-    Canvas(
-        modifier = modifier
-            .background(Color.Black.copy(alpha = 0.18f))
+    val frame = visualizationFrame?.frame
+    val pose = frame?.poseLandmarks.orEmpty()
+    val left = frame?.leftHandLandmarks.orEmpty()
+    val right = frame?.rightHandLandmarks.orEmpty()
+    val poseColor = Color.White
+    val leftHandColor = VoxGestDesignTokens.SunGold
+    val rightHandColor = Color(0xFF74D7FF)
+
+    Box(
+        modifier = modifier.semantics {
+            contentDescription = "Local AI landmark overlay: pose ${if (frame?.hasPose == true) "detected" else "not detected"}, left hand ${if (frame?.hasLeftHand == true) "detected" else "not detected"}, right hand ${if (frame?.hasRightHand == true) "detected" else "not detected"}"
+        }
     ) {
-        val pose = frame?.poseLandmarks.orEmpty()
-        val left = frame?.leftHandLandmarks.orEmpty()
-        val right = frame?.rightHandLandmarks.orEmpty()
+        Canvas(Modifier.fillMaxSize()) {
+            val sourceWidth = frame?.sourceWidth?.takeIf { it > 0 } ?: size.width.toInt()
+            val sourceHeight = frame?.sourceHeight?.takeIf { it > 0 } ?: size.height.toInt()
+            val analysisMirrored = visualizationFrame?.analysisMirrored ?: false
 
-        fun pointOf(x: Float, y: Float): Offset {
-            return Offset(
-                x = x.coerceIn(0f, 1f) * size.width,
-                y = y.coerceIn(0f, 1f) * size.height
-            )
+            fun pointOf(x: Float, y: Float): Offset {
+                val mapped = com.voxgest.dryrun.PreviewOverlayMapper.centerCropPoint(
+                    normalizedX = x,
+                    normalizedY = y,
+                    sourceWidth = sourceWidth,
+                    sourceHeight = sourceHeight,
+                    displayWidth = size.width,
+                    displayHeight = size.height,
+                    analysisMirrored = analysisMirrored,
+                    previewMirrored = previewMirrored
+                )
+                return Offset(mapped.x, mapped.y)
+            }
+
+            fun drawPoint(x: Float, y: Float, color: Color, radius: Float) {
+                drawCircle(
+                    color = color,
+                    radius = radius.dp.toPx(),
+                    center = pointOf(x, y)
+                )
+            }
+
+            fun drawSegment(aX: Float, aY: Float, bX: Float, bY: Float, color: Color, stroke: Float) {
+                drawLine(
+                    color = color,
+                    start = pointOf(aX, aY),
+                    end = pointOf(bX, bY),
+                    strokeWidth = stroke.dp.toPx(),
+                    cap = StrokeCap.Round
+                )
+            }
+
+            fun drawHand(points: List<com.voxgest.dryrun.LandmarkPoint>, color: Color) {
+                if (points.size != 21) return
+                HAND_CONNECTIONS.forEach { (first, second) ->
+                    val a = points[first]
+                    val b = points[second]
+                    drawSegment(a.x, a.y, b.x, b.y, color.copy(alpha = 0.78f), 1.6f)
+                }
+                points.forEach { point -> drawPoint(point.x, point.y, color, 2.8f) }
+            }
+
+            if (pose.size == 33) {
+                POSE_BODY_CONNECTIONS.forEach { (first, second) ->
+                    val a = pose[first]
+                    val b = pose[second]
+                    drawSegment(a.x, a.y, b.x, b.y, poseColor.copy(alpha = 0.62f), 1.4f)
+                }
+                // FullSign225 contains all 33 pose points. Facial pose points remain unconnected,
+                // so this cannot be mistaken for a facial mesh or separate face detector.
+                pose.forEach { point -> drawPoint(point.x, point.y, poseColor.copy(alpha = 0.88f), 2.1f) }
+            }
+
+            drawHand(left, leftHandColor)
+            drawHand(right, rightHandColor)
         }
 
-        fun drawPoint(x: Float, y: Float, color: Color, radius: Float = 4.2f) {
-            drawCircle(
-                color = color,
-                radius = radius.dp.toPx(),
-                center = pointOf(x, y)
-            )
-        }
-
-        fun drawSegment(aX: Float, aY: Float, bX: Float, bY: Float, color: Color, stroke: Float = 2.2f) {
-            drawLine(
-                color = color,
-                start = pointOf(aX, aY),
-                end = pointOf(bX, bY),
-                strokeWidth = stroke.dp.toPx(),
-                cap = StrokeCap.Round
-            )
-        }
-
-        fun drawPoseSegment(a: Int, b: Int, color: Color) {
-            if (pose.size > maxOf(a, b)) {
-                val pa = pose[a]
-                val pb = pose[b]
-                drawSegment(pa.x, pa.y, pb.x, pb.y, color, 2.6f)
+        Surface(
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .padding(top = hudTopPadding),
+            color = Color.Black.copy(alpha = 0.66f),
+            contentColor = Color.White,
+            shape = RoundedCornerShape(12.dp),
+            border = BorderStroke(1.dp, Color.White.copy(alpha = 0.18f))
+        ) {
+            Column(
+                modifier = Modifier.padding(horizontal = 10.dp, vertical = 7.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    "LOCAL AI LANDMARKS",
+                    color = Color.White,
+                    fontSize = 9.sp,
+                    lineHeight = 11.sp,
+                    fontWeight = FontWeight.Bold
+                )
+                Row(
+                    modifier = Modifier.padding(top = 3.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    LandmarkHudItem("Pose", frame?.hasPose == true, poseColor)
+                    LandmarkHudItem("L", frame?.hasLeftHand == true, leftHandColor)
+                    LandmarkHudItem("R", frame?.hasRightHand == true, rightHandColor)
+                }
             }
         }
+    }
+}
 
-        fun drawPosePoint(index: Int, color: Color, radius: Float = 4.4f) {
-            if (pose.size > index) {
-                val p = pose[index]
-                drawPoint(p.x, p.y, color, radius)
-            }
-        }
-
-        fun drawHandSkeletonRaw(points: List<com.voxgest.dryrun.LandmarkPoint>, color: Color) {
-            if (points.size != 21) return
-            HAND_CONNECTIONS.forEach { connection ->
-                val a = points[connection.first]
-                val b = points[connection.second]
-                drawSegment(a.x, a.y, b.x, b.y, color.copy(alpha = 0.70f), 2.0f)
-            }
-            points.forEach { p ->
-                drawPoint(p.x, p.y, color, 3.5f)
-            }
-        }
-
-        val mouthColor = Color(0xFFFFD54F)
-        val poseColor = Color(0xFF40C4FF)
-        val armColor = Color(0xFF00E676)
-        val leftHandColor = Color(0xFFFF80AB)
-        val rightHandColor = Color(0xFFB8F060)
-
-        // Mouth / face reference points: nose and mouth corners.
-        listOf(0, 9, 10).forEach { drawPosePoint(it, mouthColor, 4.6f) }
-        if (pose.size > 10) {
-            drawPoseSegment(9, 10, mouthColor.copy(alpha = 0.70f))
-        }
-
-        // Shoulders and arms.
-        drawPoseSegment(11, 12, poseColor)
-        drawPoseSegment(11, 13, armColor)
-        drawPoseSegment(13, 15, armColor)
-        drawPoseSegment(12, 14, armColor)
-        drawPoseSegment(14, 16, armColor)
-
-        // Important pose/body points used for body-relative context.
-        listOf(11, 12, 13, 14, 15, 16).forEach { drawPosePoint(it, poseColor, 4.4f) }
-
-        // Hands.
-        drawHandSkeletonRaw(left, leftHandColor)
-        drawHandSkeletonRaw(right, rightHandColor)
-
-        // Label.
-        drawContext.canvas.nativeCanvas.apply {
-            val paint = android.graphics.Paint().apply {
-                isAntiAlias = true
-                color = android.graphics.Color.WHITE
-                textSize = 32f
-                typeface = android.graphics.Typeface.create(android.graphics.Typeface.DEFAULT, android.graphics.Typeface.BOLD)
-            }
-            drawText("162 FEATURE VIEW: mouth + shoulders + arms + hands", 24f, size.height - 28f, paint)
-        }
+@Composable
+private fun LandmarkHudItem(label: String, detected: Boolean, color: Color) {
+    Row(horizontalArrangement = Arrangement.spacedBy(4.dp), verticalAlignment = Alignment.CenterVertically) {
+        Box(
+            Modifier
+                .size(6.dp)
+                .clip(CircleShape)
+                .background(if (detected) color else Color.White.copy(alpha = 0.28f))
+        )
+        Text(
+            text = label,
+            color = Color.White.copy(alpha = if (detected) 1f else 0.62f),
+            fontSize = 9.sp,
+            lineHeight = 11.sp,
+            fontWeight = FontWeight.SemiBold
+        )
     }
 }
 
 
 @Composable
-private fun CurrentWordCard(word: String) {
+private fun CurrentWordCard(
+    word: String,
+    confidence: Float?,
+    showConfidence: Boolean
+) {
+    val copy = LocalVoxGestCopy.current
     val clean = word.trim()
     val hasWord = isMeaningfulOutput(clean)
-    val displayWord = if (hasWord) clean.uppercase(Locale.US) else "No word yet"
+    val displayWord = if (hasWord) clean.uppercase(Locale.US) else copy.waitingForSign
     VoxGestCard(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Label("CURRENT WORD", Modifier.weight(1f))
+            Label(copy.recognizedSign, Modifier.weight(1f))
+            if (hasWord) {
+                StatusChip(
+                    label = if (copy === VoxGestCopy.Filipino) "Tinanggap" else "Accepted",
+                    dotColor = AccentGreen,
+                    containerColor = Color(0xFFE8F7EE),
+                    contentColor = Green
+                )
+            }
         }
         Row(
             modifier = Modifier
@@ -1654,10 +2143,241 @@ private fun CurrentWordCard(word: String) {
         ) {
             Text(
                 displayWord,
-                color = if (hasWord) Primary else TextFaint,
+                color = if (hasWord) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
                 fontSize = adaptiveSp(22, 28, 34),
                 fontWeight = if (hasWord) FontWeight.Bold else FontWeight.SemiBold
             )
+        }
+        if (showConfidence && confidence != null) {
+            Text(
+                text = "confidence=${String.format(Locale.US, "%.3f", confidence)}",
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                fontSize = 11.sp,
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center
+            )
+        }
+    }
+
+}
+
+@Composable
+private fun CameraStateOverlay(
+    hasCameraPermission: Boolean,
+    cameraUnavailable: Boolean,
+    recognitionStatus: String,
+    developerDiagnosticsEnabled: Boolean,
+    showAction: Boolean,
+    compactFullscreen: Boolean,
+    onAction: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val copy = LocalVoxGestCopy.current
+    val headline = when {
+        !hasCameraPermission -> if (copy === VoxGestCopy.Filipino) "Kailangan ang pahintulot sa camera" else "Camera permission needed"
+        cameraUnavailable -> if (copy === VoxGestCopy.Filipino) "Hindi available ang camera" else "Camera unavailable"
+        else -> if (copy === VoxGestCopy.Filipino) "Handa ang camera kapag nagsimula ka" else "Camera ready when you start"
+    }
+    val actionLabel = when {
+        !hasCameraPermission -> if (copy === VoxGestCopy.Filipino) "Payagan ang camera" else "Allow camera"
+        cameraUnavailable -> if (copy === VoxGestCopy.Filipino) "Subukan muli" else "Try again"
+        else -> copy.start
+    }
+    Box(
+        modifier = modifier.background(MaterialTheme.colorScheme.surface.copy(alpha = 0.96f)),
+        contentAlignment = if (compactFullscreen) Alignment.TopCenter else Alignment.Center
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(horizontal = 32.dp)
+                .padding(top = if (compactFullscreen) 12.dp else 0.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            VoxIcon(R.drawable.ic_camera_off, "Camera status", MaterialTheme.colorScheme.primary, Modifier.size(46.dp))
+            Text(
+                headline,
+                color = MaterialTheme.colorScheme.onSurface,
+                fontSize = 18.sp,
+                lineHeight = 23.sp,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(top = 14.dp)
+            )
+            Text(
+                if (developerDiagnosticsEnabled) recognitionStatus else copy.holdSignClearly,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                fontSize = 13.sp,
+                lineHeight = 18.sp,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(top = 7.dp)
+            )
+            if (showAction) {
+                Button(
+                    onClick = onAction,
+                    modifier = Modifier.padding(top = 18.dp).heightIn(min = 48.dp),
+                    shape = RoundedCornerShape(14.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+                ) {
+                    Text(actionLabel, color = MaterialTheme.colorScheme.onPrimary, fontWeight = FontWeight.Bold)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun FullscreenCameraChrome(
+    publicTrackingState: String,
+    acceptedWord: String,
+    acceptedConfidence: Float?,
+    message: String,
+    messageLanguage: VoxGestMessageLanguage,
+    onGridToggle: () -> Unit,
+    onSwitchCamera: () -> Unit,
+    onSpeak: () -> Unit,
+    onMinimize: () -> Unit
+) {
+    val copy = LocalVoxGestCopy.current
+    Box(Modifier.fillMaxSize()) {
+            StatusChip(
+                label = publicTrackingState,
+                dotColor = if (publicTrackingState == copy.ready) AccentGreen else Amber,
+                containerColor = Color.Black.copy(alpha = 0.62f),
+                contentColor = Color.White,
+                modifier = Modifier.align(Alignment.TopStart).padding(start = 18.dp, top = 44.dp)
+            )
+            Column(
+                modifier = Modifier.align(Alignment.CenterEnd).padding(end = 18.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                CameraOverlayControl(R.drawable.ic_flip_camera, copy.switchCamera, onSwitchCamera)
+                CameraOverlayControl(R.drawable.ic_grid, "Grid", onGridToggle)
+                CameraOverlayControl(R.drawable.ic_minimize, copy.minimize, onMinimize)
+            }
+            Surface(
+                modifier = Modifier.align(Alignment.BottomCenter).fillMaxWidth().padding(18.dp),
+                color = Color.Black.copy(alpha = 0.70f),
+                shape = RoundedCornerShape(22.dp),
+                border = BorderStroke(1.dp, Color.White.copy(alpha = 0.18f))
+            ) {
+                Column(Modifier.padding(18.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(copy.recognizedSign, color = Color.White.copy(alpha = 0.7f), fontSize = 10.sp, fontWeight = FontWeight.Bold)
+                    Text(
+                        acceptedWord.takeIf(::isMeaningfulOutput)?.uppercase(Locale.US) ?: copy.waitingForSign,
+                        color = Color.White,
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center
+                    )
+                    if (acceptedConfidence != null) {
+                        Text(
+                            "${(acceptedConfidence * 100f).toInt()}% confidence",
+                            color = Color.White.copy(alpha = 0.7f),
+                            fontSize = 11.sp,
+                            modifier = Modifier.padding(top = 4.dp)
+                        )
+                    }
+                    if (isMeaningfulOutput(message)) {
+                        VoxGestOfflineMessagePresenter.present(message).visibleLines(messageLanguage).forEach { (language, value) ->
+                            Text(
+                                "$language  $value",
+                                color = Color.White,
+                                fontSize = 12.sp,
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.padding(top = 6.dp)
+                            )
+                        }
+                        Surface(
+                            modifier = Modifier.padding(top = 12.dp).heightIn(min = 44.dp).clickable(onClick = onSpeak),
+                            color = MaterialTheme.colorScheme.primary,
+                            shape = RoundedCornerShape(999.dp)
+                        ) {
+                            Row(
+                                Modifier.padding(horizontal = 22.dp),
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                VoxIcon(R.drawable.ic_volume_up, copy.speak, MaterialTheme.colorScheme.onPrimary, Modifier.size(18.dp))
+                                Text(copy.speak, color = MaterialTheme.colorScheme.onPrimary, fontWeight = FontWeight.Bold, modifier = Modifier.padding(start = 8.dp))
+                            }
+                        }
+                    }
+                }
+            }
+    }
+}
+
+@Composable
+private fun CameraOverlayControl(@DrawableRes icon: Int, label: String, onClick: () -> Unit) {
+    Surface(
+        modifier = Modifier.size(48.dp).clickable(onClick = onClick),
+        shape = CircleShape,
+        color = Color.Black.copy(alpha = 0.52f),
+        border = BorderStroke(1.dp, Color.White.copy(alpha = 0.28f))
+    ) {
+        Box(contentAlignment = Alignment.Center) {
+            VoxIcon(icon, label, Color.White, Modifier.size(22.dp))
+        }
+    }
+}
+
+@Composable
+private fun CameraGridOverlay(modifier: Modifier = Modifier) {
+    Canvas(modifier) {
+        val color = Color.White.copy(alpha = 0.20f)
+        drawLine(color, Offset(size.width / 3f, 0f), Offset(size.width / 3f, size.height), 1.dp.toPx())
+        drawLine(color, Offset(size.width * 2f / 3f, 0f), Offset(size.width * 2f / 3f, size.height), 1.dp.toPx())
+        drawLine(color, Offset(0f, size.height / 3f), Offset(size.width, size.height / 3f), 1.dp.toPx())
+        drawLine(color, Offset(0f, size.height * 2f / 3f), Offset(size.width, size.height * 2f / 3f), 1.dp.toPx())
+    }
+}
+
+@Composable
+private fun SignDiagnosticsPanel(
+    expanded: Boolean,
+    recognitionStatus: String,
+    result: RecognitionResult?,
+    outputReason: String,
+    calibrationVisible: Boolean,
+    allowLegacyTools: Boolean,
+    onToggleExpanded: () -> Unit,
+    onToggleCalibration: () -> Unit
+) {
+    VoxGestCard(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 4.dp)
+            .clickable(onClick = onToggleExpanded)
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Label("DEVELOPER DIAGNOSTICS", Modifier.weight(1f))
+            Text(if (expanded) "Collapse" else "Expand", color = Primary, fontSize = 11.sp, fontWeight = FontWeight.Bold)
+        }
+        AnimatedVisibility(visible = expanded) {
+            Column(Modifier.padding(top = 10.dp), verticalArrangement = Arrangement.spacedBy(5.dp)) {
+                Text("runtime=$recognitionStatus", color = TextMuted, fontSize = 11.sp)
+                Text("output_reason=$outputReason", color = TextMuted, fontSize = 11.sp)
+                Text(
+                    "top1=${result?.label.orEmpty()} confidence=${result?.confidence ?: 0f} margin=${result?.margin ?: 0f}",
+                    color = TextMuted,
+                    fontSize = 11.sp
+                )
+                Text(
+                    "Raw predictions remain diagnostic; only post-gate allowlisted tokens can update the message.",
+                    color = TextFaint,
+                    fontSize = 10.sp,
+                    lineHeight = 14.sp
+                )
+                if (allowLegacyTools) {
+                    OutlinePillButton(
+                        label = if (calibrationVisible) "Hide calibration tools" else "Open calibration tools",
+                        icon = R.drawable.ic_settings,
+                        modifier = Modifier.fillMaxWidth(),
+                        onClick = onToggleCalibration
+                    )
+                }
+            }
         }
     }
 }
@@ -1747,41 +2467,108 @@ private fun DemoTokenButton(label: String, tint: Color, modifier: Modifier, onCl
 }
 
 @Composable
-private fun SentenceCard(sentence: String, onSpeak: () -> Unit) {
+private fun SentenceCard(
+    sentence: String,
+    messageLanguage: VoxGestMessageLanguage,
+    suggestions: List<SentenceSuggestion>,
+    selectedSuggestion: SentenceSuggestion?,
+    onSuggestionSelected: (SentenceSuggestion) -> Unit,
+    onMessageLanguageChange: (VoxGestMessageLanguage) -> Unit
+) {
+    val copy = LocalVoxGestCopy.current
     val hasSentence = isMeaningfulOutput(sentence)
+    val presentation = VoxGestOfflineMessagePresenter.present(sentence)
     val sentenceTextSize = adaptiveSp(16, 20, 24)
     VoxGestCard(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
     ) {
-        Label("SENTENCE")
-        Text(
-            if (hasSentence) sentence else "No sentence yet.",
-            color = if (hasSentence) Primary else TextFaint,
-            fontSize = sentenceTextSize,
-            lineHeight = 27.sp,
-            fontWeight = if (hasSentence) FontWeight.Bold else FontWeight.SemiBold,
-            modifier = Modifier.padding(top = 10.dp)
-        )
-        Row(
-            modifier = Modifier
-                .padding(top = 12.dp)
-                .clickable { onSpeak() },
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Surface(shape = CircleShape, color = Color(0xFFFFF7ED)) {
-                Box(Modifier.size(25.dp), contentAlignment = Alignment.Center) {
-                    VoxIcon(R.drawable.ic_volume_up, "Tap to speak", Amber, Modifier.size(14.dp))
+        Label(copy.message)
+        MessageLanguageSelector(messageLanguage, onMessageLanguageChange)
+        if (!hasSentence) {
+            Text(
+                copy.noMessage,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                fontSize = sentenceTextSize,
+                lineHeight = 27.sp,
+                fontWeight = FontWeight.SemiBold,
+                modifier = Modifier.padding(top = 10.dp)
+            )
+        } else {
+            val visible = presentation.visibleLines(messageLanguage)
+            if (visible.isEmpty()) {
+                Text(copy.translationUnavailable, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp, modifier = Modifier.padding(top = 10.dp))
+            } else {
+                visible.forEach { (language, value) ->
+                    Column(Modifier.padding(top = 10.dp)) {
+                        Text(language, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 9.sp, fontWeight = FontWeight.Bold)
+                        Text(value, color = MaterialTheme.colorScheme.primary, fontSize = sentenceTextSize, lineHeight = 27.sp, fontWeight = FontWeight.Bold)
+                    }
                 }
             }
-            Spacer(Modifier.width(8.dp))
-            Text(
-                if (hasSentence) "Tap to speak" else "No sentence yet.",
-                color = Amber,
-                fontSize = 13.sp,
-                fontWeight = FontWeight.SemiBold
-            )
+        }
+        suggestions.firstOrNull()?.let { suggestion ->
+            val selected = suggestion == selectedSuggestion
+            Surface(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 12.dp)
+                    .clickable { onSuggestionSelected(suggestion) },
+                shape = RoundedCornerShape(14.dp),
+                color = if (selected) Color(0xFFE8F7EE) else SoftCyan,
+                border = BorderStroke(1.dp, if (selected) Primary else Border)
+            ) {
+                Column(Modifier.padding(horizontal = 12.dp, vertical = 10.dp)) {
+                    Text(
+                        if (selected) {
+                            if (copy === VoxGestCopy.Filipino) "PINILING MUNGKAHI" else "SELECTED SUGGESTION"
+                        } else {
+                            if (copy === VoxGestCopy.Filipino) "OPSIYONAL NA MUNGKAHI" else "OPTIONAL SUGGESTION"
+                        },
+                        color = if (selected) Green else TextMuted,
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(suggestion.text, color = TextMain, fontSize = 13.sp, modifier = Modifier.padding(top = 3.dp))
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun MessageLanguageSelector(
+    selected: VoxGestMessageLanguage,
+    onSelected: (VoxGestMessageLanguage) -> Unit
+) {
+    val copy = LocalVoxGestCopy.current
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 10.dp)
+            .clip(RoundedCornerShape(999.dp))
+            .background(MaterialTheme.colorScheme.primaryContainer)
+            .padding(3.dp),
+        horizontalArrangement = Arrangement.spacedBy(3.dp)
+    ) {
+        listOf(
+            VoxGestMessageLanguage.ENGLISH to copy.english,
+            VoxGestMessageLanguage.BOTH to copy.both,
+            VoxGestMessageLanguage.FILIPINO to copy.filipino
+        ).forEach { (language, label) ->
+            val active = language == selected
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .heightIn(min = 38.dp)
+                    .clip(RoundedCornerShape(999.dp))
+                    .background(if (active) MaterialTheme.colorScheme.primary else Color.Transparent)
+                    .clickable { onSelected(language) },
+                contentAlignment = Alignment.Center
+            ) {
+                Text(label, color = if (active) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onPrimaryContainer, fontSize = 10.sp, fontWeight = FontWeight.Bold)
+            }
         }
     }
 }
@@ -1816,14 +2603,26 @@ private fun ActionButton(
 private fun ListenScreen(
     pendingAvatarText: String,
     pendingAvatarRequestId: Int,
+    recentEntries: List<ConversationUiEntry>,
+    messageLanguage: VoxGestMessageLanguage,
+    reducedMotion: Boolean,
+    developerDiagnosticsEnabled: Boolean,
+    onOpenSettings: () -> Unit,
     onSpeechSaved: (String) -> Unit
 ) {
+    val copy = LocalVoxGestCopy.current
     val context = LocalContext.current
     var listening by remember { mutableStateOf(false) }
-    var transcript by remember { mutableStateOf("") }
-    var speechStatus by remember { mutableStateOf("Tap the microphone and speak.") }
-    var avatarState by remember { mutableStateOf(AvatarPlaybackState()) }
-    val avatarController = remember { AvatarController { avatarState = it } }
+    var transcript by rememberSaveable { mutableStateOf("") }
+    var speechStatus by remember(copy) { mutableStateOf(copy.tapMic) }
+    var speechInputLanguage by rememberSaveable { mutableStateOf(SpeechInputLanguage.ENGLISH) }
+    var avatarRequestId by rememberSaveable { mutableStateOf(0L) }
+    var avatarRequestTranscript by rememberSaveable { mutableStateOf("") }
+    val avatarRequest = ListenAvatarRequest(
+        id = avatarRequestId,
+        transcript = avatarRequestTranscript,
+        canonicalLabel = Core3ListenTranscriptResolver.resolve(avatarRequestTranscript)
+    )
     val recognizerState = remember { mutableStateOf<SpeechRecognizer?>(null) }
     val speechAvailable = remember { SpeechRecognizer.isRecognitionAvailable(context) }
     var hasMicPermission by remember {
@@ -1835,7 +2634,7 @@ private fun ListenScreen(
         ActivityResultContracts.RequestPermission()
     ) { granted ->
         hasMicPermission = granted
-        speechStatus = if (granted) "Tap the microphone and speak." else "Microphone permission is needed."
+        speechStatus = if (granted) copy.tapMic else if (copy === VoxGestCopy.Filipino) "Kailangan ang pahintulot sa mikropono." else "Microphone permission is needed."
     }
 
     fun stopListening() {
@@ -1843,12 +2642,16 @@ private fun ListenScreen(
         recognizerState.value?.destroy()
         recognizerState.value = null
         listening = false
-        avatarController.setListening(false)
+    }
+
+    fun requestVerifiedAvatar(text: String) {
+        avatarRequestId += 1L
+        avatarRequestTranscript = text
     }
 
     fun startListening() {
         if (!speechAvailable) {
-            speechStatus = "Speech recognition is unavailable on this device."
+            speechStatus = if (copy === VoxGestCopy.Filipino) "Hindi available ang speech recognition sa device na ito." else "Speech recognition is unavailable on this device."
             return
         }
         if (!hasMicPermission) {
@@ -1872,13 +2675,11 @@ private fun ListenScreen(
 
             override fun onEndOfSpeech() {
                 speechStatus = "Processing speech..."
-                avatarController.setStatus(AvatarStatus.ANALYZING)
             }
 
             override fun onError(error: Int) {
                 listening = false
-                avatarController.setListening(false)
-                speechStatus = "Tap the microphone and speak."
+                speechStatus = copy.tapMic
                 recognizerState.value?.destroy()
                 recognizerState.value = null
             }
@@ -1890,16 +2691,15 @@ private fun ListenScreen(
                     ?.trim()
                     .orEmpty()
                 listening = false
-                avatarController.setListening(false)
                 recognizerState.value?.destroy()
                 recognizerState.value = null
                 if (isMeaningfulOutput(text)) {
                     transcript = text
-                    speechStatus = "Transcript ready"
+                    speechStatus = if (copy === VoxGestCopy.Filipino) "Handa na ang transkrip" else "Transcript ready"
                     onSpeechSaved(text)
-                    avatarController.playTextAsSigns(text)
+                    requestVerifiedAvatar(text)
                 } else {
-                    speechStatus = "No speech recognized."
+                    speechStatus = if (copy === VoxGestCopy.Filipino) "Walang nakilalang pananalita." else "No speech recognized."
                 }
             }
 
@@ -1911,19 +2711,17 @@ private fun ListenScreen(
         })
         val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
             putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
-            putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.US.toString())
+            putExtra(RecognizerIntent.EXTRA_LANGUAGE, speechInputLanguage.languageTag)
             putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true)
         }
         listening = true
         speechStatus = "Listening..."
-        avatarController.setListening(true)
         recognizer.startListening(intent)
     }
 
     DisposableEffect(Unit) {
         onDispose {
             recognizerState.value?.destroy()
-            avatarController.detach()
         }
     }
 
@@ -1932,104 +2730,607 @@ private fun ListenScreen(
         if (pendingAvatarRequestId > 0 && clean.isNotBlank()) {
             transcript = clean
             listening = false
-            speechStatus = "Transcript ready"
-            avatarController.setListening(false)
-            avatarController.playTextAsSigns(clean)
+            speechStatus = if (copy === VoxGestCopy.Filipino) "Handa na ang transkrip" else "Transcript ready"
+            requestVerifiedAvatar(clean)
         }
     }
 
     fun playTranscript() {
         if (isMeaningfulOutput(transcript)) {
-            avatarController.playTextAsSigns(transcript)
+            requestVerifiedAvatar(transcript)
         }
     }
 
     ScreenScroll {
-        ScreenTopBar("LISTEN", R.drawable.ic_settings)
+        ListenTopBar(onOpenSettings)
         SpeechTranscriptCard(
             transcript = transcript,
-            listening = listening,
-            speechStatus = speechStatus,
-            onMicTap = {
-                if (listening) stopListening() else startListening()
-            }
-        )
-        Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth().padding(top = 2.dp, bottom = 14.dp)) {
-            Text(if (listening) "Listening..." else "Tap mic to listen", color = TextMain, fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
-            Text("Speak clearly", color = TextFaint, fontSize = 12.sp)
-        }
-        AvatarCard(
-            avatarController = avatarController,
-            avatarState = avatarState,
-            onReplay = { avatarController.replay() },
-            onPlay = { playTranscript() },
-            onStop = { avatarController.stop() },
-            onDebugWord = { word ->
-                if (!avatarController.playWord(word)) {
-                    avatarState = AvatarPlaybackState(label = "Ready", detail = "NSAC ignored", currentWord = "")
+            speechInputLanguage = speechInputLanguage,
+            messageLanguage = messageLanguage,
+            onTranscriptChange = { transcript = it },
+            onSpeechInputLanguageChange = { speechInputLanguage = it },
+            onCopy = {
+                if (isMeaningfulOutput(transcript)) {
+                    val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                    clipboard.setPrimaryClip(ClipData.newPlainText("VoxGest transcript", transcript))
+                    Toast.makeText(context, "Transcript copied", Toast.LENGTH_SHORT).show()
                 }
             }
         )
-        PresentationBuildFooter()
+        ListenMicrophoneInteraction(
+            listening = listening,
+            speechStatus = speechStatus,
+            reducedMotion = reducedMotion,
+            onMicTap = { if (listening) stopListening() else startListening() }
+        )
+        ListenCore3AvatarCard(
+            request = avatarRequest,
+            reducedMotion = reducedMotion,
+            onPlay = { playTranscript() },
+            developerDiagnosticsEnabled = developerDiagnosticsEnabled,
+            onDebugSign = { label -> requestVerifiedAvatar(label) }
+        )
+        RecentConversationPreview(recentEntries)
+        if (developerDiagnosticsEnabled) PresentationBuildFooter()
         Spacer(Modifier.height(12.dp))
     }
 }
 
 @Composable
-private fun SpeechTranscriptCard(
-    transcript: String,
-    listening: Boolean,
-    speechStatus: String,
-    onMicTap: () -> Unit
-) {
-    val hasTranscript = isMeaningfulOutput(transcript)
-    VoxGestCard(
+private fun ListenTopBar(onOpenSettings: () -> Unit) {
+    Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp)
+            .height(64.dp)
+            .background(MaterialTheme.colorScheme.surface)
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Label("SPEECH TRANSCRIPT", Modifier.weight(1f))
-            VoxIcon(R.drawable.ic_volume_up, "Speak transcript", TextMuted, Modifier.size(17.dp))
+        Row(
+            modifier = Modifier
+                .align(Alignment.CenterStart)
+                .width(128.dp)
+                .padding(start = 16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Surface(
+                modifier = Modifier.size(38.dp),
+                shape = RoundedCornerShape(13.dp),
+                color = MaterialTheme.colorScheme.primaryContainer
+            ) {
+                Box(contentAlignment = Alignment.Center) {
+                    VoxIcon(
+                        R.drawable.ic_hand_gesture,
+                        "VoxGest",
+                        MaterialTheme.colorScheme.primary,
+                        Modifier.size(23.dp)
+                    )
+                }
+            }
+            Text(
+                "VoxGest",
+                modifier = Modifier.padding(start = 7.dp),
+                color = MaterialTheme.colorScheme.onSurface,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.ExtraBold,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
         }
         Text(
-            if (hasTranscript) transcript else "Tap the microphone and speak.",
-            color = if (hasTranscript) Primary else TextMuted,
-            fontSize = if (hasTranscript) 27.sp else 20.sp,
-            lineHeight = 31.sp,
-            fontWeight = if (hasTranscript) FontWeight.Bold else FontWeight.SemiBold,
-            modifier = Modifier.padding(top = 14.dp, bottom = 18.dp)
+            "LISTEN",
+            modifier = Modifier.align(Alignment.Center),
+            color = MaterialTheme.colorScheme.primary,
+            fontSize = 18.sp,
+            fontWeight = FontWeight.ExtraBold,
+            letterSpacing = 0.4.sp
         )
+        Surface(
+            modifier = Modifier
+                .align(Alignment.CenterEnd)
+                .padding(end = 16.dp)
+                .size(44.dp)
+                .clickable(onClick = onOpenSettings),
+            shape = CircleShape,
+            color = MaterialTheme.colorScheme.surface,
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+        ) {
+            Box(contentAlignment = Alignment.Center) {
+                VoxIcon(
+                    R.drawable.ic_settings,
+                    "Listen settings",
+                    MaterialTheme.colorScheme.primary,
+                    Modifier.size(22.dp)
+                )
+            }
+        }
+    }
+}
+
+private data class ListenAvatarRequest(
+    val id: Long = 0L,
+    val transcript: String = "",
+    val canonicalLabel: String? = null
+)
+
+@Composable
+private fun SpeechTranscriptCard(
+    transcript: String,
+    speechInputLanguage: SpeechInputLanguage,
+    messageLanguage: VoxGestMessageLanguage,
+    onTranscriptChange: (String) -> Unit,
+    onSpeechInputLanguageChange: (SpeechInputLanguage) -> Unit,
+    onCopy: () -> Unit
+) {
+    val copy = LocalVoxGestCopy.current
+    val hasTranscript = isMeaningfulOutput(transcript)
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 6.dp),
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+    ) {
+        Column(Modifier.padding(horizontal = 14.dp, vertical = 12.dp)) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Label(copy.transcript, Modifier.weight(1f))
+            if (hasTranscript) {
+                Surface(
+                    modifier = Modifier.size(44.dp).clickable(onClick = onCopy),
+                    shape = CircleShape,
+                    color = MaterialTheme.colorScheme.surfaceVariant
+                ) {
+                    Box(contentAlignment = Alignment.Center) {
+                        VoxIcon(R.drawable.ic_copy, "Copy transcript", MaterialTheme.colorScheme.primary, Modifier.size(17.dp))
+                    }
+                }
+            }
+            SpeechLanguageChoice(copy.english, speechInputLanguage == SpeechInputLanguage.ENGLISH, Modifier.width(76.dp)) {
+                onSpeechInputLanguageChange(SpeechInputLanguage.ENGLISH)
+            }
+            Spacer(Modifier.width(6.dp))
+            SpeechLanguageChoice(copy.filipino, speechInputLanguage == SpeechInputLanguage.FILIPINO, Modifier.width(76.dp)) {
+                onSpeechInputLanguageChange(SpeechInputLanguage.FILIPINO)
+            }
+        }
+        if (hasTranscript) {
+            OutlinedTextField(
+                value = transcript,
+                onValueChange = onTranscriptChange,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 7.dp),
+                textStyle = MaterialTheme.typography.titleMedium,
+                minLines = 1,
+                maxLines = 3,
+                shape = RoundedCornerShape(14.dp)
+            )
+            if (speechInputLanguage == SpeechInputLanguage.ENGLISH && messageLanguage != VoxGestMessageLanguage.ENGLISH) {
+                val translated = VoxGestOfflineMessagePresenter.present(transcript).filipino
+                Text(
+                    translated ?: copy.translationUnavailable,
+                    color = if (translated != null) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+                    fontSize = 12.sp,
+                    lineHeight = 17.sp,
+                    modifier = Modifier.padding(top = 7.dp)
+                )
+            }
+        } else {
+            Text(
+                if (copy === VoxGestCopy.Filipino) "Lalabas dito ang iyong sasabihin." else "Your speech will appear here.",
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                fontSize = 16.sp,
+                lineHeight = 22.sp,
+                fontWeight = FontWeight.SemiBold,
+                modifier = Modifier.padding(top = 8.dp, bottom = 3.dp)
+            )
+        }
+        }
+    }
+}
+
+@Composable
+private fun ListenMicrophoneInteraction(
+    listening: Boolean,
+    speechStatus: String,
+    reducedMotion: Boolean,
+    onMicTap: () -> Unit
+) {
+    val copy = LocalVoxGestCopy.current
+    val processing = speechStatus.contains("processing", ignoreCase = true)
+    val readyStatus = speechStatus == copy.tapMic ||
+        speechStatus.contains("transcript ready", ignoreCase = true) ||
+        speechStatus.contains("handa na ang transkrip", ignoreCase = true)
+    val stateLabel = when {
+        processing -> if (copy === VoxGestCopy.Filipino) "Pinoproseso..." else "Processing..."
+        listening -> "Listening..."
+        readyStatus -> if (copy === VoxGestCopy.Filipino) "Handa" else "Ready"
+        else -> speechStatus
+    }
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 5.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
-            Waveform(Modifier.weight(1f), listening)
+            Waveform(Modifier.weight(1f), listening, reducedMotion)
             Box(
                 modifier = Modifier
-                    .size(72.dp)
+                    .size(76.dp)
                     .clip(CircleShape)
-                    .background(Primary)
-                    .clickable { onMicTap() },
+                    .background(MaterialTheme.colorScheme.primary)
+                    .clickable(onClick = onMicTap),
                 contentAlignment = Alignment.Center
             ) {
                 if (listening) {
-                    MicPulse()
+                    MicPulse(reducedMotion)
                 }
-                VoxIcon(R.drawable.ic_mic, "Microphone", DarkInk, Modifier.size(30.dp))
+                VoxIcon(R.drawable.ic_mic, "Microphone: $stateLabel", MaterialTheme.colorScheme.onPrimary, Modifier.size(32.dp))
             }
-            Waveform(Modifier.weight(1f), listening)
+            Waveform(Modifier.weight(1f), listening, reducedMotion)
         }
         Text(
-            speechStatus,
-            color = TextFaint,
-            fontSize = 12.sp,
+            stateLabel,
+            color = MaterialTheme.colorScheme.onSurface,
+            fontSize = 13.sp,
+            fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 12.dp)
+                .padding(top = 4.dp),
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis
         )
+        Text(
+            if (readyStatus) copy.tapMic else copy.speakClearly,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            fontSize = 11.sp,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth(),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
+    }
+}
+
+@Composable
+private fun SpeechLanguageChoice(label: String, selected: Boolean, modifier: Modifier, onClick: () -> Unit) {
+    Surface(
+        modifier = modifier.heightIn(min = 44.dp).clickable(onClick = onClick),
+        shape = RoundedCornerShape(999.dp),
+        color = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant,
+        border = BorderStroke(1.dp, if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outlineVariant)
+    ) {
+        Box(contentAlignment = Alignment.Center) {
+            Text(label, color = if (selected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 10.sp, fontWeight = FontWeight.Bold)
+        }
+    }
+}
+
+@Composable
+private fun RecentConversationPreview(entries: List<ConversationUiEntry>) {
+    VoxGestCard(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 10.dp)
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Label("RECENT CONVERSATION", Modifier.weight(1f))
+            VoxIcon(R.drawable.ic_chat, "Conversation", MaterialTheme.colorScheme.primary, Modifier.size(18.dp))
+        }
+        if (entries.isEmpty()) {
+            Text(
+                "No exchanges in this session yet.",
+                color = TextFaint,
+                fontSize = 13.sp,
+                modifier = Modifier.padding(top = 12.dp)
+            )
+        } else {
+            Column(
+                modifier = Modifier.padding(top = 10.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                entries.forEach { entry ->
+                    Row(verticalAlignment = Alignment.Top) {
+                        Surface(
+                            shape = CircleShape,
+                            color = MaterialTheme.colorScheme.surfaceVariant,
+                            modifier = Modifier.size(34.dp)
+                        ) {
+                            Box(contentAlignment = Alignment.Center) {
+                                VoxIcon(
+                                    if (entry.participant == ConversationParticipant.FSL_USER) R.drawable.ic_hand_gesture else R.drawable.ic_waveform,
+                                    entry.participant.name,
+                                    MaterialTheme.colorScheme.primary,
+                                    Modifier.size(17.dp)
+                                )
+                            }
+                        }
+                        Column(
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(start = 10.dp)
+                        ) {
+                            Text(
+                                if (entry.participant == ConversationParticipant.FSL_USER) "FSL user" else "Hearing user",
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                fontSize = 10.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Text(
+                                entry.text,
+                                color = MaterialTheme.colorScheme.onSurface,
+                                fontSize = 13.sp,
+                                maxLines = 2,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                        }
+                        Text(formatConversationTime(entry.timestampMillis), color = TextFaint, fontSize = 10.sp)
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun ListenCore3AvatarCard(
+    request: ListenAvatarRequest,
+    reducedMotion: Boolean,
+    onPlay: () -> Unit,
+    developerDiagnosticsEnabled: Boolean,
+    onDebugSign: (String) -> Unit
+) {
+    val context = LocalContext.current
+    val compactHeight = LocalWindowSizeClass.current.heightSizeClass == WindowHeightSizeClass.Compact
+    val viewportColor = Color(0xFFCFEFF3)
+    val catalogResult = remember(context) { runCatching { Core3AvatarAssets.loadCatalog(context) } }
+    val catalog = catalogResult.getOrNull()
+    val host = remember(context) { Core3FilamentHostView(context) }
+    var playerState by remember { mutableStateOf(Core3AvatarState()) }
+    var routeMessage by remember { mutableStateOf("Ready when you are") }
+    val controller = remember(catalog, host) {
+        catalog?.let {
+            Core3AvatarRuntimeController(
+                catalog = it,
+                runtime = host,
+                enabledLabels = setOf("HELLO", "MILK", "RICE"),
+                onStateChanged = { next -> playerState = next }
+            )
+        }
+    }
+
+    LaunchedEffect(controller, request.id, reducedMotion) {
+        val runtimeController = controller ?: return@LaunchedEffect
+        if (request.id == 0L) {
+            routeMessage = "Ready when you are"
+            runtimeController.loadSign("HELLO", autoPlay = false)
+            return@LaunchedEffect
+        }
+        val label = request.canonicalLabel
+        if (label == null) {
+            routeMessage = "Sign animation not available yet."
+            if (
+                playerState.status == Core3AvatarStatus.READY ||
+                playerState.status == Core3AvatarStatus.PLAYING
+            ) {
+                runtimeController.resetNeutral()
+            }
+        } else {
+            routeMessage = if (reducedMotion) {
+                "Sign is ready to play"
+            } else {
+                "Converting speech to sign language"
+            }
+            runtimeController.loadSign(label, autoPlay = !reducedMotion)
+        }
+    }
+    DisposableEffect(controller) {
+        onDispose { controller?.unload() }
+    }
+
+    val statusLabel = when {
+        catalog == null || playerState.status == Core3AvatarStatus.ERROR -> "Unavailable"
+        playerState.status == Core3AvatarStatus.LOADING -> "Analyzing..."
+        playerState.status == Core3AvatarStatus.PLAYING -> "Signing..."
+        request.id > 0L && request.canonicalLabel == null -> "Not available"
+        else -> "Ready"
+    }
+    val detail = when {
+        catalog == null || playerState.status == Core3AvatarStatus.ERROR -> "Avatar unavailable"
+        request.id > 0L && request.canonicalLabel == null -> "Sign animation not available yet."
+        playerState.status == Core3AvatarStatus.LOADING -> "Preparing sign animation..."
+        playerState.status == Core3AvatarStatus.PLAYING -> "Converting speech to sign language"
+        else -> routeMessage
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+    ) {
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(22.dp),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+            elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+        ) {
+            Column(Modifier.fillMaxWidth().padding(10.dp)) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Label("FSL AVATAR", Modifier.weight(1f))
+                    StatusChip(
+                        label = statusLabel,
+                        dotColor = if (playerState.status == Core3AvatarStatus.ERROR) {
+                            MaterialTheme.colorScheme.error
+                        } else {
+                            MaterialTheme.colorScheme.secondary
+                        },
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                        contentColor = MaterialTheme.colorScheme.primary
+                    )
+                }
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 6.dp)
+                        .aspectRatio(if (compactHeight) 2.35f else 1.44f)
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(viewportColor),
+                    contentAlignment = Alignment.Center
+                ) {
+                    if (catalog != null) {
+                        AndroidView(
+                            factory = {
+                                host.apply {
+                                    setViewportColor(viewportColor.toArgb())
+                                    contentDescription = "Listen FSL Avatar viewport"
+                                }
+                            },
+                            update = {
+                                val requestedSign = playerState.currentSign.takeIf { request.id > 0L }
+                                it.contentDescription = if (requestedSign == null) {
+                                    "FSL Avatar: $statusLabel"
+                                } else {
+                                    "FSL Avatar signing $requestedSign: $statusLabel"
+                                }
+                            },
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    }
+                    when {
+                        catalog == null || playerState.status == Core3AvatarStatus.ERROR -> {
+                            Surface(
+                                shape = RoundedCornerShape(16.dp),
+                                color = MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.96f)
+                            ) {
+                                Column(
+                                    modifier = Modifier.padding(18.dp),
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    Text(
+                                        "Avatar unavailable",
+                                        color = MaterialTheme.colorScheme.onErrorContainer,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                    Text(
+                                        if (developerDiagnosticsEnabled) {
+                                            catalogResult.exceptionOrNull()?.message
+                                                ?: playerState.error
+                                                ?: "Renderer could not start"
+                                        } else {
+                                            "Please leave and reopen Listen."
+                                        },
+                                        modifier = Modifier.padding(top = 5.dp),
+                                        color = MaterialTheme.colorScheme.onErrorContainer,
+                                        fontSize = 10.sp,
+                                        textAlign = TextAlign.Center
+                                    )
+                                    Text(
+                                        "Transcript and microphone remain available.",
+                                        modifier = Modifier.padding(top = 7.dp),
+                                        color = MaterialTheme.colorScheme.onErrorContainer,
+                                        fontSize = 10.sp,
+                                        fontWeight = FontWeight.SemiBold
+                                    )
+                                }
+                            }
+                        }
+                        playerState.status == Core3AvatarStatus.UNLOADED ||
+                            playerState.status == Core3AvatarStatus.LOADING -> {
+                            Surface(
+                                shape = RoundedCornerShape(16.dp),
+                                color = MaterialTheme.colorScheme.surface.copy(alpha = 0.94f)
+                            ) {
+                                Column(
+                                    modifier = Modifier.padding(horizontal = 22.dp, vertical = 16.dp),
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    CircularProgressIndicator(Modifier.size(28.dp), strokeWidth = 3.dp)
+                                    Text(
+                                        "Loading Avatar…",
+                                        modifier = Modifier.padding(top = 8.dp),
+                                        color = MaterialTheme.colorScheme.onSurface,
+                                        fontSize = 11.sp,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+
+                Text(
+                    detail,
+                    modifier = Modifier.fillMaxWidth().padding(top = 6.dp, bottom = 1.dp),
+                    color = if (request.id > 0L && request.canonicalLabel == null) {
+                        MaterialTheme.colorScheme.error
+                    } else {
+                        MaterialTheme.colorScheme.onSurfaceVariant
+                    },
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    textAlign = TextAlign.Center,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+        }
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            OutlinePillButton(
+                "Replay",
+                R.drawable.ic_replay,
+                Modifier.weight(0.92f)
+            ) { controller?.replay() }
+            FilledPillButton(
+                "Play Signs",
+                R.drawable.ic_play_arrow,
+                Modifier.weight(1.08f),
+                onPlay
+            )
+        }
+    }
+
+    if (developerDiagnosticsEnabled && SHOW_DEBUG_TOOLS && BuildConfig.DEBUG) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            listOf("HELLO", "MILK", "RICE").forEach { label ->
+                Surface(
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(42.dp)
+                        .clickable { onDebugSign(label) },
+                    shape = RoundedCornerShape(999.dp),
+                    color = MaterialTheme.colorScheme.primaryContainer,
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
+                ) {
+                    Box(contentAlignment = Alignment.Center) {
+                        Text(
+                            label,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer,
+                            fontSize = 10.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -2040,6 +3341,7 @@ private fun AvatarCard(
     onReplay: () -> Unit,
     onPlay: () -> Unit,
     onStop: () -> Unit,
+    developerDiagnosticsEnabled: Boolean,
     onDebugWord: (String) -> Unit
 ) {
     val isAnalyzing = avatarState.status == AvatarStatus.ANALYZING
@@ -2052,7 +3354,7 @@ private fun AvatarCard(
         Card(
             modifier = Modifier.matchParentSize(),
             shape = RoundedCornerShape(24.dp),
-            colors = CardDefaults.cardColors(containerColor = SoftCyan),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
         ) {
             Column(Modifier.fillMaxSize()) {
@@ -2068,9 +3370,9 @@ private fun AvatarCard(
                             avatarState.isListening -> "Listening..."
                             else -> "Ready"
                         },
-                        dotColor = PrimaryLight,
-                        containerColor = SoftCyan,
-                        contentColor = Primary
+                        dotColor = MaterialTheme.colorScheme.secondary,
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                        contentColor = MaterialTheme.colorScheme.primary
                     )
                 }
                 AndroidView(
@@ -2120,7 +3422,7 @@ private fun AvatarCard(
             AnalyzingAvatarOverlay(Modifier.matchParentSize())
         }
     }
-    if (SHOW_DEBUG_TOOLS && BuildConfig.DEBUG) {
+    if (developerDiagnosticsEnabled && SHOW_DEBUG_TOOLS && BuildConfig.DEBUG) {
         Text(
             "Debug avatar tests",
             color = TextMuted,
@@ -2387,6 +3689,687 @@ private fun HistoryScreen(
 }
 
 @Composable
+private fun GuideScreen(reducedMotion: Boolean, onOpenSettings: () -> Unit) {
+    val copy = LocalVoxGestCopy.current
+    val isFilipino = copy === VoxGestCopy.Filipino
+    val context = LocalContext.current
+    var query by remember { mutableStateOf("") }
+    var selectedCategory by remember { mutableStateOf<FslGuideCategory?>(null) }
+    var selectedEntry by remember { mutableStateOf<FslGuideEntry?>(null) }
+    var avatarLabel by remember { mutableStateOf<String?>(null) }
+    var datasetInfoExpanded by remember { mutableStateOf(false) }
+    var learningInfoExpanded by remember { mutableStateOf(false) }
+    val catalogResult = remember(context) { runCatching { Fsl105GuideCatalog.load(context) } }
+    val completeCatalog = catalogResult.getOrElse { emptyList() }
+    val entries = completeCatalog.filter { entry ->
+        (selectedCategory == null || entry.category == selectedCategory) &&
+            (query.isBlank() || entry.label.contains(query.trim(), ignoreCase = true) ||
+                entry.filipinoTranslation?.contains(query.trim(), ignoreCase = true) == true)
+    }
+
+    LazyVerticalGrid(
+        columns = GridCells.Adaptive(minSize = 166.dp),
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 22.dp),
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
+        item(span = { GridItemSpan(maxLineSpan) }) {
+            ScreenTopBar(copy.supportedGuide, R.drawable.ic_settings, onTrailingClick = onOpenSettings)
+        }
+        item(span = { GridItemSpan(maxLineSpan) }) {
+            GuideHero(
+                totalCount = completeCatalog.size,
+                visibleCount = entries.size,
+                isFilipino = isFilipino
+            )
+        }
+        item(span = { GridItemSpan(maxLineSpan) }) {
+            DatasetInformationCard(
+                expanded = datasetInfoExpanded,
+                isFilipino = isFilipino,
+                onToggle = { datasetInfoExpanded = !datasetInfoExpanded }
+            )
+        }
+        item(span = { GridItemSpan(maxLineSpan) }) {
+            VoxGestLearningCard(
+                expanded = learningInfoExpanded,
+                isFilipino = isFilipino,
+                onToggle = { learningInfoExpanded = !learningInfoExpanded }
+            )
+        }
+        item(span = { GridItemSpan(maxLineSpan) }) {
+            OutlinedTextField(
+                value = query,
+                onValueChange = { query = it },
+                modifier = Modifier.fillMaxWidth(),
+                label = { Text(copy.searchSigns) },
+                leadingIcon = { VoxIcon(R.drawable.ic_search, null, MaterialTheme.colorScheme.primary, Modifier.size(20.dp)) },
+                singleLine = true,
+                shape = RoundedCornerShape(18.dp)
+            )
+        }
+        item(span = { GridItemSpan(maxLineSpan) }) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .horizontalScroll(rememberScrollState()),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                GuideCategoryChip(
+                    label = copy.all,
+                    selected = selectedCategory == null,
+                    onClick = { selectedCategory = null }
+                )
+                FslGuideCategory.entries.forEach { category ->
+                    GuideCategoryChip(
+                        label = guideCategoryLabel(category, isFilipino),
+                        selected = selectedCategory == category,
+                        onClick = { selectedCategory = category }
+                    )
+                }
+            }
+        }
+        if (catalogResult.isFailure) {
+            item(span = { GridItemSpan(maxLineSpan) }) {
+                GuideEmptyState(
+                    title = if (isFilipino) "Hindi mabasa ang FSL-105 catalogue" else "FSL-105 catalogue unavailable",
+                    detail = if (isFilipino) {
+                        "Hindi nagbukas ang canonical runtime label asset. Walang pamalit na listahan ang ginawa."
+                    } else {
+                        "The canonical runtime label asset could not be opened. No substitute list was generated."
+                    }
+                )
+            }
+        } else if (entries.isEmpty()) {
+            item(span = { GridItemSpan(maxLineSpan) }) {
+                GuideEmptyState(
+                    title = if (isFilipino) "Walang tugmang sign" else "No matching sign",
+                    detail = if (isFilipino) {
+                        "Subukan ang ibang salita o piliin ang Lahat."
+                    } else {
+                        "Try another search term or select All."
+                    }
+                )
+            }
+        } else {
+            items(entries, key = { entry -> entry.label }) { entry ->
+                GuideInventoryCard(entry = entry, isFilipino = isFilipino) {
+                    selectedEntry = entry
+                }
+            }
+        }
+    }
+
+    selectedEntry?.let { entry ->
+        val avatarAvailable = Core3AvatarGuideAvailability.isAvailable(entry.label)
+        AlertDialog(
+            onDismissRequest = { selectedEntry = null },
+            containerColor = MaterialTheme.colorScheme.surface,
+            titleContentColor = MaterialTheme.colorScheme.onSurface,
+            textContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            title = { Text(entry.label, fontWeight = FontWeight.Bold) },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    Text(
+                        entry.filipinoTranslation ?: if (isFilipino) {
+                            "Wala pang beripikadong salin sa Filipino"
+                        } else "Verified Filipino translation unavailable",
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    Text(
+                        "${if (isFilipino) "Kategorya" else "Category"}: ${guideCategoryLabel(entry.category, isFilipino)}",
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    GuideDetailStatus(entry.datasetStatus, MaterialTheme.colorScheme.primary)
+                    GuideDetailStatus(entry.liveValidationStatus, Amber)
+                    GuideDetailStatus(
+                        if (avatarAvailable) "AVATAR AVAILABLE" else "AVATAR TUTORIAL — IN CALIBRATION",
+                        if (avatarAvailable) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Text(
+                        if (avatarAvailable && isFilipino) {
+                            "May beripikadong CORE3 animation para sa sign na ito. Technical animation verification ito, hindi expert FSL linguistic validation."
+                        } else if (avatarAvailable) {
+                            "A verified CORE3 animation is packaged for this sign. This is technical animation verification, not expert FSL linguistic validation."
+                        } else if (isFilipino) {
+                            "Wala pang tutorial media sa build na ito. Ang label ay mula sa selected runtime vocabulary at hindi pa patunay ng live Samsung accuracy."
+                        } else {
+                            "Tutorial media is not packaged in this build. This selected-runtime label is not evidence of live Samsung accuracy."
+                        },
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        fontSize = 12.sp,
+                        lineHeight = 17.sp
+                    )
+                    Text(
+                        "${if (isFilipino) "Pinagmulan" else "Source"}: ${entry.source}",
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        fontSize = 11.sp
+                    )
+                    Surface(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .heightIn(min = 48.dp)
+                            .then(
+                                if (avatarAvailable) {
+                                    Modifier.clickable {
+                                        selectedEntry = null
+                                        avatarLabel = entry.label
+                                    }
+                                } else Modifier
+                            ),
+                        color = if (avatarAvailable) {
+                            MaterialTheme.colorScheme.primaryContainer
+                        } else MaterialTheme.colorScheme.surfaceVariant,
+                        shape = RoundedCornerShape(14.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier.padding(horizontal = 14.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            VoxIcon(
+                                R.drawable.ic_play_arrow,
+                                null,
+                                if (avatarAvailable) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+                                Modifier.size(18.dp)
+                            )
+                            Column(Modifier.padding(start = 10.dp)) {
+                                Text(
+                                    if (avatarAvailable) "Watch Sign" else "Avatar Tutorial",
+                                    color = if (avatarAvailable) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurfaceVariant,
+                                    fontWeight = FontWeight.Bold
+                                )
+                                Text(
+                                    if (avatarAvailable) {
+                                        if (isFilipino) "Available ang beripikadong 3D Avatar" else "Avatar Available"
+                                    } else {
+                                        if (isFilipino) "Nasa calibration pa" else "In calibration"
+                                    },
+                                    color = if (avatarAvailable) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurfaceVariant,
+                                    fontSize = 10.sp
+                                )
+                            }
+                        }
+                    }
+                }
+            },
+            confirmButton = { TextButton(onClick = { selectedEntry = null }) { Text(copy.done) } }
+        )
+    }
+
+    avatarLabel?.let { label ->
+        Core3AvatarPlayerDialog(
+            canonicalLabel = label,
+            reducedMotion = reducedMotion,
+            onDismiss = { avatarLabel = null }
+        )
+    }
+}
+
+@Composable
+private fun GuideHero(totalCount: Int, visibleCount: Int, isFilipino: Boolean) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(24.dp))
+            .background(Brush.linearGradient(listOf(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.secondary)))
+            .padding(20.dp)
+    ) {
+        Column(Modifier.fillMaxWidth(0.74f)) {
+            Text(
+                "FSL-105 Knowledge Base",
+                color = VoxGestDesignTokens.DeepCharcoal,
+                fontSize = 22.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                if (isFilipino) {
+                    "105 dokumentadong Filipino Sign Language signs at phrases sa kasalukuyang classifier vocabulary ng VoxGest."
+                } else {
+                    "105 documented Filipino Sign Language signs and phrases forming VoxGest's current classifier vocabulary."
+                },
+                color = VoxGestDesignTokens.DeepCharcoal.copy(alpha = 0.84f),
+                fontSize = 12.sp,
+                lineHeight = 17.sp,
+                modifier = Modifier.padding(top = 5.dp)
+            )
+            Text(
+                "$visibleCount / $totalCount ${if (isFilipino) "signs na nakikita" else "signs shown"}",
+                color = VoxGestDesignTokens.DeepCharcoal,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(top = 12.dp)
+            )
+        }
+        Surface(
+            modifier = Modifier.align(Alignment.CenterEnd).size(62.dp),
+            shape = CircleShape,
+            color = Color.White.copy(alpha = 0.38f)
+        ) {
+            Box(contentAlignment = Alignment.Center) {
+                VoxIcon(R.drawable.ic_book, null, VoxGestDesignTokens.DeepCharcoal, Modifier.size(30.dp))
+            }
+        }
+    }
+}
+
+@Composable
+private fun DatasetInformationCard(expanded: Boolean, isFilipino: Boolean, onToggle: () -> Unit) {
+    VoxGestExpandableInfoCard(
+        title = if (isFilipino) "Tungkol sa FSL-105 Dataset" else "About the FSL-105 Dataset",
+        summary = if (isFilipino) "Beripikadong source, attribution, bersyon, at lisensya" else "Verified source, attribution, version, and license",
+        expanded = expanded,
+        onToggle = onToggle
+    ) {
+        Text(
+            Fsl105DatasetFacts.TITLE,
+            color = MaterialTheme.colorScheme.onSurface,
+            fontWeight = FontWeight.Bold,
+            fontSize = 13.sp,
+            lineHeight = 18.sp
+        )
+        Text(
+            if (isFilipino) {
+                "Orihinal na dataset: ${Fsl105DatasetFacts.CONTRIBUTOR} • ${Fsl105DatasetFacts.INSTITUTION} • ${Fsl105DatasetFacts.SOURCE} • inilathala noong 7 Marso 2023."
+            } else {
+                "Original dataset: ${Fsl105DatasetFacts.CONTRIBUTOR} • ${Fsl105DatasetFacts.INSTITUTION} • ${Fsl105DatasetFacts.SOURCE} • published ${Fsl105DatasetFacts.PUBLISHED}."
+            },
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            fontSize = 12.sp,
+            lineHeight = 18.sp,
+            modifier = Modifier.padding(top = 8.dp)
+        )
+        Text(
+            "DOI ${Fsl105DatasetFacts.DOI} • ${Fsl105DatasetFacts.VERSION} • ${Fsl105DatasetFacts.LICENSE} • ${Fsl105DatasetFacts.VIDEO_COUNT} four-second clips • ${Fsl105DatasetFacts.CLASS_COUNT} classes",
+            color = MaterialTheme.colorScheme.primary,
+            fontSize = 11.sp,
+            lineHeight = 17.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(top = 8.dp)
+        )
+        Text(
+            if (isFilipino) {
+                "Ang VoxGest team ang nag-preprocess, nag-validate ng integrity, nagsanay, at nag-deploy ng sarili nitong on-device model. Hindi kami ang lumikha ng orihinal na FSL-105 dataset."
+            } else {
+                "The VoxGest team preprocesses, validates integrity, trains, and deploys its own on-device model. The team did not create the original FSL-105 dataset."
+            },
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            fontSize = 12.sp,
+            lineHeight = 18.sp,
+            modifier = Modifier.padding(top = 8.dp)
+        )
+    }
+}
+
+@Composable
+private fun VoxGestLearningCard(expanded: Boolean, isFilipino: Boolean, onToggle: () -> Unit) {
+    VoxGestExpandableInfoCard(
+        title = if (isFilipino) "Paano Natuto ang VoxGest ng FSL-105" else "How VoxGest Learned FSL-105",
+        summary = if (isFilipino) "Mula reference video hanggang ligtas na on-device output" else "From reference video to safe on-device output",
+        expanded = expanded,
+        onToggle = onToggle
+    ) {
+        Text(
+            "FSL reference videos  →  MediaPipe  →  pose + both hands  →  temporal sequence  →  local model training  →  TFLite on device",
+            color = MaterialTheme.colorScheme.onSurface,
+            fontSize = 12.sp,
+            lineHeight = 19.sp,
+            fontWeight = FontWeight.SemiBold
+        )
+        Surface(
+            modifier = Modifier.fillMaxWidth().padding(top = 10.dp),
+            color = MaterialTheme.colorScheme.primaryContainer,
+            shape = RoundedCornerShape(14.dp)
+        ) {
+            Column(Modifier.padding(12.dp)) {
+                Text("33 pose × XYZ = 99", color = MaterialTheme.colorScheme.onPrimaryContainer, fontWeight = FontWeight.Bold, fontSize = 12.sp)
+                Text("21 left hand × XYZ = 63", color = MaterialTheme.colorScheme.onPrimaryContainer, fontWeight = FontWeight.Bold, fontSize = 12.sp)
+                Text("21 right hand × XYZ = 63", color = MaterialTheme.colorScheme.onPrimaryContainer, fontWeight = FontWeight.Bold, fontSize = 12.sp)
+                Text("99 + 63 + 63 = 225 features per frame", color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.ExtraBold, fontSize = 13.sp, modifier = Modifier.padding(top = 5.dp))
+            }
+        }
+        Text(
+            if (isFilipino) {
+                "Sinusuri ang magkakasunod na frame para sa galaw, saka dadaan ang resulta sa acceptance/rejection bago lumabas bilang English/Filipino na komunikasyon. Lokal sa device ang camera inference; walang raw top-1 prediction na direktang ipinapakita."
+            } else {
+                "Frames are evaluated as a motion sequence, then acceptance/rejection decides whether a result is safe to present as English/Filipino communication. Camera inference stays on device; a raw top-1 prediction is never shown directly."
+            },
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            fontSize = 12.sp,
+            lineHeight = 18.sp,
+            modifier = Modifier.padding(top = 10.dp)
+        )
+    }
+}
+
+@Composable
+private fun GuideCategoryChip(label: String, selected: Boolean, onClick: () -> Unit) {
+    Surface(
+        modifier = Modifier.heightIn(min = 42.dp).clickable(onClick = onClick),
+        shape = RoundedCornerShape(999.dp),
+        color = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface,
+        border = BorderStroke(
+            1.dp,
+            if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline.copy(alpha = 0.35f)
+        )
+    ) {
+        Box(Modifier.padding(horizontal = 15.dp), contentAlignment = Alignment.Center) {
+            Text(
+                label,
+                color = if (selected) Color.White else MaterialTheme.colorScheme.onSurfaceVariant,
+                fontSize = 11.sp,
+                fontWeight = FontWeight.Bold
+            )
+        }
+    }
+}
+
+@Composable
+private fun GuideInventoryCard(entry: FslGuideEntry, isFilipino: Boolean, onClick: () -> Unit) {
+    Card(
+        modifier = Modifier.fillMaxWidth().heightIn(min = 154.dp).clickable(onClick = onClick),
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.22f)),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
+        Column(Modifier.padding(14.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Surface(shape = CircleShape, color = MaterialTheme.colorScheme.primary.copy(alpha = 0.12f), modifier = Modifier.size(38.dp)) {
+                    Box(contentAlignment = Alignment.Center) {
+                        VoxIcon(R.drawable.ic_hand_gesture, null, MaterialTheme.colorScheme.primary, Modifier.size(20.dp))
+                    }
+                }
+                Text(
+                    entry.label,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    fontSize = 14.sp,
+                    lineHeight = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(1f).padding(start = 10.dp)
+                )
+            }
+            Text(
+                guideCategoryLabel(entry.category, isFilipino),
+                color = MaterialTheme.colorScheme.primary,
+                fontSize = 10.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(top = 10.dp)
+            )
+            Text(
+                if (isFilipino) "BOKABULARYO NG DATASET" else entry.datasetStatus,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                fontSize = 9.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(top = 5.dp)
+            )
+            Row(Modifier.padding(top = 5.dp), verticalAlignment = Alignment.CenterVertically) {
+                Box(Modifier.size(6.dp).clip(CircleShape).background(Amber))
+                Text(
+                    if (isFilipino) "HINDI PA LIVE VALIDATED" else entry.liveValidationStatus,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    fontSize = 8.sp,
+                    lineHeight = 11.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(start = 5.dp)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun GuideEmptyState(title: String, detail: String) {
+    VoxGestCapstoneCard(Modifier.fillMaxWidth()) {
+        VoxIcon(R.drawable.ic_search, null, MaterialTheme.colorScheme.primary, Modifier.size(28.dp))
+        Text(title, color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 10.dp))
+        Text(detail, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp, lineHeight = 17.sp, modifier = Modifier.padding(top = 5.dp))
+    }
+}
+
+@Composable
+private fun GuideDetailStatus(label: String, color: Color) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Box(Modifier.size(7.dp).clip(CircleShape).background(color))
+        Text(label, color = MaterialTheme.colorScheme.onSurface, fontSize = 11.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(start = 7.dp))
+    }
+}
+
+private fun guideCategoryLabel(category: FslGuideCategory, isFilipino: Boolean): String {
+    if (!isFilipino) return category.displayName
+    return when (category) {
+        FslGuideCategory.CALENDAR -> "Kalendaryo at oras"
+        FslGuideCategory.COLORS -> "Mga kulay"
+        FslGuideCategory.FAMILY_PEOPLE -> "Pamilya at tao"
+        FslGuideCategory.FOOD_DRINK -> "Pagkain at inumin"
+        FslGuideCategory.NUMBERS -> "Mga numero"
+        FslGuideCategory.CONVERSATION -> "Pag-uusap"
+        FslGuideCategory.OTHER -> "Araw-araw na signs"
+    }
+}
+
+@Composable
+private fun ConversationScreen(
+    entries: List<ConversationUiEntry>,
+    messageLanguage: VoxGestMessageLanguage,
+    onClearAll: () -> Unit,
+    onNewExchange: () -> Unit,
+    onOpenSettings: () -> Unit,
+    onReplay: (ConversationUiEntry) -> Unit
+) {
+    val copy = LocalVoxGestCopy.current
+    val context = LocalContext.current
+    var confirmClear by remember { mutableStateOf(false) }
+
+    ScreenScroll {
+        ScreenTopBar(copy.conversation, R.drawable.ic_settings, onTrailingClick = onOpenSettings)
+        Text(
+            copy.conversation,
+            color = MaterialTheme.colorScheme.onSurface,
+            fontSize = 28.sp,
+            lineHeight = 31.sp,
+            fontWeight = FontWeight.ExtraBold,
+            modifier = Modifier.padding(start = 18.dp, end = 18.dp, top = 8.dp)
+        )
+        Text(
+            if (copy === VoxGestCopy.Filipino) "Kasaysayan ng bilingual na usapan" else "Real-time bilingual chat history",
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            fontSize = 13.sp,
+            modifier = Modifier.padding(start = 18.dp, end = 18.dp, top = 2.dp, bottom = 6.dp)
+        )
+        if (entries.isEmpty()) {
+            VoxGestCard(Modifier.padding(horizontal = 16.dp, vertical = 12.dp)) {
+                Label(copy.currentExchange)
+                Text(
+                    copy.noMessages,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier.padding(top = 12.dp)
+                )
+                Text(
+                    copy.noMessagesHint,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    fontSize = 12.sp,
+                    lineHeight = 17.sp,
+                    modifier = Modifier.padding(top = 6.dp)
+                )
+            }
+        } else {
+            Text(
+                copy.currentExchange,
+                color = MaterialTheme.colorScheme.primary,
+                fontSize = 11.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(start = 20.dp, top = 4.dp, bottom = 10.dp)
+            )
+            Column(
+                modifier = Modifier.padding(horizontal = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                entries.forEach { entry ->
+                    ConversationBubble(
+                        entry = entry,
+                        messageLanguage = messageLanguage,
+                        onReplay = { onReplay(entry) },
+                        onCopy = {
+                            val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                            clipboard.setPrimaryClip(ClipData.newPlainText("VoxGest conversation", entry.text))
+                            Toast.makeText(context, "Message copied", Toast.LENGTH_SHORT).show()
+                        }
+                    )
+                }
+            }
+        }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            VoxGestCapstoneAction(
+                label = if (copy === VoxGestCopy.Filipino) "Burahin ang history" else "Clear history",
+                icon = R.drawable.ic_delete_outline,
+                filled = false,
+                modifier = Modifier.weight(1f),
+                enabled = entries.isNotEmpty(),
+                onClick = { confirmClear = true }
+            )
+            VoxGestCapstoneAction(
+                label = copy.newExchange,
+                icon = R.drawable.ic_plus,
+                filled = true,
+                modifier = Modifier.weight(1f),
+                onClick = onNewExchange
+            )
+        }
+        Spacer(Modifier.height(12.dp))
+    }
+
+    if (confirmClear) {
+        AlertDialog(
+            onDismissRequest = { confirmClear = false },
+            containerColor = MaterialTheme.colorScheme.surface,
+            titleContentColor = MaterialTheme.colorScheme.onSurface,
+            textContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            title = { Text(if (copy === VoxGestCopy.Filipino) "Burahin ang usapang ito?" else "Clear this conversation?") },
+            text = {
+                Text(
+                    if (copy === VoxGestCopy.Filipino) {
+                        "Ang mga mensaheng nakikita lamang sa kasalukuyang session ang mabubura. Hindi magbabago ang models, labels, recognition history, o settings."
+                    } else {
+                        "This removes only the messages shown in the current app session. Models, labels, recognition history, and settings are not changed."
+                    }
+                )
+            },
+            confirmButton = {
+                TextButton(onClick = {
+                    onClearAll()
+                    confirmClear = false
+                }) { Text(copy.clear) }
+            },
+            dismissButton = {
+                TextButton(onClick = { confirmClear = false }) { Text(copy.cancel) }
+            }
+        )
+    }
+}
+
+@Composable
+private fun ConversationBubble(
+    entry: ConversationUiEntry,
+    messageLanguage: VoxGestMessageLanguage,
+    onReplay: () -> Unit,
+    onCopy: () -> Unit
+) {
+    val copy = LocalVoxGestCopy.current
+    val isFslUser = entry.participant == ConversationParticipant.FSL_USER
+    val presentation = VoxGestOfflineMessagePresenter.present(entry.text)
+    Box(modifier = Modifier.fillMaxWidth()) {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth(0.88f)
+                .align(if (isFslUser) Alignment.CenterEnd else Alignment.CenterStart),
+            shape = RoundedCornerShape(
+                topStart = 20.dp,
+                topEnd = 20.dp,
+                bottomStart = if (isFslUser) 20.dp else 5.dp,
+                bottomEnd = if (isFslUser) 5.dp else 20.dp
+            ),
+            colors = CardDefaults.cardColors(containerColor = if (isFslUser) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface),
+            border = BorderStroke(1.dp, if (isFslUser) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outlineVariant),
+            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        ) {
+            Column(Modifier.padding(14.dp)) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        if (isFslUser) copy.fslUser else copy.hearingUser,
+                        color = if (isFslUser) MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.82f) else MaterialTheme.colorScheme.primary,
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.weight(1f)
+                    )
+                    Text(
+                        formatConversationTime(entry.timestampMillis),
+                        color = if (isFslUser) MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.68f) else MaterialTheme.colorScheme.onSurfaceVariant,
+                        fontSize = 10.sp
+                    )
+                }
+                presentation.visibleLines(messageLanguage).ifEmpty { listOf("" to entry.text) }.forEach { (language, value) ->
+                    Column(Modifier.padding(top = 6.dp)) {
+                        if (language.isNotBlank()) {
+                            Text(language, color = if (isFslUser) MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.68f) else MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 9.sp, fontWeight = FontWeight.Bold)
+                        }
+                        Text(
+                            value,
+                            color = if (isFslUser) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface,
+                            fontSize = 15.sp,
+                            lineHeight = 21.sp,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    }
+                }
+                Row(
+                    modifier = Modifier.padding(top = 10.dp),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        when (entry.presentationState) {
+                            ConversationPresentationState.SPOKEN_ALOUD -> copy.spokenAloud
+                            ConversationPresentationState.SHOWN_AS_SIGNS -> copy.shownAsSigns
+                        },
+                        color = if (isFslUser) MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.74f) else MaterialTheme.colorScheme.onSurfaceVariant,
+                        fontSize = 10.sp,
+                        modifier = Modifier.weight(1f)
+                    )
+                    Text(
+                        if (isFslUser) copy.speak else if (copy === VoxGestCopy.Filipino) "Ipakita sa FSL" else "Show in FSL",
+                        color = if (isFslUser) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.primary,
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.clickable(onClick = onReplay).padding(vertical = 8.dp)
+                    )
+                    VoxIcon(
+                        R.drawable.ic_copy,
+                        "Copy message",
+                        if (isFslUser) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.primary,
+                        Modifier.size(18.dp).clickable(onClick = onCopy)
+                    )
+                }
+            }
+        }
+    }
+}
+
+private fun formatConversationTime(timestampMillis: Long): String {
+    return SimpleDateFormat("hh:mm a", Locale.US).format(Date(timestampMillis))
+}
+
+@Composable
 private fun EmptyHistoryCard() {
     VoxGestCard(modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp)) {
         Label("TODAY")
@@ -2476,15 +4459,7 @@ private fun HistoryItem(entry: HistoryUiEntry, onReplay: (HistoryUiEntry) -> Uni
 
 @Composable
 private fun VoxGestCard(modifier: Modifier = Modifier, content: @Composable ColumnScope.() -> Unit) {
-    Card(
-        modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(22.dp),
-        colors = CardDefaults.cardColors(containerColor = CardWhite),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        border = BorderStroke(1.dp, Border)
-    ) {
-        Column(Modifier.padding(18.dp), content = content)
-    }
+    VoxGestCapstoneCard(modifier = modifier, content = content)
 }
 
 @Composable
@@ -2510,7 +4485,7 @@ private fun PresentationBuildFooter() {
     ) {
         Text("VoxGest Presentation Build", color = TextMuted, fontSize = 11.sp, fontWeight = FontWeight.Bold)
         Text("Recognition: Experimental / Calibration", color = TextFaint, fontSize = 10.sp)
-        Text("Avatar: Prototype Visual Response", color = TextFaint, fontSize = 10.sp)
+        Text("Avatar: CORE3 Filament / Verified Actions Only", color = TextFaint, fontSize = 10.sp)
     }
 }
 
@@ -2522,60 +4497,22 @@ private fun StatusChip(
     contentColor: Color,
     modifier: Modifier = Modifier
 ) {
-    Row(
-        modifier = modifier
-            .clip(RoundedCornerShape(999.dp))
-            .background(containerColor)
-            .border(1.dp, contentColor.copy(alpha = 0.08f), RoundedCornerShape(999.dp))
-            .padding(horizontal = 12.dp, vertical = 7.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(7.dp)
-    ) {
-        BlinkDot(dotColor)
-        Text(label, color = contentColor, fontSize = 11.sp, fontWeight = FontWeight.SemiBold)
-    }
+    VoxGestStatusBadge(label, dotColor, containerColor, contentColor, modifier)
 }
 
 @Composable
 private fun OutlinePillButton(label: String, @DrawableRes icon: Int, modifier: Modifier, onClick: () -> Unit) {
-    val buttonTextSize = adaptiveSp(12, 14, 16)
-    Row(
-        modifier = modifier
-            .height(48.dp)
-            .clip(RoundedCornerShape(14.dp))
-            .background(CardWhite)
-            .border(1.dp, Border, RoundedCornerShape(14.dp))
-            .clickable { onClick() },
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
-    ) {
-        VoxIcon(icon, label, Primary, Modifier.size(18.dp))
-        Spacer(Modifier.width(7.dp))
-        Text(label, color = Primary, fontSize = buttonTextSize, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis)
-    }
+    VoxGestCapstoneAction(label, icon, filled = false, modifier = modifier, onClick = onClick)
 }
 
 @Composable
 private fun FilledPillButton(label: String, @DrawableRes icon: Int, modifier: Modifier, onClick: () -> Unit) {
-    val buttonTextSize = adaptiveSp(12, 14, 16)
-    Row(
-        modifier = modifier
-            .height(48.dp)
-            .clip(RoundedCornerShape(14.dp))
-            .background(Primary)
-            .clickable { onClick() },
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
-    ) {
-        VoxIcon(icon, label, DarkInk, Modifier.size(18.dp))
-        Spacer(Modifier.width(7.dp))
-        Text(label, color = DarkInk, fontSize = buttonTextSize, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis)
-    }
+    VoxGestCapstoneAction(label, icon, filled = true, modifier = modifier, onClick = onClick)
 }
 
 @Composable
-private fun Waveform(modifier: Modifier, active: Boolean) {
-    if (!active) {
+private fun Waveform(modifier: Modifier, active: Boolean, reducedMotion: Boolean = false) {
+    if (!active || reducedMotion) {
         WaveformBars(modifier = modifier, pulse = 0f, active = false)
         return
     }
@@ -2608,7 +4545,8 @@ private fun WaveformBars(modifier: Modifier, pulse: Float, active: Boolean) {
 }
 
 @Composable
-private fun MicPulse() {
+private fun MicPulse(reducedMotion: Boolean = false) {
+    if (reducedMotion) return
     val transition = rememberInfiniteTransition(label = "mic-pulse")
     val scale by transition.animateFloat(
         initialValue = 0.82f,
@@ -2633,44 +4571,23 @@ private fun BlinkDot(color: Color) {
 
 @Composable
 private fun BottomNavBar(selectedTab: VoxTab, onTabSelected: (VoxTab) -> Unit) {
-    Surface(
-        modifier = Modifier.fillMaxWidth(),
-        color = CardWhite,
-        shadowElevation = 10.dp
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .heightIn(min = 78.dp)
-                .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 10.dp),
-            horizontalArrangement = Arrangement.SpaceAround,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            VoxTab.values().forEach { tab ->
-                val active = tab == selectedTab
-                Column(
-                    modifier = Modifier
-                        .width(66.dp)
-                        .height(56.dp)
-                        .clip(RoundedCornerShape(17.dp))
-                        .background(if (active) Primary else Color.Transparent)
-                        .clickable { onTabSelected(tab) },
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    VoxIcon(tab.icon, tab.label, if (active) DarkInk else TextMuted, Modifier.size(22.dp))
-                    Spacer(Modifier.height(3.dp))
-                    Text(
-                        tab.label,
-                        color = if (active) DarkInk else TextMuted,
-                        fontSize = if (active) 10.sp else 9.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        maxLines = 1
-                    )
-                }
-            }
+    val copy = LocalVoxGestCopy.current
+    val items = VoxTab.values().map { tab ->
+        val label = when (tab) {
+            VoxTab.Sign -> copy.sign
+            VoxTab.Conversation -> copy.conversation
+            VoxTab.Listen -> copy.listen
+            VoxTab.Guide -> copy.guide
         }
+        VoxGestBottomNavItem(tab.name, label, tab.icon)
     }
+    VoxGestCapstoneBottomNav(
+        items = items,
+        selectedKey = selectedTab.name,
+        onSelected = { key ->
+            VoxTab.values().firstOrNull { it.name == key }?.let(onTabSelected)
+        }
+    )
 }
 
 @Composable
@@ -2697,8 +4614,4 @@ private fun VoxIcon(
         modifier = modifier
     )
 }
-
-
-
-
 
