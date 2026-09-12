@@ -8,13 +8,13 @@ TIMESTAMP=2026-09-12T14:43:49+08:00
 
 BRANCH=recognition/recovery-20260912
 
-COMMIT=PENDING_DATASET_PACKAGE_COMMIT
+COMMIT=92217d8c9eb69ea7c86c396f2938a99aee0d59a6 (substantive dataset-package commit described by this handoff)
 
 SOURCE_BASE_COMMIT=5b3b241020fef1518b5006b06115661371441c8f
 
-HANDOFF_UPDATE_COMMIT=PENDING_DATASET_PACKAGE_COMMIT
+HANDOFF_UPDATE_COMMIT=92217d8c9eb69ea7c86c396f2938a99aee0d59a6
 
-BRANCH_HEAD=PENDING_DATASET_PACKAGE_COMMIT
+BRANCH_HEAD=92217d8c9eb69ea7c86c396f2938a99aee0d59a6 (audited content snapshot; the metadata-only commit carrying these resolved fields follows it)
 
 CURRENT_GOAL=Complete the Mapúa raw-video audit and publish a safe retraining-decision package without training or changing Android/UI/Avatar.
 
