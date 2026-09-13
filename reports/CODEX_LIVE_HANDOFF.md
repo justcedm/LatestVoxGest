@@ -1,5 +1,76 @@
 # VoxGest Live Handoff
 
+## Update - 2026-09-14 live-segment pre-device checkpoint
+
+TIMESTAMP=2026-09-14T04:45:23+08:00
+
+BRANCH=recognition/mapua14-live-segment-v1
+
+COMMIT=d806e01a1ebeeb61511d5972b42a26ebe26903df
+
+CURRENT_GOAL=Physically compare the rollback rolling48 lane with the isolated complete-event/resampled48 lane on the authorized Samsung without retraining or threshold tuning.
+
+WORK_COMPLETED=
+
+- Preserved interrupted work in checkpoint commits `e5bb4d4d` and `efa3b29d`.
+- Added debug-only `MAPUA14_LIVE_SEGMENT_V1` with IDLE -> ARMING -> CAPTURING -> FINALIZING -> INFERENCE -> WAIT_FOR_RELEASE.
+- Finalized chronological events with the audited internal-gap, adaptive motion-envelope, and complete-trajectory linear resampling policy to exactly `[1,48,225]`.
+- Kept the existing RD-TCN48 model and label assets byte-identical.
+- Added temporal anatomical hand identity, bounded short reacquisition, diagnostics, and fail-closed ambiguity handling without image-X slot assignment or landmark fabrication.
+- Added CameraX/Camera2 FRONT/BACK/EXTERNAL discovery, latest-frame analysis, display-only preview mirroring, asynchronous camera-open/error handling, and resource cleanup.
+- Preserved Standard FSL-105 identity and outputs; shared CameraX mirroring/source/lifecycle safety was updated only where required.
+- Added dated A/B report skeleton, Android/external-camera documentation, architecture decision, project-history milestone, and hand-occlusion test record.
+
+FILES_CHANGED=
+
+- android_dry_run/app/src/main/java/com/voxgest/dryrun/Mapua14LiveSegmentStateMachine.kt
+- android_dry_run/app/src/main/java/com/voxgest/dryrun/Mapua14CompleteTrajectory48.kt
+- android_dry_run/app/src/main/java/com/voxgest/dryrun/Mapua14LiveSegmentCameraRecognitionController.kt
+- android_dry_run/app/src/main/java/com/voxgest/dryrun/Mapua14SegmentGate.kt
+- android_dry_run/app/src/main/java/com/voxgest/dryrun/TemporalAnatomicalHandIdentityStabilizer.kt
+- android_dry_run/app/src/main/java/com/voxgest/dryrun/MediaPipeLandmarkExtractor.kt
+- android_dry_run/app/src/main/java/com/voxgest/dryrun/CameraSourceDiscovery.kt
+- shared runtime/routing and corresponding unit tests
+- docs/ANDROID_COMPATIBILITY_MATRIX.md
+- docs/EXTERNAL_CAMERA_SUPPORT.md
+- docs/PROJECT_HISTORY_JUNE_SEPT_2026.md
+- docs/ARCHITECTURE_DECISIONS.md
+- reports/HAND_OCCLUSION_STRESS_TEST.md
+- reports/mapua14_rescue_v1/SAMSUNG_LIVE_SEGMENT_AB_20260914.md
+
+COMMANDS/TESTS=
+
+- `gradlew :app:compileDebugKotlin :app:compileDebugJavaWithJavac`: PASS.
+- `gradlew :app:testDebugUnitTest :app:assembleDebug`: PASS.
+- Unit results: 115 tests, 0 failures, 0 errors, 0 skipped across 30 suites.
+- Debug APK SHA-256: `f1d66b42e7b9074705b39e5340d4924b34ba8a24b9d527fcf5ae591aa5fb826f`.
+- `git diff --check`: PASS (line-ending conversion warnings only).
+- `adb devices -l`: no connected devices; repeated checks and bounded wait produced an empty inventory.
+
+DATASET_STATUS=UNCHANGED. No dataset access, ingestion, mutation, or training occurred.
+
+TRAINING_STATUS=UNCHANGED_NO_RETRAIN. Existing RD-TCN48 SHA-256 is `f850c5d414c5c253ef9131bae5a85bb3ed5ad5412abdf9936df510c6ec043dcc`; labels SHA-256 is `af398236fd62da6c5bafbe0b60d21bc8a155c48aeb45987090c1b14a20cb9ef0`.
+
+SAMSUNG_STATUS=BLOCKED_DEVICE_NOT_CONNECTED. Target remains Samsung SM-A566B / `R5GYC0M1M4P`; install, startup parity logs, 10 OLD HELLO attempts, 10 NEW HELLO attempts, mirror confirmation, and physical hand-collision sequence are not yet captured.
+
+METRICS=Series-1 preserved evidence: HELLO raw top1 4/4 at approximately 0.999999; accepted 0/4; rejection reason TEMPORAL_STABILITY 4/4; rolling windows 5,829-5,963 ms; MediaPipe approximately 7.988 FPS; TFLite 0.803-1.050 ms. New physical metrics are NOT_YET_TESTED.
+
+FAILURES=Physical validation could not start because ADB reported zero devices. No Samsung performance or recognition result is inferred, and no live-fix claim is made.
+
+CURRENT_HYPOTHESIS=Series-1 directly demonstrates correct HELLO raw predictions blocked by the old temporal-stability gate. The new completed-event representation removes the arbitrary rolling-window mismatch, but Samsung A/B evidence is required to determine whether it improves raw and accepted outcomes.
+
+NEXT_ACTION=Reconnect and authorize `R5GYC0M1M4P`; install the existing debug APK; launch OLD then NEW with exact debug extras; capture operator-marked 10+10 HELLO attempts one at a time; report raw classifier and gate outcomes separately; proceed to 14x5 only if NEW clearly improves HELLO.
+
+PAPER_IMPACT=YES
+
+PAPER_SECTIONS_TO_REVIEW=Methods/temporal preprocessing; Android runtime architecture; experimental protocol and live-device results; threats to validity and limitations. Do not revise success claims until physical evidence exists.
+
+DO_NOT_MODIFY=Do not access D:. Do not retrain or tune thresholds during A/B. Do not modify Avatar, Listen, UI styling, Standard FSL-105 model behavior, anatomical slot semantics, or `(System.nanoTime() / 1_000_000L)`. Do not version raw device logs, APKs, datasets, caches, checkpoints, environments, or secrets. Do not promote the debug model to Standard.
+
+---
+
+## Previous checkpoint - 2026-09-12
+
 TIMESTAMP=2026-09-12T22:00:10+08:00
 
 BRANCH=recognition/mapua14-rescue-v1
