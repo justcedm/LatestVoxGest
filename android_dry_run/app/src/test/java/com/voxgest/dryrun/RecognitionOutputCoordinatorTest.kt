@@ -109,6 +109,26 @@ class RecognitionOutputCoordinatorTest {
         assertEquals(listOf("THANK_YOU"), update.snapshot.tokens)
     }
 
+    @Test
+    fun verifiedMapua14SegmentResultUsesSameNonDemoSemanticBoundary() {
+        val fixture = fixture(allowlist = emptySet(), composerLabels = emptySet())
+        val result = RecognitionResult(
+            "HELLO",
+            0.99f,
+            0.80f,
+            true,
+            "mapua14_live_segment_v1_accepted",
+            emptyList(),
+            RecognitionResult.Source.MAPUA14_LIVE_SEGMENT_V1
+        )
+
+        val update = fixture.coordinator.handleRecognition(result)
+
+        assertTrue(update.userFacingAccepted)
+        assertEquals(DemoAllowlistReason.MAPUA14_RESCUE_QUALIFIED.name, update.reason)
+        assertEquals(listOf("HELLO"), update.snapshot.tokens)
+    }
+
     private fun fixture(allowlist: Set<String>, composerLabels: Set<String>): Fixture {
         val settings = SentenceSuggestionSettings(MemoryStore())
         return Fixture(

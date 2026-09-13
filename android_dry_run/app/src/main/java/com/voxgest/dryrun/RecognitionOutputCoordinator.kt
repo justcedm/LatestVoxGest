@@ -29,7 +29,8 @@ class RecognitionOutputCoordinator(
     @Synchronized
     fun handleRecognition(result: RecognitionResult?): RecognitionOutputUpdate {
         val verifiedFullSignRuntime = result?.source == RecognitionResult.Source.STANDARD_FSL105 ||
-            result?.source == RecognitionResult.Source.MAPUA14_RESCUE_V1
+            result?.source == RecognitionResult.Source.MAPUA14_RESCUE_V1 ||
+            result?.source == RecognitionResult.Source.MAPUA14_LIVE_SEGMENT_V1
         val allowlistDecision = if (verifiedFullSignRuntime) {
             evaluateStandardResult(requireNotNull(result))
         } else {
@@ -77,7 +78,10 @@ class RecognitionOutputCoordinator(
             label.isBlank() -> DemoAllowlistReason.EMPTY_LABEL
             DemoAllowlistPolicy.isReservedOutputToken(label) ->
                 DemoAllowlistReason.NON_CANONICAL_LABEL
-            else -> if (result.source == RecognitionResult.Source.MAPUA14_RESCUE_V1) {
+            else -> if (
+                result.source == RecognitionResult.Source.MAPUA14_RESCUE_V1 ||
+                result.source == RecognitionResult.Source.MAPUA14_LIVE_SEGMENT_V1
+            ) {
                 DemoAllowlistReason.MAPUA14_RESCUE_QUALIFIED
             } else {
                 DemoAllowlistReason.STANDARD_FSL105_QUALIFIED

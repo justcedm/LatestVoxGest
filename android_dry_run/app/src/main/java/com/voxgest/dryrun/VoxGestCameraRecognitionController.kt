@@ -32,6 +32,7 @@ private data class OneHandCaptureResult(
 enum class CameraRecognitionRuntime {
     STANDARD_FSL105,
     MAPUA14_RESCUE_V1,
+    MAPUA14_LIVE_SEGMENT_V1,
     LEGACY_DEMO
 }
 
@@ -40,10 +41,14 @@ class VoxGestCameraRecognitionController(
     private val lifecycleOwner: LifecycleOwner,
     private val onStatus: (String) -> Unit,
     initialUseBackCamera: Boolean = false,
+    private val initialCameraSource: CameraSource =
+        if (initialUseBackCamera) CameraSource.BACK else CameraSource.FRONT,
+    private val initialMirrorFrontPreview: Boolean = true,
     initialLandmarkVisualizationEnabled: Boolean = false,
     private val runtimeMode: CameraRecognitionRuntime = DeveloperRecognitionOverride.runtime(),
     private val onRecognitionFeedback: (RecognitionFeedback) -> Unit = {},
     private val onSkeletonFrame: (LandmarkVisualizationFrame?) -> Unit = {},
+    private val onPreviewMirroringChanged: (Boolean) -> Unit = {},
     private val onAcceptedResult: (RecognitionResult) -> Unit
 ) {
     private val appContext = context.applicationContext
@@ -59,6 +64,8 @@ class VoxGestCameraRecognitionController(
     @Volatile private var cameraProvider: ProcessCameraProvider? = null
     @Volatile private var standardController: StandardFslCameraRecognitionController? = null
     @Volatile private var mapua14Controller: Mapua14RescueCameraRecognitionController? = null
+    @Volatile private var mapua14LiveSegmentController:
+        Mapua14LiveSegmentCameraRecognitionController? = null
     @Volatile private var imageAnalysis: ImageAnalysis? = null
     @Volatile private var extractor: LandmarkExtractor? = null
     @Volatile private var alphabetClassifier: AlphabetClassifier? = null
@@ -85,7 +92,8 @@ class VoxGestCameraRecognitionController(
     @Volatile private var consecutiveMatchCount: Int = 0
     @Volatile private var previousOneHandFrame: LandmarkFrame? = null
     @Volatile private var statusToken: Long = 0L
-    @Volatile private var useBackCamera: Boolean = initialUseBackCamera
+    @Volatile private var useBackCamera: Boolean =
+        initialCameraSource == CameraSource.BACK || initialUseBackCamera
     @Volatile private var landmarkVisualizationEnabled: Boolean = initialLandmarkVisualizationEnabled
     @Volatile private var analysisMirroredForVisualization: Boolean = false
     @Volatile private var lastLandmarkVisualizationAtMs: Long = 0L
@@ -108,6 +116,19 @@ class VoxGestCameraRecognitionController(
             startMapua14Rescue(previewView)
             return
         }
+        if (runtimeMode == CameraRecognitionRuntime.MAPUA14_LIVE_SEGMENT_V1) {
+            startMapua14LiveSegment(previewView)
+            return
+        }
+        val legacyPreviewMirrored = CameraPreviewMirrorPolicy.shouldMirror(
+            if (useBackCamera) CameraSource.BACK else CameraSource.FRONT,
+            initialMirrorFrontPreview
+        )
+        previewView.scaleX = CameraPreviewMirrorPolicy.previewViewScaleX(
+            if (useBackCamera) CameraSource.BACK else CameraSource.FRONT,
+            initialMirrorFrontPreview
+        )
+        onPreviewMirroringChanged(legacyPreviewMirrored)
         Log.i(TAG, "LEGACY_DEMO_RUNTIME active=true standard_fsl105=false")
         bindCamera(previewView)
         analyzerExecutor.execute {
@@ -163,6 +184,12 @@ class VoxGestCameraRecognitionController(
         if (runtimeMode == CameraRecognitionRuntime.MAPUA14_RESCUE_V1) {
             mapua14Controller?.release()
             mapua14Controller = null
+            postStatus("Recognition Paused")
+            return
+        }
+        if (runtimeMode == CameraRecognitionRuntime.MAPUA14_LIVE_SEGMENT_V1) {
+            mapua14LiveSegmentController?.release()
+            mapua14LiveSegmentController = null
             postStatus("Recognition Paused")
             return
         }
@@ -341,6 +368,9 @@ class VoxGestCameraRecognitionController(
                 postStatus("Accepted: ${accepted.label}")
             },
             initialUseBackCamera = useBackCamera,
+            requestedCameraSource = initialCameraSource,
+            initialMirrorFrontPreview = initialMirrorFrontPreview,
+            onPreviewMirroringChanged = onPreviewMirroringChanged,
             onFrame = ::postSkeletonFrame
         )
         standardController = standard
@@ -390,10 +420,87 @@ class VoxGestCameraRecognitionController(
                 postStatus("Accepted: ${accepted.label}")
             },
             initialUseBackCamera = useBackCamera,
+            initialMirrorFrontPreview = initialMirrorFrontPreview,
+            onPreviewMirroringChanged = onPreviewMirroringChanged,
             onFrame = ::postSkeletonFrame
         )
         mapua14Controller = controller
         Log.i(TAG, "ACTIVE_PROFILE=${Mapua14RescueProfile.ID} activation=debug_intent_only standard_default_unchanged=true")
+        controller.start(previewView)
+    }
+
+    private fun startMapua14LiveSegment(previewView: PreviewView) {
+        analysisMirroredForVisualization = false
+        val controller = Mapua14LiveSegmentCameraRecognitionController(
+            context = appContext,
+            lifecycleOwner = lifecycleOwner,
+            onState = { state ->
+                state.blockedEvidence?.let {
+                    Log.e(TAG, "MAPUA14_SEGMENT_BLOCKED evidence=$it")
+                }
+                val detection = when {
+                    state.decision?.accepted == true -> DetectionStatus.RECOGNIZED
+                    state.inference != null -> DetectionStatus.DETECTING
+                    state.segmentState == Mapua14LiveSegmentState.CAPTURING ->
+                        DetectionStatus.DETECTING
+                    state.tracking == StandardFslTrackingState.READY ->
+                        DetectionStatus.DETECTING
+                    else -> DetectionStatus.SEARCHING
+                }
+                postFeedback(
+                    cleanFeedback(
+                        detection,
+                        state.inference?.top1?.label.orEmpty()
+                    )
+                )
+                postStatus(
+                    when {
+                        state.blockedEvidence != null &&
+                            state.segmentReason == "MAPUA14_CAMERA_DISCOVERY" ->
+                            "Selected camera unavailable"
+                        state.blockedEvidence != null -> "Recognition unavailable"
+                        state.segmentState == Mapua14LiveSegmentState.CAPTURING ->
+                            "Capturing sign"
+                        state.segmentState == Mapua14LiveSegmentState.WAIT_FOR_RELEASE ->
+                            "Return hands to neutral"
+                        state.tracking == StandardFslTrackingState.READY -> "Ready"
+                        else -> "Hold sign clearly"
+                    }
+                )
+            },
+            onAccepted = { accepted ->
+                val result = RecognitionResult(
+                    accepted.label,
+                    accepted.confidence,
+                    accepted.margin,
+                    true,
+                    "mapua14_live_segment_v1_accepted",
+                    accepted.top5.take(3).map {
+                        RecognitionResult.TopPrediction(it.label, it.probability)
+                    },
+                    RecognitionResult.Source.MAPUA14_LIVE_SEGMENT_V1
+                )
+                Log.i(
+                    TAG,
+                    "MAPUA14_SEGMENT_EMIT label=${accepted.label} " +
+                        "confidence=${accepted.confidence} margin=${accepted.margin} " +
+                        "source=${result.source} demo_allowlist_applied=false"
+                )
+                postFeedback(cleanFeedback(DetectionStatus.RECOGNIZED, accepted.label))
+                mainExecutor.execute { onAcceptedResult(result) }
+                postStatus("Accepted: ${accepted.label}")
+            },
+            requestedCameraSource = initialCameraSource,
+            mirrorFrontPreview = initialMirrorFrontPreview,
+            onPreviewMirroringChanged = onPreviewMirroringChanged,
+            onFrame = ::postSkeletonFrame
+        )
+        mapua14LiveSegmentController = controller
+        Log.i(
+            TAG,
+            "ACTIVE_PROFILE=${Mapua14LiveSegmentProfile.ID} activation=debug_intent_only " +
+                "model_profile=${Mapua14RescueProfile.ID} standard_default_unchanged=true"
+        )
         controller.start(previewView)
     }
 
@@ -411,7 +518,25 @@ class VoxGestCameraRecognitionController(
             if (!running.get()) return@addListener
             val provider = providerFuture.get()
             cameraProvider = provider
-            val preview = Preview.Builder().build().also {
+            val cameraSource = if (useBackCamera) CameraSource.BACK else CameraSource.FRONT
+            previewView.scaleX = CameraPreviewMirrorPolicy.previewViewScaleX(
+                cameraSource,
+                initialMirrorFrontPreview
+            )
+            onPreviewMirroringChanged(
+                CameraPreviewMirrorPolicy.shouldMirror(
+                    cameraSource,
+                    initialMirrorFrontPreview
+                )
+            )
+            val preview = Preview.Builder()
+                .setMirrorMode(
+                    CameraPreviewMirrorPolicy.cameraXMirrorMode(
+                        cameraSource,
+                        initialMirrorFrontPreview
+                    )
+                )
+                .build().also {
                 it.setSurfaceProvider(previewView.surfaceProvider)
             }
             @Suppress("DEPRECATION")

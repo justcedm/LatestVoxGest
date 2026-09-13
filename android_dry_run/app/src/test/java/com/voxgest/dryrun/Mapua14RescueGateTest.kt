@@ -42,6 +42,11 @@ class Mapua14RescueGateTest {
         assertEquals(CameraRecognitionRuntime.STANDARD_FSL105, DeveloperRecognitionOverride.runtime())
         DeveloperRecognitionOverride.configure(true, true, "mapua14_rescue_v1")
         assertEquals(CameraRecognitionRuntime.STANDARD_FSL105, DeveloperRecognitionOverride.runtime())
+        DeveloperRecognitionOverride.configure(true, true, Mapua14LiveSegmentProfile.ID)
+        assertEquals(
+            CameraRecognitionRuntime.MAPUA14_LIVE_SEGMENT_V1,
+            DeveloperRecognitionOverride.runtime()
+        )
     }
 
     private fun inference(label: String, top1: Float, top2: Float): StandardFslInference {

@@ -222,13 +222,22 @@ class Mapua14RescueGate(private val sequenceLength: Int) {
     }
 }
 
+/** New processing profile; the model assets and labels remain MAPUA14_RESCUE_V1. */
+object Mapua14LiveSegmentProfile {
+    const val ID = "MAPUA14_LIVE_SEGMENT_V1"
+}
+
 /** Debug builds require both diagnostics=true and an exact profile extra. */
 object DeveloperRecognitionOverride {
     @Volatile private var requested = CameraRecognitionRuntime.STANDARD_FSL105
 
     fun configure(debugBuild: Boolean, diagnosticsEnabled: Boolean, profileId: String?) {
-        requested = if (debugBuild && diagnosticsEnabled && profileId == Mapua14RescueProfile.ID) {
-            CameraRecognitionRuntime.MAPUA14_RESCUE_V1
+        requested = if (debugBuild && diagnosticsEnabled) {
+            when (profileId) {
+                Mapua14RescueProfile.ID -> CameraRecognitionRuntime.MAPUA14_RESCUE_V1
+                Mapua14LiveSegmentProfile.ID -> CameraRecognitionRuntime.MAPUA14_LIVE_SEGMENT_V1
+                else -> CameraRecognitionRuntime.STANDARD_FSL105
+            }
         } else {
             CameraRecognitionRuntime.STANDARD_FSL105
         }

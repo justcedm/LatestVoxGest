@@ -43,6 +43,8 @@ class Mapua14RescueCameraRecognitionController(
     private val onState: (Mapua14RescueLiveState) -> Unit,
     private val onAccepted: (StandardFslAcceptedResult) -> Unit,
     private val initialUseBackCamera: Boolean = false,
+    private val initialMirrorFrontPreview: Boolean = true,
+    private val onPreviewMirroringChanged: (Boolean) -> Unit = {},
     private val onFrame: (LandmarkFrame?) -> Boolean = { false }
 ) {
     private val appContext = context.applicationContext
@@ -73,7 +75,16 @@ class Mapua14RescueCameraRecognitionController(
         if (!running.compareAndSet(false, true)) return
         performance.reset()
         mainExecutor.execute { Choreographer.getInstance().postFrameCallback(displayFrameCallback) }
-        previewView.scaleX = if (initialUseBackCamera) 1f else -1f
+        val previewMirrored = CameraPreviewMirrorPolicy.shouldMirror(
+            if (initialUseBackCamera) CameraSource.BACK else CameraSource.FRONT,
+            initialMirrorFrontPreview
+        )
+        val cameraSource = if (initialUseBackCamera) CameraSource.BACK else CameraSource.FRONT
+        previewView.scaleX = CameraPreviewMirrorPolicy.previewViewScaleX(
+            cameraSource,
+            initialMirrorFrontPreview
+        )
+        onPreviewMirroringChanged(previewMirrored)
         postState(Mapua14RescueLiveState(StandardFslTrackingState.HOLD_SIGN_CLEARLY))
         analysisExecutor.execute {
             try {
@@ -139,7 +150,16 @@ class Mapua14RescueCameraRecognitionController(
             try {
                 val provider = future.get()
                 cameraProvider = provider
-                val preview = Preview.Builder().build().also { it.setSurfaceProvider(previewView.surfaceProvider) }
+                val cameraSource =
+                    if (initialUseBackCamera) CameraSource.BACK else CameraSource.FRONT
+                val preview = Preview.Builder()
+                    .setMirrorMode(
+                        CameraPreviewMirrorPolicy.cameraXMirrorMode(
+                            cameraSource,
+                            initialMirrorFrontPreview
+                        )
+                    )
+                    .build().also { it.setSurfaceProvider(previewView.surfaceProvider) }
                 @Suppress("DEPRECATION")
                 val builder = ImageAnalysis.Builder()
                     .setTargetResolution(Size(192, 144))
@@ -162,7 +182,7 @@ class Mapua14RescueCameraRecognitionController(
                     preview,
                     analysis
                 )
-                Log.i(TAG, "MAPUA14_CAMERA_BIND PASS preview_mirrored=${!initialUseBackCamera} analysis_mirrored=false backpressure=KEEP_ONLY_LATEST")
+                Log.i(TAG, "MAPUA14_CAMERA_BIND PASS preview_mirrored=${!initialUseBackCamera && initialMirrorFrontPreview} analysis_mirrored=false backpressure=KEEP_ONLY_LATEST")
                 postState(Mapua14RescueLiveState(StandardFslTrackingState.READY))
             } catch (error: Throwable) {
                 running.set(false)

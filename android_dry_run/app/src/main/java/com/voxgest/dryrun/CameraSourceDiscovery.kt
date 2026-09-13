@@ -1,10 +1,12 @@
 package com.voxgest.dryrun
 
 import android.hardware.camera2.CameraCharacteristics
+import android.os.Build
 import androidx.camera.camera2.interop.Camera2CameraInfo
 import androidx.camera.camera2.interop.ExperimentalCamera2Interop
 import androidx.camera.core.CameraInfo
 import androidx.camera.core.CameraSelector
+import androidx.camera.core.MirrorMode
 import androidx.camera.lifecycle.ProcessCameraProvider
 
 enum class CameraSource {
@@ -37,6 +39,41 @@ object CameraSourceSelectionPolicy {
         if (requested != CameraSource.AUTO) return available.firstOrNull { it.source == requested }
         return listOf(CameraSource.FRONT, CameraSource.BACK, CameraSource.EXTERNAL)
             .firstNotNullOfOrNull { source -> available.firstOrNull { it.source == source } }
+    }
+}
+
+/** Presentation-only policy. Analysis and FullSign225 construction never call this. */
+object CameraPreviewMirrorPolicy {
+    fun shouldMirror(source: CameraSource, mirrorFrontPreview: Boolean): Boolean {
+        return source == CameraSource.FRONT && mirrorFrontPreview
+    }
+
+    fun cameraXMirrorMode(source: CameraSource, mirrorFrontPreview: Boolean): Int {
+        return if (shouldMirror(source, mirrorFrontPreview)) {
+            MirrorMode.MIRROR_MODE_ON_FRONT_ONLY
+        } else {
+            MirrorMode.MIRROR_MODE_OFF
+        }
+    }
+
+    /**
+     * Preview.setMirrorMode is effective on API 33+. On older supported
+     * versions, counter-transform only the explicit front/unmirrored request.
+     */
+    fun previewViewScaleX(
+        source: CameraSource,
+        mirrorFrontPreview: Boolean,
+        sdkInt: Int = Build.VERSION.SDK_INT
+    ): Float {
+        return if (
+            sdkInt < 33 &&
+            source == CameraSource.FRONT &&
+            !mirrorFrontPreview
+        ) {
+            -1f
+        } else {
+            1f
+        }
     }
 }
 
@@ -88,4 +125,3 @@ object AndroidCameraSourceDiscovery {
         }.sortedWith(compareBy<ObservedCamera> { it.descriptor.source.ordinal }.thenBy { it.descriptor.cameraId })
     }
 }
-

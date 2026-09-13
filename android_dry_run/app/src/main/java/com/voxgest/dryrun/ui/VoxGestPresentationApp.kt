@@ -94,7 +94,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -1343,6 +1342,14 @@ private fun RecognitionAreaCard(
     var showGrid by remember { mutableStateOf(false) }
     var landmarkVisualizationFrame by remember { mutableStateOf<LandmarkVisualizationFrame?>(null) }
     var cameraRestartKey by remember { mutableStateOf(0) }
+    var resolvedPreviewMirrored by remember(
+        preferredCameraLens,
+        mirrorFrontPreview
+    ) {
+        mutableStateOf(
+            preferredCameraLens == PreferredCameraLens.FRONT && mirrorFrontPreview
+        )
+    }
     var hasCameraPermission by remember {
         mutableStateOf(
             ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
@@ -1360,7 +1367,14 @@ private fun RecognitionAreaCard(
         }
     }
 
-    LaunchedEffect(recognitionRunning, hasCameraPermission, previewView, preferredCameraLens, cameraRestartKey) {
+    LaunchedEffect(
+        recognitionRunning,
+        hasCameraPermission,
+        previewView,
+        preferredCameraLens,
+        mirrorFrontPreview,
+        cameraRestartKey
+    ) {
         if (!recognitionRunning) {
             controllerRef.value?.stop()
             return@LaunchedEffect
@@ -1376,9 +1390,12 @@ private fun RecognitionAreaCard(
             lifecycleOwner = lifecycleOwner,
             onStatus = onRecognitionStatus,
             initialUseBackCamera = preferredCameraLens == PreferredCameraLens.REAR,
+            initialCameraSource = preferredCameraLens.toCameraSource(),
+            initialMirrorFrontPreview = mirrorFrontPreview,
             initialLandmarkVisualizationEnabled = showAiLandmarks,
             onRecognitionFeedback = { recognitionFeedback = it },
             onSkeletonFrame = { landmarkVisualizationFrame = it },
+            onPreviewMirroringChanged = { resolvedPreviewMirrored = it },
             onAcceptedResult = onAcceptedRecognition
         ).also { it.start(previewView) }
     }
@@ -1458,21 +1475,16 @@ private fun RecognitionAreaCard(
                 }
         ) {
             // One stable PreviewView host is resized in place. It is never moved into another window.
+            // Controller mirroring is display-only; ImageAnalysis/model input remains untouched.
             AndroidView(
                 factory = { previewView },
                 modifier = Modifier
                     .fillMaxSize()
-                    // Preview mirroring is display-only. ImageAnalysis/model input remains untouched.
-                    .graphicsLayer(
-                        scaleX = if (
-                            !mirrorFrontPreview && preferredCameraLens == PreferredCameraLens.FRONT
-                        ) -1f else 1f
-                    )
             )
             if (showAiLandmarks && recognitionRunning && hasCameraPermission && !cameraUnavailable) {
                 SkeletonFeatureOverlay(
                     visualizationFrame = landmarkVisualizationFrame,
-                    previewMirrored = preferredCameraLens == PreferredCameraLens.FRONT && mirrorFrontPreview,
+                    previewMirrored = resolvedPreviewMirrored,
                     hudTopPadding = if (expanded) 84.dp else 62.dp,
                     modifier = Modifier.fillMaxSize()
                 )

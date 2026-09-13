@@ -1,7 +1,10 @@
 package com.voxgest.dryrun
 
+import androidx.camera.core.MirrorMode
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class CameraSourceSelectionPolicyTest {
@@ -28,5 +31,47 @@ class CameraSourceSelectionPolicyTest {
             assertNull(CameraSourceSelectionPolicy.choose(source, emptyList()))
         }
     }
-}
 
+    @Test
+    fun mirrorSettingAffectsFrontPreviewOnly() {
+        assertTrue(CameraPreviewMirrorPolicy.shouldMirror(CameraSource.FRONT, true))
+        assertFalse(CameraPreviewMirrorPolicy.shouldMirror(CameraSource.FRONT, false))
+        assertFalse(CameraPreviewMirrorPolicy.shouldMirror(CameraSource.BACK, true))
+        assertFalse(CameraPreviewMirrorPolicy.shouldMirror(CameraSource.EXTERNAL, true))
+        assertEquals(
+            MirrorMode.MIRROR_MODE_ON_FRONT_ONLY,
+            CameraPreviewMirrorPolicy.cameraXMirrorMode(CameraSource.FRONT, true)
+        )
+        assertEquals(
+            MirrorMode.MIRROR_MODE_OFF,
+            CameraPreviewMirrorPolicy.cameraXMirrorMode(CameraSource.FRONT, false)
+        )
+        assertEquals(
+            1f,
+            CameraPreviewMirrorPolicy.previewViewScaleX(
+                CameraSource.FRONT,
+                true,
+                sdkInt = 36
+            ),
+            0f
+        )
+        assertEquals(
+            1f,
+            CameraPreviewMirrorPolicy.previewViewScaleX(
+                CameraSource.FRONT,
+                false,
+                sdkInt = 36
+            ),
+            0f
+        )
+        assertEquals(
+            -1f,
+            CameraPreviewMirrorPolicy.previewViewScaleX(
+                CameraSource.FRONT,
+                false,
+                sdkInt = 32
+            ),
+            0f
+        )
+    }
+}

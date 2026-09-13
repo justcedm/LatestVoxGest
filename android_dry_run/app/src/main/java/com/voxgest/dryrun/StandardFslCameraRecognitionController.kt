@@ -10,7 +10,6 @@ import android.util.Size
 import android.view.Choreographer
 import androidx.camera.camera2.interop.Camera2Interop
 import androidx.camera.camera2.interop.ExperimentalCamera2Interop
-import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import androidx.camera.core.Preview
@@ -57,6 +56,10 @@ class StandardFslCameraRecognitionController(
     private val onState: (StandardFslLiveUiState) -> Unit,
     private val onAccepted: (StandardFslAcceptedResult) -> Unit,
     private val initialUseBackCamera: Boolean = false,
+    private val requestedCameraSource: CameraSource =
+        if (initialUseBackCamera) CameraSource.BACK else CameraSource.FRONT,
+    private val initialMirrorFrontPreview: Boolean = true,
+    private val onPreviewMirroringChanged: (Boolean) -> Unit = {},
     private val onFrame: (LandmarkFrame?) -> Boolean = { false }
 ) {
     private val appContext = context.applicationContext
@@ -91,7 +94,10 @@ class StandardFslCameraRecognitionController(
         performance.reset()
         mainExecutor.execute { Choreographer.getInstance().postFrameCallback(displayFrameCallback) }
         // UX only: ImageAnalysis receives unmirrored frames.
-        previewView.scaleX = if (initialUseBackCamera) 1f else -1f
+        // AUTO cannot be resolved until CameraX returns its inventory. Keep the
+        // presentation neutral until bindCamera publishes the actual source.
+        previewView.scaleX = 1f
+        onPreviewMirroringChanged(false)
         postState(StandardFslLiveUiState(StandardFslTrackingState.HOLD_SIGN_CLEARLY), force = true)
         analysisExecutor.execute {
             try {
@@ -110,7 +116,11 @@ class StandardFslCameraRecognitionController(
                 if (!running.get()) return@execute
 
                 runtime = StandardFslTfliteRuntime(appContext)
-                val lens = if (initialUseBackCamera) GradingCameraLens.BACK else GradingCameraLens.FRONT
+                val lens = if (requestedCameraSource == CameraSource.BACK) {
+                    GradingCameraLens.BACK
+                } else {
+                    GradingCameraLens.FRONT
+                }
                 extractor = StandardFslCameraPipeline.createLandmarkExtractor(
                     context = appContext,
                     lens = lens,
@@ -177,7 +187,28 @@ class StandardFslCameraRecognitionController(
             try {
                 val provider = providerFuture.get()
                 cameraProvider = provider
-                val preview = Preview.Builder().build().also {
+                val resolved = AndroidCameraSourceDiscovery.resolve(
+                    provider,
+                    requestedCameraSource
+                )
+                val cameraSource = resolved.resolved
+                val previewMirrored = CameraPreviewMirrorPolicy.shouldMirror(
+                    cameraSource,
+                    initialMirrorFrontPreview
+                )
+                previewView.scaleX = CameraPreviewMirrorPolicy.previewViewScaleX(
+                    cameraSource,
+                    initialMirrorFrontPreview
+                )
+                onPreviewMirroringChanged(previewMirrored)
+                val preview = Preview.Builder()
+                    .setMirrorMode(
+                        CameraPreviewMirrorPolicy.cameraXMirrorMode(
+                            cameraSource,
+                            initialMirrorFrontPreview
+                        )
+                    )
+                    .build().also {
                     it.setSurfaceProvider(previewView.surfaceProvider)
                 }
                 @Suppress("DEPRECATION")
@@ -202,14 +233,15 @@ class StandardFslCameraRecognitionController(
                 provider.unbindAll()
                 provider.bindToLifecycle(
                     lifecycleOwner,
-                    if (initialUseBackCamera) CameraSelector.DEFAULT_BACK_CAMERA else CameraSelector.DEFAULT_FRONT_CAMERA,
+                    resolved.selector,
                     preview,
                     analysis
                 )
                 Log.i(
                     TAG,
-                    "CAMERA_BIND PASS lens=${if (initialUseBackCamera) "BACK" else "FRONT"} " +
-                        "preview_mirrored=${!initialUseBackCamera} " +
+                    "CAMERA_BIND PASS requested=$requestedCameraSource " +
+                        "resolved=${resolved.resolved} camera_id=${resolved.cameraId} " +
+                        "preview_mirrored=$previewMirrored " +
                         "analysis_mirrored=false model_input=unmirrored"
                 )
                 postState(StandardFslLiveUiState(StandardFslTrackingState.READY), force = true)

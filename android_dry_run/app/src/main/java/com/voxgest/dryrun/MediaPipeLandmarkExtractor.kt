@@ -16,7 +16,9 @@ class MediaPipeLandmarkExtractor(
     private val mirrorCameraFrame: Boolean,
     private val reportedHandednessPolicy: ReportedHandednessPolicy =
         ReportedHandednessPolicy.DIRECT_REPORTED_SIDES,
-    private val onMetrics: (LandmarkExtractionMetrics) -> Unit = {}
+    private val onMetrics: (LandmarkExtractionMetrics) -> Unit = {},
+    private val handIdentityStabilizer: TemporalAnatomicalHandIdentityStabilizer? = null,
+    private val onHandIdentityDiagnostics: (TemporalHandIdentityDiagnostics) -> Unit = {}
 ) : LandmarkExtractor {
     private val appContext = context.applicationContext
     private val handLandmarker: HandLandmarker
@@ -76,39 +78,79 @@ class MediaPipeLandmarkExtractor(
             val observations = mutableListOf<HandObservation>()
             val hands = handResult.landmarks()
             val handedness = handResult.handedness()
-            hands.forEachIndexed { index, landmarks ->
-                val reportedLabel = handedness
-                    .getOrNull(index)
-                    ?.firstOrNull()
-                    ?.categoryName()
-                    .orEmpty()
-                    .lowercase()
-                val anatomicalSide = AnatomicalHandedness.resolve(
-                    reportedLabel,
-                    reportedHandednessPolicy
+            val detections = hands.mapIndexed { index, landmarks ->
+                val category = handedness.getOrNull(index)?.firstOrNull()
+                TemporalHandDetection(
+                    landmarks = landmarks.toLandmarkPoints(),
+                    mediaPipeHandedness = category?.categoryName()?.lowercase(),
+                    handednessConfidence = category?.score() ?: Float.NaN
                 )
-                val averageX = landmarks.map { it.x() }.average().toFloat()
-                when (anatomicalSide) {
-                    AnatomicalHandSide.LEFT -> {
-                        leftHand = landmarks.toLandmarkPoints()
-                        observations.add(handObservation("left", reportedLabel, averageX))
+            }
+            val stabilized = handIdentityStabilizer?.stabilize(
+                detections = detections,
+                poseLandmarks = poseLandmarks,
+                timestampMs = timestampMs
+            )
+            if (stabilized != null) {
+                leftHand = stabilized.leftHandLandmarks
+                rightHand = stabilized.rightHandLandmarks
+                detections.forEachIndexed { index, detection ->
+                    val slot = when {
+                        stabilized.leftDetection === detection -> "left"
+                        stabilized.rightDetection === detection -> "right"
+                        else -> "unassigned"
                     }
-                    AnatomicalHandSide.RIGHT -> {
-                        rightHand = landmarks.toLandmarkPoints()
-                        observations.add(handObservation("right", reportedLabel, averageX))
-                    }
-                    null -> if (reportedHandednessPolicy == ReportedHandednessPolicy.DIRECT_REPORTED_SIDES) {
-                        // Retain the legacy image-X fallback only for existing mirrored profiles.
-                        if (averageX < 0.5f && leftHand == null) {
+                    val averageX = detection.landmarks.map { it.x }.average().toFloat()
+                    val diagnostic = stabilized.diagnostics.handedness
+                        .firstOrNull { it.detectionIndex == index }
+                    observations.add(
+                        handObservation(
+                            slot,
+                            detection.mediaPipeHandedness.orEmpty(),
+                            averageX
+                        ).copy(
+                            physicalSideEstimate =
+                                "temporal_anatomical/status=${stabilized.diagnostics.status}" +
+                                    "/evidence=${diagnostic?.assignmentEvidence.orEmpty()}"
+                        )
+                    )
+                }
+                onHandIdentityDiagnostics(stabilized.diagnostics)
+            } else {
+                hands.forEachIndexed { index, landmarks ->
+                    val reportedLabel = handedness
+                        .getOrNull(index)
+                        ?.firstOrNull()
+                        ?.categoryName()
+                        .orEmpty()
+                        .lowercase()
+                    val anatomicalSide = AnatomicalHandedness.resolve(
+                        reportedLabel,
+                        reportedHandednessPolicy
+                    )
+                    val averageX = landmarks.map { it.x() }.average().toFloat()
+                    when (anatomicalSide) {
+                        AnatomicalHandSide.LEFT -> {
                             leftHand = landmarks.toLandmarkPoints()
-                            observations.add(handObservation("left", "unknown", averageX))
-                        } else if (rightHand == null) {
-                            rightHand = landmarks.toLandmarkPoints()
-                            observations.add(handObservation("right", "unknown", averageX))
+                            observations.add(handObservation("left", reportedLabel, averageX))
                         }
-                    } else {
-                        // Standard FullSign225 fails closed instead of guessing anatomy.
-                        observations.add(handObservation("unassigned", "unknown", averageX))
+                        AnatomicalHandSide.RIGHT -> {
+                            rightHand = landmarks.toLandmarkPoints()
+                            observations.add(handObservation("right", reportedLabel, averageX))
+                        }
+                        null -> if (reportedHandednessPolicy == ReportedHandednessPolicy.DIRECT_REPORTED_SIDES) {
+                            // Retain the legacy image-X fallback only for existing mirrored profiles.
+                            if (averageX < 0.5f && leftHand == null) {
+                                leftHand = landmarks.toLandmarkPoints()
+                                observations.add(handObservation("left", "unknown", averageX))
+                            } else if (rightHand == null) {
+                                rightHand = landmarks.toLandmarkPoints()
+                                observations.add(handObservation("right", "unknown", averageX))
+                            }
+                        } else {
+                            // Standard FullSign225 fails closed instead of guessing anatomy.
+                            observations.add(handObservation("unassigned", "unknown", averageX))
+                        }
                     }
                 }
             }
