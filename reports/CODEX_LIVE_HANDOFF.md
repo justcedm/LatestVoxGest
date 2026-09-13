@@ -1,5 +1,97 @@
 # VoxGest Live Handoff
 
+## Update - 2026-09-14 OLD 1-5 escalation and NEW-test preparation
+
+TIMESTAMP=2026-09-14T06:19:05.0126952+08:00
+
+BRANCH=recognition/mapua14-live-segment-v1
+
+COMMIT=e0e4ff6ea049bb6340319dd32476a064727e8d32
+
+SOURCE_BASE_COMMIT=b8da0c52acc6d531c8a7a4f328454a76659fb7e6
+
+HANDOFF_UPDATE_COMMIT=PENDING_THIS_COMMIT
+
+CURRENT_GOAL=Stop the unusable OLD rolling48 series at five attempts, reconstruct all captured evidence without inference, audit the existing NEW completed-event/resampled48 runtime, and prepare five NEW HELLO attempts without retraining or threshold tuning.
+
+WORK_COMPLETED=
+
+- Preserved the complete OLD 1-5 log/screenshot set outside Git under
+  `C:\VOXGEST_TRAINING\MAPUA14_RESCUE_V1\evidence\live_segment_ab_20260914`.
+- Reconstructed each attempt's raw prediction sequence, gate decisions,
+  rejection/event-state reasons, rolling-window duration, MediaPipe snapshots,
+  TFLite latency, presence evidence, accepted token, marker timing, outcome, and
+  evidence hashes. Missing fields are explicitly `NOT_CAPTURED`.
+- Stopped the OLD series at five; Attempts 6-10 do not exist.
+- Kept the canceled positioning interval separate from scored HELLO attempts.
+  It emitted false-positive HELLO and THANK_YOU tokens without an instructed
+  sign and explains accumulated presentation text.
+- Audited NEW source and tests for the required state flow, chronological event
+  capture, finalization-before-inference, exact complete-trajectory resample48,
+  static/dynamic completion, release/re-arm duplicate suppression, anatomical
+  hand identity, ambiguous collision fail-closed behavior, and display-only
+  preview mirroring.
+- Added diagnostic-only timestamps and explicit top-3/end-to-raw/
+  end-to-accepted fields for the NEW physical test. No runtime decision,
+  threshold, model input, or output behavior changed.
+- Verified the existing machine-readable 14-label asset and documented it as
+  the only MAPUA14 supported-vocabulary authority.
+- Corrected architecture documentation to distinguish no copied detections in
+  the identity stabilizer from the audited one-to-three-frame preprocessing
+  interpolation policy; raw tracking quality is counted before interpolation.
+- Built the diagnostic-ready APK. A later installation attempt was blocked
+  because the Samsung disconnected from ADB; no NEW attempt or startup result
+  was fabricated.
+
+FILES_CHANGED=
+
+- android_dry_run/app/src/main/java/com/voxgest/dryrun/Mapua14LiveSegmentCameraRecognitionController.kt
+- docs/ARCHITECTURE_DECISIONS.md
+- docs/MAPUA14_SUPPORTED_VOCABULARY_CONTRACT.md
+- docs/PROJECT_HISTORY_JUNE_SEPT_2026.md
+- reports/mapua14_rescue_v1/SAMSUNG_LIVE_SEGMENT_AB_20260914.md
+- reports/mapua14_rescue_v1/SAMSUNG_OLD_1_5_DIAGNOSTIC_20260914.md
+- reports/CODEX_LIVE_HANDOFF.md
+
+COMMANDS/TESTS=
+
+- Initial Gradle command without `JAVA_HOME`: environment failure before
+  compilation; rerun with Android Studio JBR.
+- `:app:compileDebugKotlin :app:testDebugUnitTest :app:assembleDebug`: PASS.
+- Forced rerun of six relevant suites: 24 tests, 0 failures, 0 errors, 0 skipped.
+- Forced full `:app:testDebugUnitTest :app:assembleDebug`: PASS; 115 tests across
+  30 suites, 0 failures, 0 errors, 0 skipped; 44/44 Gradle tasks executed.
+- Prepared APK SHA-256:
+  `bdf8c859b9b71d84e6afa00ce6b16a548b9a908e027a4c9dfb00204554504fc5`.
+- Model SHA-256:
+  `f850c5d414c5c253ef9131bae5a85bb3ed5ad5412abdf9936df510c6ec043dcc`.
+- Label SHA-256:
+  `af398236fd62da6c5bafbe0b60d21bc8a155c48aeb45987090c1b14a20cb9ef0`.
+- `git diff --check`: PASS; line-ending conversion warnings only.
+- Final preparation `adb devices -l`: empty; install/start not attempted further.
+
+DATASET_STATUS=UNCHANGED. No dataset read, write, ingestion, or generation occurred.
+
+TRAINING_STATUS=UNCHANGED_NO_RETRAIN. Existing RD-TCN48 weights remain byte-identical; no trainer was run and no threshold was tuned.
+
+SAMSUNG_STATUS=OLD_1_5_CAPTURED_THEN_DEVICE_DISCONNECTED. OLD evidence is preserved. The prepared diagnostic APK is not yet installed because ADB became empty. NEW physical attempts remain NOT_TESTED.
+
+METRICS=OLD scored HELLO attempts: 5. Correct raw top-1 attempts: 3/5. Accepted correct: 3/5. No-inference attempts: 2/5. Wrong accepted within scored attempts: 0/5. Each successful attempt first had one correct raw window rejected for TEMPORAL_STABILITY and then one correct accepted window. Warmed TFLite calls were 0.689687-0.952930 ms. Rolling windows were 5,499-5,795 ms. User-observed delays: Attempt 3 ~40 seconds, Attempt 4 ~15 seconds after moving closer, Attempt 5 >60 seconds with no result. Exact post-sign latency is NOT_CAPTURED. Separate canceled positioning evidence contains false accepts HELLO and THANK_YOU.
+
+FAILURES=OLD is operationally unusable. Attempt 1 never inferred because the signer was not framed. Attempt 5 at the same closer distance as Attempt 4 never inferred and logged WAITING_FOR_NEUTRAL_RELEASE:588 plus IDLE_NO_LANDMARKS:487. Existing Clear controls did not remove the stale recognition banner; controlled process restart cleared presentation state, and no UI code was changed. The Samsung later disconnected before the diagnostic APK could be installed.
+
+CURRENT_HYPOTHESIS=The dominant OLD failure is pre-inference readiness/landmark/event-gate instability plus arbitrary rolling48 formation, not TFLite execution. Attempt 4's shorter user-observed delay correlates with better MediaPipe throughput/latency, but Attempt 5 failed at the same distance; proximity causation is insufficiently evidenced. NEW must now prove whether completed-event finalization/resampling reliably reaches raw inference and acceptance within 1-3 seconds after sign completion.
+
+NEXT_ACTION=Reconnect and authorize Samsung `R5GYC0M1M4P`; install the prepared APK; launch with diagnostics and exact profile `MAPUA14_LIVE_SEGMENT_V1`; capture startup feature/TFLite parity and camera/mirror identity; then interactively run five HELLO attempts at one consistent framing distance. Each attempt is neutral -> one HELLO -> neutral -> wait. Stop if repeated latency exceeds 10 seconds or failures recur. Continue NEW to ten only if the first five clearly improve over OLD.
+
+PAPER_IMPACT=YES
+
+PAPER_SECTIONS_TO_REVIEW=Chapter 1 Scope and Limitations; Chapter 3 temporal preprocessing/runtime architecture; Chapter 4 physical-device recognition results; Threats to validity.
+
+DO_NOT_MODIFY=Do not access D:. Do not retrain, tune thresholds, modify Avatar/Listen/UI, replace or promote Standard FSL-105, change canonical unmirrored geometry or anatomical slots, change `(System.nanoTime() / 1_000_000L)`, invent physical results, or commit raw logs/screenshots/APKs/datasets/caches/checkpoints/secrets. No force push or history rewrite.
+
+---
+
 ## Update - 2026-09-14 live-segment pre-device checkpoint
 
 TIMESTAMP=2026-09-14T04:45:23+08:00
