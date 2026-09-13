@@ -312,11 +312,19 @@ private fun SettingsDashboard(
         SettingsSection(tr("RECOGNITION EXPERIENCE", "KARANASAN SA PAGKILALA")) {
             Text(tr("Preferred camera", "Gustong camera"), color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.SemiBold)
             Row(Modifier.fillMaxWidth().padding(top = 8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                SettingsChoice(tr("Auto", "Auto"), settings.preferredCameraLens == PreferredCameraLens.AUTO, Modifier.weight(1f)) {
+                    onSettingsChange(settings.copy(preferredCameraLens = PreferredCameraLens.AUTO))
+                }
                 SettingsChoice(tr("Front", "Harap"), settings.preferredCameraLens == PreferredCameraLens.FRONT, Modifier.weight(1f)) {
                     onSettingsChange(settings.copy(preferredCameraLens = PreferredCameraLens.FRONT))
                 }
+            }
+            Row(Modifier.fillMaxWidth().padding(top = 8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 SettingsChoice(tr("Rear", "Likod"), settings.preferredCameraLens == PreferredCameraLens.REAR, Modifier.weight(1f)) {
                     onSettingsChange(settings.copy(preferredCameraLens = PreferredCameraLens.REAR))
+                }
+                SettingsChoice(tr("External", "External"), settings.preferredCameraLens == PreferredCameraLens.EXTERNAL, Modifier.weight(1f)) {
+                    onSettingsChange(settings.copy(preferredCameraLens = PreferredCameraLens.EXTERNAL))
                 }
             }
             SettingsDivider()

@@ -3,8 +3,17 @@ package com.voxgest.dryrun
 import android.content.Context
 
 enum class PreferredCameraLens {
+    AUTO,
     FRONT,
-    REAR
+    REAR,
+    EXTERNAL;
+
+    fun toCameraSource(): CameraSource = when (this) {
+        AUTO -> CameraSource.AUTO
+        FRONT -> CameraSource.FRONT
+        REAR -> CameraSource.BACK
+        EXTERNAL -> CameraSource.EXTERNAL
+    }
 }
 
 enum class VoxGestAppLanguage {
