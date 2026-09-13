@@ -175,4 +175,7 @@ experiments belong in separate reports.
 - Tracking consequence: Anatomical hand identity may use reported handedness,
   bounded wrist-trajectory continuity, and pose-wrist anchors. Ambiguous
   collision or reacquisition fails closed; image-X order never assigns slots
-  and missing landmarks are never fabricated.
+  and the identity stabilizer never copies a prior detection into a missing
+  frame. The audited preprocessing contract may linearly interpolate only a
+  bounded one-to-three-frame internal hand gap; raw presence quality is counted
+  before interpolation so the gate is not credited with fabricated tracking.

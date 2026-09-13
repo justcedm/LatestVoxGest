@@ -314,7 +314,7 @@ class Mapua14LiveSegmentCameraRecognitionController(
             performance.recordTemporal(
                 (SystemClock.elapsedRealtimeNanos() - temporalStarted) / 1_000_000.0
             )
-            logSegmentState(update)
+            logSegmentState(update, frame.timestampMs)
 
             if (update.state != Mapua14LiveSegmentState.FINALIZING) {
                 postTrackingState(update, frame)
@@ -325,6 +325,7 @@ class Mapua14LiveSegmentCameraRecognitionController(
             eventOrdinal += 1L
             val inferenceReadyTimestampMs = (System.nanoTime() / 1_000_000L)
             val trajectory = segmentMachine.finalizeForInference(inferenceReadyTimestampMs)
+            val resamplingCompletedTimestampMs = (System.nanoTime() / 1_000_000L)
             val inferenceStarted = SystemClock.elapsedRealtimeNanos()
             val inference = checkNotNull(runtime).infer(trajectory.prepared.copyModelInput())
             performance.recordTflite(
@@ -341,7 +342,14 @@ class Mapua14LiveSegmentCameraRecognitionController(
             performance.recordGate(
                 (SystemClock.elapsedRealtimeNanos() - gateStarted) / 1_000_000.0
             )
-            logClassifier(eventOrdinal, inference, trajectory, postEndTiming)
+            logClassifier(
+                eventOrdinal,
+                inference,
+                trajectory,
+                postEndTiming,
+                resamplingCompletedTimestampMs,
+                resultTimestampMs
+            )
             logGate(eventOrdinal, inference, trajectory, gateEvaluation, postEndTiming)
 
             postState(
@@ -446,7 +454,7 @@ class Mapua14LiveSegmentCameraRecognitionController(
         )
     }
 
-    private fun logSegmentState(update: Mapua14LiveSegmentUpdate) {
+    private fun logSegmentState(update: Mapua14LiveSegmentUpdate, frameTimestampMs: Long) {
         val now = SystemClock.elapsedRealtime()
         val key = "${update.state}:${update.reason}"
         if (key == lastSegmentLogKey && now - lastSegmentLogAtMs < SEGMENT_LOG_INTERVAL_MS) {
@@ -457,6 +465,7 @@ class Mapua14LiveSegmentCameraRecognitionController(
         Log.i(
             TAG,
             "MAPUA14_SEGMENT_STATE state=${update.state} reason=${update.reason} " +
+                "frame_timestamp_ms=$frameTimestampMs process_timestamp_ms=${(System.nanoTime() / 1_000_000L)} " +
                 "captured_frames=${update.capturedFrameCount} activity=${update.activity} " +
                 "completion=${update.completion ?: "NONE"}"
         )
@@ -466,7 +475,9 @@ class Mapua14LiveSegmentCameraRecognitionController(
         eventId: Long,
         inference: StandardFslInference,
         trajectory: Mapua14InferenceTrajectory,
-        postEnd: Mapua14PostEndResultTiming
+        postEnd: Mapua14PostEndResultTiming,
+        resamplingCompletedTimestampMs: Long,
+        resultTimestampMs: Long
     ) {
         val prepared = trajectory.prepared
         Log.i(
@@ -474,6 +485,7 @@ class Mapua14LiveSegmentCameraRecognitionController(
             "MAPUA14_SEGMENT_CLASSIFIER event_id=$eventId " +
                 "raw_top1=${inference.top1.label} raw_top1_score=${inference.top1.probability} " +
                 "raw_top2=${inference.top2.label} raw_top2_score=${inference.top2.probability} " +
+                "top3=${inference.top5.take(3).joinToString(prefix = "[", postfix = "]") { "${it.label}:${it.probability}" }} " +
                 "top5=${inference.top5.joinToString(prefix = "[", postfix = "]") { "${it.label}:${it.probability}" }} " +
                 "margin=${inference.margin} tflite_ms=${inference.latencyMs} " +
                 "captured_frames=${prepared.capturedFrameCount} envelope_start=${prepared.motionStartCaptureIndex} " +
@@ -481,8 +493,16 @@ class Mapua14LiveSegmentCameraRecognitionController(
                 "resampled_frames=${prepared.modelInput.size} feature_count=${prepared.modelInput.first().size} " +
                 "interpolated_left=${prepared.interpolatedLeftFrames} " +
                 "interpolated_right=${prepared.interpolatedRightFrames} " +
-                "completion=${trajectory.completion} end_to_inference_ready_ms=${trajectory.endToInferenceReadyMs} " +
-                "end_to_result_ms=${postEnd.endToResultMs}"
+                "completion=${trajectory.completion} " +
+                "sign_start_timestamp_ms=${trajectory.signStartTimestampMs} " +
+                "estimated_sign_end_timestamp_ms=${trajectory.estimatedSignEndTimestampMs} " +
+                "completion_detected_timestamp_ms=${trajectory.completionDetectedTimestampMs} " +
+                "inference_ready_timestamp_ms=${trajectory.inferenceReadyTimestampMs} " +
+                "resampling_completed_timestamp_ms=$resamplingCompletedTimestampMs " +
+                "result_timestamp_ms=$resultTimestampMs " +
+                "end_to_inference_ready_ms=${trajectory.endToInferenceReadyMs} " +
+                "end_to_resampling_complete_ms=${(resamplingCompletedTimestampMs - trajectory.estimatedSignEndTimestampMs).coerceAtLeast(0L)} " +
+                "end_to_raw_result_ms=${postEnd.endToResultMs}"
         )
     }
 
@@ -505,7 +525,9 @@ class Mapua14LiveSegmentCameraRecognitionController(
                 "median_gap_ms=${timing.medianFrameGapMs} max_gap_ms=${timing.maxFrameGapMs} " +
                 "final=${if (evaluation.decision.accepted) "ACCEPT" else "REJECT"} " +
                 "reason=${evaluation.decision.reason} semantic_token_emitted=${evaluation.decision.accepted} " +
-                "end_to_result_ms=${postEnd.endToResultMs} target_le_2000=${postEnd.withinTarget} " +
+                "end_to_raw_result_ms=${postEnd.endToResultMs} " +
+                "end_to_accepted_result_ms=${if (evaluation.decision.accepted) postEnd.endToResultMs else "NOT_ACCEPTED"} " +
+                "target_le_2000=${postEnd.withinTarget} " +
                 "p95_goal_le_3000=${postEnd.withinP95Goal} " +
                 "hand_status=${latestHandDiagnostics?.status ?: "UNKNOWN"}"
         )

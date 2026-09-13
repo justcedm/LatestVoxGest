@@ -6,3 +6,5 @@ Added the isolated `MAPUA14_LIVE_SEGMENT_V1` debug lane so a complete detected
 sign is finalized and linearly resampled to 48 frames before the unchanged
 RD-TCN48 classifier runs. Standard FSL-105, Avatar, Listen, and model weights
 remain unchanged; physical Samsung A/B qualification is still required.
+Stopped the OLD rolling48 HELLO series after five attempts: 3/5 eventual correct
+accepts, two no-inference failures, and user-observed delays up to >60 seconds.
