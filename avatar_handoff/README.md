@@ -12,6 +12,12 @@ Primary product flow:
 
 This is **not** unrestricted English/Filipino-to-FSL grammar generation.
 
+## Important: purchased Avatar source
+
+The app developer already owns/possesses the purchased Avatar source. It does **not** need to be transferred through ChatGPT, GitHub, or the knowledge ZIP.
+
+Astra should discover it locally, keep it outside Git, hash/reference it, and work from a versioned safe C: copy.
+
 ## Use ChatGPT Desktop -> Codex
 
 Open the local repository folder in Codex. Codex should operate against the local repo/terminal and use Blender through scripts/command line where practical. Visual acceptance still requires render/source comparison and human review; do not assume GUI automation is available.
@@ -30,6 +36,16 @@ Avatar decisions: `docs/AVATAR_ARCHITECTURE_DECISIONS.md`
 
 Recognition handoff remains separate: `reports/CODEX_LIVE_HANDOFF.md`
 
+Project history: `docs/PROJECT_HISTORY_JUNE_SEPT_2026.md`
+
+Documentation policy: `docs/DOCUMENTATION_POLICY.md`
+
+Fresh ChatGPT/Sol bootstrap: `docs/NEW_CHATGPT_PROJECT_BOOTSTRAP.md`
+
+User-facing vocabulary priority: `avatar_handoff/USER_FACING_VOCABULARY_PRIORITY.md`
+
+Avatar visual target: `avatar_handoff/AVATAR_PRESENTATION_SPEC.md`
+
 ## Storage rule
 
 **Do not access or write the old D: workspace.**
@@ -42,6 +58,29 @@ Use safe C: paths only. Recommended:
 - evidence: `C:\VOXGEST_AVATAR_WORK\20260914\evidence`
 
 Do not commit purchased `.blend` files, raw datasets, bulk landmark arrays, APKs, caches, checkpoints, secrets, or large evidence media.
+
+## Fastest setup
+
+Clone the dedicated branch:
+
+```powershell
+New-Item -ItemType Directory -Force C:\VOXGEST_ASTRA | Out-Null
+Set-Location C:\VOXGEST_ASTRA
+git clone --branch avatar/astra-calibration-20260914 --single-branch https://github.com/justcedm/LatestVoxGest.git
+Set-Location .\LatestVoxGest
+```
+
+Create a knowledge-only handoff ZIP at any time:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\avatar_handoff\scripts\build_appdev_knowledge_zip.ps1
+```
+
+Default ZIP output:
+
+`C:\VOXGEST_HANDOFF\VOXGEST_APPDEV_ASTRA_KNOWLEDGE_<timestamp>.zip`
+
+The ZIP includes current prompts, project history, documentation policy, handoffs, decision logs, selected small Avatar/Android/FSL text/code evidence, and Git repository metadata. It intentionally excludes the purchased Avatar source, raw datasets, APKs and large media.
 
 ## Historical state to REVALIDATE
 
@@ -63,33 +102,38 @@ These are historical facts, **not current pass evidence** after workspace migrat
 
 ## Start sequence
 
-1. Clone/fetch this branch using `scripts/bootstrap_astra.ps1`.
-2. Place private/purchased Avatar inputs under safe C: storage.
-3. Run `scripts/inventory_avatar_assets.ps1`.
+1. Clone the branch with the commands above.
+2. Put the developer's existing purchased/private Avatar material under safe C: storage.
+3. Run `avatar_handoff/scripts/inventory_avatar_assets.ps1`.
 4. Open the repo in ChatGPT Desktop -> Codex.
-5. Make Codex read:
-   - this file
-   - `avatar_handoff/AGENTS_AVATAR.md`
-   - `avatar_handoff/ASTRA_FIRST_RUN_PROMPT.md`
-   - `avatar_handoff/ACCEPTANCE_GATES.md`
-   - `avatar_handoff/GITHUB_PROTOCOL.md`
-6. Paste `ASTRA_FIRST_RUN_PROMPT.md` to Astra.
+5. Read `docs/NEW_CHATGPT_PROJECT_BOOTSTRAP.md` if this is a fresh ChatGPT account.
+6. Make Astra read the Avatar handoff files and paste `avatar_handoff/ASTRA_FIRST_RUN_PROMPT.md`.
 7. Astra updates and pushes `reports/ASTRA_LIVE_HANDOFF.md` at each milestone.
 
-## Do not expand yet
+## Calibration priority
 
-First prove current CORE3:
+First revalidate current CORE3:
 
 `HELLO -> MILK -> RICE -> neutral`
 
-Required gates:
+Then immediately move to **source-clean, high-value everyday FSL concepts** from `USER_FACING_VOCABULARY_PRIORITY.md` using quality-first fast-fail processing.
 
-source integrity -> Blender Action -> mechanical QA -> visual QA -> export QA -> Android playback -> repeated Back/reopen -> physical-device proof.
+Required per-sign gates:
 
-Only then expand vocabulary.
+source integrity -> Blender Action -> mechanical QA -> visual QA -> export QA -> Android playback -> physical-device proof.
+
+## Presentation target
+
+The purchased Avatar remains the character. Present it lighter, brighter and comforting: frontal, centered, head-to-waist/upper-hip, both hands/fingers clearly visible, soft pale/neutral background, soft frontal lighting, minimal shadow. See `AVATAR_PRESENTATION_SPEC.md`.
+
+## Bilingual product rule
+
+Each supported canonical Avatar concept must expose separate English and Filipino presentation/speech aliases. These aliases do not rename the FSL action. Unsupported or ambiguous speech must not fabricate an Avatar action.
 
 ## GitHub update behavior
 
 GitHub is **near-real-time at commit/push granularity**, not a live screen stream. Astra must push after initial audit, CORE3 regression, every +5 passes, each export batch, Android/device checkpoints, blockers, and before context resets/stopping.
+
+Documentation is part of completion: every meaningful milestone updates the live handoff and receives a 1–2 line project-history entry.
 
 When the project lead says **"check Astra"**, inspect this branch plus `reports/ASTRA_LIVE_HANDOFF.md`.
