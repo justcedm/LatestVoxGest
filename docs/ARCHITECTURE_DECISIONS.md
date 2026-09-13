@@ -155,3 +155,24 @@ experiments belong in separate reports.
 - Consequence: Any passing model is exposed only as the debug/diagnostic
   MAPUA14_RESCUE_V1 profile. Standard FSL-105 remains unchanged and is the
   rollback; promotion requires physical unseen-Samsung evidence.
+
+## ADR-014 - Live Mapua-14 inference uses completed event trajectories
+
+- Status: Accepted for isolated physical qualification
+- Date: 2026-09-14
+- Decision: `MAPUA14_LIVE_SEGMENT_V1` captures one chronological sign event
+  through IDLE, ARMING, CAPTURING, FINALIZING, INFERENCE, and
+  WAIT_FOR_RELEASE. It applies the audited short-gap, adaptive motion-envelope,
+  and complete-trajectory linear resampling policy to produce exactly
+  `[1,48,225]` before invoking the unchanged Mapua-14 RD-TCN48 model.
+- Boundary: This is a debug-intent-only successor to the rolling48 experiment.
+  `MAPUA14_RESCUE_V1` remains its rollback, and Standard FSL-105 is not changed
+  or promoted. Thresholds are frozen for the initial Samsung A/B comparison.
+- Camera consequence: CameraX source selection is limited to Camera2-exposed
+  FRONT, BACK, and EXTERNAL cameras. Preview mirroring is presentation-only;
+  analysis and FullSign225 remain canonical and unmirrored. No universal
+  USB/UVC support is claimed.
+- Tracking consequence: Anatomical hand identity may use reported handedness,
+  bounded wrist-trajectory continuity, and pose-wrist anchors. Ambiguous
+  collision or reacquisition fails closed; image-X order never assigns slots
+  and missing landmarks are never fabricated.

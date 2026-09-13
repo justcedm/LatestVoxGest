@@ -10,14 +10,16 @@ import android.util.Size
 import android.view.Choreographer
 import androidx.camera.camera2.interop.Camera2Interop
 import androidx.camera.camera2.interop.ExperimentalCamera2Interop
+import androidx.camera.core.Camera
+import androidx.camera.core.CameraState
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import androidx.camera.core.Preview
-import androidx.camera.core.CameraState
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
 import java.util.Locale
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -71,6 +73,8 @@ class Mapua14LiveSegmentCameraRecognitionController(
     }
 
     @Volatile private var cameraProvider: ProcessCameraProvider? = null
+    @Volatile private var boundCamera: Camera? = null
+    @Volatile private var cameraStateObserver: Observer<CameraState>? = null
     @Volatile private var imageAnalysis: ImageAnalysis? = null
     @Volatile private var extractor: LandmarkExtractor? = null
     @Volatile private var runtime: Mapua14RescueTfliteRuntime? = null
@@ -253,7 +257,7 @@ class Mapua14LiveSegmentCameraRecognitionController(
                     "preview_mirrored=$previewMirrored analysis_mirrored=false " +
                     "backpressure=KEEP_ONLY_LATEST pipeline=Preview+ImageAnalysis+MediaPipe"
             )
-            camera.cameraInfo.cameraState.observe(lifecycleOwner) { state ->
+            val stateObserver = Observer<CameraState> { state ->
                 val error = state.error
                 Log.i(
                     TAG,
@@ -285,6 +289,9 @@ class Mapua14LiveSegmentCameraRecognitionController(
                     )
                 }
             }
+            boundCamera = camera
+            cameraStateObserver = stateObserver
+            camera.cameraInfo.cameraState.observe(lifecycleOwner, stateObserver)
         } catch (error: Throwable) {
             fail("MAPUA14_CAMERA_BIND", error)
         }
@@ -533,6 +540,13 @@ class Mapua14LiveSegmentCameraRecognitionController(
     }
 
     private fun unbindCamera() {
+        val camera = boundCamera
+        val stateObserver = cameraStateObserver
+        if (camera != null && stateObserver != null) {
+            camera.cameraInfo.cameraState.removeObserver(stateObserver)
+        }
+        cameraStateObserver = null
+        boundCamera = null
         imageAnalysis?.clearAnalyzer()
         imageAnalysis = null
         cameraProvider?.unbindAll()

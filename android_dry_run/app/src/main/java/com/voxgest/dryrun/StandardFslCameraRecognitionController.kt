@@ -10,6 +10,8 @@ import android.util.Size
 import android.view.Choreographer
 import androidx.camera.camera2.interop.Camera2Interop
 import androidx.camera.camera2.interop.ExperimentalCamera2Interop
+import androidx.camera.core.Camera
+import androidx.camera.core.CameraState
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import androidx.camera.core.Preview
@@ -17,6 +19,7 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicBoolean
@@ -78,6 +81,8 @@ class StandardFslCameraRecognitionController(
     }
 
     @Volatile private var cameraProvider: ProcessCameraProvider? = null
+    @Volatile private var boundCamera: Camera? = null
+    @Volatile private var cameraStateObserver: Observer<CameraState>? = null
     @Volatile private var imageAnalysis: ImageAnalysis? = null
     @Volatile private var extractor: LandmarkExtractor? = null
     @Volatile private var runtime: StandardFslTfliteRuntime? = null
@@ -136,17 +141,7 @@ class StandardFslCameraRecognitionController(
                 Log.i(TAG, "ONEHAND162_FALLBACK PASS preserved=true loaded=false reason=standard_profile_is_ready")
                 mainExecutor.execute { bindCamera(previewView) }
             } catch (error: Throwable) {
-                Log.e(TAG, "STANDARD_MODEL_LOAD BLOCKED", error)
-                running.set(false)
-                closeRuntimeOnAnalysisThread()
-                postState(
-                    StandardFslLiveUiState(
-                        tracking = StandardFslTrackingState.HOLD_SIGN_CLEARLY,
-                        blockedEvidence = "${error.javaClass.simpleName}: ${error.message}"
-                    ),
-                    force = true
-                )
-                mainExecutor.execute { unbindCamera() }
+                fail("STANDARD_MODEL_LOAD", error)
             }
         }
     }
@@ -231,7 +226,7 @@ class StandardFslCameraRecognitionController(
                 analysis.setAnalyzer(analysisExecutor) { image -> analyze(image) }
                 imageAnalysis = analysis
                 provider.unbindAll()
-                provider.bindToLifecycle(
+                val camera = provider.bindToLifecycle(
                     lifecycleOwner,
                     resolved.selector,
                     preview,
@@ -244,19 +239,51 @@ class StandardFslCameraRecognitionController(
                         "preview_mirrored=$previewMirrored " +
                         "analysis_mirrored=false model_input=unmirrored"
                 )
-                postState(StandardFslLiveUiState(StandardFslTrackingState.READY), force = true)
+                val stateObserver = Observer<CameraState> { state ->
+                    val error = state.error
+                    Log.i(
+                        TAG,
+                        "STANDARD_CAMERA_STATE type=${state.type} " +
+                            "error_code=${error?.code ?: "NONE"}"
+                    )
+                    if (error != null) {
+                        fail(
+                            "STANDARD_CAMERA_ASYNC",
+                            IllegalStateException(
+                                "CameraX state error code=${error.code}",
+                                error.cause
+                            )
+                        )
+                    } else if (state.type == CameraState.Type.OPEN) {
+                        postState(
+                            StandardFslLiveUiState(StandardFslTrackingState.READY),
+                            force = true
+                        )
+                    }
+                }
+                boundCamera = camera
+                cameraStateObserver = stateObserver
+                camera.cameraInfo.cameraState.observe(lifecycleOwner, stateObserver)
             } catch (error: Throwable) {
-                Log.e(TAG, "FRONT_CAMERA BLOCKED", error)
-                running.set(false)
-                postState(
-                    StandardFslLiveUiState(
-                        tracking = StandardFslTrackingState.HOLD_SIGN_CLEARLY,
-                        blockedEvidence = "${error.javaClass.simpleName}: ${error.message}"
-                    ),
-                    force = true
-                )
+                fail("STANDARD_CAMERA_BIND", error)
             }
         }, mainExecutor)
+    }
+
+    private fun fail(marker: String, error: Throwable) {
+        if (!running.getAndSet(false)) return
+        Log.e(TAG, "$marker BLOCKED", error)
+        postState(
+            StandardFslLiveUiState(
+                tracking = StandardFslTrackingState.HOLD_SIGN_CLEARLY,
+                blockedEvidence = "${error.javaClass.simpleName}: ${error.message}"
+            ),
+            force = true
+        )
+        mainExecutor.execute { unbindCamera() }
+        if (!analysisExecutor.isShutdown) {
+            analysisExecutor.execute { closeRuntimeOnAnalysisThread() }
+        }
     }
 
     private fun analyze(image: ImageProxy) {
@@ -385,6 +412,13 @@ class StandardFslCameraRecognitionController(
     }
 
     private fun unbindCamera() {
+        val camera = boundCamera
+        val stateObserver = cameraStateObserver
+        if (camera != null && stateObserver != null) {
+            camera.cameraInfo.cameraState.removeObserver(stateObserver)
+        }
+        cameraStateObserver = null
+        boundCamera = null
         imageAnalysis?.clearAnalyzer()
         imageAnalysis = null
         cameraProvider?.unbindAll()

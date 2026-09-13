@@ -96,6 +96,64 @@ class TemporalAnatomicalHandIdentityStabilizerTest {
     }
 
     @Test
+    fun gradualImageXCrossingPreservesAnatomicalSlotsFromTrajectoryAndPose() {
+        val stabilizer = TemporalAnatomicalHandIdentityStabilizer(
+            ReportedHandednessPolicy.DIRECT_REPORTED_SIDES
+        )
+        stabilizer.stabilize(
+            listOf(detection(0.25f, "left"), detection(0.75f, "right")),
+            pose(0.25f, 0.75f),
+            100L
+        )
+        stabilizer.stabilize(
+            listOf(detection(0.40f, "left"), detection(0.60f, "right")),
+            pose(0.40f, 0.60f),
+            200L
+        )
+
+        val anatomicalRightNowOnImageLeft = detection(0.42f, "left")
+        val anatomicalLeftNowOnImageRight = detection(0.58f, "right")
+        val crossed = stabilizer.stabilize(
+            listOf(anatomicalRightNowOnImageLeft, anatomicalLeftNowOnImageRight),
+            pose(0.58f, 0.42f),
+            300L
+        )
+
+        assertSame(anatomicalLeftNowOnImageRight, crossed.leftDetection)
+        assertSame(anatomicalRightNowOnImageLeft, crossed.rightDetection)
+        assertEquals(TemporalHandAssignmentStatus.RELIABLE, crossed.diagnostics.status)
+        assertTrue(crossed.diagnostics.slotChanges.size == 2)
+    }
+
+    @Test
+    fun exactUnresolvableCollisionFailsClosedInsteadOfOrderingByImageX() {
+        val stabilizer = TemporalAnatomicalHandIdentityStabilizer(
+            ReportedHandednessPolicy.DIRECT_REPORTED_SIDES
+        )
+
+        val collision = stabilizer.stabilize(
+            listOf(
+                detection(0.50f, null, Float.NaN),
+                detection(0.50f, null, Float.NaN)
+            ),
+            pose(0.50f, 0.50f),
+            100L
+        )
+
+        assertNull(collision.leftDetection)
+        assertNull(collision.rightDetection)
+        assertEquals(
+            TemporalHandAssignmentStatus.FAILED_CLOSED,
+            collision.diagnostics.status
+        )
+        assertTrue(
+            collision.diagnostics.failClosedReasons.contains(
+                "AMBIGUOUS_TWO_HAND_ASSIGNMENT"
+            )
+        )
+    }
+
+    @Test
     fun nonMonotonicTimestampFailsClosedWithoutAdvancingTrack() {
         val stabilizer = TemporalAnatomicalHandIdentityStabilizer(
             ReportedHandednessPolicy.DIRECT_REPORTED_SIDES

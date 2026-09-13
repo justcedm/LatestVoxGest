@@ -2,7 +2,8 @@
 
 ## A. Camera2/CameraX-exposed cameras
 
-The experimental live-segment lane discovers cameras from
+The experimental live-segment lane and the shared Standard CameraX bind path
+discover cameras from
 `ProcessCameraProvider.availableCameraInfos` and reads each corresponding
 Camera2 `LENS_FACING` characteristic. Its source contract is:
 
@@ -36,3 +37,11 @@ The 2026-09-13 Samsung SM-A566B Camera2 inventory showed built-in front/back
 cameras and no external-facing camera. Physical external-camera inference is
 therefore `NOT_YET_TESTED`.
 
+## Implementation verification
+
+- Camera-source selection and fail-closed policy are covered by JVM unit tests.
+- Preview mirroring uses CameraX `Preview.setMirrorMode` on API 33+ and a
+  compatibility counter-transform only for an explicit unmirrored front
+  preview on older APIs. This transform is never applied to `ImageAnalysis`.
+- Camera readiness is reported only after CameraX reaches `OPEN`; asynchronous
+  errors close the runtime and extractor rather than leaving a stale session.
