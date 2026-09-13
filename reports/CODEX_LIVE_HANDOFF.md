@@ -10,7 +10,9 @@ COMMIT=e0e4ff6ea049bb6340319dd32476a064727e8d32
 
 SOURCE_BASE_COMMIT=b8da0c52acc6d531c8a7a4f328454a76659fb7e6
 
-HANDOFF_UPDATE_COMMIT=PENDING_THIS_COMMIT
+HANDOFF_UPDATE_COMMIT=e6904bfa1899ed481bcb687a991c052a655a9882
+
+BRANCH_HEAD=e6904bfa1899ed481bcb687a991c052a655a9882 (metadata-only handoff correction follows)
 
 CURRENT_GOAL=Stop the unusable OLD rolling48 series at five attempts, reconstruct all captured evidence without inference, audit the existing NEW completed-event/resampled48 runtime, and prepare five NEW HELLO attempts without retraining or threshold tuning.
 
