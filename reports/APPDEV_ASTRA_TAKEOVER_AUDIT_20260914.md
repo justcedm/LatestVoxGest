@@ -48,4 +48,11 @@ Historical CORE3 and Android facts remain historical. `listen_ready`, Android re
 - prohibited/private/generated binary files: 0
 - extracted-package independent verification: PASS
 - referenced repository paths checked: 24; missing: 0
-- final clean-HEAD rebuild, isolated installer workflow, Git diff checks, recognition-path diff, commit/push, and remote-HEAD verification: pending final validation sequence
+- clean pushed source-HEAD package rebuild: PASS at `3f30eb1ca2f41bb8a6fe3447cebded46efea4f48`
+- isolated installer workflow: PASS for clean clone, branch switch, fast-forward update, knowledge copy, and safe inventory
+- idempotent installer rerun: PASS
+- dirty-worktree guard: PASS; installer failed closed and preserved the sentinel
+- staged/diff whitespace checks: PASS
+- recognition/runtime/model source paths in takeover commit: 0
+- source commit push and remote-HEAD equality: PASS
+- this metadata checkpoint is followed by one final package rebuild; the generated package's `repo_state/head.txt` is the exact final package HEAD authority
