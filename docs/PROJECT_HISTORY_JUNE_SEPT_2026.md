@@ -91,6 +91,9 @@ Series-1 evidence was preserved locally and a rollback-safe live-segment branch 
 ### September 14 — dedicated Astra Avatar engineering lane created
 A separate `avatar/astra-calibration-20260914` branch was established so the app developer's own Codex/Astra can continue Blender calibration, user-facing vocabulary expansion, runtime export and Android Avatar validation independently from Sol's recognition work.
 
+### September 14 - self-contained app-developer takeover prepared
+The Avatar lane added a zero-chat-memory bootstrap, resume protocol, human-motion gates, near-real-time Git checkpoint policy, and deterministic checksum-verified knowledge package; purchased Avatar source remains local and no calibration or recognition behavior changed.
+
 ---
 
 ## Current team ownership

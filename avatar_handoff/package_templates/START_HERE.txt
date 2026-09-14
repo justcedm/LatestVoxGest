@@ -1,0 +1,35 @@
+VOXGEST APP-DEVELOPER / ASTRA TAKEOVER
+
+This package contains knowledge and setup automation only. It intentionally
+contains no purchased Avatar source, raw dataset, model binary, APK/AAB,
+credential, cache, checkpoint, or large evidence media.
+
+AUTHORITATIVE REPOSITORY
+https://github.com/justcedm/LatestVoxGest.git
+
+AUTHORITATIVE AVATAR BRANCH
+avatar/astra-calibration-20260914
+
+DO NOT ACCESS OR WRITE D:
+
+RUN FROM THIS EXTRACTED VOXGEST_APPDEV_TAKEOVER FOLDER:
+
+1. Verify the package before installing anything:
+   powershell -ExecutionPolicy Bypass -File .\VERIFY_PACKAGE.ps1
+
+2. Bootstrap safe C: folders and the repository:
+   powershell -ExecutionPolicy Bypass -File .\INSTALL_AND_BOOTSTRAP.ps1
+
+3. Open C:\VOXGEST_APPDEV\LatestVoxGest in ChatGPT Desktop / Codex.
+
+4. Paste the instruction from:
+   avatar_handoff\APPDEV_ASTRA_BOOTSTRAP_PROMPT.md
+
+5. In the normal ChatGPT project conversation, load:
+   avatar_handoff\APPDEV_CHATGPT_SOL_BOOTSTRAP.md
+
+The developer-owned purchased Avatar stays under C:\VOXGEST_AVATAR_INPUTS or
+another explicit safe C: path and outside Git. The installer never copies it.
+
+If verification, Git setup, or asset inventory fails, stop and report the
+exact error. Never reset/discard a dirty repository or invent a missing asset.

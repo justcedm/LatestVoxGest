@@ -122,6 +122,30 @@ Mechanical PASS != visual PASS.
 
 Engineering visual PASS != qualified FSL linguistic certification.
 
+### Human-motion visual contract
+
+The master Action must look smooth, deliberate, readable, and human at normal speed. A mechanically valid retarget that looks robotic is a visual failure.
+
+Do not:
+
+- speed up FSL merely to reduce clip duration or perceived UI latency
+- rush handshape transitions or globally shorten different signs to one duration
+- introduce pose snapping, finger jitter, wrist teleporting, elbow popping, or arm-chain distortion
+- over-smooth meaningful articulation or readable holds
+
+Do:
+
+- preserve validated source timing as master timing
+- preserve preparation, stroke, hold, and recovery phases when present
+- maintain continuous shoulder, elbow, wrist, finger, and rig-appropriate quaternion/Euler motion
+- inspect F-curves/keyframes and wrist/finger velocity changes for discontinuity
+- preserve physically coherent arm motion, readable handshape holds, natural body/shoulder contribution, and smooth return to neutral
+- compare source and Avatar at normal speed; optionally inspect slower for QA without changing the original master Action
+
+Record applicable flags exactly:
+
+`POSE_POP`, `WRIST_SNAP`, `FINGER_JITTER`, `HAND_INTERSECTION`, `ARM_CHAIN_DISTORTION`, `UNNATURAL_SPEED`, `TIMING_MISMATCH`, `LEFT_RIGHT_ERROR`, `BODY_DRIFT`, `CAMERA_CROP`, `SOURCE_MISMATCH`.
+
 ## Non-manual/facial limitation
 
 Do not fabricate FSL facial grammar or non-manual markers.
@@ -159,16 +183,14 @@ Therefore:
 
 ## Runtime acceptance
 
-`listen_ready=true` only when:
-- source acceptable
-- mechanical PASS
-- visual PASS
-- runtime export verified
-- expected clip exists
-- duration/timing verified
-- neutral entry/return verified
-- hand/finger deformation survives export
-- no cross-clip contamination
+`listen_ready=true` only when all four authoritative gates pass:
+
+- `SOURCE_PASS`
+- `MECHANICAL_PASS`
+- `VISUAL_PASS` for human motion at normal speed
+- `EXPORT_PASS`
+
+Export PASS includes expected clip presence, duration/timing verification, neutral entry/return, surviving hand/finger deformation, and no cross-clip contamination.
 
 `android_ready=true` additionally requires:
 - load/render/playback succeeds
@@ -183,6 +205,8 @@ Canonical: `reports/ASTRA_LIVE_HANDOFF.md`
 Decision log: `docs/AVATAR_ARCHITECTURE_DECISIONS.md`
 
 Update and push at every meaningful milestone and before context resets/stopping.
+
+Mandatory rapid-calibration checkpoint cadence is every +3 accepted user-facing signs, plus every export batch and all events in `GITHUB_PROTOCOL.md`. Important work must never exist only in chat context.
 
 Include timestamp, branch/base/HEAD, phase, worktree status, solver, fallback status, local asset status, completed/validated work, failed/review signs, runtime-ready inventory, Android/device status, blockers, changed files, exact next command, and prohibited claims.
 

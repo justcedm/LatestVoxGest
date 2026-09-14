@@ -220,3 +220,7 @@ If a change affects the thesis, mark `PAPER_IMPACT=YES` and name the sections th
 Read this document first, then the current branch handoff(s), project history, documentation policy, and architecture decisions. Inspect GitHub/current source before asserting current status. Historical documents are evidence of evolution, not automatically current truth.
 
 When asked to work, preserve lane ownership and push evidence-based checkpoints so another account can review the work without relying on chat transcripts.
+
+For the app developer's exact installation and first-message workflow, begin at `avatar_handoff/APPDEV_START_HERE.md`. Load `avatar_handoff/APPDEV_CHATGPT_SOL_BOOTSTRAP.md` into the normal ChatGPT project and use `avatar_handoff/APPDEV_ASTRA_BOOTSTRAP_PROMPT.md` in Codex/Astra. After any reset, use `avatar_handoff/ASTRA_RESUME_PROMPT.md`.
+
+Current state must always be re-read from the relevant remote branch. In particular, do not treat this bootstrap's historical recognition summary or the Avatar branch's copied recognition handoff as newer than the live handoff on the active recognition branch.

@@ -90,6 +90,8 @@ One status does not imply another.
 
 Large evidence stays outside Git; Git reports record safe file paths, hashes, summaries and conclusions.
 
+GitHub is near-real-time only at commit/push granularity. Important completed work must not exist only in chat context. Avatar checkpoints additionally follow `avatar_handoff/GITHUB_PROTOCOL.md`, including every +3 accepted signs, every export batch, device/blocker milestones, before long work or strategy changes, immediately on context/usage warnings, before resets, and before stopping. Do not create empty commits.
+
 ## Every milestone must update history
 
 After a detailed report is completed, add a 1–2 line entry to the project history. This keeps the repository readable without requiring a reviewer to open every report.

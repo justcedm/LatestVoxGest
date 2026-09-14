@@ -66,6 +66,12 @@ Historical items to REVALIDATE:
 - historical SurfaceView/Compose z-order failure led toward TextureView
 - historical teardown/double-destroy caused native SIGSEGV and requires idempotent cleanup
 
+RETARGETING REGRESSIONS THAT MUST NEVER RETURN:
+- Blender scripts must work whether or not `sys.argv` contains `--`; never assume `sys.argv.index("--")` is always valid.
+- upper arm = shoulder -> elbow
+- forearm = elbow -> wrist
+- never restore the historical incorrect elbow -> wrist upper-arm mapping.
+
 AVATAR VISUAL TARGET:
 - keep the purchased character
 - lighter, brighter, comforting presentation
@@ -85,11 +91,14 @@ After CORE3 revalidation, process the cleanest high-value everyday concepts firs
 
 BILINGUAL RULE:
 Every supported Avatar concept must expose:
-- canonical action/token
-- English presentation
-- Filipino presentation
-- safe English speech aliases
-- safe Filipino speech aliases
+- `canonical_action`
+- `english_display`
+- `filipino_display`
+- `english_speech_aliases`
+- `filipino_speech_aliases`
+- `action_name`
+- `validation_status`
+- `listen_ready`
 
 English/Filipino are presentation/resolver strings, not renamed FSL action IDs.
 Unsupported or ambiguous speech must not fabricate an Avatar action.
@@ -138,6 +147,12 @@ Do not claim Samsung/device PASS until physically tested.
 
 Run repeated open/play/back/reopen testing and explicitly watch for Java crashes, native SIGSEGV, ANR, OOM, blank viewport, and memory growth.
 
+For human-motion `VISUAL_PASS`, compare source and Avatar at normal speed and inspect slower only as QA. Preserve validated master timing, preparation, stroke, hold, recovery, continuous shoulder/elbow/wrist/finger movement, readable handshape holds, physically coherent arms/body contribution, and smooth neutral return. Inspect F-curves/keyframes and wrist/finger velocity for discontinuity. Never shorten signs for UI responsiveness or accept robotic snapping, finger jitter, wrist teleporting, elbow popping, over-smoothing, or forced identical timing.
+
+Record flags exactly when present: `POSE_POP`, `WRIST_SNAP`, `FINGER_JITTER`, `HAND_INTERSECTION`, `ARM_CHAIN_DISTORTION`, `UNNATURAL_SPEED`, `TIMING_MISMATCH`, `LEFT_RIGHT_ERROR`, `BODY_DRIFT`, `CAMERA_CROP`, `SOURCE_MISMATCH`.
+
+`listen_ready=true` requires `SOURCE_PASS + MECHANICAL_PASS + HUMAN_MOTION VISUAL_PASS + EXPORT_PASS` for the same Action. Qualified FSL linguistic validation is separate and must not be claimed without qualified review evidence.
+
 PHASE 2 — RAPID USER-FACING EXPANSION:
 Only after CORE3 passes current gates:
 
@@ -150,21 +165,54 @@ Only after CORE3 passes current gates:
 7. Update the bilingual resolver/manifest only for verified supported actions.
 8. Prefer 10 excellent everyday signs over 25 weak signs.
 
+If time and source quality allow, continue useful everyday expansion after the priority set is healthy. Do not stop merely because a target count was reached when sources remain clean, the pipeline is stable, and accepted Actions remain protected.
+
+PHASE 3 - RUNTIME EXPORT:
+1. Export only versioned Actions that passed all four `listen_ready` gates.
+2. Preserve the current CORE3 fallback and master Actions.
+3. Verify clip/action names, duration, timing, neutral entry/return, finger deformation, cross-clip isolation, manifest mapping, and checksum.
+4. Populate the bilingual resolver fields without renaming canonical Actions.
+5. Unsupported or ambiguous speech must resolve to no fabricated animation.
+6. Commit and push every export batch before Android integration.
+
+PHASE 4 - ANDROID VALIDATION:
+1. Keep recognition behavior untouched and the purchased Avatar demand-loaded.
+2. Validate Filament load/render/action/repeat/neutral transitions without reloading the GLB between supported Actions.
+3. Guard TextureView/Compose visibility and idempotent native cleanup.
+4. Run unit tests/build and at least 10 open/play/back/reopen cycles, recording crash, SIGSEGV, ANR, OOM, blank-viewport, and memory evidence.
+5. Do not claim device success from emulator/JVM/build evidence.
+6. Commit and push the Android integration milestone.
+
+PHASE 5 - PHYSICAL-DEVICE VALIDATION:
+1. Install the exact built revision on the available physical Samsung.
+2. Record device, Android version, branch, HEAD, build hash/variant, tested Actions/repetitions, visible framing, motion flags, playback transitions, stability, memory, and external evidence path/hash.
+3. Re-test CORE3 plus the new verified batch and bilingual resolver behavior.
+4. Set `DEVICE_PASS` only from actual passing device evidence; keep `LINGUISTICALLY_VALIDATED` separate.
+5. Update reports, commit, push, and verify the remote branch HEAD.
+
 CHECKPOINT AND PUSH:
 - initial audit
 - CORE3 regression result
-- every +5 accepted signs
-- each runtime export batch
-- Android/device checkpoint
-- any major blocker
-- before long jobs, context resets, or stopping
+- every +3 accepted user-facing signs
+- every runtime export batch
+- Android integration and physical-device evidence milestones
+- discovery of any major blocker
+- before long Blender/export/build jobs
+- before changing strategy/solver
+- before context reset/new chat
+- immediately on usage/context-limit warning
+- before stopping for any reason
+
+If none occurs, checkpoint meaningful completed work at least about every 30 minutes. Never create an empty/no-op commit. When context becomes constrained, checkpoint and push first, then summarize.
 
 At each checkpoint:
 1. update `reports/ASTRA_LIVE_HANDOFF.md`
 2. update a detailed milestone report when needed
 3. append the 1–2 line project-history summary
-4. commit
-5. push to GitHub
+4. update the Avatar ADR only if an authoritative decision changed
+5. explicitly stage paths and run `git diff --cached --check`
+6. commit and push to GitHub
+7. verify the remote Avatar branch HEAD
 
 GIT SAFETY:
 - explicit staging only

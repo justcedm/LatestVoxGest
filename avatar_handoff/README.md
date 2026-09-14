@@ -42,6 +42,12 @@ Documentation policy: `docs/DOCUMENTATION_POLICY.md`
 
 Fresh ChatGPT/Sol bootstrap: `docs/NEW_CHATGPT_PROJECT_BOOTSTRAP.md`
 
+App-developer entry point: `avatar_handoff/APPDEV_START_HERE.md`
+
+Official Astra bootstrap: `avatar_handoff/APPDEV_ASTRA_BOOTSTRAP_PROMPT.md`
+
+Context-reset recovery: `avatar_handoff/ASTRA_RESUME_PROMPT.md`
+
 User-facing vocabulary priority: `avatar_handoff/USER_FACING_VOCABULARY_PRIORITY.md`
 
 Avatar visual target: `avatar_handoff/AVATAR_PRESENTATION_SPEC.md`
@@ -78,9 +84,9 @@ powershell -ExecutionPolicy Bypass -File .\avatar_handoff\scripts\build_appdev_k
 
 Default ZIP output:
 
-`C:\VOXGEST_HANDOFF\VOXGEST_APPDEV_ASTRA_KNOWLEDGE_<timestamp>.zip`
+`C:\VOXGEST_HANDOFF\VOXGEST_APPDEV_TAKEOVER.zip`
 
-The ZIP includes current prompts, project history, documentation policy, handoffs, decision logs, selected small Avatar/Android/FSL text/code evidence, and Git repository metadata. It intentionally excludes the purchased Avatar source, raw datasets, APKs and large media.
+The ZIP has the deterministic root `VOXGEST_APPDEV_TAKEOVER/`, checksum verifier, safe installer, categorized knowledge, current prompts, project history, documentation policy, handoffs, decision logs, selected small Avatar/Android/FSL text/code evidence, and Git repository metadata. It intentionally excludes the purchased Avatar source, raw datasets, models, APKs and large media.
 
 ## Historical state to REVALIDATE
 
@@ -107,7 +113,7 @@ These are historical facts, **not current pass evidence** after workspace migrat
 3. Run `avatar_handoff/scripts/inventory_avatar_assets.ps1`.
 4. Open the repo in ChatGPT Desktop -> Codex.
 5. Read `docs/NEW_CHATGPT_PROJECT_BOOTSTRAP.md` if this is a fresh ChatGPT account.
-6. Make Astra read the Avatar handoff files and paste `avatar_handoff/ASTRA_FIRST_RUN_PROMPT.md`.
+6. Paste `avatar_handoff/APPDEV_ASTRA_BOOTSTRAP_PROMPT.md`; it requires Astra to read and execute `ASTRA_FIRST_RUN_PROMPT.md`.
 7. Astra updates and pushes `reports/ASTRA_LIVE_HANDOFF.md` at each milestone.
 
 ## Calibration priority
@@ -132,7 +138,7 @@ Each supported canonical Avatar concept must expose separate English and Filipin
 
 ## GitHub update behavior
 
-GitHub is **near-real-time at commit/push granularity**, not a live screen stream. Astra must push after initial audit, CORE3 regression, every +5 passes, each export batch, Android/device checkpoints, blockers, and before context resets/stopping.
+GitHub is **near-real-time at commit/push granularity**, not a live screen stream. Astra must push after initial audit, CORE3 regression, every +3 accepted user-facing signs, every export batch, Android/device checkpoints, major blockers, before long work, before strategy/solver changes, before context resets, immediately on usage/context warnings, and before stopping. If none occurs, push meaningful completed work at least about every 30 minutes; never create empty commits.
 
 Documentation is part of completion: every meaningful milestone updates the live handoff and receives a 1–2 line project-history entry.
 

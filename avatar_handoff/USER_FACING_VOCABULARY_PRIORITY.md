@@ -13,6 +13,8 @@ Time is limited. Astra must prioritize **everyday communication value**, not imp
 
 Use only canonical FSL-105 labels that actually exist in the authoritative vocabulary. The English/Filipino strings below are presentation text; they must **not silently rename model/action IDs**.
 
+The tables express human-readable target concepts. Before calibration, inspect the current authoritative label/action manifest for exact spelling, spacing, punctuation, and availability. Never infer exact canonical identity from a normalized display string.
+
 If a target concept is not an exact canonical FSL-105 class, mark it `NOT_AVAILABLE_AS_CANONICAL_CLASS` and continue. Do not invent a new sign from text alone.
 
 ## Tier 0 — revalidate before expansion
@@ -79,6 +81,17 @@ Do not lower quality to hit an arbitrary count.
 
 ## Bilingual speech resolver rule
 
+Each verified entry must expose these fields without renaming its canonical ID:
+
+- `canonical_action`
+- `english_display`
+- `filipino_display`
+- `english_speech_aliases`
+- `filipino_speech_aliases`
+- `action_name`
+- `validation_status`
+- `listen_ready`
+
 The spoken input may arrive as English or Filipino. Both should resolve to the same supported canonical concept where the mapping is deterministic.
 
 Examples:
@@ -99,6 +112,10 @@ Resolver behavior must remain conservative:
 - unsupported text -> no fabricated Avatar action
 - ambiguous phrase -> ask/reject rather than guess
 - display the recognized transcript and resolved canonical concept separately in debug evidence
+
+`listen_ready=true` is allowed only after SOURCE, MECHANICAL, HUMAN_MOTION VISUAL, and EXPORT passes for the same Action. Android use additionally requires Android/runtime/device gates.
+
+Do not stop merely because a priority count was reached. Continue useful expansion only while time remains, sources are clean, the pipeline is stable, and all already accepted Actions remain protected by regression checks.
 
 ## Linguistic limitation
 

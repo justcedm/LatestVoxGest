@@ -65,3 +65,27 @@ Append-only Avatar decision log. Do not rewrite recognition decisions here.
 **Reason:** Keep the richer 3D path when stable while retaining a realistic deadline-safe local/offline fallback.
 
 **Status:** ACCEPTED
+
+## ADR-A009 - Master timing and human-motion visual gate
+
+**Decision:** Preserve each validated source's master timing and natural preparation, stroke, hold, and recovery. A retarget cannot receive `VISUAL_PASS` when it exhibits robotic snapping, discontinuity, unreadable holds, distorted arm-chain motion, or other documented human-motion flags, even if mechanical checks pass. Optional slower tutorial playback must not alter the master Action.
+
+**Reason:** Shorter or mechanically finite animation is not equivalent to readable human signing; forced duration and excessive smoothing can remove meaningful articulation.
+
+**Status:** ACCEPTED
+
+## ADR-A010 - Versioned readiness gates and conservative bilingual resolver
+
+**Decision:** `listen_ready=true` requires `SOURCE_PASS`, `MECHANICAL_PASS`, human-motion `VISUAL_PASS`, and `EXPORT_PASS` for the same versioned Action. Android use additionally requires Android runtime/build and physical-device gates. English/Filipino strings are conservative resolver/presentation metadata and cannot rename or synthesize canonical FSL Actions. Qualified linguistic validation remains separate.
+
+**Reason:** Keeping source, engineering, export, device, and linguistic claims separate prevents unsupported speech from producing fabricated signing and prevents historical partial evidence from being promoted as current readiness.
+
+**Status:** ACCEPTED
+
+## ADR-A011 - Knowledge-only cross-account takeover package
+
+**Decision:** The app-developer takeover artifact is a deterministic, checksum-verified knowledge package. It excludes purchased/private Avatar source and other binary/generated artifacts; those are discovered and referenced only from safe local C: storage.
+
+**Reason:** A new account needs reproducible context and commands without redistributing licensed assets or making chat memory authoritative.
+
+**Status:** ACCEPTED

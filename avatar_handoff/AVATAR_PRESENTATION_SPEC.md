@@ -58,12 +58,31 @@ A specific sign may widen the framing slightly if its signing space requires it,
 
 ## Motion
 
-Playback should be smooth, stable, deliberate and readable.
+Playback must be smooth, stable, deliberate, human-like, and readable. A technically valid retarget that looks robotic is not a visual pass.
 
-- Preserve the validated source timing.
-- Do not speed clips up merely for style.
-- Do not over-smooth meaningful articulation.
-- Optional 0.75x playback may be offered for tutorial/review, without changing the master Action.
+Do:
+
+- preserve validated source timing as the master timing
+- preserve natural preparation, stroke, hold, and recovery phases where the source contains them
+- maintain continuous shoulder, elbow, wrist, finger, and rig-appropriate quaternion/Euler motion
+- inspect F-curves/keyframe transitions and wrist/finger velocity changes for discontinuity
+- preserve readable handshape holds and physically coherent arm movement
+- allow natural body/shoulder contribution when present in the source
+- return to neutral smoothly
+- compare source and Avatar at normal speed, with optional slower diagnostic playback
+- preserve the original validated master Action unchanged if tutorial slowdown is later offered
+
+Do not:
+
+- speed up FSL just to reduce duration or improve perceived UI responsiveness
+- rush transitions between handshapes or globally shorten signs
+- force identical timing across different signs
+- introduce robotic pose snapping, finger jitter, wrist teleporting, elbow popping, or arm-chain distortion
+- over-smooth meaningful hand articulation
+
+Record applicable visual flags:
+
+`POSE_POP`, `WRIST_SNAP`, `FINGER_JITTER`, `HAND_INTERSECTION`, `ARM_CHAIN_DISTORTION`, `UNNATURAL_SPEED`, `TIMING_MISMATCH`, `LEFT_RIGHT_ERROR`, `BODY_DRIFT`, `CAMERA_CROP`, `SOURCE_MISMATCH`.
 
 ## Face / non-manual limitation
 

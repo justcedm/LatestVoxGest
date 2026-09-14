@@ -54,6 +54,26 @@ Compare source reference against Avatar and inspect:
 - neutral transition
 - readability / collision
 
+The master Action must preserve validated source timing and natural preparation, stroke, hold, and recovery where present. Inspect at normal speed and, optionally, slower for diagnosis. Slower tutorial playback must not replace or modify the validated master Action.
+
+Require continuous shoulder/elbow/wrist/finger motion, physically coherent arm movement, readable handshape holds, natural body/shoulder contribution where sourced, smooth neutral return, rig-appropriate rotation continuity, and F-curve/keyframe plus wrist/finger velocity inspection.
+
+Fail or review with explicit flags:
+
+- `POSE_POP`
+- `WRIST_SNAP`
+- `FINGER_JITTER`
+- `HAND_INTERSECTION`
+- `ARM_CHAIN_DISTORTION`
+- `UNNATURAL_SPEED`
+- `TIMING_MISMATCH`
+- `LEFT_RIGHT_ERROR`
+- `BODY_DRIFT`
+- `CAMERA_CROP`
+- `SOURCE_MISMATCH`
+
+Do not shorten clips for UI responsiveness, force identical sign timing, rush handshape transitions, allow robotic snapping, or over-smooth meaningful articulation.
+
 Mechanical PASS is not visual PASS.
 Engineering visual PASS is not linguistic certification by an FSL expert.
 
@@ -106,9 +126,11 @@ Record:
 
 ## Product status
 
-`listen_ready=true` only after SOURCE + MECHANICAL + VISUAL + EXPORT PASS.
+`listen_ready=true` only after `SOURCE_PASS + MECHANICAL_PASS + HUMAN_MOTION VISUAL_PASS + EXPORT_PASS` for the same versioned Action.
 
-`android_ready=true` only after Android + physical device PASS.
+`android_ready=true` only after `ANDROID_BUILD_PASS` plus Android runtime gates and physical `DEVICE_PASS`.
+
+`LINGUISTICALLY_VALIDATED` remains a separate gate and requires actual qualified FSL review evidence. Engineering/source/mechanical/visual/export success does not imply it.
 
 ## Reliability fallback
 
