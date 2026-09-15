@@ -1,5 +1,109 @@
 # VoxGest Live Handoff
 
+## Update - 2026-09-15 FSL105 completed-event presentation expansion
+
+TIMESTAMP=2026-09-15T13:40:23.1842053+08:00
+
+BRANCH=recognition/fsl105-live-segment-v1
+
+SOURCE_BASE_BRANCH=recognition/mapua14-live-segment-v1
+
+SOURCE_BASE_COMMIT=fbfb9bc8ad80ba2ba3120236721098081fc1aed4
+
+IMPLEMENTATION_COMMIT=8d7c3c8b04ada9bbd36cfe727d31864a29e274fe
+
+CURRENT_GOAL=Expose the existing Standard FSL-105 model through complete-sign
+segmentation and an authoritative 105-entry bilingual presentation surface,
+without retraining or destabilizing Mapua-14, then qualify on Samsung if ADB is
+available.
+
+WORK_COMPLETED=
+
+- Replaced the active Standard controller's rolling-window behavior with
+  `FSL105_LIVE_SEGMENT_V1`: complete chronological event capture, full-event
+  motion-envelope finalization, manifest-sized linear resampling to 20x225,
+  exactly one inference, and WAIT_FOR_RELEASE duplicate suppression.
+- Added a profile-driven finalizer while preserving the protected Mapua-14
+  runtime; numeric parity coverage confirms its 48-frame finalization output.
+- Made the Standard manifest authoritative for runtime dimensions, shapes,
+  model/label filenames, ordered labels, orientation, and visible diagnostics
+  banner. Exact 20/225/105 and `[1,20,225]`/`[1,105]` contracts fail closed.
+- Retained anatomical identity, unmirrored inference, display-only preview
+  mirroring, raw presence accounting, Standard missing-hand zero fill, malformed
+  and missing-pose rejection, confidence/margin gates, and release/re-arm.
+- Added the hash-gated, one-to-one 105-entry English/Filipino semantic
+  presentation map. The Guide derives all canonical tokens from the runtime
+  labels, exposes both display languages, retains source-token quirks, and marks
+  every item FSL-105 model vocabulary / not yet device-qualified.
+- Added representative event, resampling, geometry, malformed-input,
+  release/re-arm, manifest, bilingual topology, localization, and protected
+  Mapua parity tests.
+- Completed the focused and forced full automated suite and assembled a debug
+  APK. Samsung installation/live qualification could not start because ADB was
+  empty on five bounded checks; no physical result was invented.
+
+ASSET_STATUS=Model and labels unchanged. Model SHA-256
+`42d040ec2269d437546d327decaaca32839abdd6bb63b2d400063c90630e5d13`;
+labels SHA-256
+`bfa76d96ed10bf97f43ca80bcfcc5badd3e96df7ebe4c0654fc078552da55fb6`;
+presentation SHA-256
+`98b98a49a515fc9593529bac17eb9c50c0f3486b2506dd4c3d22e6b6364ee492`.
+
+COMMANDS/TESTS=
+
+- Focused FSL105/manifest/Guide/localization/Mapua regression suites: PASS.
+- Forced `:app:testDebugUnitTest :app:assembleDebug --rerun-tasks`: PASS;
+  125 tests across 32 suites, 0 failures, 0 errors, 0 skipped; 44/44 tasks
+  executed; BUILD SUCCESSFUL in 40 seconds.
+- APK SHA-256:
+  `df6c343fa7495b9cf8d41ecf9664fa60f12b4f59a8089288104d77cc7f31b3f6`.
+- Manifest/label/presentation JSON topology and hashes: PASS; 105 ordered unique
+  canonical labels and 105 ordered unique bilingual entries, no blank display.
+- `git diff --check`: PASS; line-ending conversion warnings only.
+- Protected Mapua production source/model/labels diff: empty.
+- `adb devices -l`: empty across the initial query, three bounded rechecks, and
+  the final post-build query.
+
+SAMSUNG_STATUS=BLOCKED_DEVICE_NOT_CONNECTED. Install, launch, runtime-banner
+inspection, visual orientation/mirroring inspection, device startup parity, ten
+representative words, negative trials, and physical latency remain NOT_RUN.
+
+LIVE_WORD_RESULTS=HELLO, YES, NO, THANK YOU, ONE, FIVE, MILK, RICE, GOOD
+MORNING, and UNDERSTAND are all NOT_RUN_DEVICE_NOT_CONNECTED; raw top1,
+confidence, gate, latency, and tracking are NOT_CAPTURED.
+
+NEGATIVE_RESULTS=Neutral, open-palm, and random-motion trials are
+NOT_RUN_DEVICE_NOT_CONNECTED; emitted-token counts and latency are NOT_CAPTURED.
+
+TRAINING_STATUS=UNCHANGED_NO_RETRAIN. No dataset or trainer was accessed, model
+weights and canonical labels remain byte-identical, and no threshold was tuned.
+
+RETRAIN_DECISION=NO. Automated runtime/contracts pass and there is no physical
+category-D evidence of wrong raw top1 with clean segmentation and tracking.
+
+FAILURES=The only incomplete phase is physical qualification because the
+Samsung is not enumerated by ADB. The initial sandboxed Gradle invocation could
+not download/access its distribution; the approved rerun used the existing
+Gradle cache/distribution and passed, so it is not a source failure.
+
+REPORT=reports/FSL105_LIVE_SEGMENT_V1_20260915.md
+
+NEXT_ACTION=Reconnect and authorize Samsung `R5GYC0M1M4P`; verify it appears in
+`adb devices -l`; install the prepared debug APK; launch Standard diagnostics;
+capture startup parity, the manifest-derived `STANDARD_FSL_FULLSIGN225 /
+FSL105_LIVE_SEGMENT_V1 / 20x225 / 105 classes` banner, and visual orientation;
+then run the ten specified one-sign/one-release trials plus neutral/open-palm/
+random-motion negatives. Classify failures A-F before any calibration/retrain.
+
+DO_NOT_MODIFY=Do not access D:. Do not retrain or tune thresholds without clean
+category-D physical evidence. Do not alter canonical labels/model weights,
+unmirrored FullSign225 geometry, anatomical slots, monotonic timing, protected
+Mapua-14 production behavior, or presentation styling beyond explicit scope.
+Do not commit APKs, raw recordings, datasets, caches, secrets, or huge evidence.
+Do not force-push or rewrite history.
+
+---
+
 ## Update - 2026-09-14 OLD 1-5 escalation and NEW-test preparation
 
 TIMESTAMP=2026-09-14T06:19:05.0126952+08:00

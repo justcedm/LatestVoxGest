@@ -179,3 +179,36 @@ experiments belong in separate reports.
   frame. The audited preprocessing contract may linearly interpolate only a
   bounded one-to-three-frame internal hand gap; raw presence quality is counted
   before interpolation so the gate is not credited with fabricated tracking.
+
+## ADR-015 - Standard FSL-105 live inference uses manifest-driven completed events
+
+- Status: Accepted for presentation qualification
+- Date: 2026-09-15
+- Decision: When `STANDARD_FSL_FULLSIGN225` is selected, the production camera
+  path uses `FSL105_LIVE_SEGMENT_V1`: IDLE, ARMING, CAPTURING, FINALIZING,
+  INFERENCE, WAIT_FOR_RELEASE, then IDLE. One complete chronological event is
+  finalized before exactly one inference. The event's adaptive motion envelope
+  is linearly resampled across its full duration to the manifest-defined
+  `[1,20,225]` input; no first/latest rolling 20-frame window is used.
+- Contract: The runtime manifest is authoritative for model and label filenames,
+  sequence length, feature size, class count, input/output shapes, orientation,
+  and ordered labels. Startup asserts 20 frames, 225 FullSign225 features, 105
+  classes, `[1,20,225]` input, `[1,105]` output, and unmirrored inference.
+  Anatomical left/right slots remain `[99,162)` and `[162,225)` and are never
+  assigned by image-X order. Front preview mirroring remains display-only.
+- Missing-data consequence: Standard FSL-105 retains its declared zero-fill
+  missing-hand contract and does not interpolate missing hand detections.
+  Malformed landmarks, a missing pose reference, ambiguous anatomical identity,
+  unusable tracking, and capture-limit completion fail closed before inference.
+- Rejection consequence: Because the model has no NOTHING class, one completed
+  event must still pass raw presence/timing validity, confidence >= 0.70, and
+  top1-top2 margin >= 0.20. WAIT_FOR_RELEASE prevents duplicate emission until
+  neutral release/re-arm is observed.
+- Presentation consequence: The 105 canonical model labels remain stable
+  internal tokens. A hash-gated, exactly one-to-one English/Filipino map may
+  present those concepts and feed optional TTS, but is semantic presentation,
+  not a claim that Filipino text grammar equals FSL grammar. All entries remain
+  `NOT YET DEVICE-QUALIFIED` until physical evidence exists.
+- Isolation: The protected Mapua-14 production runtime and model/label assets
+  are unchanged. A shared finalizer parity test proves the Mapua-14 48-frame
+  profile remains numerically equivalent to its protected finalizer.
