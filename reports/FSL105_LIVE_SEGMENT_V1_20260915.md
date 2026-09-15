@@ -19,10 +19,12 @@ whole event to the manifest-defined 20 FullSign225 frames, performs at most one
 inference, then requires neutral release before re-arming. The former active
 rolling-window behavior is not used by the Standard controller.
 
-Automated qualification and the debug build pass. Physical Samsung
-qualification is blocked because `adb devices -l` returned no devices in five
-bounded checks during this run. No physical result, camera-orientation claim,
-or latency value is inferred from automated evidence.
+Automated qualification, the debug build, installation, and device startup
+parity pass. Samsung `R5GYC0M1M4P` (`SM-A566B`) was authorized and enumerated,
+but today's physical work produced only two unscored HELLO diagnostic events,
+not the prescribed fixed-threshold battery. The user subsequently deferred all
+remaining physical testing for today. No class-accuracy or threshold conclusion
+is inferred from these setup diagnostics.
 
 ## Frozen asset and feature contract
 
@@ -39,7 +41,7 @@ or latency value is inferred from automated evidence.
 | Model SHA-256 | `42d040ec2269d437546d327decaaca32839abdd6bb63b2d400063c90630e5d13` |
 | Labels SHA-256 | `bfa76d96ed10bf97f43ca80bcfcc5badd3e96df7ebe4c0654fc078552da55fb6` |
 | Presentation map SHA-256 | `98b98a49a515fc9593529bac17eb9c50c0f3486b2506dd4c3d22e6b6364ee492` |
-| APK SHA-256 | `df6c343fa7495b9cf8d41ecf9664fa60f12b4f59a8089288104d77cc7f31b3f6` |
+| APK SHA-256 | `9fba58ba9a4843c208a5493c3a96dadd7ba87cc38fce405fcf2bbaa99fa05dc5` |
 
 The model and labels hashes still match their authoritative manifest/golden
 metadata. They were not modified. The manifest now also declares the
@@ -77,8 +79,13 @@ The initial post-inference thresholds remain deliberately conservative:
 Every completed event logs its event ID, capture and resample counts, presence
 ratios, top five, top1/top2 margin, gate/reason, MediaPipe/TFLite timing, event
 timing, and sign-end-to-raw/accepted latency. Timing uses monotonic
-`System.nanoTime() / 1_000_000L`. An accepted event cannot emit again until the
-release/re-arm boundary completes.
+`System.nanoTime() / 1_000_000L`. A device-only defect found during the first
+setup events mixed CameraX frame timestamps with the process clock at
+finalization. The state machine now uses one explicit process-clock domain for
+event milestones and latency while retaining raw camera timestamps for frame
+ordering and frame-gap evidence. A regression test uses deliberately offset
+clock domains. An accepted event cannot emit again until the release/re-arm
+boundary completes.
 
 ## 105-class presentation surface
 
@@ -102,10 +109,10 @@ presentation review; it does not claim Filipino text grammar is FSL grammar.
 | Check | Result |
 | --- | --- |
 | Focused FSL105/manifest/guide/localization/Mapua regression suites | PASS |
-| Forced full `:app:testDebugUnitTest` | PASS - 125 tests, 32 suites, 0 failures, 0 errors, 0 skipped |
-| Forced `:app:assembleDebug` | PASS - 44/44 Gradle tasks executed; BUILD SUCCESSFUL in 40 s |
+| Forced full `:app:testDebugUnitTest` | PASS - 126 tests, 32 suites, 0 failures, 0 errors, 0 skipped |
+| Forced `:app:assembleDebug` | PASS - 44/44 Gradle tasks executed; BUILD SUCCESSFUL in 39 s |
 | Manifest JSON, shape, ordered-label and bilingual topology validation | PASS - 20/225/105, 105 labels, 105 unique map keys, no blank displays |
-| Packaged desktop TF/TFLite parity evidence and JVM golden feature fixture | PASS; current device startup parity remains unobserved this run |
+| Packaged desktop TF/TFLite parity evidence and JVM golden feature fixture | PASS; device startup TFLite parity PASS, top1 agreement true, max probability delta `5.8619776E-14` |
 | Complete event -> exact 20-frame full-duration resample | PASS |
 | Anatomical left/right preservation and missing-hand zero fill | PASS |
 | Missing pose, malformed dimensions, capture-limit and ambiguous identity fail closed | PASS |
@@ -119,40 +126,42 @@ network sandboxing. The same requested build was rerun with approved access to
 the existing Gradle cache/distribution and completed successfully; this was an
 environmental launch failure, not a source/test failure.
 
-## Samsung representative battery
+## Samsung qualification evidence
 
-SAMSUNG_STATUS=BLOCKED_DEVICE_NOT_CONNECTED
+SAMSUNG_STATUS=PARTIAL_DIAGNOSTIC_ONLY_USER_DEFERRED
 
-`adb devices -l` returned an empty device list on the initial query, three
-bounded rechecks, and the final post-build query. Therefore installation,
-runtime-banner inspection, visual front-camera/mirroring inspection, startup
-golden parity, live classifications, and physical latency measurements were not
-performed.
+ADB enumerated authorized Samsung `R5GYC0M1M4P` as `SM-A566B`. The rebuilt APK
+installed and launched. On-device startup diagnostics proved
+`STANDARD_FSL_FULLSIGN225`, `FSL105_LIVE_SEGMENT_V1`, input `[1,20,225]`, output
+`[1,105]`, 105 ordered labels, manifest/model/label parity PASS, unmirrored
+model input, resolved front camera ID 1, mirrored preview, and unmirrored
+analysis. The first wide framing view showed the required upper body; the later
+HELLO setup retry was visibly too close and excluded relevant body/hand motion.
 
-| Canonical concept | Raw top1 | Confidence | Gate | Reason | Latency | Tracking |
+These are unscored diagnostics and do not count toward the requested three
+attempts per class:
+
+| Expected | Completion | Captured/resampled | Pose/left/right/both | Raw/gate | Timing | Failure |
 | --- | --- | --- | --- | --- | --- | --- |
-| HELLO | NOT_RUN | NOT_CAPTURED | NOT_RUN | DEVICE_NOT_CONNECTED | NOT_CAPTURED | NOT_CAPTURED |
-| YES | NOT_RUN | NOT_CAPTURED | NOT_RUN | DEVICE_NOT_CONNECTED | NOT_CAPTURED | NOT_CAPTURED |
-| NO | NOT_RUN | NOT_CAPTURED | NOT_RUN | DEVICE_NOT_CONNECTED | NOT_CAPTURED | NOT_CAPTURED |
-| THANK YOU | NOT_RUN | NOT_CAPTURED | NOT_RUN | DEVICE_NOT_CONNECTED | NOT_CAPTURED | NOT_CAPTURED |
-| ONE | NOT_RUN | NOT_CAPTURED | NOT_RUN | DEVICE_NOT_CONNECTED | NOT_CAPTURED | NOT_CAPTURED |
-| FIVE | NOT_RUN | NOT_CAPTURED | NOT_RUN | DEVICE_NOT_CONNECTED | NOT_CAPTURED | NOT_CAPTURED |
-| MILK | NOT_RUN | NOT_CAPTURED | NOT_RUN | DEVICE_NOT_CONNECTED | NOT_CAPTURED | NOT_CAPTURED |
-| RICE | NOT_RUN | NOT_CAPTURED | NOT_RUN | DEVICE_NOT_CONNECTED | NOT_CAPTURED | NOT_CAPTURED |
-| GOOD MORNING | NOT_RUN | NOT_CAPTURED | NOT_RUN | DEVICE_NOT_CONNECTED | NOT_CAPTURED | NOT_CAPTURED |
-| UNDERSTAND | NOT_RUN | NOT_CAPTURED | NOT_RUN | DEVICE_NOT_CONNECTED | NOT_CAPTURED | NOT_CAPTURED |
+| HELLO setup 1 | `CAPTURE_LIMIT` | 240/20 | 1.000/0.000/0.991/0.000 | no inference; `CAPTURE_LIMIT_WITHOUT_SIGN_END` | MediaPipe 110.352 ms; end-to-rejection 713 ms | A - segmentation did not find sign end |
+| HELLO setup 2 | `DYNAMIC_END` | 99/20 | 1.000/0.000/0.978/0.000 | no inference; `TRAJECTORY_DURATION_EXCEEDED` | MediaPipe 106.638 ms; end-to-rejection 608 ms | A - invalid 20.903 s trajectory/gap under bad framing |
 
-Negative trials for neutral, open palm, and random motion are all
-`NOT_RUN_DEVICE_NOT_CONNECTED`; semantic-token counts and latencies are
-`NOT_CAPTURED`.
+The first setup interval likely included repeated motion while the runtime was
+stalled and therefore is not a valid one-sign event. The second had a 5,427 ms
+maximum gap and invalid close framing. Neither reached TFLite, neither supplies
+a raw top1/top5, and neither is model-quality evidence. YES, NO, THANK YOU, ONE,
+FIVE, MILK, RICE, GOOD MORNING, UNDERSTAND, and all prescribed negative trials
+are `DEFERRED_BY_USER_TODAY`.
 
 ## Failure classification and retraining decision
 
-No A-F runtime/model failure category can be assigned without physical input.
-The current blocker is external device enumeration, before installation. In
-particular, there is no category-D evidence of a wrong raw top1 under clean
-segmentation and tracking. `RETRAIN_REQUIRED=NO`; no dataset, trainer,
-threshold, model weight, or canonical label was changed.
+Both unscored setup failures are Category A: the first reached capture limit
+without a sign end; the second finalized but represented an invalid long event
+caused by framing/gap conditions. The original finalization exception was a
+runtime clock-domain defect and is fixed with regression coverage. There is no
+Category C or D evidence because neither event reached raw inference under clean
+segmentation/tracking. `THRESHOLD_CHANGE_REQUIRED=NO` and
+`RETRAIN_REQUIRED=NO`; no threshold, model weight, or canonical label changed.
 
 ## Protected boundaries
 
@@ -164,10 +173,10 @@ threshold, model weight, or canonical label was changed.
 
 ## Next exact action
 
-Reconnect and authorize Samsung `R5GYC0M1M4P` for USB debugging, verify it is
-listed by `adb devices -l`, install
-`android_dry_run/app/build/outputs/apk/debug/app-debug.apk`, launch the Standard
-diagnostic runtime, and capture startup parity plus the manifest-derived banner
-before running the ten prescribed one-sign/one-release trials followed by
-neutral/open-palm/random-motion negatives. Classify any failures A-F before
-considering calibration or retraining.
+Preserve this exact device-tested runtime checkpoint, then perform the separate
+offline multisource inventory/calibration sprint on
+`recognition/multisource-calibration-v1`. Tomorrow, restore wide full-upper-body
+framing and run the untouched fixed-threshold ten-class/negative Samsung battery
+using exactly one sign per event. Category C/D decisions still require clean
+physical events; today's setup failures must not be used to tune thresholds or
+justify retraining.

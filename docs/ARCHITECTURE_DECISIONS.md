@@ -212,3 +212,8 @@ experiments belong in separate reports.
 - Isolation: The protected Mapua-14 production runtime and model/label assets
   are unchanged. A shared finalizer parity test proves the Mapua-14 48-frame
   profile remains numerically equivalent to its protected finalizer.
+- Timing consequence: Camera frame timestamps remain the authority for frame
+  chronology and inter-frame gaps, while event milestones, finalization, and
+  result latency use one injected monotonic process-clock domain. CameraX and
+  process timestamps must never be subtracted from one another. An offset-clock
+  regression test protects this device-observed boundary.

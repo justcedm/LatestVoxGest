@@ -1,5 +1,50 @@
 # VoxGest Live Handoff
 
+## Update - 2026-09-15 Samsung startup parity and timing checkpoint
+
+BRANCH=recognition/fsl105-live-segment-v1
+
+DEVICE=Samsung SM-A566B, serial R5GYC0M1M4P, ADB authorized
+
+CHECKPOINT_SCOPE=Preserve the Standard FSL105 completed-event runtime after
+device startup qualification and a process-clock timing repair. Physical class
+battery was explicitly deferred by the user for the remainder of today.
+
+DEVICE_STARTUP=PASS. APK installed and launched. Diagnostics proved
+`STANDARD_FSL_FULLSIGN225`, `FSL105_LIVE_SEGMENT_V1`, `[1,20,225]` input,
+`[1,105]` output, 105 labels, model/labels parity PASS, unmirrored model input,
+front camera ID 1, mirrored preview, and unmirrored analysis. Device TFLite
+golden parity PASS with top1 agreement and maximum probability delta
+`5.8619776E-14`.
+
+RUNTIME_FIX=Two initial setup completions exposed mixed CameraX/process clock
+domains at finalization. Event milestones and latency now consistently use one
+explicit monotonic process timestamp; raw camera timestamps remain authoritative
+for chronological/gap evidence. A deliberately offset-clock regression test was
+added. Model, labels, thresholds, preprocessing geometry, and Mapua behavior are
+unchanged.
+
+PHYSICAL_EVENTS=UNSCORED_SETUP_ONLY. HELLO setup 1 completed by CAPTURE_LIMIT
+with 240 captured/20 resampled frames, pose 1.000, right-hand 0.991, and rejected
+pre-inference as `CAPTURE_LIMIT_WITHOUT_SIGN_END`. HELLO setup 2 completed by
+DYNAMIC_END with 99/20 frames, pose 1.000, right-hand 0.978, but invalid close
+framing and a 20.903 s trajectory/5.427 s maximum gap caused pre-inference
+`TRAJECTORY_DURATION_EXCEEDED`. Neither generated top5/top1 or TFLite latency.
+Both are Category A diagnostics, not scored class attempts.
+
+AUTOMATED_EVIDENCE=PASS; 126 tests across 32 suites, zero failures/errors/skips;
+44/44 Gradle tasks executed; debug APK SHA-256
+`9fba58ba9a4843c208a5493c3a96dadd7ba87cc38fce405fcf2bbaa99fa05dc5`.
+
+DECISION=No confidence/margin/presence threshold change and no retraining from
+today's evidence. There is no clean Category C or D event. Continue offline on
+`recognition/multisource-calibration-v1`; resume the unchanged physical battery
+tomorrow with wide upper-body framing and one deliberate sign per event.
+
+REPORT=reports/FSL105_LIVE_SEGMENT_V1_20260915.md
+
+---
+
 ## Update - 2026-09-15 FSL105 completed-event presentation expansion
 
 TIMESTAMP=2026-09-15T13:40:23.1842053+08:00

@@ -324,7 +324,8 @@ class StandardFslCameraRecognitionController(
             )
             val temporalStarted = SystemClock.elapsedRealtimeNanos()
             val machine = segmentMachine ?: return
-            val event = machine.onFrame(frame)
+            val processTimestampMs = System.nanoTime() / 1_000_000L
+            val event = machine.onFrame(frame, processTimestampMs)
             performance.recordTemporal(
                 (SystemClock.elapsedRealtimeNanos() - temporalStarted) / NANOS_PER_MS
             )
@@ -339,7 +340,7 @@ class StandardFslCameraRecognitionController(
                 eventTrackingFailureReason = "AMBIGUOUS_ANATOMICAL_COLLISION"
             }
             if (event.reason == "RELEASE_CONFIRMED") eventTrackingFailureReason = null
-            logSegmentState(event, frame.timestampMs)
+            logSegmentState(event, frame.timestampMs, processTimestampMs)
 
             if (event.state != Mapua14LiveSegmentState.FINALIZING) {
                 val diagnostics = segmentDiagnostics(event, frame)
@@ -584,7 +585,11 @@ class StandardFslCameraRecognitionController(
         )
     }
 
-    private fun logSegmentState(event: Mapua14LiveSegmentUpdate, frameTimestampMs: Long) {
+    private fun logSegmentState(
+        event: Mapua14LiveSegmentUpdate,
+        frameTimestampMs: Long,
+        processTimestampMs: Long
+    ) {
         val key = "${event.state}:${event.reason}"
         val nowMs = SystemClock.elapsedRealtime()
         if (key == lastEventLogKey && nowMs - lastEventLogAtMs < UNCHANGED_EVENT_LOG_INTERVAL_MS) {
@@ -594,9 +599,9 @@ class StandardFslCameraRecognitionController(
         lastEventLogAtMs = nowMs
         Log.i(
             TAG,
-            "FSL105_SEGMENT_STATE state=${event.state} reason=${event.reason} " +
+                "FSL105_SEGMENT_STATE state=${event.state} reason=${event.reason} " +
                 "frame_timestamp_ms=$frameTimestampMs " +
-                "process_timestamp_ms=${System.nanoTime() / 1_000_000L} " +
+                "process_timestamp_ms=$processTimestampMs " +
                 "captured_frames=${event.capturedFrameCount} activity=${event.activity} " +
                 "completion=${event.completion ?: "NONE"}"
         )

@@ -101,6 +101,30 @@ class Fsl105LiveSegmentRuntimeTest {
     }
 
     @Test
+    fun `camera timestamp offset cannot break monotonic process timing at finalization`() {
+        val machine = Fsl105LiveSegmentStateMachine(temporalProfile, eventConfig)
+        val cameraBase = 2_000_000L
+        machine.onFrame(neutral(cameraBase + 100L), 100L)
+        machine.onFrame(neutral(cameraBase + 200L), 200L)
+        machine.onFrame(frame(cameraBase + 300L, 0.20f, null), 300L)
+        machine.onFrame(frame(cameraBase + 400L, 0.22f, null), 400L)
+        machine.onFrame(frame(cameraBase + 500L, 0.24f, null), 500L)
+        machine.onFrame(frame(cameraBase + 600L, 0.24f, null), 600L)
+        machine.onFrame(frame(cameraBase + 700L, 0.24f, null), 700L)
+        val complete = machine.onFrame(frame(cameraBase + 800L, 0.24f, null), 800L)
+
+        assertEquals(Mapua14LiveSegmentState.FINALIZING, complete.state)
+        val trajectory = machine.finalizeForInference(850L)
+        assertEquals(300L, trajectory.signStartTimestampMs)
+        assertEquals(800L, trajectory.completionDetectedTimestampMs)
+        assertTrue(trajectory.prepared.sourceTimestampsMs.first() > 1_000_000L)
+
+        val evaluation = Fsl105SegmentGate.evaluate(inference(), trajectory, 900L)
+        assertEquals(600L, evaluation.timing.oldestFrameAgeMs)
+        assertEquals(400L, machine.markInferenceFinished(900L).endToResultMs)
+    }
+
+    @Test
     fun `missing pose capture limit and ambiguous identity reject despite confident raw output`() {
         val missingPose = Fsl105SegmentGate.evaluate(
             inference(),

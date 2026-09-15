@@ -57,7 +57,11 @@ class Fsl105LiveSegmentStateMachine(
         require(config.staticHoldFrames >= temporalProfile.motionBoundaryFrames)
     }
 
-    fun onFrame(frame: LandmarkFrame): Mapua14LiveSegmentUpdate {
+    fun onFrame(
+        frame: LandmarkFrame,
+        processTimestampMs: Long = frame.timestampMs
+    ): Mapua14LiveSegmentUpdate {
+        require(processTimestampMs >= 0L)
         if (frame.timestampMs <= lastTimestampMs) {
             return update("NON_CHRONOLOGICAL_FRAME_IGNORED")
         }
@@ -76,8 +80,10 @@ class Fsl105LiveSegmentStateMachine(
         previousObservedFrame = frame
         return when (state) {
             Mapua14LiveSegmentState.IDLE -> observeIdle(frame, neutral)
-            Mapua14LiveSegmentState.ARMING -> observeArming(frame, neutral, activity)
-            Mapua14LiveSegmentState.CAPTURING -> observeCapture(frame, neutral, activity)
+            Mapua14LiveSegmentState.ARMING ->
+                observeArming(frame, neutral, activity, processTimestampMs)
+            Mapua14LiveSegmentState.CAPTURING ->
+                observeCapture(frame, neutral, activity, processTimestampMs)
             else -> error("state handled above: $state")
         }
     }
@@ -159,7 +165,8 @@ class Fsl105LiveSegmentStateMachine(
     private fun observeArming(
         frame: LandmarkFrame,
         neutral: Boolean,
-        activity: Float
+        activity: Float,
+        processTimestampMs: Long
     ): Mapua14LiveSegmentUpdate {
         if (neutral) {
             rememberNeutral(frame)
@@ -169,7 +176,7 @@ class Fsl105LiveSegmentStateMachine(
         val deliberateEntry = frame.hasAnyHand &&
             (handEntered || activity >= config.motionActivityThreshold || !neutral)
         if (!deliberateEntry) return update("ARMED_WAITING_FOR_USABLE_HAND", activity = activity)
-        beginCapture(frame, activity)
+        beginCapture(frame, activity, processTimestampMs)
         return update(
             if (handEntered) "CAPTURE_STARTED_HAND_ENTRY" else "CAPTURE_STARTED_MOTION",
             activity = activity
@@ -179,7 +186,8 @@ class Fsl105LiveSegmentStateMachine(
     private fun observeCapture(
         frame: LandmarkFrame,
         neutral: Boolean,
-        activity: Float
+        activity: Float,
+        processTimestampMs: Long
     ): Mapua14LiveSegmentUpdate {
         captured += copyFrame(frame)
         signFrameCount += 1
@@ -188,7 +196,7 @@ class Fsl105LiveSegmentStateMachine(
             stableCount = 0
         } else {
             releaseCount = 0
-            observeActivity(frame, activity)
+            observeActivity(frame, activity, processTimestampMs)
         }
 
         val enoughFrames = signFrameCount >= config.minimumSignFrames
@@ -207,7 +215,7 @@ class Fsl105LiveSegmentStateMachine(
         if (completedBy != null) {
             state = Mapua14LiveSegmentState.FINALIZING
             completion = completedBy
-            completionDetectedTimestampMs = frame.timestampMs
+            completionDetectedTimestampMs = processTimestampMs
             return update(
                 "SEGMENT_COMPLETE_${completedBy.name}",
                 completion = completedBy,
@@ -224,27 +232,35 @@ class Fsl105LiveSegmentStateMachine(
         )
     }
 
-    private fun beginCapture(frame: LandmarkFrame, activity: Float) {
+    private fun beginCapture(
+        frame: LandmarkFrame,
+        activity: Float,
+        processTimestampMs: Long
+    ) {
         clearEvent()
         retainedLeadingNeutralFrames = leadingNeutral.size
         captured.addAll(leadingNeutral.map(::copyFrame))
         captured += copyFrame(frame)
-        signStartTimestampMs = frame.timestampMs
+        signStartTimestampMs = processTimestampMs
         signFrameCount = 1
         previousCaptureHandFrame = frame.takeIf { it.hasAnyHand }
         stableCount = if (frame.hasAnyHand) 1 else 0
-        stableRunStartedAtMs = if (stableCount == 1) frame.timestampMs else 0L
+        stableRunStartedAtMs = if (stableCount == 1) processTimestampMs else 0L
         if (activity >= config.motionActivityThreshold) {
             movementFrames = 1
             movementPath = activity
-            lastMotionTimestampMs = frame.timestampMs
+            lastMotionTimestampMs = processTimestampMs
             stableCount = 0
             stableRunStartedAtMs = 0L
         }
         state = Mapua14LiveSegmentState.CAPTURING
     }
 
-    private fun observeActivity(frame: LandmarkFrame, activity: Float) {
+    private fun observeActivity(
+        frame: LandmarkFrame,
+        activity: Float,
+        processTimestampMs: Long
+    ) {
         if (!frame.hasAnyHand) {
             previousCaptureHandFrame = null
             stableCount = 0
@@ -256,11 +272,11 @@ class Fsl105LiveSegmentStateMachine(
         if (effectiveActivity >= config.motionActivityThreshold) {
             movementFrames += 1
             movementPath += effectiveActivity
-            lastMotionTimestampMs = frame.timestampMs
+            lastMotionTimestampMs = processTimestampMs
             stableCount = 0
             stableRunStartedAtMs = 0L
         } else if (effectiveActivity <= config.stableActivityThreshold) {
-            if (stableCount == 0) stableRunStartedAtMs = frame.timestampMs
+            if (stableCount == 0) stableRunStartedAtMs = processTimestampMs
             stableCount += 1
         } else {
             stableCount = 0
@@ -391,7 +407,10 @@ object Fsl105SegmentGate {
         trackingFailureReason: String? = null
     ): Fsl105SegmentGateEvaluation? {
         val prepared = trajectory.prepared
-        val timing = timing(prepared.sourceTimestampsMs, resultTimestampMs)
+        val timing = timing(
+            prepared.sourceTimestampsMs,
+            (resultTimestampMs - trajectory.signStartTimestampMs).coerceAtLeast(0L)
+        )
         fun reject(reason: String) = Fsl105SegmentGateEvaluation(
             StandardFslGateDecision(
                 false,
@@ -437,7 +456,10 @@ object Fsl105SegmentGate {
         trackingFailureReason: String? = null
     ): Fsl105SegmentGateEvaluation {
         preflight(trajectory, resultTimestampMs, trackingFailureReason)?.let { return it }
-        val timing = timing(trajectory.prepared.sourceTimestampsMs, resultTimestampMs)
+        val timing = timing(
+            trajectory.prepared.sourceTimestampsMs,
+            (resultTimestampMs - trajectory.signStartTimestampMs).coerceAtLeast(0L)
+        )
         fun reject(reason: String) = Fsl105SegmentGateEvaluation(
             StandardFslGateDecision(
                 false,
@@ -462,7 +484,7 @@ object Fsl105SegmentGate {
 
     private fun timing(
         timestamps: LongArray,
-        resultTimestampMs: Long
+        oldestFrameAgeMs: Long
     ): StandardFullSign225WindowTiming {
         if (timestamps.size < 2 || timestamps.any { it <= 0L }) {
             return StandardFullSign225WindowTiming(false, false, 0L, 0L, 0L, 0L)
@@ -482,7 +504,7 @@ object Fsl105SegmentGate {
             true,
             true,
             timestamps.last() - timestamps.first(),
-            (resultTimestampMs - timestamps.first()).coerceAtLeast(0L),
+            oldestFrameAgeMs,
             median,
             gaps.maxOrNull() ?: 0L
         )
