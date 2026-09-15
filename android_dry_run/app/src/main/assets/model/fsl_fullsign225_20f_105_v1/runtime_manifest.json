@@ -164,11 +164,16 @@
   "rejection_required": true,
   "model_filename": "voxgest_fsl_fullsign225_105_float32.tflite",
   "labels_filename": "class_labels_fsl105_fullsign225_v1.json",
+  "presentation_filename": "presentation_fsl105_bilingual_v1.json",
   "model_sha256": "42d040ec2269d437546d327decaaca32839abdd6bb63b2d400063c90630e5d13",
   "artifacts": {
     "model": "voxgest_fsl_fullsign225_105_float32.tflite",
     "model_sha256": "42d040ec2269d437546d327decaaca32839abdd6bb63b2d400063c90630e5d13",
     "labels": "class_labels_fsl105_fullsign225_v1.json",
+    "presentation": {
+      "filename": "presentation_fsl105_bilingual_v1.json",
+      "sha256": "98b98a49a515fc9593529bac17eb9c50c0f3486b2506dd4c3d22e6b6364ee492"
+    },
     "feature_fixture": {
       "filename": "golden_fullsign225_feature_fixture_f32.bin",
       "sha256": "7256e22ebd3dd278f4d6cc9e90c364ec9cd49d21d3a5c992c88844813fa1f8f4",

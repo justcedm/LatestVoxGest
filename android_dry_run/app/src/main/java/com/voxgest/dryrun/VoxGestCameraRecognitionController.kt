@@ -377,9 +377,11 @@ class VoxGestCameraRecognitionController(
         Log.i(
             TAG,
             "ACTIVE_MODEL=${GradingRecognitionProfiles.NORMAL_SIGN_PROFILE.modelAsset} " +
-                "ACTIVE_PROFILE=${StandardFullSign225Contract.FEATURE_VERSION} " +
+                "ACTIVE_PROFILE=STANDARD_FSL_FULLSIGN225 " +
+                "PROCESSING_PROFILE=${Fsl105LiveSegmentProfile.ID} " +
                 "INPUT_SHAPE=[1,20,225] OUTPUT_SHAPE=[1,105] LABEL_COUNT=105 " +
-                "FEATURE_COUNT=225 TEMPORAL_FRAMES=20 DEMO_ALLOWLIST_APPLIED=false"
+                "FEATURE_COUNT=225 TEMPORAL_FRAMES=20 COMPLETE_EVENT=true " +
+                "DEMO_ALLOWLIST_APPLIED=false"
         )
         standard.start(previewView)
     }

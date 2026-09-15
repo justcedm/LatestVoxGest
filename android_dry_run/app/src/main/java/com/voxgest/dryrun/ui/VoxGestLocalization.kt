@@ -117,7 +117,9 @@ internal data class BilingualMessage(
 
 /** Presentation-only, deterministic offline wording. Recognition tokens are retained verbatim. */
 internal object VoxGestOfflineMessagePresenter {
-    private val tokenTranslations = mapOf(
+    @Volatile private var fsl105Entries: List<Fsl105PresentationEntry> = emptyList()
+
+    private val legacyTokenTranslations = mapOf(
         "WHAT" to "Ano",
         "YOUR" to "Iyong",
         "NAME" to "Pangalan",
@@ -144,17 +146,60 @@ internal object VoxGestOfflineMessagePresenter {
         "THANK YOU" to "Salamat"
     )
 
+    fun configureFsl105(entries: List<Fsl105PresentationEntry>) {
+        require(entries.size == Fsl105GuideCatalog.EXPECTED_LABEL_COUNT)
+        require(entries.map { it.canonicalToken }.distinct().size == entries.size)
+        require(entries.all { it.englishDisplay.isNotBlank() && it.filipinoDisplay.isNotBlank() })
+        fsl105Entries = entries.toList()
+    }
+
     fun present(raw: String): BilingualMessage {
         val source = raw.trim().replace(Regex("\\s+"), " ")
         if (source.isBlank()) return BilingualMessage("", "", null)
         val normalized = source.uppercase(Locale.US).replace('_', ' ')
+        val entries = fsl105Entries
+        val exact = entries.firstOrNull { it.canonicalToken == normalized }
+        if (exact != null) {
+            return BilingualMessage(source, exact.englishDisplay, exact.filipinoDisplay)
+        }
+
+        val matched = longestCanonicalMatches(normalized, entries)
+        if (matched != null) {
+            return BilingualMessage(
+                source,
+                matched.joinToString(" ") { it.englishDisplay },
+                matched.joinToString(" ") { it.filipinoDisplay }
+            )
+        }
+
         val english = normalized.lowercase(Locale.US).replaceFirstChar { it.titlecase(Locale.US) }
         val filipino = phraseTranslations[normalized] ?: normalized.split(' ')
-            .map { tokenTranslations[it] }
+            .map { legacyTokenTranslations[it] }
             .takeIf { translated -> translated.all { it != null } }
             ?.filterNotNull()
             ?.joinToString(" ")
         return BilingualMessage(source, english, filipino)
+    }
+
+    private fun longestCanonicalMatches(
+        normalized: String,
+        entries: List<Fsl105PresentationEntry>
+    ): List<Fsl105PresentationEntry>? {
+        if (entries.isEmpty()) return null
+        val words = normalized.split(' ').filter(String::isNotBlank)
+        val candidates = entries.sortedByDescending { it.canonicalToken.count { char -> char == ' ' } }
+        val matched = mutableListOf<Fsl105PresentationEntry>()
+        var index = 0
+        while (index < words.size) {
+            val entry = candidates.firstOrNull { candidate ->
+                val candidateWords = candidate.canonicalToken.split(' ')
+                index + candidateWords.size <= words.size &&
+                    words.subList(index, index + candidateWords.size) == candidateWords
+            } ?: return null
+            matched += entry
+            index += entry.canonicalToken.split(' ').size
+        }
+        return matched
     }
 
     fun speechText(raw: String, language: VoxGestMessageLanguage): String {

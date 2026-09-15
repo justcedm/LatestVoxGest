@@ -142,9 +142,11 @@ import com.voxgest.app.avatar.Core3FilamentHostView
 import com.voxgest.app.avatar.Core3ListenTranscriptResolver
 import com.voxgest.app.avatar.SceneAvatarHostView
 import com.voxgest.dryrun.BuildConfig
+import com.voxgest.dryrun.CameraRecognitionRuntime
 import com.voxgest.dryrun.CalibrationExportMode
 import com.voxgest.dryrun.DemoAllowlistPolicy
 import com.voxgest.dryrun.DetectionStatus
+import com.voxgest.dryrun.DeveloperRecognitionOverride
 import com.voxgest.dryrun.LandmarkFrame
 import com.voxgest.dryrun.LandmarkVisualizationFrame
 import com.voxgest.dryrun.NamePhraseDetector
@@ -159,6 +161,7 @@ import com.voxgest.dryrun.SentenceSuggestion
 import com.voxgest.dryrun.SentenceSuggestionEngine
 import com.voxgest.dryrun.SentenceSuggestionSettings
 import com.voxgest.dryrun.SignVocabulary
+import com.voxgest.dryrun.StandardFslRuntimeManifest
 import com.voxgest.dryrun.TokenComposer
 import com.voxgest.dryrun.PreferredCameraLens
 import com.voxgest.dryrun.RecognitionProfile
@@ -1330,6 +1333,9 @@ private fun RecognitionAreaCard(
     val compactHeight = LocalWindowSizeClass.current.heightSizeClass == WindowHeightSizeClass.Compact
     val context = LocalContext.current
     val lifecycleOwner = context as LifecycleOwner
+    val standardRuntimeBanner = remember(context) {
+        runCatching { StandardFslRuntimeManifest.load(context).runtimeBanner }.getOrNull()
+    }
     val previewView = remember {
         PreviewView(context).apply {
             scaleType = PreviewView.ScaleType.FILL_CENTER
@@ -1515,6 +1521,25 @@ private fun RecognitionAreaCard(
                     recognitionRunning = recognitionRunning && hasCameraPermission,
                     modifier = Modifier.fillMaxSize()
                 )
+            }
+            if (developerDiagnosticsEnabled &&
+                DeveloperRecognitionOverride.runtime() == CameraRecognitionRuntime.STANDARD_FSL105 &&
+                standardRuntimeBanner != null
+            ) {
+                Surface(
+                    modifier = Modifier.align(Alignment.BottomStart).padding(12.dp),
+                    shape = RoundedCornerShape(10.dp),
+                    color = Color.Black.copy(alpha = 0.72f)
+                ) {
+                    Text(
+                        standardRuntimeBanner.replace(" | ", "\n"),
+                        color = Color.White,
+                        fontSize = 9.sp,
+                        lineHeight = 12.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(horizontal = 9.dp, vertical = 6.dp)
+                    )
+                }
             }
             if (expanded) {
                 FullscreenCameraChrome(
@@ -3715,8 +3740,9 @@ private fun GuideScreen(reducedMotion: Boolean, onOpenSettings: () -> Unit) {
     val completeCatalog = catalogResult.getOrElse { emptyList() }
     val entries = completeCatalog.filter { entry ->
         (selectedCategory == null || entry.category == selectedCategory) &&
-            (query.isBlank() || entry.label.contains(query.trim(), ignoreCase = true) ||
-                entry.filipinoTranslation?.contains(query.trim(), ignoreCase = true) == true)
+            (query.isBlank() || entry.canonicalToken.contains(query.trim(), ignoreCase = true) ||
+                entry.englishDisplay.contains(query.trim(), ignoreCase = true) ||
+                entry.filipinoDisplay.contains(query.trim(), ignoreCase = true))
     }
 
     LazyVerticalGrid(
@@ -3820,15 +3846,18 @@ private fun GuideScreen(reducedMotion: Boolean, onOpenSettings: () -> Unit) {
             containerColor = MaterialTheme.colorScheme.surface,
             titleContentColor = MaterialTheme.colorScheme.onSurface,
             textContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-            title = { Text(entry.label, fontWeight = FontWeight.Bold) },
+            title = { Text(entry.englishDisplay, fontWeight = FontWeight.Bold) },
             text = {
                 Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                     Text(
-                        entry.filipinoTranslation ?: if (isFilipino) {
-                            "Wala pang beripikadong salin sa Filipino"
-                        } else "Verified Filipino translation unavailable",
+                        entry.filipinoDisplay,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         fontWeight = FontWeight.SemiBold
+                    )
+                    Text(
+                        "Canonical model token: ${entry.canonicalToken}",
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        fontSize = 11.sp
                     )
                     Text(
                         "${if (isFilipino) "Kategorya" else "Category"}: ${guideCategoryLabel(entry.category, isFilipino)}",
@@ -3937,9 +3966,9 @@ private fun GuideHero(totalCount: Int, visibleCount: Int, isFilipino: Boolean) {
             )
             Text(
                 if (isFilipino) {
-                    "105 dokumentadong Filipino Sign Language signs at phrases sa kasalukuyang classifier vocabulary ng VoxGest."
+                    "Lahat ng 105 canonical concept sa napiling FSL-105 model vocabulary. Ang salin ay semantic presentation, hindi FSL grammar."
                 } else {
-                    "105 documented Filipino Sign Language signs and phrases forming VoxGest's current classifier vocabulary."
+                    "All 105 canonical concepts in the selected FSL-105 model vocabulary. Translation is semantic presentation, not FSL grammar."
                 },
                 color = VoxGestDesignTokens.DeepCharcoal.copy(alpha = 0.84f),
                 fontSize = 12.sp,
@@ -4094,7 +4123,7 @@ private fun GuideInventoryCard(entry: FslGuideEntry, isFilipino: Boolean, onClic
                     }
                 }
                 Text(
-                    entry.label,
+                    if (isFilipino) entry.filipinoDisplay else entry.englishDisplay,
                     color = MaterialTheme.colorScheme.onSurface,
                     fontSize = 14.sp,
                     lineHeight = 18.sp,
@@ -4112,7 +4141,14 @@ private fun GuideInventoryCard(entry: FslGuideEntry, isFilipino: Boolean, onClic
                 modifier = Modifier.padding(top = 10.dp)
             )
             Text(
-                if (isFilipino) "BOKABULARYO NG DATASET" else entry.datasetStatus,
+                entry.canonicalToken,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                fontSize = 9.sp,
+                fontWeight = FontWeight.SemiBold,
+                modifier = Modifier.padding(top = 6.dp)
+            )
+            Text(
+                if (isFilipino) "BOKABULARYO NG FSL-105 MODEL" else entry.datasetStatus,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 fontSize = 9.sp,
                 fontWeight = FontWeight.Bold,

@@ -255,6 +255,11 @@ object StandardFslArtifactGate {
                 filename = artifacts.getString("model"),
                 expectedSha256 = artifacts.getString("model_sha256")
             ),
+            artifact(
+                artifacts,
+                "presentation",
+                "presentation_fsl105_bilingual_v1.json"
+            ),
             artifact(artifacts, "feature_fixture", "golden_fullsign225_feature_fixture_f32.bin"),
             artifact(artifacts, "feature_fixture_metadata", "golden_fullsign225_feature_fixture.json"),
             artifact(artifacts, "tflite_window_fixture", "golden_window_f32.bin"),
@@ -312,6 +317,7 @@ object StandardFslArtifactGate {
         "$STANDARD_ASSET_ROOT/voxgest_fsl_fullsign225_105_float32.tflite",
         "$STANDARD_ASSET_ROOT/class_labels_fsl105_fullsign225_v1.json",
         "$STANDARD_ASSET_ROOT/runtime_manifest.json",
+        "$STANDARD_ASSET_ROOT/presentation_fsl105_bilingual_v1.json",
         "$STANDARD_ASSET_ROOT/golden_fullsign225_feature_fixture_f32.bin",
         "$STANDARD_ASSET_ROOT/golden_fullsign225_feature_fixture.json",
         "$STANDARD_ASSET_ROOT/golden_window_f32.bin",

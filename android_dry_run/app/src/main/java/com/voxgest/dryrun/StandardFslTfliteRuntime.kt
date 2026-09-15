@@ -24,7 +24,7 @@ data class StandardFslInference(
 
 /** Isolated 105-class runtime; it never falls through to a legacy model. */
 class StandardFslTfliteRuntime(context: Context) : Closeable {
-    private val profile = GradingRecognitionProfiles.STANDARD_FSL_FULLSIGN225
+    val config: StandardFslRuntimeConfig
     private val interpreter: Interpreter
     val labels: List<String>
 
@@ -33,29 +33,30 @@ class StandardFslTfliteRuntime(context: Context) : Closeable {
         require(readiness.canOpenRuntimeForParity) {
             "STANDARD_FSL_FULLSIGN225 blocked: ${readiness.evidence}"
         }
-        labels = readiness.labels
+        config = StandardFslRuntimeManifest.load(context.applicationContext)
+        labels = config.labels
         interpreter = TfliteModelLoader(context.applicationContext).loadInterpreterWithOptions(
             Interpreter.Options().setNumThreads(2),
-            profile.modelAsset
+            config.modelAsset
         )
         interpreter.allocateTensors()
         val input = interpreter.getInputTensor(0)
         val output = interpreter.getOutputTensor(0)
-        require(input.shape().contentEquals(profile.inputShape))
-        require(output.shape().contentEquals(profile.outputShape))
+        require(input.shape().contentEquals(config.inputShape))
+        require(output.shape().contentEquals(config.outputShape))
         require(input.dataType() == DataType.FLOAT32)
         require(output.dataType() == DataType.FLOAT32)
     }
 
     fun infer(window: Array<FloatArray>): StandardFslInference {
-        require(window.size == StandardFullSign225Contract.SEQUENCE_LENGTH)
+        require(window.size == config.sequenceLength)
         require(window.all { frame ->
-            frame.size == StandardFullSign225Contract.FEATURE_SIZE && frame.all { it.isFinite() }
+            frame.size == config.featureSize && frame.all { it.isFinite() }
         })
         val input = Array(1) {
-            Array(StandardFullSign225Contract.SEQUENCE_LENGTH) { index -> window[index].copyOf() }
+            Array(config.sequenceLength) { index -> window[index].copyOf() }
         }
-        val output = Array(1) { FloatArray(profile.classCount) }
+        val output = Array(1) { FloatArray(config.classCount) }
         val started = SystemClock.elapsedRealtimeNanos()
         interpreter.run(input, output)
         val latency = (SystemClock.elapsedRealtimeNanos() - started) / 1_000_000.0

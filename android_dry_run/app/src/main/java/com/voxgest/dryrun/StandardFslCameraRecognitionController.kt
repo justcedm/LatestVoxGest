@@ -71,7 +71,9 @@ class StandardFslCameraRecognitionController(
     private val running = AtomicBoolean(false)
     private val released = AtomicBoolean(false)
     private val performance = StandardFslPerformanceTracker()
-    private val eventStateMachine = StandardFslEventStateMachine()
+    private val handIdentity = TemporalAnatomicalHandIdentityStabilizer(
+        ReportedHandednessPolicy.SWAP_REPORTED_SIDES_FOR_UNMIRRORED_INPUT
+    )
     private val displayFrameCallback = object : Choreographer.FrameCallback {
         override fun doFrame(frameTimeNanos: Long) {
             if (!running.get()) return
@@ -86,11 +88,17 @@ class StandardFslCameraRecognitionController(
     @Volatile private var imageAnalysis: ImageAnalysis? = null
     @Volatile private var extractor: LandmarkExtractor? = null
     @Volatile private var runtime: StandardFslTfliteRuntime? = null
-    @Volatile private var scaffold: StandardFslRuntimeScaffold? = null
+    @Volatile private var segmentMachine: Fsl105LiveSegmentStateMachine? = null
+    @Volatile private var runtimeConfig: StandardFslRuntimeConfig? = null
+    @Volatile private var runtimeTemporalProfile: CompleteSignTemporalProfile? = null
+    @Volatile private var latestHandDiagnostics: TemporalHandIdentityDiagnostics? = null
+    @Volatile private var latestLandmarkMetrics: LandmarkExtractionMetrics? = null
     @Volatile private var lastStateAtMs = 0L
     @Volatile private var lastTracking: StandardFslTrackingState? = null
     private var lastEventLogKey = ""
     private var lastEventLogAtMs = Long.MIN_VALUE
+    private var eventOrdinal = 0L
+    private var eventTrackingFailureReason: String? = null
 
     fun start(previewView: PreviewView) {
         check(!released.get()) { "StandardFslCameraRecognitionController is released" }
@@ -120,7 +128,16 @@ class StandardFslCameraRecognitionController(
                 }
                 if (!running.get()) return@execute
 
-                runtime = StandardFslTfliteRuntime(appContext)
+                val loadedRuntime = StandardFslTfliteRuntime(appContext)
+                val config = loadedRuntime.config
+                runtime = loadedRuntime
+                runtimeConfig = config
+                val temporalProfile = CompleteSignTemporalProfiles.standardFsl105(
+                    sequenceLength = config.sequenceLength,
+                    featureSize = config.featureSize
+                )
+                runtimeTemporalProfile = temporalProfile
+                segmentMachine = Fsl105LiveSegmentStateMachine(temporalProfile)
                 val lens = if (requestedCameraSource == CameraSource.BACK) {
                     GradingCameraLens.BACK
                 } else {
@@ -129,13 +146,20 @@ class StandardFslCameraRecognitionController(
                 extractor = StandardFslCameraPipeline.createLandmarkExtractor(
                     context = appContext,
                     lens = lens,
-                    onMetrics = performance::recordLandmarks
+                    onMetrics = { metrics ->
+                        latestLandmarkMetrics = metrics
+                        performance.recordLandmarks(metrics)
+                    },
+                    handIdentityStabilizer = handIdentity,
+                    onHandIdentityDiagnostics = { diagnostics ->
+                        latestHandDiagnostics = diagnostics
+                    }
                 )
-                scaffold = StandardFslRuntimeScaffold(StandardFslRuntimePolicy.REJECTION_CONFIG)
                 Log.i(
                     TAG,
-                    "STANDARD_MODEL_LOAD PASS active_profile=STANDARD_FSL_FULLSIGN225 " +
-                        "input=[1,20,225] output=[1,105] feature_version=fullsign225_20f_v1 " +
+                    "STANDARD_MODEL_LOAD PASS runtime_banner=${config.runtimeBanner} " +
+                        "input=${config.inputShape.contentToString()} " +
+                        "output=${config.outputShape.contentToString()} feature_version=${config.featureVersion} " +
                         "model_input=unmirrored ${artifacts.evidence}"
                 )
                 Log.i(TAG, "ONEHAND162_FALLBACK PASS preserved=true loaded=false reason=standard_profile_is_ready")
@@ -146,12 +170,13 @@ class StandardFslCameraRecognitionController(
         }
     }
 
-    /** Clears the current rolling window and temporal gate without changing any threshold. */
+    /** Clears the current sign event without changing any threshold or model contract. */
     fun clear() {
         if (released.get()) return
         analysisExecutor.execute {
-            scaffold?.reset()
-            eventStateMachine.reset()
+            segmentMachine?.reset()
+            handIdentity.reset()
+            eventTrackingFailureReason = null
             postState(StandardFslLiveUiState(StandardFslTrackingState.READY), force = true)
         }
     }
@@ -297,78 +322,158 @@ class StandardFslCameraRecognitionController(
                 durationMs = (SystemClock.elapsedRealtimeNanos() - overlayStarted) / NANOS_PER_MS,
                 published = overlayPublished
             )
-            val localScaffold = scaffold ?: return
-            val event = eventStateMachine.onFrame(frame)
-            if (event.flushWindow) {
-                localScaffold.reset()
-            }
-            localScaffold.recordEvent(event)
-            if (!event.collectFrame) {
-                val diagnostics = localScaffold.diagnosticsSnapshot(event.reason, frame.timestampMs)
-                postState(
-                    StandardFslLiveUiState(StandardFslTrackingState.HOLD_SIGN_CLEARLY, diagnostics),
-                    force = event.flushWindow
-                )
-                logEventRejection(event, diagnostics, frame.timestampMs)
-                performance.logIfDue()
-                return
-            }
-            val currentFrameUsable = event.activity.currentFrameUsable
             val temporalStarted = SystemClock.elapsedRealtimeNanos()
-            var diagnostics = localScaffold.append(frame).diagnostics
-            val window = localScaffold.snapshotForInference()
+            val machine = segmentMachine ?: return
+            val event = machine.onFrame(frame)
             performance.recordTemporal(
                 (SystemClock.elapsedRealtimeNanos() - temporalStarted) / NANOS_PER_MS
             )
-            if (!event.allowInference) {
-                localScaffold.cancelTemporalCandidate()
+            if (event.state == Mapua14LiveSegmentState.CAPTURING &&
+                event.capturedFrameCount <= (runtimeTemporalProfile?.motionBoundaryFrames ?: 0) + 1
+            ) {
+                eventTrackingFailureReason = null
             }
-            if (window == null || !event.allowInference) {
-                val tracking = if (frame.hasPose && frame.hasAnyHand) {
-                    StandardFslTrackingState.READY
-                } else {
-                    StandardFslTrackingState.HOLD_SIGN_CLEARLY
+            if (event.state == Mapua14LiveSegmentState.CAPTURING &&
+                latestHandDiagnostics?.status == TemporalHandAssignmentStatus.FAILED_CLOSED
+            ) {
+                eventTrackingFailureReason = "AMBIGUOUS_ANATOMICAL_COLLISION"
+            }
+            if (event.reason == "RELEASE_CONFIRMED") eventTrackingFailureReason = null
+            logSegmentState(event, frame.timestampMs)
+
+            if (event.state != Mapua14LiveSegmentState.FINALIZING) {
+                val diagnostics = segmentDiagnostics(event, frame)
+                val tracking = when (event.state) {
+                    Mapua14LiveSegmentState.ARMING,
+                    Mapua14LiveSegmentState.CAPTURING,
+                    Mapua14LiveSegmentState.FINALIZING,
+                    Mapua14LiveSegmentState.INFERENCE -> StandardFslTrackingState.READY
+                    else -> if (frame.hasPose) {
+                        StandardFslTrackingState.READY
+                    } else {
+                        StandardFslTrackingState.HOLD_SIGN_CLEARLY
+                    }
                 }
                 postState(StandardFslLiveUiState(tracking, diagnostics))
                 performance.logIfDue()
                 return
             }
 
+            eventOrdinal += 1L
+            val inferenceReadyTimestampMs = System.nanoTime() / 1_000_000L
+            val trajectory = try {
+                machine.finalizeForInference(inferenceReadyTimestampMs)
+            } catch (error: IllegalArgumentException) {
+                Log.i(
+                    TAG,
+                    "FSL105_SEGMENT_GATE event_id=$eventOrdinal final=REJECT " +
+                        "reason=MALFORMED_EVENT detail=${error.message} semantic_token_emitted=false"
+                )
+                machine.reset()
+                postState(
+                    StandardFslLiveUiState(
+                        StandardFslTrackingState.HOLD_SIGN_CLEARLY,
+                        segmentDiagnostics(event, frame, rejectionReason = "MALFORMED_EVENT")
+                    ),
+                    force = true
+                )
+                return
+            }
+            val resamplingCompletedTimestampMs = System.nanoTime() / 1_000_000L
+            val preflightTimestampMs = System.nanoTime() / 1_000_000L
+            val preflight = Fsl105SegmentGate.preflight(
+                trajectory,
+                preflightTimestampMs,
+                eventTrackingFailureReason
+            )
+            if (preflight != null) {
+                val postEndTiming = machine.markInferenceFinished(preflightTimestampMs)
+                logPreflightRejection(eventOrdinal, trajectory, preflight, postEndTiming)
+                val quality = trajectory.prepared.quality
+                postState(
+                    StandardFslLiveUiState(
+                        StandardFslTrackingState.HOLD_SIGN_CLEARLY,
+                        StandardFslDiagnostics(
+                            posePresent = quality.posePresentFrames > 0,
+                            leftHandPresent = quality.leftHandPresentFrames > 0,
+                            rightHandPresent = quality.rightHandPresentFrames > 0,
+                            bufferFrames = runtimeConfig?.sequenceLength ?: 20,
+                            activeProfile = GradingProfileId.STANDARD_FSL_FULLSIGN225,
+                            top1Label = null,
+                            top1Confidence = null,
+                            top2Label = null,
+                            top2Margin = null,
+                            accepted = false,
+                            rejectionReason = preflight.decision.reason,
+                            inferenceLatencyMs = null,
+                            eventState = StandardFslEventState.WAIT_FOR_RELEASE,
+                            eventReason = preflight.decision.reason,
+                            activityScore = event.activity,
+                            windowDurationMs = preflight.timing.windowDurationMs,
+                            oldestFrameAgeMs = preflight.timing.oldestFrameAgeMs,
+                            medianFrameGapMs = preflight.timing.medianFrameGapMs,
+                            maxFrameGapMs = preflight.timing.maxFrameGapMs
+                        )
+                    ),
+                    force = true
+                )
+                performance.logIfDue()
+                return
+            }
             val inferenceStarted = SystemClock.elapsedRealtimeNanos()
-            val inference = runtime?.infer(window) ?: return
+            val inference = runtime?.infer(trajectory.prepared.copyModelInput()) ?: return
             performance.recordTflite(
                 (SystemClock.elapsedRealtimeNanos() - inferenceStarted) / NANOS_PER_MS
             )
+            val resultTimestampMs = System.nanoTime() / 1_000_000L
+            val postEndTiming = machine.markInferenceFinished(resultTimestampMs)
             val gateStarted = SystemClock.elapsedRealtimeNanos()
-            val update = localScaffold.evaluate(
-                inference = inference,
-                nowMs = frame.timestampMs,
-                currentFrameUsable = currentFrameUsable
+            val gateEvaluation = Fsl105SegmentGate.evaluate(
+                inference,
+                trajectory,
+                resultTimestampMs,
+                eventTrackingFailureReason
             )
             performance.recordGate(
                 (SystemClock.elapsedRealtimeNanos() - gateStarted) / NANOS_PER_MS
             )
-            diagnostics = update.diagnostics
-            val decision = update.decision
-            if (decision.accepted) {
-                eventStateMachine.markAccepted()
-                diagnostics = diagnostics.copy(
-                    eventState = StandardFslEventState.ACCEPTED,
-                    eventReason = "TOKEN_ACCEPTED"
-                )
-            } else if (decision.reason == "TEMPORAL_STABILITY") {
-                eventStateMachine.markCandidate()
-                diagnostics = diagnostics.copy(
-                    eventState = StandardFslEventState.CANDIDATE,
-                    eventReason = "PREDICTION_CANDIDATE"
-                )
-            } else {
-                eventStateMachine.clearCandidate()
-                diagnostics = diagnostics.copy(
-                    eventState = eventStateMachine.state,
-                    eventReason = "PREDICTION_REJECTED_${decision.reason}"
-                )
-            }
+            val decision = gateEvaluation.decision
+            val quality = trajectory.prepared.quality
+            val timing = gateEvaluation.timing
+            val diagnostics = StandardFslDiagnostics(
+                posePresent = quality.posePresentFrames > 0,
+                leftHandPresent = quality.leftHandPresentFrames > 0,
+                rightHandPresent = quality.rightHandPresentFrames > 0,
+                bufferFrames = runtimeConfig?.sequenceLength ?: 20,
+                activeProfile = GradingProfileId.STANDARD_FSL_FULLSIGN225,
+                top1Label = inference.top1.label,
+                top1Confidence = inference.top1.probability,
+                top2Label = inference.top2.label,
+                top2Margin = inference.margin,
+                accepted = decision.accepted,
+                rejectionReason = decision.reason.takeUnless { decision.accepted },
+                inferenceLatencyMs = inference.latencyMs,
+                eventState = if (decision.accepted) {
+                    StandardFslEventState.ACCEPTED
+                } else {
+                    StandardFslEventState.WAIT_FOR_RELEASE
+                },
+                eventReason = if (decision.accepted) "TOKEN_ACCEPTED" else decision.reason,
+                activityScore = event.activity,
+                windowDurationMs = timing.windowDurationMs,
+                oldestFrameAgeMs = timing.oldestFrameAgeMs,
+                medianFrameGapMs = timing.medianFrameGapMs,
+                maxFrameGapMs = timing.maxFrameGapMs
+            )
+            logClassifier(
+                eventOrdinal,
+                inference,
+                trajectory,
+                postEndTiming,
+                resamplingCompletedTimestampMs,
+                resultTimestampMs
+            )
+            logGate(eventOrdinal, inference, trajectory, gateEvaluation, postEndTiming)
             val tracking = if (decision.accepted) {
                 StandardFslTrackingState.READY
             } else {
@@ -377,9 +482,8 @@ class StandardFslCameraRecognitionController(
             postState(StandardFslLiveUiState(tracking, diagnostics))
             Log.i(
                 TAG,
-                "STANDARD_FSL_LIVE decision=${if (decision.accepted) "ACCEPT" else "REJECT"} " +
-                    "reason=${decision.reason} stable_windows=${decision.stableWindowCount} " +
-                    "cooldown_active=${decision.cooldownActive} " +
+                    "STANDARD_FSL_LIVE decision=${if (decision.accepted) "ACCEPT" else "REJECT"} " +
+                    "reason=${decision.reason} complete_event=true rolling_window=false " +
                     "top5=${inference.top5.joinToString(prefix = "[", postfix = "]") { "${it.label}:${it.probability}" }} " +
                     diagnostics.toLogLine()
             )
@@ -399,6 +503,7 @@ class StandardFslCameraRecognitionController(
             performance.logIfDue()
         } catch (error: Throwable) {
             Log.e(TAG, "STANDARD_FSL_LIVE ERROR", error)
+            segmentMachine?.reset()
             postState(
                 StandardFslLiveUiState(
                     tracking = StandardFslTrackingState.HOLD_SIGN_CLEARLY,
@@ -432,26 +537,165 @@ class StandardFslCameraRecognitionController(
         mainExecutor.execute { onFrame(null) }
         runCatching { runtime?.close() }
         runtime = null
-        scaffold = null
-        eventStateMachine.reset()
+        runtimeConfig = null
+        runtimeTemporalProfile = null
+        segmentMachine?.reset()
+        segmentMachine = null
+        handIdentity.reset()
+        latestHandDiagnostics = null
+        latestLandmarkMetrics = null
+        eventTrackingFailureReason = null
         lastEventLogKey = ""
         lastEventLogAtMs = Long.MIN_VALUE
     }
 
-    private fun logEventRejection(
-        event: StandardFslEventUpdate,
-        diagnostics: StandardFslDiagnostics,
-        nowMs: Long
-    ) {
-        val key = "${event.state.name}:${event.reason}"
-        if (key == lastEventLogKey && nowMs - lastEventLogAtMs < UNCHANGED_EVENT_LOG_INTERVAL_MS) return
+    private fun segmentDiagnostics(
+        event: Mapua14LiveSegmentUpdate,
+        frame: LandmarkFrame,
+        rejectionReason: String = event.reason
+    ): StandardFslDiagnostics {
+        val mappedState = when (event.state) {
+            Mapua14LiveSegmentState.IDLE -> StandardFslEventState.IDLE
+            Mapua14LiveSegmentState.ARMING -> StandardFslEventState.PRIMING
+            Mapua14LiveSegmentState.CAPTURING -> StandardFslEventState.SIGN_ACTIVE
+            Mapua14LiveSegmentState.FINALIZING,
+            Mapua14LiveSegmentState.INFERENCE -> StandardFslEventState.CANDIDATE
+            Mapua14LiveSegmentState.WAIT_FOR_RELEASE -> StandardFslEventState.WAIT_FOR_RELEASE
+        }
+        return StandardFslDiagnostics(
+            posePresent = frame.hasPose,
+            leftHandPresent = frame.hasLeftHand,
+            rightHandPresent = frame.hasRightHand,
+            bufferFrames = event.capturedFrameCount.coerceIn(
+                0,
+                StandardFullSign225Contract.SEQUENCE_LENGTH
+            ),
+            activeProfile = GradingProfileId.STANDARD_FSL_FULLSIGN225,
+            top1Label = null,
+            top1Confidence = null,
+            top2Label = null,
+            top2Margin = null,
+            accepted = false,
+            rejectionReason = rejectionReason,
+            inferenceLatencyMs = null,
+            eventState = mappedState,
+            eventReason = "${Fsl105LiveSegmentProfile.ID}:${event.reason}",
+            activityScore = event.activity
+        )
+    }
+
+    private fun logSegmentState(event: Mapua14LiveSegmentUpdate, frameTimestampMs: Long) {
+        val key = "${event.state}:${event.reason}"
+        val nowMs = SystemClock.elapsedRealtime()
+        if (key == lastEventLogKey && nowMs - lastEventLogAtMs < UNCHANGED_EVENT_LOG_INTERVAL_MS) {
+            return
+        }
         lastEventLogKey = key
         lastEventLogAtMs = nowMs
         Log.i(
             TAG,
-            "STANDARD_FSL_EVENT decision=REJECT reason=${event.reason} " +
-                "stable_windows=0 cooldown_active=false top5=[] " +
-                diagnostics.toLogLine()
+            "FSL105_SEGMENT_STATE state=${event.state} reason=${event.reason} " +
+                "frame_timestamp_ms=$frameTimestampMs " +
+                "process_timestamp_ms=${System.nanoTime() / 1_000_000L} " +
+                "captured_frames=${event.capturedFrameCount} activity=${event.activity} " +
+                "completion=${event.completion ?: "NONE"}"
+        )
+    }
+
+    private fun logClassifier(
+        eventId: Long,
+        inference: StandardFslInference,
+        trajectory: Fsl105InferenceTrajectory,
+        postEnd: Mapua14PostEndResultTiming,
+        resamplingCompletedTimestampMs: Long,
+        resultTimestampMs: Long
+    ) {
+        val prepared = trajectory.prepared
+        val timestamps = prepared.sourceTimestampsMs
+        val captureDurationMs = if (timestamps.size >= 2) {
+            timestamps.last() - timestamps.first()
+        } else {
+            0L
+        }
+        Log.i(
+            TAG,
+            "FSL105_SEGMENT_CLASSIFIER event_id=$eventId " +
+                "raw_top1=${inference.top1.label} raw_top1_score=${inference.top1.probability} " +
+                "raw_top2=${inference.top2.label} raw_top2_score=${inference.top2.probability} " +
+                "top5=${inference.top5.joinToString(prefix = "[", postfix = "]") { "${it.label}:${it.probability}" }} " +
+                "margin=${inference.margin} mediapipe_ms=${latestLandmarkMetrics?.totalMs ?: "UNKNOWN"} " +
+                "tflite_ms=${inference.latencyMs} capture_duration_ms=$captureDurationMs " +
+                "captured_frames=${prepared.capturedFrameCount} " +
+                "envelope_frames=${prepared.completeTrajectoryFrameCount} " +
+                "resampled_frames=${prepared.modelInput.size} feature_count=${prepared.modelInput.first().size} " +
+                "pose_frames=${prepared.quality.posePresentFrames} " +
+                "left_frames=${prepared.quality.leftHandPresentFrames} " +
+                "right_frames=${prepared.quality.rightHandPresentFrames} " +
+                "any_hand_frames=${prepared.quality.anyHandPresentFrames} " +
+                "both_hand_frames=${prepared.quality.bothHandsPresentFrames} " +
+                "interpolated_left=${prepared.interpolatedLeftFrames} " +
+                "interpolated_right=${prepared.interpolatedRightFrames} " +
+                "completion=${trajectory.completion} " +
+                "sign_start_timestamp_ms=${trajectory.signStartTimestampMs} " +
+                "estimated_sign_end_timestamp_ms=${trajectory.estimatedSignEndTimestampMs} " +
+                "completion_detected_timestamp_ms=${trajectory.completionDetectedTimestampMs} " +
+                "inference_ready_timestamp_ms=${trajectory.inferenceReadyTimestampMs} " +
+                "resampling_completed_timestamp_ms=$resamplingCompletedTimestampMs " +
+                "result_timestamp_ms=$resultTimestampMs " +
+                "end_to_inference_ready_ms=${trajectory.endToInferenceReadyMs} " +
+                "end_to_raw_result_ms=${postEnd.endToResultMs}"
+        )
+    }
+
+    private fun logPreflightRejection(
+        eventId: Long,
+        trajectory: Fsl105InferenceTrajectory,
+        evaluation: Fsl105SegmentGateEvaluation,
+        postEnd: Mapua14PostEndResultTiming
+    ) {
+        val prepared = trajectory.prepared
+        val quality = prepared.quality
+        val timing = evaluation.timing
+        Log.i(
+            TAG,
+            "FSL105_SEGMENT_GATE event_id=$eventId raw_top1=NOT_RUN tflite_ms=NOT_RUN " +
+                "captured_frames=${prepared.capturedFrameCount} " +
+                "resampled_frames=${prepared.modelInput.size} " +
+                "pose_ratio=${quality.posePresenceRatio} any_hand_ratio=${quality.anyHandPresenceRatio} " +
+                "left_ratio=${quality.leftHandPresenceRatio} right_ratio=${quality.rightHandPresenceRatio} " +
+                "both_ratio=${quality.bothHandsPresenceRatio} trajectory_duration_ms=${timing.windowDurationMs} " +
+                "median_gap_ms=${timing.medianFrameGapMs} max_gap_ms=${timing.maxFrameGapMs} " +
+                "final=REJECT reason=${evaluation.decision.reason} semantic_token_emitted=false " +
+                "end_to_raw_result_ms=NOT_RUN end_to_accepted_result_ms=NOT_ACCEPTED " +
+                "sign_end_to_rejection_ms=${postEnd.endToResultMs} " +
+                "mediapipe_ms=${latestLandmarkMetrics?.totalMs ?: "UNKNOWN"} " +
+                "hand_status=${latestHandDiagnostics?.status ?: "UNKNOWN"}"
+        )
+    }
+
+    private fun logGate(
+        eventId: Long,
+        inference: StandardFslInference,
+        trajectory: Fsl105InferenceTrajectory,
+        evaluation: Fsl105SegmentGateEvaluation,
+        postEnd: Mapua14PostEndResultTiming
+    ) {
+        val quality = trajectory.prepared.quality
+        val timing = evaluation.timing
+        Log.i(
+            TAG,
+            "FSL105_SEGMENT_GATE event_id=$eventId predicted=${inference.top1.label} " +
+                "confidence=${inference.top1.probability} margin=${inference.margin} " +
+                "pose_ratio=${quality.posePresenceRatio} any_hand_ratio=${quality.anyHandPresenceRatio} " +
+                "left_ratio=${quality.leftHandPresenceRatio} right_ratio=${quality.rightHandPresenceRatio} " +
+                "both_ratio=${quality.bothHandsPresenceRatio} trajectory_duration_ms=${timing.windowDurationMs} " +
+                "median_gap_ms=${timing.medianFrameGapMs} max_gap_ms=${timing.maxFrameGapMs} " +
+                "final=${if (evaluation.decision.accepted) "ACCEPT" else "REJECT"} " +
+                "reason=${evaluation.decision.reason} semantic_token_emitted=${evaluation.decision.accepted} " +
+                "end_to_raw_result_ms=${postEnd.endToResultMs} " +
+                "end_to_accepted_result_ms=${if (evaluation.decision.accepted) postEnd.endToResultMs else "NOT_ACCEPTED"} " +
+                "hand_status=${latestHandDiagnostics?.status ?: "UNKNOWN"} " +
+                "hand_fail_reasons=${latestHandDiagnostics?.failClosedReasons.orEmpty()}"
         )
     }
 

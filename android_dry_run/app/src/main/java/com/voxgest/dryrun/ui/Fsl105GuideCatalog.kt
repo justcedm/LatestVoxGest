@@ -1,7 +1,9 @@
 package com.voxgest.dryrun.ui
 
 import android.content.Context
+import com.voxgest.dryrun.GradingRecognitionProfiles
 import org.json.JSONObject
+import java.security.MessageDigest
 
 internal enum class FslGuideCategory(val displayName: String) {
     CALENDAR("Calendar & time"),
@@ -14,13 +16,23 @@ internal enum class FslGuideCategory(val displayName: String) {
 }
 
 internal data class FslGuideEntry(
-    val label: String,
-    val filipinoTranslation: String?,
+    val canonicalToken: String,
+    val englishDisplay: String,
+    val filipinoDisplay: String,
     val category: FslGuideCategory,
-    val datasetStatus: String = "DATASET VOCABULARY",
-    val liveValidationStatus: String = "NOT YET LIVE VALIDATED",
+    val datasetStatus: String = "FSL-105 MODEL VOCABULARY",
+    val liveValidationStatus: String = "NOT YET DEVICE-QUALIFIED",
     val tutorialStatus: String = "TUTORIAL MEDIA NOT PACKAGED",
     val source: String = "FSL-105 selected runtime label asset"
+) {
+    val label: String get() = canonicalToken
+    val filipinoTranslation: String get() = filipinoDisplay
+}
+
+internal data class Fsl105PresentationEntry(
+    val canonicalToken: String,
+    val englishDisplay: String,
+    val filipinoDisplay: String
 )
 
 /** Source-record facts verified against the Mendeley Data version-of-record page. */
@@ -44,26 +56,36 @@ internal object Fsl105DatasetFacts {
  * not claim that a sign has passed a Samsung live-camera acceptance test.
  */
 internal object Fsl105GuideCatalog {
+    private const val ASSET_ROOT = "model/fsl_fullsign225_20f_105_v1"
+    const val MANIFEST_ASSET_PATH = "$ASSET_ROOT/runtime_manifest.json"
     const val ASSET_PATH =
-        "model/fsl_fullsign225_20f_105_v1/class_labels_fsl105_fullsign225_v1.json"
+        "$ASSET_ROOT/class_labels_fsl105_fullsign225_v1.json"
     const val EXPECTED_FEATURE_VERSION = "fullsign225_20f_v1"
     const val EXPECTED_LABEL_COUNT = 105
+    const val PRESENTATION_ASSET_PATH =
+        "$ASSET_ROOT/presentation_fsl105_bilingual_v1.json"
 
-    fun load(context: Context): List<FslGuideEntry> =
-        context.assets.open(ASSET_PATH).bufferedReader(Charsets.UTF_8).use { reader ->
-            parse(reader.readText())
+    fun load(context: Context): List<FslGuideEntry> {
+        return Fsl105PresentationCatalog.load(context).map { presentation ->
+            FslGuideEntry(
+                canonicalToken = presentation.canonicalToken,
+                englishDisplay = presentation.englishDisplay,
+                filipinoDisplay = presentation.filipinoDisplay,
+                category = categoryFor(presentation.canonicalToken)
+            )
         }
+    }
 
-    internal fun parse(json: String): List<FslGuideEntry> {
-        val root = JSONObject(json)
+    internal fun parse(labelsJson: String, presentationJson: String): List<FslGuideEntry> {
+        val root = JSONObject(labelsJson)
         require(root.getString("feature_version") == EXPECTED_FEATURE_VERSION) {
             "Guide feature version does not match the selected FSL-105 runtime"
         }
         require(root.getInt("class_count") == EXPECTED_LABEL_COUNT) {
             "Guide manifest class count must be $EXPECTED_LABEL_COUNT"
         }
-        val labelsJson = root.getJSONArray("labels")
-        val labels = List(labelsJson.length()) { index -> labelsJson.getString(index) }
+        val labelsArray = root.getJSONArray("labels")
+        val labels = List(labelsArray.length()) { index -> labelsArray.getString(index) }
         require(labels.size == EXPECTED_LABEL_COUNT) {
             "Guide inventory must contain exactly $EXPECTED_LABEL_COUNT labels"
         }
@@ -72,13 +94,13 @@ internal object Fsl105GuideCatalog {
         }
         require(labels.all { it.isNotBlank() }) { "Guide inventory contains a blank label" }
 
-        return labels.map { label ->
+        val presentations = Fsl105PresentationCatalog.parse(labelsJson, presentationJson)
+        return presentations.map { presentation ->
             FslGuideEntry(
-                label = label,
-                // No verified Filipino translation map is packaged for the 105-class vocabulary.
-                // Keep this null rather than presenting an invented or machine-translated gloss.
-                filipinoTranslation = null,
-                category = categoryFor(label)
+                canonicalToken = presentation.canonicalToken,
+                englishDisplay = presentation.englishDisplay,
+                filipinoDisplay = presentation.filipinoDisplay,
+                category = categoryFor(presentation.canonicalToken)
             )
         }
     }
@@ -121,4 +143,61 @@ internal object Fsl105GuideCatalog {
         "GOOD MORNING", "HELLO", "HOW ARE YOU", "IM FINE", "KNOW", "NICE TO MEET YOU",
         "NO", "SEE YOU TOMORROW", "THANK YOU", "UNDERSTAND", "WRONG", "YES", "YOURE WELCOME"
     )
+}
+
+/** Exact one-to-one semantic presentation map for the selected 105 canonical model tokens. */
+internal object Fsl105PresentationCatalog {
+    fun load(context: Context): List<Fsl105PresentationEntry> {
+        val manifest = context.assets.open(Fsl105GuideCatalog.MANIFEST_ASSET_PATH)
+            .bufferedReader(Charsets.UTF_8).use { JSONObject(it.readText()) }
+        val root = GradingRecognitionProfiles.STANDARD_ASSET_ROOT
+        val labelsAsset = "$root/${manifest.getString("labels_filename")}"
+        val presentationAsset = "$root/${manifest.getString("presentation_filename")}"
+        val labelsJson = context.assets.open(labelsAsset)
+            .bufferedReader(Charsets.UTF_8).use { it.readText() }
+        val presentationBytes = context.assets.open(presentationAsset).use { it.readBytes() }
+        val expectedSha = manifest.getJSONObject("artifacts")
+            .getJSONObject("presentation").getString("sha256")
+        val actualSha = MessageDigest.getInstance("SHA-256").digest(presentationBytes)
+            .joinToString("") { "%02x".format(it) }
+        require(actualSha.equals(expectedSha, ignoreCase = true)) {
+            "FSL-105 presentation asset SHA-256 mismatch"
+        }
+        val presentationJson = presentationBytes.toString(Charsets.UTF_8)
+        return parse(labelsJson, presentationJson)
+    }
+
+    fun parse(labelsJson: String, presentationJson: String): List<Fsl105PresentationEntry> {
+        val labelsRoot = JSONObject(labelsJson)
+        val canonicalLabels = labelsRoot.getJSONArray("labels").let { array ->
+            List(array.length()) { array.getString(it) }
+        }
+        val root = JSONObject(presentationJson)
+        require(root.getInt("schema_version") == 1)
+        require(root.getString("profile_id") == "STANDARD_FSL_FULLSIGN225")
+        require(root.getBoolean("semantic_presentation_only"))
+        val values = root.getJSONArray("entries")
+        val entries = List(values.length()) { index ->
+            val value = values.getJSONObject(index)
+            Fsl105PresentationEntry(
+                canonicalToken = value.getString("canonical_token"),
+                englishDisplay = value.getString("english_display"),
+                filipinoDisplay = value.getString("filipino_display")
+            )
+        }
+        require(entries.size == Fsl105GuideCatalog.EXPECTED_LABEL_COUNT)
+        require(entries.map { it.canonicalToken }.distinct().size == entries.size) {
+            "Bilingual presentation map contains duplicate canonical tokens"
+        }
+        require(entries.all { it.englishDisplay.isNotBlank() }) {
+            "Bilingual presentation map contains a missing English display"
+        }
+        require(entries.all { it.filipinoDisplay.isNotBlank() }) {
+            "Bilingual presentation map contains a missing Filipino display"
+        }
+        require(entries.map { it.canonicalToken } == canonicalLabels) {
+            "Bilingual presentation keys must exactly match canonical label order"
+        }
+        return entries
+    }
 }

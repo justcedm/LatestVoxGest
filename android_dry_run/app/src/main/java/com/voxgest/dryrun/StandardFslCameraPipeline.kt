@@ -9,7 +9,9 @@ object StandardFslCameraPipeline {
     fun createLandmarkExtractor(
         context: Context,
         lens: GradingCameraLens = GradingCameraLens.FRONT,
-        onMetrics: (LandmarkExtractionMetrics) -> Unit = {}
+        onMetrics: (LandmarkExtractionMetrics) -> Unit = {},
+        handIdentityStabilizer: TemporalAnatomicalHandIdentityStabilizer? = null,
+        onHandIdentityDiagnostics: (TemporalHandIdentityDiagnostics) -> Unit = {}
     ): MediaPipeLandmarkExtractor {
         val policy = GradingCameraPolicy.framePolicy(profile, lens)
         check(!policy.analysisMirrorHorizontally) {
@@ -19,7 +21,9 @@ object StandardFslCameraPipeline {
             context = context,
             mirrorCameraFrame = false,
             reportedHandednessPolicy = policy.handednessPolicy,
-            onMetrics = onMetrics
+            onMetrics = onMetrics,
+            handIdentityStabilizer = handIdentityStabilizer,
+            onHandIdentityDiagnostics = onHandIdentityDiagnostics
         )
     }
 }

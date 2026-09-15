@@ -9,6 +9,8 @@ import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.core.view.WindowCompat
 import com.voxgest.dryrun.BuildConfig
 import com.voxgest.dryrun.DeveloperRecognitionOverride
+import com.voxgest.dryrun.ui.Fsl105PresentationCatalog
+import com.voxgest.dryrun.ui.VoxGestOfflineMessagePresenter
 import com.voxgest.dryrun.ui.VoxGestPresentationApp
 
 class MainActivity : ComponentActivity() {
@@ -21,6 +23,9 @@ class MainActivity : ComponentActivity() {
             debugBuild = BuildConfig.DEBUG,
             diagnosticsEnabled = diagnosticsEnabled,
             profileId = intent.getStringExtra(EXTRA_RECOGNITION_PROFILE)
+        )
+        VoxGestOfflineMessagePresenter.configureFsl105(
+            Fsl105PresentationCatalog.load(this)
         )
         WindowCompat.setDecorFitsSystemWindows(window, true)
         window.statusBarColor = Color.rgb(0, 108, 115)

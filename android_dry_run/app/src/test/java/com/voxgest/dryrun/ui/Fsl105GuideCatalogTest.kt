@@ -15,7 +15,10 @@ class Fsl105GuideCatalogTest {
         val canonicalArray = canonicalJson.getJSONArray("labels")
         val canonical = List(canonicalArray.length()) { index -> canonicalArray.getString(index) }
 
-        val guide = Fsl105GuideCatalog.parse(sourceJson)
+        val guide = Fsl105GuideCatalog.parse(
+            sourceJson,
+            locatePresentationAsset().readText(Charsets.UTF_8)
+        )
         val guideLabels = guide.map(FslGuideEntry::label)
 
         assertEquals(105, guideLabels.size)
@@ -25,12 +28,18 @@ class Fsl105GuideCatalogTest {
     }
 
     @Test
-    fun `dataset vocabulary never claims unmeasured live validation`() {
-        val guide = Fsl105GuideCatalog.parse(locateCanonicalLabelsAsset().readText(Charsets.UTF_8))
+    fun `model vocabulary has complete bilingual semantic presentation without live claims`() {
+        val guide = Fsl105GuideCatalog.parse(
+            locateCanonicalLabelsAsset().readText(Charsets.UTF_8),
+            locatePresentationAsset().readText(Charsets.UTF_8)
+        )
 
-        assertTrue(guide.all { it.datasetStatus == "DATASET VOCABULARY" })
-        assertTrue(guide.all { it.liveValidationStatus == "NOT YET LIVE VALIDATED" })
-        assertTrue(guide.all { it.filipinoTranslation == null })
+        assertTrue(guide.all { it.datasetStatus == "FSL-105 MODEL VOCABULARY" })
+        assertTrue(guide.all { it.liveValidationStatus == "NOT YET DEVICE-QUALIFIED" })
+        assertTrue(guide.all { it.englishDisplay.isNotBlank() })
+        assertTrue(guide.all { it.filipinoDisplay.isNotBlank() })
+        assertEquals("Wheelchair person", guide.single { it.label == "WEELCHAIR PERSON" }.englishDisplay)
+        assertEquals("Salamat", guide.single { it.label == "THANK YOU" }.filipinoDisplay)
     }
 
     @Test
@@ -56,5 +65,19 @@ class Fsl105GuideCatalogTest {
         )
         return candidates.firstOrNull(File::isFile)
             ?: error("Canonical FSL-105 labels asset not found from ${File(".").absolutePath}")
+    }
+
+    private fun locatePresentationAsset(): File {
+        val relative = File(
+            "src/main/assets/model/fsl_fullsign225_20f_105_v1/" +
+                "presentation_fsl105_bilingual_v1.json"
+        )
+        val candidates = listOf(
+            relative,
+            File("app", relative.path),
+            File("android_dry_run/app", relative.path)
+        )
+        return candidates.firstOrNull(File::isFile)
+            ?: error("FSL-105 presentation asset not found from ${File(".").absolutePath}")
     }
 }

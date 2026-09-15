@@ -66,6 +66,27 @@ class Mapua14CompleteTrajectory48Test {
         assertTrue(result.sourceTimestampsMs.isStrictlyChronological())
     }
 
+    @Test
+    fun `shared profile finalizer remains numerically identical to protected MAPUA14 finalizer`() {
+        val frames = listOf<Float?>(
+            null, null, null, 0.20f, 0.30f, null, 0.40f, 0.40f, 0.40f
+        ).mapIndexed { index, x -> frame(100L + index * 10L, x) }
+
+        val protectedResult = Mapua14CompleteTrajectory48.prepare(frames)
+        val sharedResult = CompleteSignTrajectoryFinalizer.prepare(
+            frames,
+            CompleteSignTemporalProfiles.MAPUA14_LIVE_SEGMENT_V1
+        )
+
+        assertEquals(protectedResult.motionStartCaptureIndex, sharedResult.motionStartCaptureIndex)
+        assertEquals(protectedResult.motionEndCaptureIndex, sharedResult.motionEndCaptureIndex)
+        assertEquals(protectedResult.interpolatedLeftFrames, sharedResult.interpolatedLeftFrames)
+        assertTrue(protectedResult.sourceTimestampsMs.contentEquals(sharedResult.sourceTimestampsMs))
+        protectedResult.modelInput.indices.forEach { index ->
+            assertTrue(protectedResult.modelInput[index].contentEquals(sharedResult.modelInput[index]))
+        }
+    }
+
     @Test(expected = IllegalArgumentException::class)
     fun `preparation fails closed on nonchronological capture`() {
         Mapua14CompleteTrajectory48.prepare(
