@@ -1,0 +1,941 @@
+{
+  "timestamp": "2026-09-16T12:43:00.983867+00:00",
+  "instruction_commit": "d5325c02448bfaed392b37c7052e925134317180",
+  "status": "C5_REJECTED",
+  "root_cause_stage": "MULTIPLE",
+  "private_media_published": false,
+  "evidence": [
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\blender\\FSL_NO__EXP_C5_neutral_FRONT.png",
+      "bytes": 139952,
+      "sha256": "1714e5972bfb03da8ae8ec8d7d30962cab8d73571bde0e7c83c086bb845013fb"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\blender\\FSL_NO__EXP_C5_neutral_SIDE.png",
+      "bytes": 136698,
+      "sha256": "db5e35e3b156e6d548f76a1039d774db47fc0c1f786ac7f33f7820bfc624fa89"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\blender\\FSL_NO__EXP_C5_neutral_THREE_QUARTER.png",
+      "bytes": 140755,
+      "sha256": "9cccf4abe1df247f303b8a634748877d3af5305c365a3f44e1853ccf45c68fe8"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\blender\\FSL_NO__EXP_C5_preparation_sample_FRONT.png",
+      "bytes": 139020,
+      "sha256": "f341549b610d5f2afda856761a3e71eeb386d4ab5d01f521d193e9601de46417"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\blender\\FSL_NO__EXP_C5_preparation_sample_SIDE.png",
+      "bytes": 138244,
+      "sha256": "107215271970b48b9f00d90b470581c7e4ec73b4c443098bb457dc3c0a0f77c0"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\blender\\FSL_NO__EXP_C5_preparation_sample_THREE_QUARTER.png",
+      "bytes": 142857,
+      "sha256": "ab7f79a017875e803515f1eea97e2841f8ce4a1da168fd80fd65f55962f14e12"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\blender\\FSL_NO__EXP_C5_recovery_FRONT.png",
+      "bytes": 139952,
+      "sha256": "03123dd4f4ab2b39d8d1ec2799bfc967ce937061fe8bae7d1232ccf2b1eccc45"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\blender\\FSL_NO__EXP_C5_recovery_SIDE.png",
+      "bytes": 136698,
+      "sha256": "6c5033b5bda3b27aaf27c5498b0327a1508590d253419f6500a1dc6a0c3fcabf"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\blender\\FSL_NO__EXP_C5_recovery_THREE_QUARTER.png",
+      "bytes": 140755,
+      "sha256": "6e1db550c36651daa90224d1bea51bd055542199ee5f11c3257abda176b96fe3"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\blender\\FSL_NO__EXP_C5_stroke_sample_FRONT.png",
+      "bytes": 138971,
+      "sha256": "9b94170e5e1d8bb5aa519dea615661dcc49f3a11fd066854d741f8aa7badfca3"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\blender\\FSL_NO__EXP_C5_stroke_sample_SIDE.png",
+      "bytes": 138028,
+      "sha256": "5a3b541d85e8db8c8fe4639dc83d78d67ed9c9365491f7fae424a344c06f759d"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\blender\\FSL_NO__EXP_C5_stroke_sample_THREE_QUARTER.png",
+      "bytes": 142762,
+      "sha256": "aa00687cbfec816cc78cc3c847c4929984ceebe80631a32709de124b8eb5f043"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\blender\\FSL_THANK_YOU__EXP_C5_neutral_FRONT.png",
+      "bytes": 139952,
+      "sha256": "76ac1689e5957745a762038c067797183406377984a6e5dce749b60dbadf1233"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\blender\\FSL_THANK_YOU__EXP_C5_neutral_SIDE.png",
+      "bytes": 136698,
+      "sha256": "0052084e29c559b8665919be59f3074a093b8dffeaa3194d23fbe558446f96f3"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\blender\\FSL_THANK_YOU__EXP_C5_neutral_THREE_QUARTER.png",
+      "bytes": 140755,
+      "sha256": "742db3e60eb78633f8fff5463dfe11e557aba0b0ff6158df581284deb791f6e6"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\blender\\FSL_THANK_YOU__EXP_C5_preparation_sample_FRONT.png",
+      "bytes": 140012,
+      "sha256": "1e0272a6076fe49fff435eed0b395c6119672316dfb3273aa83db4792543c16e"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\blender\\FSL_THANK_YOU__EXP_C5_preparation_sample_SIDE.png",
+      "bytes": 136664,
+      "sha256": "4baa2150b0094578e5ccb87f68c06010e085c31eb7ea1873efa4bfb399df7e04"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\blender\\FSL_THANK_YOU__EXP_C5_preparation_sample_THREE_QUARTER.png",
+      "bytes": 140759,
+      "sha256": "5454a6792ff54b97c9156086ff42530bf5e03c4a1dbca8b25893878e00effd26"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\blender\\FSL_THANK_YOU__EXP_C5_recovery_FRONT.png",
+      "bytes": 139952,
+      "sha256": "3b745289d0dba172a1a43c40c8c4a5b0691adfd8614a5c8014c8bb98c63deb27"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\blender\\FSL_THANK_YOU__EXP_C5_recovery_SIDE.png",
+      "bytes": 136698,
+      "sha256": "49a2a4b18952ae088da352c66c457ca0547c8688c83b42e549f183796294a722"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\blender\\FSL_THANK_YOU__EXP_C5_recovery_THREE_QUARTER.png",
+      "bytes": 140755,
+      "sha256": "37b6a770c9401a1940da86ba0efe9632cdd87583b94bb77235066239d31ef7f3"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\blender\\FSL_THANK_YOU__EXP_C5_stroke_sample_FRONT.png",
+      "bytes": 137446,
+      "sha256": "036bb699cbb1de1c6d7337a0c3e4386923a8e47d4cb0e4d668a1bba3b2121b59"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\blender\\FSL_THANK_YOU__EXP_C5_stroke_sample_SIDE.png",
+      "bytes": 134452,
+      "sha256": "e443cf6d31b3c0ed46b1379b04e1b0d8fb00f50bd4f25b5a7bb2560e54b9ca70"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\blender\\FSL_THANK_YOU__EXP_C5_stroke_sample_THREE_QUARTER.png",
+      "bytes": 140613,
+      "sha256": "d87a4239d6158825df0e3969f948e8b858b261c08bbd69d192f8e75428965813"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\blender\\FSL_YES__EXP_C5_neutral_FRONT.png",
+      "bytes": 139952,
+      "sha256": "668865e1e48a4e0779faea1eaa3a8fb8f058045dad0d398718b86592df8c4345"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\blender\\FSL_YES__EXP_C5_neutral_SIDE.png",
+      "bytes": 136698,
+      "sha256": "f6b1a68e18121e28f72ce5dae8ad35ebb9185ac672aa6437d3182e92ab35c871"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\blender\\FSL_YES__EXP_C5_neutral_THREE_QUARTER.png",
+      "bytes": 140755,
+      "sha256": "605073dae011e09927e1d944f7c6e941755534b9b84214258366ab81d615df57"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\blender\\FSL_YES__EXP_C5_preparation_sample_FRONT.png",
+      "bytes": 139677,
+      "sha256": "e948dd39730917fc9ce526bc3717c56211f6c65ad759152a4ee8844c6fcbba9e"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\blender\\FSL_YES__EXP_C5_preparation_sample_SIDE.png",
+      "bytes": 137219,
+      "sha256": "708e63cb0fa1f8dc8c1f8de49fab9140b72fb61e51bab09dfe1635c700d89dc1"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\blender\\FSL_YES__EXP_C5_preparation_sample_THREE_QUARTER.png",
+      "bytes": 142375,
+      "sha256": "ddb1278c675eeaf0085edbfc32967e50260dd213594a5d09ef780198e1305f75"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\blender\\FSL_YES__EXP_C5_recovery_FRONT.png",
+      "bytes": 139952,
+      "sha256": "77ada9343eb4a920f478ca268e08859bf85755cea2e8f5893a92ffae75ca8c18"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\blender\\FSL_YES__EXP_C5_recovery_SIDE.png",
+      "bytes": 136698,
+      "sha256": "dc26ce36bea3e91bae18c7ce0455357d965e781e15cf90b4206ebd8de48028cb"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\blender\\FSL_YES__EXP_C5_recovery_THREE_QUARTER.png",
+      "bytes": 140755,
+      "sha256": "4ce1c781c59f5e3b2c15e58173f9d8ecfe49c7d1a0faeefe5778b1d7e7727e49"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\blender\\FSL_YES__EXP_C5_stroke_sample_FRONT.png",
+      "bytes": 138794,
+      "sha256": "c9409f72554323e767facd79292330bd907b3ef3ba64b019e3316cfd50bdc2db"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\blender\\FSL_YES__EXP_C5_stroke_sample_SIDE.png",
+      "bytes": 137860,
+      "sha256": "eaec99fea9c745a59ef3ec79c7403b0e5c8d6f5cf65b348c2a1d7c5d4c7aba71"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\blender\\FSL_YES__EXP_C5_stroke_sample_THREE_QUARTER.png",
+      "bytes": 142559,
+      "sha256": "c551320fcecb66e1f6f9c464b9c9b0c0da6bfe06d026a136b9e135e00681623e"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\blender\\inspection.json",
+      "bytes": 212852,
+      "sha256": "b23e108c1a3562390cd94b7e9e023e8ce4e1c0b50cef81645d353e7f9491b28a"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\c5_shirt_runtime.json",
+      "bytes": 833,
+      "sha256": "19e95d39260a3695c4e25b68d2f93402de7be1b8622488e591929c82164f5ab8"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\C5_stage_comparison.jpg",
+      "bytes": 120869,
+      "sha256": "6e422b66fbc6341effdee84a0fc24b1fe7e801afe80c3d74ade8cc4459c81702"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\glb\\FSL_NO__EXP_C5_Waitress RIG_neutral_FRONT.png",
+      "bytes": 107766,
+      "sha256": "32a807e6627b4430512eaf5b8545b0e6d9aff09f2538a35f8901bd470f530678"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\glb\\FSL_NO__EXP_C5_Waitress RIG_neutral_SIDE.png",
+      "bytes": 106692,
+      "sha256": "be75b4a405f2a4d4a73131ed1f5f8e03f57b0f2517fa094f8f0f9e99d7058961"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\glb\\FSL_NO__EXP_C5_Waitress RIG_neutral_THREE_QUARTER.png",
+      "bytes": 109230,
+      "sha256": "d5e8a8493cf05d2e465ce477bd70f88bbeeab3cce5bcba38c6645bfb460b3e33"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\glb\\FSL_NO__EXP_C5_Waitress RIG_preparation_sample_FRONT.png",
+      "bytes": 107259,
+      "sha256": "ded623afaa95e2536e0a0a62452ba11e682ea3b27554b0fc20ace4b61dbcab0f"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\glb\\FSL_NO__EXP_C5_Waitress RIG_preparation_sample_SIDE.png",
+      "bytes": 106795,
+      "sha256": "085a11966b76ff13af4fd2cfac8da72370210d04f961fdb75e7e77d001ec0e09"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\glb\\FSL_NO__EXP_C5_Waitress RIG_preparation_sample_THREE_QUARTER.png",
+      "bytes": 109775,
+      "sha256": "dd7fa38a56bcc0be22b75283fee02debbf98b759a95fe531d73bd4df8a325ec6"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\glb\\FSL_NO__EXP_C5_Waitress RIG_recovery_FRONT.png",
+      "bytes": 107766,
+      "sha256": "b28bf0431065b98840b49205b70909ef6ccf0433a3c67c23c8373c713cc8cf10"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\glb\\FSL_NO__EXP_C5_Waitress RIG_recovery_SIDE.png",
+      "bytes": 106692,
+      "sha256": "c820c38cadf4e904e20951047fed0ce7fe923dec4485155639a4b69a16eeafa7"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\glb\\FSL_NO__EXP_C5_Waitress RIG_recovery_THREE_QUARTER.png",
+      "bytes": 109230,
+      "sha256": "3656d947ea973945deec93e5d6ec8a580fef3b2051a552f796dd7bc00e6b5935"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\glb\\FSL_NO__EXP_C5_Waitress RIG_stroke_sample_FRONT.png",
+      "bytes": 107390,
+      "sha256": "dcdbddc0e3ccb10a897b2e1a549cbe871961c6f45d2d69fe193fd581de483455"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\glb\\FSL_NO__EXP_C5_Waitress RIG_stroke_sample_SIDE.png",
+      "bytes": 106795,
+      "sha256": "1db991b9a1617ec87c9e4a317d07187f61fc8f099c4523d4aee7fc8c85507f32"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\glb\\FSL_NO__EXP_C5_Waitress RIG_stroke_sample_THREE_QUARTER.png",
+      "bytes": 109688,
+      "sha256": "c845b3f3ed05a8b72f8b430b5d160d058d80789b2355bb9bc8685f2764164074"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\glb\\FSL_THANK_YOU__EXP_C5_Waitress RIG_neutral_FRONT.png",
+      "bytes": 107766,
+      "sha256": "fa4f6ce449deb712457702bbc620daeb5175500311c5d3fdff467aed378cdb8d"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\glb\\FSL_THANK_YOU__EXP_C5_Waitress RIG_neutral_SIDE.png",
+      "bytes": 106692,
+      "sha256": "c8cdc3c0d038c0c8ddeb16e82c74979b8400fbe0f31444743135f03237e9f690"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\glb\\FSL_THANK_YOU__EXP_C5_Waitress RIG_neutral_THREE_QUARTER.png",
+      "bytes": 109230,
+      "sha256": "acb7424e9ec5e539a7c732249a4d6802d3d2d89504e82dab026a47c0723b1258"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\glb\\FSL_THANK_YOU__EXP_C5_Waitress RIG_preparation_sample_FRONT.png",
+      "bytes": 107778,
+      "sha256": "091a18d2f1ebb30fdc22b66e3ab46326017bddb6ad957a0c377eb16f08077e86"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\glb\\FSL_THANK_YOU__EXP_C5_Waitress RIG_preparation_sample_SIDE.png",
+      "bytes": 106692,
+      "sha256": "1fcc19a76705b005ebcc3ada1ed31b89b3fd91fc3d98a39ddb8f3e7ea63bba15"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\glb\\FSL_THANK_YOU__EXP_C5_Waitress RIG_preparation_sample_THREE_QUARTER.png",
+      "bytes": 109218,
+      "sha256": "ca0a203bc1d450c17c0953ce01a910369e3f8f1856b286533cd025f113439be0"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\glb\\FSL_THANK_YOU__EXP_C5_Waitress RIG_recovery_FRONT.png",
+      "bytes": 107766,
+      "sha256": "9517b77bcab394691a624c1ad14e89810b334eabb8eec0e88672df72c6fc0a6c"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\glb\\FSL_THANK_YOU__EXP_C5_Waitress RIG_recovery_SIDE.png",
+      "bytes": 106692,
+      "sha256": "6e6f05c7815692350444d951f589e3cf19e57f9a748ba4d22369334e3f287f8a"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\glb\\FSL_THANK_YOU__EXP_C5_Waitress RIG_recovery_THREE_QUARTER.png",
+      "bytes": 109230,
+      "sha256": "a7d252e6df69f8f29a14e54de43536999bb598c2a3ec3d9607700e856594ae2d"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\glb\\FSL_THANK_YOU__EXP_C5_Waitress RIG_stroke_sample_FRONT.png",
+      "bytes": 105464,
+      "sha256": "8ec78e9d81fa3a4e5cd8dc2a14b2c7e7dcfbb8614f28b98c701d1a9524908406"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\glb\\FSL_THANK_YOU__EXP_C5_Waitress RIG_stroke_sample_SIDE.png",
+      "bytes": 105316,
+      "sha256": "22a97e12c925491e5ab60e7ef7b8c983a618350d37ef33d6c4d08b67e7ed537b"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\glb\\FSL_THANK_YOU__EXP_C5_Waitress RIG_stroke_sample_THREE_QUARTER.png",
+      "bytes": 108003,
+      "sha256": "f1ad0f041deac0331784f7bcd52992ed8b9483619c0f512fc9b5319fe9347e15"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\glb\\FSL_YES__EXP_C5_Waitress RIG_neutral_FRONT.png",
+      "bytes": 107766,
+      "sha256": "a07a0bca0d75fb5d7dd21ea7caf16c9227ae771171a042f7ad1ede65a360d5ea"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\glb\\FSL_YES__EXP_C5_Waitress RIG_neutral_SIDE.png",
+      "bytes": 106692,
+      "sha256": "4c0d04e620a20e7fae55098492b0d421d54767ca1aa37c48dca2029b2ec0b0fe"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\glb\\FSL_YES__EXP_C5_Waitress RIG_neutral_THREE_QUARTER.png",
+      "bytes": 109230,
+      "sha256": "a778b0d12cee1b368bec46a1b26b03ff581b3de8c4ad1645081180ddbde24ad4"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\glb\\FSL_YES__EXP_C5_Waitress RIG_preparation_sample_FRONT.png",
+      "bytes": 107240,
+      "sha256": "661a26d097e02eef3eddf5c96eb9feec0261dff435607bcba799c518bda1c4ba"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\glb\\FSL_YES__EXP_C5_Waitress RIG_preparation_sample_SIDE.png",
+      "bytes": 106768,
+      "sha256": "aa282e7be5e93be6ca6dcbe457ecaca30903a1c2ecee38b537f102b97c0f9fb9"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\glb\\FSL_YES__EXP_C5_Waitress RIG_preparation_sample_THREE_QUARTER.png",
+      "bytes": 109401,
+      "sha256": "227a131b9abc8efdb790b2c023824c2190be28c7f48e647026a5a3cf75a6d908"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\glb\\FSL_YES__EXP_C5_Waitress RIG_recovery_FRONT.png",
+      "bytes": 107766,
+      "sha256": "cccbbe18989380b67a51cdecb0fe1cabf20e7e76757207f1d12dad1478f9c432"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\glb\\FSL_YES__EXP_C5_Waitress RIG_recovery_SIDE.png",
+      "bytes": 106692,
+      "sha256": "9a19cf65408ef8f37ebef6bc241f10ce216e15ba5b46bbb6d636ada6e8b8592d"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\glb\\FSL_YES__EXP_C5_Waitress RIG_recovery_THREE_QUARTER.png",
+      "bytes": 109230,
+      "sha256": "6d49caaaf68f1ea174c8e74f184c3871175ebed2f6fe5eba9a7c64790156824e"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\glb\\FSL_YES__EXP_C5_Waitress RIG_stroke_sample_FRONT.png",
+      "bytes": 107377,
+      "sha256": "1c1c75239559c7579803501e87ba97346745afe1964be404ec7f19c98f12e114"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\glb\\FSL_YES__EXP_C5_Waitress RIG_stroke_sample_SIDE.png",
+      "bytes": 106795,
+      "sha256": "40baf39b92b9176be3af4cfba4a5e393181ef34218ec6e2ea41b857ac34f7036"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\glb\\FSL_YES__EXP_C5_Waitress RIG_stroke_sample_THREE_QUARTER.png",
+      "bytes": 109802,
+      "sha256": "432cadc6c121de217cf58a0da3637c4800450fb08be8f940a96cde674e53d8fa"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\glb\\inspection.json",
+      "bytes": 206933,
+      "sha256": "2c3650e499e1cc71363f522354f822eecb43fc763f7448286ca8925f59276984"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\glb_structure.json",
+      "bytes": 8289,
+      "sha256": "4d0a88a8787c36721d0cc7146035f93b08501eb626f783454a0a43f8130a69b9"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\rest_comparison.json",
+      "bytes": 9515,
+      "sha256": "204569cb76b34a762101e8ffc6961c1f68b75504de8802f9ce90fdbc83c9b63e"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_evidence\\skin_ablation.json",
+      "bytes": 3170,
+      "sha256": "6cd1c6987376bd6b87e193a298ca45895b6af20d81b7d71cec26568d3195133d"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\emergency_frozen_evidence.json",
+      "bytes": 1253,
+      "sha256": "3cae00a7a369510df90d303716d7e1a6127f1bf7fe51e17c498c08f15e5b3cb4"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\calibration\\c5_config.json",
+      "bytes": 1178,
+      "sha256": "a7b4c4d42595ae3e6542cd2a2a3e92a3650acbccbf4fdcabbfc454115ee25c94"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\calibration\\code\\export_review_c5.py",
+      "bytes": 1935,
+      "sha256": "4b67f44b6da961c2c445a3200a23a4c4ce43eeff3d62e3249713a00b6958eb2b"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\outputs\\recovered_inventory.json",
+      "bytes": 1373081,
+      "sha256": "da4c629de7a767a046ff18038fbac5e56db1439ffc46ee02c325b64719f25f17"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\outputs\\core3_runtime_audit.json",
+      "bytes": 1952,
+      "sha256": "fad5e0a80bd18752ab259a4d251b5c1e36f02a833ac1281292d7ac908e5fb04c"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\outputs\\core3_source_preflight.json",
+      "bytes": 16859,
+      "sha256": "51c2fac9b7f90b611e0eb19e3efbc2f9d4f9fe4841f3de5b0b3196f51d448d32"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\outputs\\source_preservation.json",
+      "bytes": 143,
+      "sha256": "757600955d8fc496b643693b6db235287cc071c5796267ec68515a262c88ca78"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\recovered_authoritative\\SOURCE_HANDOFF\\fsl105_avatar_landmarks\\THANK YOU\\clips__7__0__meta.json",
+      "bytes": 1064,
+      "sha256": "2efeea534cee26efad45b12915301ea7650b524d3deb76c6ecb4848d2804ce2b"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\recovered_authoritative\\SOURCE_HANDOFF\\fsl105_avatar_landmarks\\THANK YOU\\clips__7__0__raw225.npy",
+      "bytes": 218828,
+      "sha256": "9bdb7f0c51234675b19112798c1bf973bb40e6cf5db5ace76b5f374061c960c0"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\recovered_authoritative\\SOURCE_HANDOFF\\fsl105_avatar_landmarks\\THANK YOU\\clips__7__0__presence.npy",
+      "bytes": 857,
+      "sha256": "c228e76fef7777bbf9dab4ec986595e967e386467a4bd7d85b2fa155b819c148"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\recovered_authoritative\\SOURCE_HANDOFF\\fsl105_avatar_landmarks\\YES\\clips__15__0__meta.json",
+      "bytes": 1062,
+      "sha256": "45008328c6d7b6523748d75995cdf56e3c2c2427af089ff7bf929881f565e92b"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\recovered_authoritative\\SOURCE_HANDOFF\\fsl105_avatar_landmarks\\YES\\clips__15__0__raw225.npy",
+      "bytes": 218828,
+      "sha256": "f5472b743337b1007b08ba1af24cbcd2ef8375145071ec7d6810f8be76de58c0"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\recovered_authoritative\\SOURCE_HANDOFF\\fsl105_avatar_landmarks\\YES\\clips__15__0__presence.npy",
+      "bytes": 857,
+      "sha256": "1f0fad97c50faae8269e3a83332658d8ca45c5d33f8b76b90feab17cbbb4deaf"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\recovered_authoritative\\SOURCE_HANDOFF\\fsl105_avatar_landmarks\\NO\\clips__14__0__meta.json",
+      "bytes": 1061,
+      "sha256": "0fd16c2077d1b8909e010a7887ec761cefb934fa523dc9663f32f1c3fb2b806d"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\recovered_authoritative\\SOURCE_HANDOFF\\fsl105_avatar_landmarks\\NO\\clips__14__0__raw225.npy",
+      "bytes": 219728,
+      "sha256": "c6907adb407285669a369c3e0dff71aa08414a8f79a181d83db0366f677dd93b"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\recovered_authoritative\\SOURCE_HANDOFF\\fsl105_avatar_landmarks\\NO\\clips__14__0__presence.npy",
+      "bytes": 860,
+      "sha256": "492eae5a142800f0b9365b199b54fd35f8080c4847b4f2d7892f731bb72752e2"
+    }
+  ],
+  "frozen_artifacts": [
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\calibration\\c5\\avatar_exp_c5.blend",
+      "bytes": 199914096,
+      "sha256": "6a6101330f11460a219494c7f230a7f243f1854c04024558de4b536419755616"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\outputs\\calibration_today\\c5\\voxgest_priority3_exp_c5.glb",
+      "bytes": 56892960,
+      "sha256": "8d0880af0da743d05e32c4088b4d4937585f9fbe4eeed649af6b990490f25c84"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\calibration\\code\\retarget_source_fk_c5.py",
+      "bytes": 13017,
+      "sha256": "736c494f5d9a4f204c8a13dafee97ad732cc84d34cc25c640225c8df27319e36"
+    },
+    {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\outputs\\calibration_today\\c7\\voxgest_priority3_exp_c7_review.glb",
+      "bytes": 50905520,
+      "sha256": "4580ad49a2839043d3b4c4df87333f092f3c08f033bf231d1c493779b19a5fbd"
+    }
+  ],
+  "render_count": 72,
+  "glb_checks": {
+    "sha256": "8d0880af0da743d05e32c4088b4d4937585f9fbe4eeed649af6b990490f25c84",
+    "bytes": 56892960,
+    "clips": [
+      {
+        "name": "FSL_NO__EXP_C5",
+        "channels": 438,
+        "finite": true,
+        "strictly_increasing_times": true,
+        "first_key": 0.01666666753590107,
+        "last_key": 4.066666603088379,
+        "quaternion_norm_max_error": 1.1920928955078125e-07,
+        "quaternion_max_step_deg": 18.707950592041016,
+        "animated_scene_roots": []
+      },
+      {
+        "name": "FSL_THANK_YOU__EXP_C5",
+        "channels": 438,
+        "finite": true,
+        "strictly_increasing_times": true,
+        "first_key": 0.01666666753590107,
+        "last_key": 4.050000190734863,
+        "quaternion_norm_max_error": 1.1920928955078125e-07,
+        "quaternion_max_step_deg": 17.601383209228516,
+        "animated_scene_roots": []
+      },
+      {
+        "name": "FSL_YES__EXP_C5",
+        "channels": 438,
+        "finite": true,
+        "strictly_increasing_times": true,
+        "first_key": 0.01666666753590107,
+        "last_key": 4.050000190734863,
+        "quaternion_norm_max_error": 1.1920928955078125e-07,
+        "quaternion_max_step_deg": 16.04862403869629,
+        "animated_scene_roots": []
+      }
+    ],
+    "colors": [
+      {
+        "mesh": "Plane.003",
+        "attribute": "COLOR_0",
+        "min": 0.0,
+        "max": 65535.0,
+        "black_rgb_fraction": 0.7664495114006514
+      },
+      {
+        "mesh": "Plane.003",
+        "attribute": "COLOR_1",
+        "min": 5257.0,
+        "max": 65535.0,
+        "black_rgb_fraction": 0.0
+      },
+      {
+        "mesh": "Plane.003",
+        "attribute": "COLOR_2",
+        "min": 20281.0,
+        "max": 65535.0,
+        "black_rgb_fraction": 0.0
+      },
+      {
+        "mesh": "Plane.003",
+        "attribute": "COLOR_3",
+        "min": 0.0,
+        "max": 65535.0,
+        "black_rgb_fraction": 0.04169381107491857
+      },
+      {
+        "mesh": "Plane.003",
+        "attribute": "COLOR_4",
+        "min": 0.0,
+        "max": 65535.0,
+        "black_rgb_fraction": 0.4498371335504886
+      },
+      {
+        "mesh": "Plane.003",
+        "attribute": "COLOR_5",
+        "min": 13673.0,
+        "max": 65535.0,
+        "black_rgb_fraction": 0.0
+      },
+      {
+        "mesh": "Plane.003",
+        "attribute": "COLOR_0",
+        "min": 0.0,
+        "max": 65535.0,
+        "black_rgb_fraction": 1.0
+      },
+      {
+        "mesh": "Plane.003",
+        "attribute": "COLOR_1",
+        "min": 23038.0,
+        "max": 65535.0,
+        "black_rgb_fraction": 0.0
+      },
+      {
+        "mesh": "Plane.003",
+        "attribute": "COLOR_2",
+        "min": 23038.0,
+        "max": 65535.0,
+        "black_rgb_fraction": 0.0
+      },
+      {
+        "mesh": "Plane.003",
+        "attribute": "COLOR_3",
+        "min": 28452.0,
+        "max": 65535.0,
+        "black_rgb_fraction": 0.0
+      },
+      {
+        "mesh": "Plane.003",
+        "attribute": "COLOR_4",
+        "min": 0.0,
+        "max": 65535.0,
+        "black_rgb_fraction": 1.0
+      },
+      {
+        "mesh": "Plane.003",
+        "attribute": "COLOR_5",
+        "min": 43147.0,
+        "max": 65535.0,
+        "black_rgb_fraction": 0.0
+      },
+      {
+        "mesh": "Plane.003",
+        "attribute": "COLOR_0",
+        "min": 0.0,
+        "max": 65535.0,
+        "black_rgb_fraction": 1.0
+      },
+      {
+        "mesh": "Plane.003",
+        "attribute": "COLOR_1",
+        "min": 17727.0,
+        "max": 65535.0,
+        "black_rgb_fraction": 0.0
+      },
+      {
+        "mesh": "Plane.003",
+        "attribute": "COLOR_2",
+        "min": 19987.0,
+        "max": 65535.0,
+        "black_rgb_fraction": 0.0
+      },
+      {
+        "mesh": "Plane.003",
+        "attribute": "COLOR_3",
+        "min": 27739.0,
+        "max": 65535.0,
+        "black_rgb_fraction": 0.0
+      },
+      {
+        "mesh": "Plane.003",
+        "attribute": "COLOR_4",
+        "min": 0.0,
+        "max": 65535.0,
+        "black_rgb_fraction": 0.0663265306122449
+      },
+      {
+        "mesh": "Plane.003",
+        "attribute": "COLOR_5",
+        "min": 18837.0,
+        "max": 65535.0,
+        "black_rgb_fraction": 0.0
+      },
+      {
+        "mesh": "Sphere.001",
+        "attribute": "COLOR_0",
+        "min": 0.0,
+        "max": 65535.0,
+        "black_rgb_fraction": 0.09590973201692525
+      },
+      {
+        "mesh": "Sphere.001",
+        "attribute": "COLOR_1",
+        "min": 0.0,
+        "max": 65535.0,
+        "black_rgb_fraction": 0.14104372355430184
+      },
+      {
+        "mesh": "Plane",
+        "attribute": "COLOR_0",
+        "min": 80.0,
+        "max": 65535.0,
+        "black_rgb_fraction": 0.0
+      },
+      {
+        "mesh": "Cylinder.005",
+        "attribute": "COLOR_0",
+        "min": 3157.0,
+        "max": 65535.0,
+        "black_rgb_fraction": 0.0
+      },
+      {
+        "mesh": "Cylinder.000",
+        "attribute": "COLOR_0",
+        "min": 2170.0,
+        "max": 65535.0,
+        "black_rgb_fraction": 0.0
+      },
+      {
+        "mesh": "BezierCurve.014",
+        "attribute": "COLOR_0",
+        "min": 80.0,
+        "max": 65535.0,
+        "black_rgb_fraction": 0.0
+      },
+      {
+        "mesh": "Plane.015",
+        "attribute": "COLOR_0",
+        "min": 65535.0,
+        "max": 65535.0,
+        "black_rgb_fraction": 0.0
+      },
+      {
+        "mesh": "Plane.015",
+        "attribute": "COLOR_1",
+        "min": 65535.0,
+        "max": 65535.0,
+        "black_rgb_fraction": 0.0
+      },
+      {
+        "mesh": "Plane.015",
+        "attribute": "COLOR_2",
+        "min": 65535.0,
+        "max": 65535.0,
+        "black_rgb_fraction": 0.0
+      },
+      {
+        "mesh": "Plane.015",
+        "attribute": "COLOR_3",
+        "min": 65535.0,
+        "max": 65535.0,
+        "black_rgb_fraction": 0.0
+      },
+      {
+        "mesh": "Plane.015",
+        "attribute": "COLOR_4",
+        "min": 65535.0,
+        "max": 65535.0,
+        "black_rgb_fraction": 0.0
+      },
+      {
+        "mesh": "Plane.015",
+        "attribute": "COLOR_5",
+        "min": 65535.0,
+        "max": 65535.0,
+        "black_rgb_fraction": 0.0
+      },
+      {
+        "mesh": "Mesh.001",
+        "attribute": "COLOR_0",
+        "min": 805.0,
+        "max": 65535.0,
+        "black_rgb_fraction": 0.0
+      },
+      {
+        "mesh": "Plane.004",
+        "attribute": "COLOR_0",
+        "min": 36176.0,
+        "max": 65535.0,
+        "black_rgb_fraction": 0.0
+      },
+      {
+        "mesh": "Cylinder.004",
+        "attribute": "COLOR_0",
+        "min": 65535.0,
+        "max": 65535.0,
+        "black_rgb_fraction": 0.0
+      },
+      {
+        "mesh": "Cylinder.002",
+        "attribute": "COLOR_0",
+        "min": 65535.0,
+        "max": 65535.0,
+        "black_rgb_fraction": 0.0
+      },
+      {
+        "mesh": "Cube.001",
+        "attribute": "COLOR_0",
+        "min": 3157.0,
+        "max": 65535.0,
+        "black_rgb_fraction": 0.0
+      },
+      {
+        "mesh": "Plane.001",
+        "attribute": "COLOR_0",
+        "min": 5953.0,
+        "max": 65535.0,
+        "black_rgb_fraction": 0.0
+      },
+      {
+        "mesh": "Plane.014",
+        "attribute": "COLOR_0",
+        "min": 65535.0,
+        "max": 65535.0,
+        "black_rgb_fraction": 0.0
+      },
+      {
+        "mesh": "Plane.014",
+        "attribute": "COLOR_1",
+        "min": 65535.0,
+        "max": 65535.0,
+        "black_rgb_fraction": 0.0
+      },
+      {
+        "mesh": "Plane.014",
+        "attribute": "COLOR_2",
+        "min": 65535.0,
+        "max": 65535.0,
+        "black_rgb_fraction": 0.0
+      },
+      {
+        "mesh": "Plane.014",
+        "attribute": "COLOR_3",
+        "min": 65535.0,
+        "max": 65535.0,
+        "black_rgb_fraction": 0.0
+      },
+      {
+        "mesh": "Plane.014",
+        "attribute": "COLOR_4",
+        "min": 65535.0,
+        "max": 65535.0,
+        "black_rgb_fraction": 0.0
+      },
+      {
+        "mesh": "Plane.014",
+        "attribute": "COLOR_5",
+        "min": 65535.0,
+        "max": 65535.0,
+        "black_rgb_fraction": 0.0
+      }
+    ],
+    "root_summary": [
+      {
+        "name": "Waitress RIG",
+        "scale": [
+          0.1081087738275528,
+          0.1081087738275528,
+          0.1081087738275528
+        ],
+        "rotation": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "translation": [
+          0,
+          0,
+          0
+        ]
+      }
+    ]
+  },
+  "shirt_runtime": [
+    {
+      "clip": "FSL_NO__EXP_C5",
+      "frames_checked": 244,
+      "lower_shirt_vertices": 452,
+      "max_lower_shirt_displacement_m": 0.08838921829013881,
+      "finite_shirt_vertices": true,
+      "first_key": 0.01666666753590107,
+      "last_key": 4.066666603088379
+    },
+    {
+      "clip": "FSL_THANK_YOU__EXP_C5",
+      "frames_checked": 243,
+      "lower_shirt_vertices": 452,
+      "max_lower_shirt_displacement_m": 0.08838921829013881,
+      "finite_shirt_vertices": true,
+      "first_key": 0.01666666753590107,
+      "last_key": 4.050000190734863
+    },
+    {
+      "clip": "FSL_YES__EXP_C5",
+      "frames_checked": 243,
+      "lower_shirt_vertices": 452,
+      "max_lower_shirt_displacement_m": 0.08838921829013881,
+      "finite_shirt_vertices": true,
+      "first_key": 0.01666666753590107,
+      "last_key": 4.050000190734863
+    }
+  ],
+  "skin_ablation": {
+    "baseline": {
+      "frames": [
+        1,
+        100,
+        125,
+        145,
+        160,
+        180,
+        200,
+        220,
+        243
+      ],
+      "lower_vertices": 426,
+      "lower_max_displacement_m": 0.08033705372715215,
+      "all_max_displacement_m": 0.1603722639912379
+    },
+    "ablation_description": "Mute only non-arm quaternion curves and set those pose matrices to identity, without saving.",
+    "non_arm_identity_ablation": {
+      "frames": [
+        1,
+        100,
+        125,
+        145,
+        160,
+        180,
+        200,
+        220,
+        243
+      ],
+      "lower_vertices": 426,
+      "lower_max_displacement_m": 0.0,
+      "all_max_displacement_m": 0.16037224926118304
+    }
+  },
+  "rest_comparison": {
+    "source_bones": 525,
+    "candidate_bones": 146,
+    "max_retained_rest_matrix_difference": 4.733912646770477e-06,
+    "neutral_nonarm_angles_degrees": {
+      "DEF-shoulder.L": 90.00002127984133,
+      "DEF-shoulder.R": 90.00000196115099,
+      "DEF-pelvis.L": 90.00001162049657,
+      "DEF-pelvis.R": 90.00001162049657,
+      "DEF-breast.L": 90.00001162049657,
+      "DEF-breast.R": 90.00001162049657
+    },
+    "changed_parent_count": 78
+  }
+}

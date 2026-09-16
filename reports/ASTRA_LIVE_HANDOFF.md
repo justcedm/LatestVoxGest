@@ -1,144 +1,117 @@
 # ASTRA LIVE HANDOFF
 
-UPDATED_AT=2026-09-14T12:50:27+08:00
-OWNER=CODEX_TAKEOVER_PREPARATION_FOR_ASTRA
+UPDATED_AT=2026-09-16T20:42:00+08:00
+OWNER=ASTRA_AVATAR_EMERGENCY_RECOVERY
 BRANCH=avatar/astra-calibration-20260914
-BASE_BRANCH=recognition/recovery-20260912
-BASE_COMMIT=ad728fad71c97831c0ed90f3a005f8109e4feeef
-HEAD=3f30eb1ca2f41bb8a6fe3447cebded46efea4f48_VALIDATED_SOURCE_SNAPSHOT
-WORKTREE=CLEAN_AT_VALIDATED_SOURCE_HEAD_METADATA_UPDATE_FOLLOWS
+BASE_COMMIT=d5325c02448bfaed392b37c7052e925134317180
+HEAD=THIS_CHECKPOINT_COMMIT_USE_GIT_REV_PARSE_HEAD
+WORKTREE=ISOLATED_CHECKOUT_INITIALIZED_CLEAN_AT_INSTRUCTION_COMMIT
+PHASE=C5_REJECTED_ROOT_CAUSES_IDENTIFIED_NO_PROMOTION
 
-PHASE=SELF_CONTAINED_APPDEV_TAKEOVER_VALIDATED_READY_FOR_ASTRA_PHASE0
+## Emergency result
 
-## Protected State
+C5_STATUS=REJECTED
+ROOT_CAUSE_STAGE=MULTIPLE
+ROOT_CAUSE=BLENDER_RETARGET_NONARM_NEUTRAL_AXIS_CONTAMINATION_AND_EXPORT_UNEVALUATED_MIRROR_AND_AUTHORING_COLOR_MASKS
+BLENDER_NEUTRAL_PASS=NO
+GLB_ORIENTATION_PASS=NO
+ANDROID_FRAMING_PASS=NOT_TESTED
+CORE3_REGRESSION=NOT_RUN
+VOCABULARY_EXPANSION=STOPPED
+
+The exact emergency prompt and all five prerequisite documents were read completely. The existing checkout and dirty work were preserved; its Git metadata could not be written in this session. The exact remote Avatar branch was cloned to a separate safe C: checkout.
+
+## Evidence-backed findings
+
+- Matched front/side/three-quarter views show both body halves in Blender but one in C5 GLB. Body X minimum changes from -0.214200 m to -0.000485 m. Export leaves export_apply=False while body/eyes/shoes depend on Mirror modifiers.
+- Root has zero rotation/translation, uniform scale .1081087738 and no animated root tracks. No whole-model 90/180-degree yaw was found. No cosmetic orientation patch was made.
+- Neutral conversion uses imported historical GLB bone bases without proving equivalence to the modified source rig. Suffix-based neutral blending includes shoulder, breast and pelvis bones, each with about 90-degree local neutral rotations. Controls/constraints were removed and 78 parents changed.
+- In-memory non-arm curve ablation removes sampled lower-shirt drift: .080337 m to 0 m. No mesh weights, purchased source or candidate file changed in that test.
+- Independent all-frame GLB skinning measures .088389 m maximum lower-shirt displacement for all three clips. Runtime and Blender measurements have different topology/sample sets.
+- Body COLOR_0 is black at 76.645% of vertices; 42 exported authoring COLOR attributes explain the dark skin.
+- Correct shoulder-to-elbow / elbow-to-wrist mapping exists in C5 code, but this is not human-motion or handedness acceptance. Finite quaternions and preserved sample timing are insufficient.
+
+72 diagnostic views cover three C5 Actions, four sampled phases and three angles at both stages. The supplied screenshot crop lacks sign/time; its exact frame cannot be identified. Phase labels are sampling labels, not linguistic annotations. Normal-speed source comparison remains unaccepted.
+
+## Protected state and recovery
 
 OLD_D_DRIVE_ACCESSED=NO
 RECOGNITION_MODIFIED=NO
-CORE3_FALLBACK_PRESERVED=YES_NO_BINARY_OR_RUNTIME_CHANGE_IN_THIS_TASK
-FROZEN_SOLVER=retarget_general_B32_release_candidate_v1
-SOLVER_CHANGED=NO
+CORE3_FALLBACK_PRESERVED=YES
+PURCHASED_SOURCE_OVERWRITTEN=NO
+FROZEN_SOLVER=retarget_general_B32_release_candidate_v1_NOT_RECOVERED
+FROZEN_SOLVER_EQUIVALENCE=NOT_PROVEN_RECOVERED_SCRIPT_IS_FIRST_PASS
+SOURCE_ASSETS=6531_RECOVERED_FILES_HASHED_THREE_BLEND_FILES_INSPECTED
+SOURCE_INVENTORY_SHA256=da4c629de7a767a046ff18038fbac5e56db1439ffc46ee02c325b64719f25f17
+CORE3_RUNTIME_SHA256=30f13fb65e7557992a8c3109460a790a69161e69f3ba9771a1e64a33f98294f8
+C5_BLEND_SHA256=6a6101330f11460a219494c7f230a7f243f1854c04024558de4b536419755616
+C5_GLB_SHA256=8d0880af0da743d05e32c4088b4d4937585f9fbe4eeed649af6b990490f25c84
+C5_FROZEN_INPUTS_UNCHANGED=YES
 
-## Local Assets
+Requested C:\VOXGEST paths are absent. Inputs were recovered from the supplied authoritative ZIP. Purchased originals and inspection copies remain outside Git. All three recovered blends lack FSL_HELLO/FSL_MILK/FSL_RICE Actions. Historical runtime is preserved, not substituted for editable masters. The included recovery audit retains its original pre-experiment timestamp; later C1-C7 experiments supersede its old statement that no calibration had yet occurred. None is accepted.
 
-PURCHASED_BLEND=NOT_INVENTORIED_DOCUMENTATION_TASK_PHASE0_REQUIRED
-BLENDER_VERSION=NOT_INVENTORIED_DOCUMENTATION_TASK_PHASE0_REQUIRED
-RETARGETER=NOT_INVENTORIED_DOCUMENTATION_TASK_PHASE0_REQUIRED
-BONE_MAP=NOT_INVENTORIED_DOCUMENTATION_TASK_PHASE0_REQUIRED
-FSL_SOURCE_REFERENCES=NOT_INVENTORIED_DOCUMENTATION_TASK_PHASE0_REQUIRED
-RAW225_SOURCE=NOT_INVENTORIED_DOCUMENTATION_TASK_PHASE0_REQUIRED
-CORE3_GLB=HISTORICAL_REPO_ARTIFACT_NOT_CURRENTLY_REVALIDATED
-CORE3_MANIFEST=HISTORICAL_REPO_ARTIFACT_NOT_CURRENTLY_REVALIDATED
+## Gates
 
-## CORE3
-
-HELLO_SOURCE=NOT_YET_REVALIDATED
-HELLO_MECHANICAL=NOT_YET_REVALIDATED
-HELLO_VISUAL=NOT_YET_REVALIDATED
-HELLO_EXPORT=NOT_YET_REVALIDATED
-HELLO_ANDROID=NOT_YET_REVALIDATED
-
-MILK_SOURCE=NOT_YET_REVALIDATED
-MILK_MECHANICAL=NOT_YET_REVALIDATED
-MILK_VISUAL=NOT_YET_REVALIDATED
-MILK_EXPORT=NOT_YET_REVALIDATED
-MILK_ANDROID=NOT_YET_REVALIDATED
-
-RICE_SOURCE=NOT_YET_REVALIDATED
-RICE_MECHANICAL=NOT_YET_REVALIDATED
-RICE_VISUAL=NOT_YET_REVALIDATED
-RICE_EXPORT=NOT_YET_REVALIDATED
-RICE_ANDROID=NOT_YET_REVALIDATED
-
-CORE3_REGRESSION_STATUS=OPEN
-
-## Expansion
-
-CANDIDATES_ATTEMPTED=0
-MECHANICAL_PASS=0
-VISUAL_PASS=0
-RUNTIME_READY=0
-ANDROID_READY=0
-
+CORE3_STATUS=BLOCKED_AT_HELLO_SOURCE_AUTHORITATIVE_ACTIONS_AND_FROZEN_SOLVER_MISSING
+HELLO_SOURCE=BLOCKED
+HELLO_MECHANICAL=NOT_RUN
+HELLO_VISUAL=NOT_RUN
+HELLO_EXPORT=NOT_RUN
+MILK_SOURCE=NOT_ACCEPTED_NO_MASTER
+MILK_MECHANICAL=NOT_RUN
+MILK_VISUAL=NOT_RUN
+MILK_EXPORT=NOT_RUN
+RICE_SOURCE=NOT_ACCEPTED_NO_MASTER
+RICE_MECHANICAL=NOT_RUN
+RICE_VISUAL=NOT_RUN
+RICE_EXPORT=NOT_RUN
 RUNTIME_READY_SIGNS=NONE_CURRENTLY_REVALIDATED
-SOURCE_REVIEW_REQUIRED_SIGNS=NONE_YET
-RETARGET_REVIEW_REQUIRED_SIGNS=NONE_YET
+REVIEW_REQUIRED_SIGNS=THANK_YOU_YES_NO_ALL_LISTEN_READY_FALSE
+ANDROID_READY_SIGNS=NONE_CURRENTLY_REVALIDATED
+FACIAL_NMM_STATUS=NOT_SUPPORTED_BY_CURRENT_SOURCE
 
-## Android
+C5 contains experimental THANK YOU, YES and NO, not CORE3. C6/C7 predate the emergency instruction and remain unapproved private evidence. The earlier C7 weight/camera workaround is not promoted. No further calibration or expansion occurred during the emergency audit.
 
-BUILD_STATUS=NOT_RUN_DOCUMENTATION_ONLY_TASK
-TEST_STATUS=POWERSHELL_HANDOFF_SCRIPTS_PARSE_AND_PACKAGE_VERIFY_PASS_ANDROID_NOT_RUN
-RENDERER=FILAMENT_HISTORICAL_REVALIDATION_REQUIRED
-TEXTUREVIEW_STATUS=HISTORICAL_REVALIDATION_REQUIRED
-TEARDOWN_10_CYCLE_STATUS=OPEN
-MEMORY_STATUS=OPEN
-SAMSUNG_PHYSICAL_GATE=OPEN
+ANDROID_STATUS=NOT_TESTED_C5_WAS_LOCAL_BROWSER_ONLY_NO_C5_ANDROID_BUILD
+ANDROID_SOURCE_MODIFIED=NO
+SAMSUNG_PHYSICAL_GATE=NOT_TESTED
+TEN_CYCLE_REOPEN_GATE=NOT_TESTED
+MEMORY_AND_TRANSFORM_ACCUMULATION=NOT_TESTED
 
-## Evidence
+Android read-only inspection located the actual CORE3 Filament/TextureView host and its camera settings, recorded in the detailed report. Do not attribute this browser screenshot to Android or infer device success from static code inspection.
 
-EVIDENCE_ROOT=C:\VOXGEST_HANDOFF
-LATEST_SCREENSHOT=NONE
-LATEST_LOG=NONE
-LATEST_QA_REPORT=reports/APPDEV_ASTRA_TAKEOVER_AUDIT_20260914.md
+## Evidence and changed files
 
-## Changed Files
+LOCAL_ROOT=C:\Users\Erl\Documents\Codex\2026-09-16\you-are-continuing-the-voxgest-avatar
+CHECKOUT=LOCAL_ROOT\work\emergency_repo
+EVIDENCE_ROOT=LOCAL_ROOT\work\emergency_evidence
+DETAILED_REPORT=reports/AVATAR_C5_EMERGENCY_AUDIT_20260916.md
+EVIDENCE_INDEX=reports/AVATAR_C5_EMERGENCY_EVIDENCE_20260916.json
+LATEST_COMPARISON=EVIDENCE_ROOT\C5_stage_comparison.jpg
 
-- avatar_handoff/README.md
-- avatar_handoff/AGENTS_AVATAR.md
-- avatar_handoff/ASTRA_FIRST_RUN_PROMPT.md
-- avatar_handoff/ACCEPTANCE_GATES.md
-- avatar_handoff/GITHUB_PROTOCOL.md
-- avatar_handoff/APPDEV_START_HERE.md
-- avatar_handoff/APPDEV_CHATGPT_SOL_BOOTSTRAP.md
-- avatar_handoff/APPDEV_ASTRA_BOOTSTRAP_PROMPT.md
-- avatar_handoff/ASTRA_RESUME_PROMPT.md
-- avatar_handoff/APPDEV_ZIP_SETUP_PROMPT.md
-- avatar_handoff/LOCAL_ASSET_EXPECTATIONS.md
-- avatar_handoff/package_templates/*
-- avatar_handoff/scripts/build_appdev_knowledge_zip.ps1
-- avatar_handoff/USER_FACING_VOCABULARY_PRIORITY.md
-- avatar_handoff/AVATAR_PRESENTATION_SPEC.md
-- docs/NEW_CHATGPT_PROJECT_BOOTSTRAP.md
-- docs/DOCUMENTATION_POLICY.md
-- docs/AVATAR_ARCHITECTURE_DECISIONS.md
-- docs/PROJECT_HISTORY_JUNE_SEPT_2026.md
+CHANGED_FILES:
+
 - reports/ASTRA_LIVE_HANDOFF.md
-- reports/APPDEV_ASTRA_TAKEOVER_AUDIT_20260914.md
+- reports/AVATAR_C5_EMERGENCY_AUDIT_20260916.md
+- reports/AVATAR_C5_EMERGENCY_EVIDENCE_20260916.json
+- reports/AVATAR_AUTHORITATIVE_RECOVERY_AUDIT_20260916.md
+- reports/AVATAR_AUTHORITATIVE_RECOVERY_AUDIT_20260916.json
+- tools/avatar_diagnostics/inspect_c5.py
+- tools/avatar_diagnostics/diagnose_skin.py
+- tools/avatar_diagnostics/compare_rest.py
+- tools/avatar_diagnostics/inspect_glb.py
 
-## Blockers
+Executed native and imported-GLB renders, rest comparison, non-arm ablation, independent finite/time/quaternion/root/color inspection and all-frame skinning. Private media, bone geometry, source data and binary assets remain local. Git receives compact hashes/status and read-only diagnostic source only. ADR unchanged because no authoritative architecture decision changed.
 
-- Astra has not yet audited the app developer's safe local C: workspace; this remains the required first engineering action.
-- Purchased/private Avatar source, frozen solver, FSL source trajectories, CORE3 artifacts, Blender toolchain and physical Samsung availability must be inventoried locally.
+## Blockers and exact next action
 
-## Claims Still Prohibited
+BLOCKERS=AUTHORITATIVE_CORE3_MASTERS_AND_FROZEN_SOLVER_MISSING;C5_RETARGET_AND_EXPORT_FAILED;ANDROID_UNTESTED;GITHUB_AUTH_UNAVAILABLE
+PUSH_STATUS=BLOCKED_AUTHENTICATION_NO_REMOTE_SUCCESS_CLAIM
+REMOTE_HEAD_AT_FETCH=d5325c02448bfaed392b37c7052e925134317180
 
-- current CORE3 PASS
-- current runtime-ready vocabulary
-- current Android Avatar PASS
-- current physical-device PASS
-- FSL linguistic certification
+Normal push cannot start Git's MSYS credential/prompt helper (signal pipe Win32 error 5). Direct native Credential Manager confirms no usable cached credential; noninteractive prompting is disabled. User was asked to sign in through Credential Manager or GitHub CLI without sharing a token in chat.
 
-## Next
-
-NEXT_EXACT_COMMAND=Verify/extract VOXGEST_APPDEV_TAKEOVER.zip, run INSTALL_AND_BOOTSTRAP.ps1, open C:\VOXGEST_APPDEV\LatestVoxGest in Codex, and paste avatar_handoff/APPDEV_ASTRA_BOOTSTRAP_PROMPT.md
-
-NEXT_EXACT_TASK=Perform Phase 0 safe-local audit only, update this file with evidence, commit, push, and verify remote HEAD before CORE3 regression.
-
-NEXT_EXACT_ACTION=Do not calibrate yet. Inventory safe-C local assets and prove the protected fallback/toolchain state.
-
-## App Developer Takeover Package
-
-TAKEOVER_LAYOUT=VOXGEST_APPDEV_TAKEOVER/
-TAKEOVER_ZIP=C:\VOXGEST_HANDOFF\VOXGEST_APPDEV_TAKEOVER.zip
-REQUIRED_FILES_PASS=YES_29_OF_29
-CHECKSUM_FILES=44
-PRIVATE_ASSETS_INCLUDED=NO
-EXTRACTED_PACKAGE_VERIFY=PASS
-SCRIPT_PARSE_STATUS=PASS_6_OF_6
-INTERNAL_REPO_PATHS=PASS_24_OF_24
-FINAL_CLEAN_HEAD_REBUILD=PASS_SOURCE_HEAD_3f30eb1ca2f41bb8a6fe3447cebded46efea4f48
-INSTALLER_WORKFLOW=PASS_CLEAN_CLONE_BRANCH_SWITCH_KNOWLEDGE_COPY_INVENTORY_IDEMPOTENT_RERUN
-DIRTY_WORKTREE_GUARD=PASS_FAILED_CLOSED_AND_PRESERVED_SENTINEL
-REMOTE_HEAD_VERIFY=PASS_SOURCE_HEAD_3f30eb1ca2f41bb8a6fe3447cebded46efea4f48
-FINAL_PACKAGE_HEAD_AUTHORITY=repo_state/head.txt_AFTER_THIS_METADATA_COMMIT
-RECOGNITION_BEHAVIOR_MODIFIED=NO
-AVATAR_CALIBRATION_PERFORMED=NO
+NEXT_EXACT_COMMAND=git -C CHECKOUT push origin HEAD:avatar/astra-calibration-20260914
+NEXT_EXACT_TASK=After authentication, push this checkpoint and compare git rev-parse HEAD with git ls-remote origin refs/heads/avatar/astra-calibration-20260914.
+NEXT_EXACT_ACTION=Recover matching frozen solver and editable CORE3 masters; establish rig-native neutral and evaluated export parity before HELLO -> MILK -> RICE -> neutral, then Android normal-speed/repeat/device validation. Keep C5/C7 rejected and expansion stopped.
+CLAIMS_STILL_PROHIBITED=C5_FIXED;CURRENT_CORE3_PASS;LISTEN_READY;ANDROID_READY;DEVICE_PASS;FSL_LINGUISTIC_CERTIFICATION;UNVERIFIED_PUSH_SUCCESS
