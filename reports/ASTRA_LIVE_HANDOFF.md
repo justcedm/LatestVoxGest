@@ -1,5 +1,37 @@
 # ASTRA LIVE HANDOFF
 
+## Current review workflow — 2026-09-19
+
+USER_REVIEW_TOOL=BLENDER_3_2_0
+WEBSITE_REVIEW_REQUESTED=NO_USE_BLENDER_FOR_FUTURE_REVIEWS
+CURRENT_REVIEW=YES_C8_EXPERIMENT_NOT_ACCEPTED
+REVIEW_FILE=C:\Users\Erl\Documents\Codex\2026-09-16\you-are-continuing-the-voxgest-avatar\outputs\blender_review\YES_C8_REVIEW.blend
+REVIEW_ACTION=FSL_YES__EXP_C8
+REVIEW_FRAME=160
+REVIEW_RANGE=1_TO_243_AT_60_FPS
+
+The user explicitly requested Blender 3.2.0 instead of a website for future Avatar reviews.
+A separate review copy was prepared and Blender launched with that file. It opens at the fist pose;
+Space plays/pauses, Shift+Left returns to the first frame, and Numpad 0 selects the frontal camera.
+No purchased source, C7 asset, recognition code, or historical CORE3 binary was modified.
+
+C8 is a source-projected YES hand-fit experiment. The sampled fist improves on C7, but preparation/recovery
+source matching and normal-speed human-motion acceptance remain open. Only 16 YES right-hand/finger
+rotation channels change in its experimental GLB; timestamps, mesh attributes, THANK YOU and NO are unchanged.
+No expansion, runtime-ready, Android, or linguistic PASS is claimed.
+
+Historical CORE3 motion was recovered into a separate editable runtime-reconstruction file:
+`work/core3_runtime_recovery/CORE3_RUNTIME_RECONSTRUCTED.blend` under the same safe workspace.
+It contains the HELLO, MILK and RICE runtime Actions (98/120/98 frames at 60 FPS).
+This is not the original source master and does not establish frozen-solver equivalence or SOURCE PASS.
+
+The earlier C5 checkpoint bf744273c89f5d944d2d8967760b14c02c4918e0 was pushed by the user
+and independently verified against remote HEAD. Its old authentication-blocked status below is historical.
+
+NEXT_EXACT_ACTION=Review C8 YES directly in Blender against the recorded source; resolve preparation/recovery and motion gates before promoting it or expanding vocabulary. Keep original-master provenance distinct from runtime reconstruction.
+
+## Historical C5 emergency checkpoint — 2026-09-16
+
 UPDATED_AT=2026-09-16T20:42:00+08:00
 OWNER=ASTRA_AVATAR_EMERGENCY_RECOVERY
 BRANCH=avatar/astra-calibration-20260914
