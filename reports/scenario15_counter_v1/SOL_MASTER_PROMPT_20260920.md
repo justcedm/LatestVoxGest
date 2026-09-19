@@ -9,44 +9,44 @@
 
 VoxGest will now demonstrate one narrow real-life scenario:
 
-**SMALL RETAIL / CONVENIENCE-STORE COUNTER COMMUNICATION**
+**GREETING + NAME EXCHANGE + SMALL RETAIL / CONVENIENCE-STORE COUNTER COMMUNICATION**
 
 This is intentionally not unrestricted conversation and not medical/emergency interpretation. It covers greeting, item purchase, quantity/payment, clarification, and closing.
 
 Freeze these exact 15 user-facing concept IDs:
 
 1. HELLO
-2. MILK
-3. RICE
-4. YES
-5. NO
-6. THANK_YOU
-7. PLEASE
-8. HOW_MUCH
-9. CASH
-10. CARD
-11. RECEIPT
-12. WAIT
-13. AGAIN
-14. ONE
-15. TWO
+2. WHAT
+3. YOUR
+4. NAME
+5. MY
+6. YES
+7. NO
+8. THANK_YOU
+9. PLEASE
+10. MILK
+11. RICE
+12. HOW_MUCH
+13. CASH
+14. CARD
+15. RECEIPT
 
 Filipino presentation map:
 HELLO=Kumusta
-MILK=Gatas
-RICE=Kanin
+WHAT=Ano
+YOUR=Iyong / Mo
+NAME=Pangalan
+MY=Aking / Ko
 YES=Oo
 NO=Hindi
 THANK_YOU=Salamat
 PLEASE=Pakiusap
+MILK=Gatas
+RICE=Kanin
 HOW_MUCH=Magkano?
-CASH=Pera/Cash
+CASH=Pera / Cash
 CARD=Card
 RECEIPT=Resibo
-WAIT=Sandali/Maghintay
-AGAIN=Ulitin
-ONE=Isa
-TWO=Dalawa
 
 Do not silently rename model IDs. UI may present Filipino/English/Both.
 
@@ -134,10 +134,10 @@ Preserve protected `(System.nanoTime() / 1_000_000L)` where applicable.
 
 Do not resurrect the full 105-class objective.
 
-Build a separate profile:
+Build a separate user-facing profile/manifest:
 `SCENARIO15_COUNTER_V1`
 
-First establish a 13-class Mapua-only baseline using the same RD-TCN48 family that already performed strongly. Then add MILK/RICE only when trustworthy source/calibration tensors exist.
+The user-facing vocabulary is exactly 15 concepts, but the backend does NOT have to be forced into one classifier if that increases risk. First establish the 9-class Mapua transactional baseline using the same RD-TCN48 family that already performed strongly. Audit the existing WHAT/YOUR/NAME/MY lane. Add/retrain the four name concepts plus MILK/RICE only when trustworthy source/calibration tensors exist. If multiple recognizers remain, route them deterministically and prove no ambiguous double-emission.
 
 Use:
 - frozen split manifests;
@@ -224,22 +224,26 @@ Current known Avatar work includes historical/reconstructed HELLO/MILK/RICE and 
 The final demo should make sense as a counter interaction, e.g.:
 
 HELLO
+WHAT + YOUR + NAME -> “What is your name?”
+MY + NAME -> open/continue the controlled name-entry flow -> “My name is <entered name>”
+HELLO + known conversation name -> may display “Hello, <name>” only when the name was explicitly supplied in this session
 MILK / RICE
-ONE / TWO
 HOW_MUCH
 CARD / CASH
 RECEIPT
-PLEASE / WAIT / AGAIN
+PLEASE
 YES / NO
 THANK_YOU
 
-The 15 concepts are intentionally small and composable. The UI may show a chronological token history such as “MILK • TWO” but must not claim grammatical sentence translation. Do not silently expand past 15.
+Proper names themselves are NOT 15 classifier classes. Arbitrary personal names remain text entered/spelled through the existing controlled name flow unless a separately validated fingerspelling recognizer is available. Do not claim unrestricted name-sign or alphabet recognition.
+
+The 15 concepts are intentionally small and composable. The UI may show chronological accepted tokens and safe deterministic phrase composition, but must not claim unrestricted grammatical FSL sentence translation. Do not silently expand past 15.
 
 ## 9. PAPER/DEFENSE CLAIM CONTRACT
 
 All engineering reports must support this exact claim:
 
-“VoxGest is evaluated as an offline Android bidirectional accessibility prototype for a controlled 15-concept FSL scenario. It does not claim unrestricted FSL translation or unrestricted conversation.”
+“VoxGest is evaluated as an offline Android bidirectional accessibility prototype for a controlled 15-concept FSL scenario covering greeting, name exchange, and a small retail-counter interaction. It does not claim unrestricted FSL translation, unrestricted conversation, or arbitrary proper-name recognition.”
 
 If Samsung calibration is required, say:
 “calibrated demonstration profile”
@@ -263,9 +267,9 @@ Do not claim medical/emergency use from this counter vocabulary.
 1. Verify branch/worktree/remotes.
 2. Read prior Mapua audit, Mapua14 reports, temporal sprint prompt, live handoff.
 3. Create scenario15 manifest and exact data inventory.
-4. Resolve MILK/RICE source availability.
+4. Audit the existing WHAT/YOUR/NAME/MY + NamePhraseDetector path and resolve MILK/RICE source availability.
 5. Implement/prove complete-event 48-frame train/runtime parity.
-6. Train Mapua 13 baseline.
+6. Train Mapua 9 transactional baseline and qualify the name lane.
 7. Physical Samsung raw test.
 8. Capture targeted calibration/MILK/RICE data if required.
 9. Train SCENARIO15_COUNTER_V1.
@@ -303,4 +307,19 @@ Checkpoint before every long training job and after every physical qualification
 `NEXT_EXACT_ACTION=`
 `HANDOFF_UPDATED=YES/NO`
 
-The governing objective is simple: **15 exact concepts, one believable real-life scenario, one train/runtime feature contract, one Samsung-qualified demo profile. No scope creep.**
+## 13. NAME / GREETING ACCEPTANCE GATE
+
+Name exchange is a first-class demo requirement, not a cosmetic phrase.
+
+Required physical flows:
+1. HELLO must recognize reliably.
+2. WHAT -> YOUR -> NAME must be accepted in order and compose exactly “What is your name?”.
+3. MY -> NAME must enter the existing name-entry mode.
+4. After a user explicitly enters a name, the UI may compose “My name is <name>”.
+5. The conversation session may reuse that explicitly supplied name for a greeting such as “Hello, <name>”; never hallucinate or infer a name.
+6. Clear/reset must remove the active name context.
+7. The system must not claim that arbitrary names are recognized as FSL signs unless a separate alphabet/fingerspelling feature passes its own validation.
+
+Test at least five complete WHAT-YOUR-NAME phrase trials and five MY-NAME entry trials on Samsung in the final qualification, in addition to per-token tests.
+
+The governing objective is simple: **15 exact concepts, one believable greeting/name/retail scenario, one train/runtime feature contract, and a Samsung-qualified demo. No scope creep.**
