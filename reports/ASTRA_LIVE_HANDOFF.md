@@ -1,5 +1,56 @@
 # ASTRA LIVE HANDOFF
 
+## Current purchased-source calibration workspace — 2026-09-19
+
+This section supersedes the review-file location below. The user selected:
+`C:\Users\Erl\Documents\school shit\cap2\VOXGEST_AVATAR_HANDOFF\avatar_original\purchased_avatar.blend`.
+Its SHA-256 before and after processing is
+`3a48b881b12a1f5bb99ec1bd82a5d669db8d30a2b62b47cf02692D0E5E3BEA9D` (case-insensitive).
+The original remains unchanged. Processing used a separate source copy in the safe workspace.
+
+WORKING_FILE=LOCAL_ROOT\work\purchased_avatar_lane_20260919\purchased_avatar_CALIBRATION_WORKING_v1.blend
+WORKING_FILE_SHA256=a5e730b88358a6c3bde8c7e6e076c0467e43a845bc80aaa5a923680c257a40c6
+REVIEW_TOOL=BLENDER_3_2_0
+CURRENT_ACTION=FSL_YES__PURCHASED_REVIEW_C8
+CURRENT_FRAME=160
+REVIEW_FPS=60
+ACCEPTANCE=EXPERIMENTAL_REVIEW_REQUIRED
+
+Transferred existing experimental Actions onto the purchased file's original 525-bone hierarchy:
+
+- THANK YOU: FSL_THANK_YOU__PURCHASED_REVIEW_C7, frames 1–243.
+- YES: FSL_YES__PURCHASED_REVIEW_C8, frames 1–243.
+- NO: FSL_NO__PURCHASED_REVIEW_C7, frames 1–244.
+
+Process: inspect and hash the selected source; copy it; sample existing experimental deform-bone
+matrices at every frame; convert these matrices into local transforms in parent order on the original
+hierarchy; key location/quaternion/scale; retain original Actions and controls; save a separate working
+file; render YES frame 160; open it in Blender. The local reproducible script is
+`LOCAL_ROOT\work\purchased_avatar_lane_20260919\transfer_calibrations.py`.
+Private source, working blends and rendered media stay outside Git.
+
+For this experimental visual-FK playback copy, 442 constraints and 193 object/armature drivers
+are muted, shape-key drivers are muted, and bendy-bone segments are set to one. This is not restored
+native-controller behavior. All original bone names and parents are retained. Missing external image
+paths are cleared in this copy; materials/textures have not received appearance acceptance.
+The neutral source Action is retained but the muted-control review setup is not its native playback setup.
+
+Verification: sampled deform-bone matrix difference at frame 1, frame 160 and each final frame
+is at most 0.0000047684 for each transferred Action. This verifies sampled pose transfer only.
+The rendered YES frame shows a complete torso and a closed fist; a still image does not establish
+smoothness, collision freedom, FSL accuracy, or export parity. Blender launched with the working file.
+Use Space to play/pause. Select the other Actions in the Action Editor; set the end frame to 244 for NO.
+
+No new CORE3 source masters or frozen solver were found in the selected purchased blend.
+HELLO/MILK/RICE runtime reconstruction remains separate and explicitly non-authoritative.
+No recognition changes, source overwrite, new vocabulary, or acceptance promotion occurred.
+
+NEXT_EXACT_ACTION=Review all three transferred Actions at normal speed against their source recordings in Blender, starting with YES preparation/hold/recovery and knuckle clearance; resolve defects before export or vocabulary promotion. CORE3 source gates remain blocked pending authoritative masters and frozen solver.
+
+Evidence: reports/AVATAR_PURCHASED_WORKING_COPY_20260919.json.
+Previous checkpoint 1f28e5ec8ed642b9df5659be376deb550e990fb9 was pushed and remote-verified.
+This checkpoint's delivery is verified after commit by comparing local and remote branch HEAD.
+
 ## Current review workflow — 2026-09-19
 
 USER_REVIEW_TOOL=BLENDER_3_2_0
