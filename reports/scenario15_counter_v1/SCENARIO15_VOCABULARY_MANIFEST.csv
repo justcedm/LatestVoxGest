@@ -1,0 +1,16 @@
+canonical_id,filipino_display,english_display,scenario_role,recognition_source,recognition_status,avatar_source,avatar_status,listen_ready,notes
+HELLO,Kumusta,Hello,greeting,Mapua PASS + existing rescue model,DATA_READY,historical CORE3 runtime reconstruction,NEEDS_REVALIDATION,false,Must pass live Samsung recognition and current Avatar validation
+WHAT,Ano,What,name_question,existing demo/name lane,NEEDS_LIVE_AUDIT,none validated,NOT_READY,false,Use only as accepted token in WHAT-YOUR-NAME composition
+YOUR,Iyong / Mo,Your,name_question,existing demo/name lane,NEEDS_LIVE_AUDIT,none validated,NOT_READY,false,Use only as accepted token in WHAT-YOUR-NAME composition
+NAME,Pangalan,Name,name_exchange,existing demo/name lane,NEEDS_LIVE_AUDIT,none validated,NOT_READY,false,MY+NAME activates controlled name entry; arbitrary names are not classifier classes
+MY,Aking / Ko,My,name_exchange,existing demo/name lane,NEEDS_LIVE_AUDIT,none validated,NOT_READY,false,MY+NAME activates controlled name entry
+YES,Oo,Yes,confirmation,Mapua PASS + existing rescue model,DATA_READY,purchased-avatar transferred C8 experiment,REVIEW_REQUIRED,false,C8 must pass normal-speed source/mechanical/export/device gates
+NO,Hindi,No,confirmation,Mapua PASS + existing rescue model,DATA_READY,purchased-avatar transferred C7 experiment,REVIEW_REQUIRED,false,Needs full visual/mechanical/export/device validation
+THANK_YOU,Salamat,Thank you,closing,Mapua PASS + existing rescue model,DATA_READY,purchased-avatar transferred C7 experiment,REVIEW_REQUIRED,false,Needs full visual/mechanical/export/device validation
+PLEASE,Pakiusap,Please,politeness,Mapua PASS,DATA_READY,none validated,NOT_READY,false,Recognition first; Avatar action requires separate Astra handoff
+MILK,Gatas,Milk,product,source recovery or Samsung calibration required,SOURCE_PENDING,historical CORE3 runtime reconstruction,NEEDS_REVALIDATION,false,Do not train from Avatar motion
+RICE,Kanin,Rice,product,source recovery or Samsung calibration required,SOURCE_PENDING,historical CORE3 runtime reconstruction,NEEDS_REVALIDATION,false,Do not train from Avatar motion
+HOW_MUCH,Magkano?,How much,price_question,Mapua PASS,DATA_READY,none validated,NOT_READY,false,Mapua class has weaker tracking; targeted review/calibration may be needed
+CASH,Pera / Cash,Cash,payment,Mapua PASS,DATA_READY,none validated,NOT_READY,false,Representative audit had concerns; inspect weak clips before expansion
+CARD,Card,Card,payment,Mapua PASS,DATA_READY,none validated,NOT_READY,false,Recognition source available
+RECEIPT,Resibo,Receipt,transaction_close,Mapua PASS,DATA_READY,none validated,NOT_READY,false,Recognition source available
