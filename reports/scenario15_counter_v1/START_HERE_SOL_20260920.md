@@ -1,3 +1,13 @@
+# SUPERSEDED FOR EXECUTION — ONE-DAY WAR ROOM ACTIVE
+
+Use this file only as background. The active execution authority is:
+
+`reports/scenario15_counter_v1/ONE_DAY_WAR_ROOM_PROMPT_20260920.md`
+
+The one-day prompt supersedes the slower sequencing below. Do not spend time on multi-day planning.
+
+---
+
 # START HERE — Sol Scenario-15 Execution
 
 You are resuming VoxGest under final-defense deadline pressure.
