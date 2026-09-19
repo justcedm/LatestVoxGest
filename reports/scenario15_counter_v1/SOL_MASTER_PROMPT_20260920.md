@@ -23,13 +23,13 @@ Freeze these exact 15 user-facing concept IDs:
 6. THANK_YOU
 7. PLEASE
 8. HOW_MUCH
-9. HOW_MANY
-10. CASH
-11. CARD
-12. RECEIPT
-13. WAIT
-14. AGAIN
-15. PROBLEM
+9. CASH
+10. CARD
+11. RECEIPT
+12. WAIT
+13. AGAIN
+14. ONE
+15. TWO
 
 Filipino presentation map:
 HELLO=Kumusta
@@ -40,13 +40,13 @@ NO=Hindi
 THANK_YOU=Salamat
 PLEASE=Pakiusap
 HOW_MUCH=Magkano?
-HOW_MANY=Ilan?
 CASH=Pera/Cash
 CARD=Card
 RECEIPT=Resibo
 WAIT=Sandali/Maghintay
 AGAIN=Ulitin
-PROBLEM=Problema
+ONE=Isa
+TWO=Dalawa
 
 Do not silently rename model IDs. UI may present Filipino/English/Both.
 
@@ -78,13 +78,14 @@ If a concept cannot reach DEMO_READY, report it honestly and replace it only wit
 
 ### Mapua source-domain classes — 13/15
 Use raw Mapua Transactional FSL videos for:
-HELLO, YES, NO, THANK_YOU, PLEASE, HOW_MUCH, HOW_MANY, CASH, CARD, RECEIPT, WAIT, AGAIN, PROBLEM.
+HELLO, YES, NO, THANK_YOU, PLEASE, HOW_MUCH, CASH, CARD, RECEIPT, WAIT, AGAIN, ONE, TWO.
 
 The prior audit shows 339 PASS clips across these 13 classes. Preserve the audit decisions. Start from PASS-only. REVIEW clips may be promoted only through an explicit reproducible SAFE_REVIEW rule/manual list; never silently include all REVIEW. REJECT_TECHNICAL never trains.
 
 Known caution:
-- HELLO/PLEASE/HOW_MUCH/HOW_MANY are lower-data or tracking-weaker.
-- CASH and PROBLEM had representative visual concerns.
+- HELLO/PLEASE/HOW_MUCH are lower-data or tracking-weaker.
+- CASH had representative visual concerns.
+- ONE/TWO are comparatively simple/static classes but still require complete-event and rejection validation.
 Treat these as targeted-review classes, not reasons to discard the scenario automatically.
 
 ### MILK and RICE — 2/15
@@ -224,16 +225,15 @@ The final demo should make sense as a counter interaction, e.g.:
 
 HELLO
 MILK / RICE
-HOW_MANY
-ONE/TWO is intentionally NOT in the frozen 15; therefore do not fabricate numeric quantity if unsupported.
+ONE / TWO
 HOW_MUCH
 CARD / CASH
 RECEIPT
-PLEASE / WAIT / AGAIN / PROBLEM
+PLEASE / WAIT / AGAIN
 YES / NO
 THANK_YOU
 
-Important: because ONE/TWO are not in this 15, the UI must not imply numeric answers unless owner later swaps concepts. HOW_MANY can still be used as a supported question but not automatically answered numerically. If this weakens the scenario, report it before implementation and propose a one-for-one vocabulary swap; do not silently expand past 15.
+The 15 concepts are intentionally small and composable. The UI may show a chronological token history such as “MILK • TWO” but must not claim grammatical sentence translation. Do not silently expand past 15.
 
 ## 9. PAPER/DEFENSE CLAIM CONTRACT
 
