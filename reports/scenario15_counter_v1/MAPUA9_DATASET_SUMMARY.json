@@ -1,0 +1,53 @@
+{
+  "class_counts": {
+    "CARD": 34,
+    "CASH": 26,
+    "HELLO": 19,
+    "HOW_MUCH": 12,
+    "NO": 33,
+    "PLEASE": 17,
+    "RECEIPT": 28,
+    "THANK_YOU": 24,
+    "YES": 26
+  },
+  "complete_trajectory_frame_range": [
+    7,
+    75
+  ],
+  "created_utc": "2026-09-19T21:10:14.455255+00:00",
+  "development_fold_counts": {
+    "0": 45,
+    "1": 47,
+    "2": 46,
+    "3": 47
+  },
+  "experiment_id": "scenario15_mapua9_v1",
+  "feature_contract": {
+    "coordinate_orientation": "canonical_unmirrored",
+    "layout": "pose99|anatomical_left63|anatomical_right63",
+    "maximum_internal_interpolation_gap_frames": 3,
+    "mediapipe_version": "0.10.9",
+    "missing_hand_policy": "zero_fixed_anatomical_63_slot",
+    "missing_pose_policy": "zero_entire_225_frame",
+    "motion_boundary_frames": 3,
+    "slot_swapping": false,
+    "temporal_length": 48,
+    "version": "fullsign225_frame_v1_complete_trajectory_v1"
+  },
+  "feature_status": "ALL_HASHED_FLOAT32_48X225_FINITE_AND_CONTRACT_MATCHED",
+  "group_partition_or_fold_crossings": 0,
+  "metric_scope": "EXPLORATORY_CLIP_LEVEL_METRICS_NOT_SIGNER_INDEPENDENT",
+  "partition_counts": {
+    "development": 185,
+    "sealed_test": 34
+  },
+  "selected_clip_count": 219,
+  "signer_overlap_claim": "NOT_MEASURABLE_SIGNER_IDS_UNAVAILABLE",
+  "source_cache_manifest_sha256": "0742eda7ad6e6d7fa6871f053a6c2fc17eebb60c73dd6d4802e88dee7692950a",
+  "source_features_outside_git": true,
+  "source_video_overlap_count": 0,
+  "split_manifest_sha256": "883974a7086eb43a9bb1da89e845dd4b5f6a4ab1c5d68f6cdc2b7d3d2a7ae55b",
+  "technical_status_counts": {
+    "PASS": 219
+  }
+}

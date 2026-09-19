@@ -15,5 +15,10 @@
             android:exported="true"
             android:label="VoxGest FullSign225 Live"
             android:theme="@style/FslDebugSystemTheme" />
+        <activity
+            android:name="com.voxgest.dryrun.scenario15.Scenario15ExistingAssetsQuickGateActivity"
+            android:exported="true"
+            android:label="VoxGest Scenario-15 Quick Gate"
+            android:theme="@style/FslDebugSystemTheme" />
     </application>
 </manifest>
