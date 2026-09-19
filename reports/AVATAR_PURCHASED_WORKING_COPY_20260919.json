@@ -1,0 +1,35 @@
+{
+  "source_sha256": "3a48b881b12a1f5bb99ec1bd82a5d669db8d30a2b62b47cf02692d0e5e3bea9d",
+  "source_preserved": true,
+  "source_file": "purchased_avatar.blend from user-selected avatar_original folder",
+  "motion_blend_sha256": "006e596c8cb09cbd711c1d92b2e0d7ac6d2da2adf81c59094a1c2afa3795d13c",
+  "working_blend": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\purchased_avatar_lane_20260919\\purchased_avatar_CALIBRATION_WORKING_v1.blend",
+  "working_blend_sha256": "a5e730b88358a6c3bde8c7e6e076c0467e43a845bc80aaa5a923680c257a40c6",
+  "retained_bones": 525,
+  "muted_constraints": 442,
+  "muted_drivers": 193,
+  "actions": [
+    {
+      "action": "FSL_THANK_YOU__PURCHASED_REVIEW_C7",
+      "source_action": "FSL_THANK_YOU__EXP_C7",
+      "frames": 243,
+      "sampled_matrix_max_error": 4.76837158203125e-06,
+      "status": "REVIEW_REQUIRED"
+    },
+    {
+      "action": "FSL_YES__PURCHASED_REVIEW_C8",
+      "source_action": "FSL_YES__EXP_C8",
+      "frames": 243,
+      "sampled_matrix_max_error": 4.76837158203125e-06,
+      "status": "REVIEW_REQUIRED"
+    },
+    {
+      "action": "FSL_NO__PURCHASED_REVIEW_C7",
+      "source_action": "FSL_NO__EXP_C7",
+      "frames": 244,
+      "sampled_matrix_max_error": 4.76837158203125e-06,
+      "status": "REVIEW_REQUIRED"
+    }
+  ],
+  "note": "Constraints/controllers retained but muted for experimental visual-FK playback. Original purchased file untouched. No accepted calibration or restored frozen solver is claimed."
+}
