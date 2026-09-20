@@ -4,13 +4,13 @@ TIMESTAMP=2026-09-20T23:24:26+08:00
 
 BRANCH=recognition/fsl-dual-dataset-reset-v1
 
-COMMIT=39c9f21dbc9702942e90b3e6171bb4d4af43ff07 plus Samsung startup checkpoint
+COMMIT=3d6f044c86ce2d00e087a320f47a4ab22b5f57df
 
 SOURCE_BASE_COMMIT=6afa7322679317a0fac8b1bb0e66fe810ff99b10
 
-HANDOFF_UPDATE_COMMIT=PENDING_THIS_COMMIT
+HANDOFF_UPDATE_COMMIT=3d6f044c86ce2d00e087a320f47a4ab22b5f57df
 
-BRANCH_HEAD=39c9f21dbc9702942e90b3e6171bb4d4af43ff07 plus Samsung startup checkpoint
+BRANCH_HEAD=3d6f044c86ce2d00e087a320f47a4ab22b5f57df plus metadata-only handoff finalization
 
 CURRENT_GOAL=Complete Samsung anatomical handedness/framing verification, then execute the frozen 45-positive and 30-negative initial battery without threshold changes.
 
