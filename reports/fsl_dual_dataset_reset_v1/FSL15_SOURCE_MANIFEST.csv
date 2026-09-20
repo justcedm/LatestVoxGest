@@ -1,0 +1,16 @@
+canonical_id,source_fsl105,source_mapua,scenario_role,status,notes
+HELLO,YES,YES,greeting,SELECTED,Bridge class across both published FSL datasets
+HOW_ARE_YOU,YES,NO,small_talk,SELECTED,FSL105-only
+IM_FINE,YES,NO,small_talk,SELECTED,FSL105-only
+NICE_TO_MEET_YOU,YES,NO,small_talk,SELECTED,FSL105-only
+THANK_YOU,YES,YES,closing,SELECTED,Bridge class across both published FSL datasets
+YES,YES,YES,confirmation,SELECTED,Bridge class across both published FSL datasets
+NO,YES,YES,confirmation,SELECTED,Bridge class across both published FSL datasets
+PLEASE,NO,YES,politeness,SELECTED,Mapua-only
+HOW_MUCH,NO,YES,retail_question,SELECTED,Mapua-only
+CASH,NO,YES,payment,SELECTED,Mapua-only
+CARD,NO,YES,payment,SELECTED,Mapua-only
+RECEIPT,NO,YES,transaction,SELECTED,Mapua-only
+WAIT,NO,YES,interaction_control,SELECTED,Mapua-only
+MILK,YES,NO,product,SELECTED,FSL105-only
+RICE,YES,NO,product,SELECTED,FSL105-only
