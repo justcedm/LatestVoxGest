@@ -1,5 +1,51 @@
 # ASTRA LIVE HANDOFF
 
+## Next-word diagnostic checkpoint — 2026-09-20
+
+The user authorized continuing vocabulary work on the selected purchased Avatar working copy.
+No existing word was implicitly accepted. PLEASE, HELP and SORRY are absent from the recovered
+canonical labels.csv; they are NOT_AVAILABLE_AS_CANONICAL_CLASS in this package.
+
+Built separate, explicitly experimental drafts for HOW ARE YOU, IM FINE and UNDERSTAND using
+matched clip 0 videos and raw225 trajectories. All three have finite inputs and matching source/video
+frame counts at 60 FPS (244, 243, 245). Interior detected-hand gaps are 0, at most 2, and 0 frames,
+respectively. This structural check does not establish SOURCE PASS.
+
+| Draft | Maximum keyed quaternion step | Outcome |
+|---|---:|---|
+| HOW ARE YOU | 136.39 degrees | REJECTED: wrist snap; hands miss source contact |
+| IM FINE | 69.92 degrees | REJECTED: wrist snap; visual/source acceptance pending |
+| UNDERSTAND | 119.32 degrees | REJECTED: finger snap; face-relative signing location mismatch |
+
+Raw right-palm bases independently derived from the recovered landmarks jump 170.69 degrees
+at source frames 152–153, 128.18 at 115–116, and 171.26 at 93–94 respectively (zero-based).
+Thus continuous detection is insufficient: landmark-derived orientation is unstable. Do not infer
+that these jumps are performed by the signer. The draft solver also does not calibrate facial/head motion.
+The exact contribution of inferred depth, occlusion and retargeting requires further fitting/inspection.
+
+Process: read exact canonical labels and priority; inspect source video contact sheets; verify raw225
+shape/finite data, presence and source timing; build source-driven experimental arm/hand rotations
+on the purchased 525-bone hierarchy; preserve non-arm neutral transforms; inspect rendered poses;
+measure all keyed rotational steps; reject defects; package diagnostic Actions beside prior Actions.
+A five-frame trajectory filter and 24-frame experimental neutral blends were used without shortening
+source frame counts. Unobserved handshape edges and natural transition matching remain unvalidated.
+No whole-body orientation fix, rig reparenting, recognition edit or runtime export was performed.
+
+REVIEW_FILE=LOCAL_ROOT\work\next_words_20260920\NEXT_WORDS_DIAGNOSTIC_REJECTED.blend
+REVIEW_ACTION=FSL_IM_FINE__PURCHASED_DRAFT_V1
+NEW_DRAFTS=FSL_HOW_ARE_YOU__PURCHASED_DRAFT_V1;FSL_IM_FINE__PURCHASED_DRAFT_V1;FSL_UNDERSTAND__PURCHASED_DRAFT_V1
+NEW_READY_WORDS=0
+CORE3_SOURCE_STATUS=STILL_BLOCKED_NO_NEW_AUTHORITATIVE_MASTERS_OR_FROZEN_SOLVER
+ALL_NEW_LISTEN_READY=FALSE
+
+Private scripts, source contact sheets, measurements and draft blends are under
+LOCAL_ROOT\work\next_words_20260920. Source purchased hash remains
+3a48b881b12a1f5bb99ec1bd82a5d669db8d30a2b62b47cf02692d0e5e3bea9d.
+Existing Actions are checked for exact F-curve/key/interpolation preservation during packaging.
+See reports/AVATAR_NEXT_WORDS_20260920.json for source hashes and numerical evidence.
+
+NEXT_EXACT_ACTION=Use IM FINE clip 0 video to fit palm orientation and finger geometry against visible source rather than unstable depth; compare preparation/stroke/hold/recovery at normal speed; re-run quaternion, collision, source matching and existing-action regression before promotion. Keep other failed drafts quarantined.
+
 ## Current purchased-source calibration workspace — 2026-09-19
 
 This section supersedes the review-file location below. The user selected:

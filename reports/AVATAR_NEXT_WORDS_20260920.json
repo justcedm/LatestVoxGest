@@ -1,0 +1,347 @@
+{
+  "date": "2026-09-20",
+  "canonical_unavailable": [
+    "PLEASE",
+    "HELP",
+    "SORRY"
+  ],
+  "source_triage": [
+    {
+      "label": "HOW ARE YOU",
+      "frames": 244,
+      "video_frames": 244,
+      "fps": 60.0,
+      "finite": true,
+      "hands": {
+        "LEFT": {
+          "detected": 77,
+          "first": 123,
+          "last": 199,
+          "max_gap": 0
+        },
+        "RIGHT": {
+          "detected": 110,
+          "first": 91,
+          "last": 200,
+          "max_gap": 0
+        }
+      }
+    },
+    {
+      "label": "IM FINE",
+      "frames": 243,
+      "video_frames": 243,
+      "fps": 60.0,
+      "finite": true,
+      "hands": {
+        "LEFT": {
+          "detected": 0,
+          "first": null,
+          "last": null,
+          "max_gap": 0
+        },
+        "RIGHT": {
+          "detected": 75,
+          "first": 115,
+          "last": 191,
+          "max_gap": 2
+        }
+      }
+    },
+    {
+      "label": "UNDERSTAND",
+      "frames": 245,
+      "video_frames": 245,
+      "fps": 60.0,
+      "finite": true,
+      "hands": {
+        "LEFT": {
+          "detected": 0,
+          "first": null,
+          "last": null,
+          "max_gap": 0
+        },
+        "RIGHT": {
+          "detected": 127,
+          "first": 92,
+          "last": 218,
+          "max_gap": 0
+        }
+      }
+    }
+  ],
+  "source_orientation": [
+    {
+      "label": "HOW ARE YOU",
+      "hand": "LEFT",
+      "raw_palm_basis_max_step_deg": 34.48286025739679,
+      "zero_based_source_frames": [
+        123,
+        124
+      ]
+    },
+    {
+      "label": "HOW ARE YOU",
+      "hand": "RIGHT",
+      "raw_palm_basis_max_step_deg": 170.68611999836878,
+      "zero_based_source_frames": [
+        152,
+        153
+      ]
+    },
+    {
+      "label": "IM FINE",
+      "hand": "RIGHT",
+      "raw_palm_basis_max_step_deg": 128.1826116260948,
+      "zero_based_source_frames": [
+        115,
+        116
+      ]
+    },
+    {
+      "label": "UNDERSTAND",
+      "hand": "RIGHT",
+      "raw_palm_basis_max_step_deg": 171.25570248208936,
+      "zero_based_source_frames": [
+        93,
+        94
+      ]
+    }
+  ],
+  "drafts": [
+    {
+      "canonical_label": "HOW ARE YOU",
+      "action": "FSL_HOW_ARE_YOU__PURCHASED_DRAFT_V1",
+      "frames": 244,
+      "fps": 60,
+      "hand_coverage": {
+        "L": {
+          "detected_frames": 77,
+          "first": 123,
+          "last": 199,
+          "max_interior_gap": 0,
+          "edge_policy": "nearest observed handshape during out-of-view preparation/recovery; review required"
+        },
+        "R": {
+          "detected_frames": 110,
+          "first": 91,
+          "last": 200,
+          "max_interior_gap": 0,
+          "edge_policy": "nearest observed handshape during out-of-view preparation/recovery; review required"
+        }
+      },
+      "max_quaternion_step_degrees": 136.38691809935764,
+      "worst_bones": [
+        [
+          "DEF-hand.R",
+          136.38691809935764
+        ],
+        [
+          "DEF-f_ring.01.R",
+          108.22449739943212
+        ],
+        [
+          "DEF-f_pinky.01.R",
+          105.57256043668124
+        ],
+        [
+          "DEF-f_index.01.R",
+          92.05747545531732
+        ],
+        [
+          "DEF-f_middle.01.R",
+          91.94664299472005
+        ],
+        [
+          "DEF-f_middle.01.L",
+          76.62583240004922
+        ],
+        [
+          "DEF-f_index.02.L",
+          66.31288264606548
+        ],
+        [
+          "DEF-f_pinky.02.L",
+          63.86305033109766
+        ],
+        [
+          "DEF-f_index.02.R",
+          60.78327292533769
+        ],
+        [
+          "DEF-f_index.01.L",
+          57.3796306964582
+        ]
+      ],
+      "listen_ready": false,
+      "status": "REJECTED_MECHANICAL",
+      "limitations": [
+        "Experimental solver, not frozen B32",
+        "Unobserved preparation/recovery handshape is unverified",
+        "Facial and head motion not calibrated",
+        "No export or mechanical/visual PASS"
+      ],
+      "source_hashes": {
+        "clips__4__0__meta.json": "9b276a36ca46a6e3e75a1481cac42af46de0c505bdc465d8dfc6534e8363a658",
+        "clips__4__0__raw225.npy": "2369879d5f79c8c543b345ac923a685ae0bbf36c435a208084f3b605ca3920b6",
+        "clips__4__0__presence.npy": "e133b59af759a6c7ca76006e9b5349070d70563d5c02a72ecbfa748f54245ef1"
+      },
+      "human_motion_visual": "FAIL_OR_UNVALIDATED",
+      "export": "NOT_RUN"
+    },
+    {
+      "canonical_label": "IM FINE",
+      "action": "FSL_IM_FINE__PURCHASED_DRAFT_V1",
+      "frames": 243,
+      "fps": 60,
+      "hand_coverage": {
+        "L": {
+          "detected_frames": 0
+        },
+        "R": {
+          "detected_frames": 75,
+          "first": 115,
+          "last": 191,
+          "max_interior_gap": 2,
+          "edge_policy": "nearest observed handshape during out-of-view preparation/recovery; review required"
+        }
+      },
+      "max_quaternion_step_degrees": 69.91745940290456,
+      "worst_bones": [
+        [
+          "DEF-hand.R",
+          69.91745940290456
+        ],
+        [
+          "DEF-f_pinky.01.R",
+          33.3821414273174
+        ],
+        [
+          "DEF-thumb.01.R",
+          28.423642806546013
+        ],
+        [
+          "DEF-f_ring.01.R",
+          27.208586883687147
+        ],
+        [
+          "DEF-f_middle.01.R",
+          23.184586340606927
+        ],
+        [
+          "DEF-f_middle.03.R",
+          22.11906561921926
+        ],
+        [
+          "DEF-f_ring.03.R",
+          22.102488712307437
+        ],
+        [
+          "DEF-f_pinky.02.R",
+          21.99330666749389
+        ],
+        [
+          "DEF-thumb.03.R",
+          21.50826112967126
+        ],
+        [
+          "DEF-f_index.01.R",
+          19.904481442036168
+        ]
+      ],
+      "listen_ready": false,
+      "status": "REJECTED_MECHANICAL",
+      "limitations": [
+        "Experimental solver, not frozen B32",
+        "Unobserved preparation/recovery handshape is unverified",
+        "Facial and head motion not calibrated",
+        "No export or mechanical/visual PASS"
+      ],
+      "source_hashes": {
+        "clips__5__0__meta.json": "600fc46cc31f1bd563c3fbdc2f3bce95f6f24db5aeb965eb55ab6fc8a8bcb3ef",
+        "clips__5__0__raw225.npy": "4372dace0884d4d4285ee030900aa7843ce4f61a3dd145579a5c074a15f8b98b",
+        "clips__5__0__presence.npy": "d7697f64892030621ac04285d4b4ccb390b8965d0abd2b41c77ad3da79b78eba"
+      },
+      "human_motion_visual": "FAIL_OR_UNVALIDATED",
+      "export": "NOT_RUN"
+    },
+    {
+      "canonical_label": "UNDERSTAND",
+      "action": "FSL_UNDERSTAND__PURCHASED_DRAFT_V1",
+      "frames": 245,
+      "fps": 60,
+      "hand_coverage": {
+        "L": {
+          "detected_frames": 0
+        },
+        "R": {
+          "detected_frames": 127,
+          "first": 92,
+          "last": 218,
+          "max_interior_gap": 0,
+          "edge_policy": "nearest observed handshape during out-of-view preparation/recovery; review required"
+        }
+      },
+      "max_quaternion_step_degrees": 119.31783292232082,
+      "worst_bones": [
+        [
+          "DEF-f_index.03.R",
+          119.31783292232082
+        ],
+        [
+          "DEF-f_middle.02.R",
+          118.03730225709086
+        ],
+        [
+          "DEF-f_middle.03.R",
+          102.9919731250612
+        ],
+        [
+          "DEF-f_index.02.R",
+          61.454401221423694
+        ],
+        [
+          "DEF-f_pinky.01.R",
+          60.27692138526133
+        ],
+        [
+          "DEF-f_middle.01.R",
+          60.23453991107311
+        ],
+        [
+          "DEF-f_ring.01.R",
+          59.92816713247601
+        ],
+        [
+          "DEF-hand.R",
+          59.3101116499451
+        ],
+        [
+          "DEF-f_index.01.R",
+          58.25060149484987
+        ],
+        [
+          "DEF-thumb.01.R",
+          42.03944451151507
+        ]
+      ],
+      "listen_ready": false,
+      "status": "REJECTED_MECHANICAL",
+      "limitations": [
+        "Experimental solver, not frozen B32",
+        "Unobserved preparation/recovery handshape is unverified",
+        "Facial and head motion not calibrated",
+        "No export or mechanical/visual PASS"
+      ],
+      "source_hashes": {
+        "clips__10__0__meta.json": "7bc82933a72387fb514b06fc0a682fe429392362b4e7fefcd7049a7329a7cbd5",
+        "clips__10__0__raw225.npy": "6f598835ef4017479a3b1dcdf567ce35b0e9ba34e21a114888d31d5ffb7a4e0c",
+        "clips__10__0__presence.npy": "520ede078b0ed41211d1c06a1d06ca3ec0d909ea490ddf8ee755a09ec858d858"
+      },
+      "human_motion_visual": "FAIL_OR_UNVALIDATED",
+      "export": "NOT_RUN"
+    }
+  ],
+  "review_file": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-16\\you-are-continuing-the-voxgest-avatar\\work\\next_words_20260920\\NEXT_WORDS_DIAGNOSTIC_REJECTED.blend",
+  "next_action": "Fit palm orientation to source video rather than unstable raw depth, beginning with IM FINE; preserve timing and retest every gate."
+}
