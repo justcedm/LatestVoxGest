@@ -1,5 +1,103 @@
 # VoxGest Live Handoff
 
+TIMESTAMP=2026-09-21T00:40:00+08:00
+
+BRANCH=recognition/fsl-dual-dataset-reset-v1
+
+COMMIT=7e23c888 plus Mapua original-NPY canonicalization checkpoint pending
+
+SOURCE_BASE_COMMIT=7e23c888f8c734a6f433a84cce081538b443117b
+
+HANDOFF_UPDATE_COMMIT=PENDING_THIS_COMMIT
+
+BRANCH_HEAD=7e23c888 plus reviewed NPY converter/audit work
+
+CURRENT_GOAL=Compare the supplied Mapua NPY-derived canonical representation against the current MP4/Holistic representation under an identical four-fold development-only RD-TCN48 experiment before making any Android candidate decision.
+
+WORK_COMPLETED=
+
+- Fetched all remotes and verified the requested branch was clean and exactly at
+  remote HEAD `7e23c888f8c734a6f433a84cce081538b443117b` before work.
+- Audited all 1,107 supplied Mapua NPY files: every file is finite
+  `float64 [75,225]`, with no load failures or non-finite values.
+- Added a versioned converter that validates paired MP4/NPY identity, derives
+  motion from the NPY itself, uses the shared canonical FullSign225 builder,
+  preserves anatomical slots, never mirrors, interpolates only bounded internal
+  hand gaps, crops the complete event, and resamples to `float32 [48,225]`.
+- Converted all 394 frozen Practical15 source clips into a separate safe-C
+  experiment root with 0 failures; no source NPY was overwritten.
+- Preserved the frozen partition, source group, and development fold for every
+  paired MP4/NPY representation.
+- Produced 394-row clip parity evidence and 15-class aggregates covering MAE,
+  RMSE, Pearson, cosine, boundary/presence deltas, and trajectory motion.
+- Added and validated the authoritative 105-row FSL-105 numeric-label manifest;
+  no original folder was renamed and source quirks are preserved.
+- Added a three-domain A/B/C Samsung parity plan without changing Android.
+
+FILES_CHANGED=
+
+- training_configs/mapua_npy_canonical_v1.json
+- scripts_ml/102_convert_mapua_original_npy_fullsign225.py
+- scripts_ml/103_compare_mapua_npy_vs_mp4_development.py
+- scripts_ml/104_build_fsl105_numeric_label_manifest.py
+- tests/test_mapua_npy_converter.py
+- reports/fsl_dual_dataset_reset_v1/MAPUA_NPY_CANONICAL_AUDIT.md
+- reports/fsl_dual_dataset_reset_v1/MAPUA_NPY_CANONICAL_CLIP_METRICS.csv
+- reports/fsl_dual_dataset_reset_v1/MAPUA_NPY_CANONICAL_CLASS_METRICS.csv
+- reports/fsl_dual_dataset_reset_v1/FSL105_NUMERIC_LABEL_MANIFEST.csv
+- reports/fsl_dual_dataset_reset_v1/THREE_DOMAIN_PARITY_PLAN.md
+- reports/CODEX_LIVE_HANDOFF.md
+
+COMMANDS/TESTS=
+
+- Remote/local parity and clean worktree gate: PASS.
+- Original NPY whole-dataset contract scan: 1,107/1,107 load PASS.
+- Converter/shared-builder unit tests: 7/7 PASS.
+- Practical15 conversion: 394/394 PASS; 0 failures.
+- Same-source A/B tensor comparison: 394/394 PASS.
+- Private-path scan of proposed tracked artifacts: PASS.
+- FSL-105 labels/train/test deterministic join: 105 IDs and 2,130 split rows PASS.
+
+DATASET_STATUS=MAPUA_ORIGINAL_NPY_VERIFIED; NPY_CANONICAL_394_READY; FROZEN_334_DEVELOPMENT_60_SEALED_ASSIGNMENTS_PRESERVED; FSL105_NUMERIC_LABEL_MAP_READY.
+
+TRAINING_STATUS=MATCHED_DEVELOPMENT_COMPARISON_READY_NOT_YET_RUN. Existing Android-bound model remains unchanged.
+
+SAMSUNG_STATUS=UNCHANGED_FROM_PRIOR_CHECKPOINT. This experiment makes no new live or Android-domain claim.
+
+METRICS=
+
+- A-vs-B mean per-clip MAE=0.148218866995.
+- A-vs-B mean per-clip RMSE=0.418502741.
+- A-vs-B mean Pearson=0.933226864893.
+- A-vs-B mean cosine=0.950076381426.
+- Highest class mean MAE=AGAIN 0.476241396; CASH 0.288604481;
+  HOW_MANY 0.205002830; THANK_YOU 0.219019907.
+- Lowest class mean Pearson=AGAIN 0.833932212; CASH 0.856544278;
+  HOW_MANY 0.879250279.
+
+FAILURES=
+
+- No conversion failures occurred.
+- Supplied NPYs omit extractor version/settings, confidence, pose visibility,
+  timestamps, and pixels, so exact MP4/Holistic tensor equality is impossible.
+- A/B tensor similarity does not establish Android Tasks domain proximity.
+- Mapua signer IDs remain unavailable; no signer-independent claim is allowed.
+
+CURRENT_HYPOTHESIS=The original NPY representation is valid and strongly related to the MP4/Holistic representation, but its larger class-specific motion/detection shifts may either improve consistency with the published extraction domain or reduce current runtime transfer. Only the fixed development folds can decide offline strength; Samsung domain C remains a later independent gate.
+
+NEXT_ACTION=Train MP4/Holistic and original-NPY RD-TCN48 on the same 334 development clips, folds, seeds, augmentation, class weights, and stopping policy; compare combined out-of-fold metrics without classifier access to the sealed test.
+
+DO_NOT_MODIFY=
+
+- Do not access the retired workspace drive.
+- Do not overwrite original NPYs or commit generated tensors/checkpoints/caches.
+- Preserve FSL_PRACTICAL15_V1, Standard FSL-105, Mapua14, demo10, and Avatar.
+- Do not change Android runtime/profile/assets during this experiment.
+- Do not use the sealed classifier test for preprocessing selection.
+- Do not claim A or B is closer to Android before Samsung Tasks landmarks exist.
+
+## Prior Samsung checkpoint
+
 TIMESTAMP=2026-09-20T23:48:14+08:00
 
 BRANCH=recognition/fsl-dual-dataset-reset-v1
