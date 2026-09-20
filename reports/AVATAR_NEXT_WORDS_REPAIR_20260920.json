@@ -1,0 +1,186 @@
+{
+  "date": "2026-09-20",
+  "version": "V7",
+  "status": "CORRECTED_CANDIDATE_REVIEW_REQUIRED",
+  "listen_ready": false,
+  "numerical_checks": {
+    "checks": [
+      {
+        "action": "FSL_IM_FINE__SOURCE_FIT_V7",
+        "frames": 243,
+        "finite": true,
+        "max_quaternion_norm_error": 1.4574367090958162e-07,
+        "first_last_channel_difference": 0.0,
+        "largest_steps": [
+          {
+            "bone": "DEF-thumb.01.R",
+            "step": 11.931850658306985,
+            "from_frame": 117,
+            "to_frame": 118
+          },
+          {
+            "bone": "DEF-forearm.R",
+            "step": 8.276294584151136,
+            "from_frame": 191,
+            "to_frame": 192
+          },
+          {
+            "bone": "DEF-f_pinky.01.R",
+            "step": 6.875581215543318,
+            "from_frame": 121,
+            "to_frame": 122
+          },
+          {
+            "bone": "DEF-f_pinky.03.R",
+            "step": 6.875522996993308,
+            "from_frame": 124,
+            "to_frame": 125
+          },
+          {
+            "bone": "DEF-f_pinky.02.R",
+            "step": 6.875489567391677,
+            "from_frame": 124,
+            "to_frame": 125
+          }
+        ]
+      },
+      {
+        "action": "FSL_HOW_ARE_YOU__SOURCE_FIT_V7",
+        "frames": 244,
+        "finite": true,
+        "max_quaternion_norm_error": 1.7171649013825174e-07,
+        "first_last_channel_difference": 0.0,
+        "largest_steps": [
+          {
+            "bone": "DEF-thumb.01.R",
+            "step": 12.614785251132814,
+            "from_frame": 153,
+            "to_frame": 154
+          },
+          {
+            "bone": "DEF-thumb.01.L",
+            "step": 9.841003673529684,
+            "from_frame": 155,
+            "to_frame": 156
+          },
+          {
+            "bone": "DEF-hand.R",
+            "step": 7.558424121380081,
+            "from_frame": 80,
+            "to_frame": 81
+          },
+          {
+            "bone": "DEF-hand.L",
+            "step": 7.528806920620874,
+            "from_frame": 128,
+            "to_frame": 129
+          },
+          {
+            "bone": "DEF-f_middle.02.L",
+            "step": 6.875615159688134,
+            "from_frame": 135,
+            "to_frame": 136
+          }
+        ]
+      },
+      {
+        "action": "FSL_UNDERSTAND__SOURCE_FIT_V7",
+        "frames": 245,
+        "finite": true,
+        "max_quaternion_norm_error": 9.140584360411985e-06,
+        "first_last_channel_difference": 0.0,
+        "largest_steps": [
+          {
+            "bone": "DEF-hand.R",
+            "step": 11.400532696211185,
+            "from_frame": 97,
+            "to_frame": 98
+          },
+          {
+            "bone": "DEF-forearm.R",
+            "step": 10.54262482580592,
+            "from_frame": 96,
+            "to_frame": 97
+          },
+          {
+            "bone": "DEF-thumb.01.R",
+            "step": 7.625867119336774,
+            "from_frame": 100,
+            "to_frame": 101
+          },
+          {
+            "bone": "DEF-f_middle.01.R",
+            "step": 6.875498012971627,
+            "from_frame": 96,
+            "to_frame": 97
+          },
+          {
+            "bone": "DEF-f_pinky.02.R",
+            "step": 6.875321560047922,
+            "from_frame": 98,
+            "to_frame": 99
+          }
+        ]
+      }
+    ],
+    "previous_actions_unchanged": {
+      "FSL_NO__PURCHASED_REVIEW_C7": "e2ff8ce6e7afadab06244137ff9bd664cc6b02f104d812a25a2b504b822d9bc8",
+      "FSL_THANK_YOU__PURCHASED_REVIEW_C7": "c8819db6488d687811d561c5d0c622d09ba7b4dc5604e6d894077390ca6b1a80",
+      "FSL_YES__PURCHASED_REVIEW_C8": "40129ca90326abfb8cc42873d6f96bd48fe2b91ba1d8283de86eb7ca75ef6fc4",
+      "MCH_Rotation_targetAction": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "Waitress_pose": "f4d7df384806c437aa52da5616b0dedcc9046c50d9854175404a9227096c1478"
+    },
+    "blend_sha256": "a2107a7953e62f35f24a4745521a7ed841806a2e6f739ef7b188a084a0ab0fb3",
+    "playlist_frames": 792,
+    "source_fps": 60
+  },
+  "source_fit_summary": {
+    "IM_FINE": {
+      "R": {
+        "first": 115,
+        "last": 191,
+        "mean_projection_error_palm_units": 0.1612805463638021,
+        "max_projection_error_palm_units": 0.41549345002556626,
+        "hinge_sign": -1,
+        "fit_anchor": 152
+      }
+    },
+    "HOW_ARE_YOU": {
+      "R": {
+        "first": 91,
+        "last": 200,
+        "mean_projection_error_palm_units": 0.16488105131016226,
+        "max_projection_error_palm_units": 0.43365679160129583,
+        "hinge_sign": -1,
+        "fit_anchor": 146
+      },
+      "L": {
+        "first": 123,
+        "last": 199,
+        "mean_projection_error_palm_units": 0.17848568244346444,
+        "max_projection_error_palm_units": 0.43755271897968895,
+        "hinge_sign": -1,
+        "fit_anchor": 161
+      }
+    },
+    "UNDERSTAND": {
+      "R": {
+        "first": 92,
+        "last": 218,
+        "mean_projection_error_palm_units": 0.07745702370001957,
+        "max_projection_error_palm_units": 0.7689387980482048,
+        "hinge_sign": 1,
+        "fit_anchor": 155
+      }
+    }
+  },
+  "purchased_source_sha256": "3a48b881b12a1f5bb99ec1bd82a5d669db8d30a2b62b47cf02692d0e5e3bea9d",
+  "pending": [
+    "Normal-speed human-motion/source matching",
+    "Collision validation",
+    "Facial/nonmanual motion",
+    "CORE3 source provenance",
+    "Export parity",
+    "Android/device gates"
+  ]
+}

@@ -1,5 +1,68 @@
 # ASTRA LIVE HANDOFF
 
+## Corrected next-word review V7 — 2026-09-20
+
+The user requested fixing the rejected new words urgently. Separate corrected candidates now replace
+V1 for review. They are not accepted runtime Actions and listen_ready remains false.
+
+REVIEW_FILE=LOCAL_ROOT\work\next_words_repair_20260920\NEXT_WORDS_CORRECTED_REVIEW_v7.blend
+REVIEW_ACTION=REVIEW_PLAYLIST_IM_FINE__HOW_ARE_YOU__UNDERSTAND
+REVIEW_CONTROLS=SPACE_PLAY_PAUSE;SHIFT_LEFT_FIRST_FRAME
+REVIEW_PLAYLIST=792_FRAMES_AT_60_FPS_WITH_30_FRAME_NEUTRAL_GAPS
+NEW_READY_WORDS=0_PENDING_ACCEPTANCE
+
+| Candidate | Previous maximum rotation step | V7 maximum | Source frames |
+|---|---:|---:|---:|
+| IM FINE | 69.92 degrees | 11.93 degrees | 243 |
+| HOW ARE YOU | 136.39 degrees | 12.61 degrees | 244 |
+| UNDERSTAND | 119.32 degrees | 11.40 degrees | 245 |
+
+These are maximum adjacent keyed local-quaternion changes, not acceptance thresholds or proof of
+natural motion. All keyed values are finite; quaternion norm error is below 1e-6; first/last channel
+values match exactly. Earlier purchased-copy Actions retain their exact curve/key/interpolation hashes.
+Original purchased-file SHA-256 is unchanged. Original 525-bone hierarchy remains; source constraints
+and drivers are still muted in this experimental playback setup. No recognition changes.
+
+### Repairs and iteration evidence
+
+- V2 fitted palm orientation and finger flexion to source 2D landmarks instead of directly trusting
+  unstable landmark depth. Anchor fits and sequential temporal fitting retain source frame times.
+- V3 explicitly reconstructed hand/finger and palm positions through the purchased hierarchy. Rotation-only
+  changes are insufficient with the muted original controls. This pass did not by itself settle acceptance.
+- V4 added bounded temporal fitting and reconstructed arm depth from visible elbow/wrist projection and
+  fixed limb lengths, using the source median depth-direction cue. Early raw-depth arm projection had
+  visibly poor forearm placement and was rejected.
+- V5 added the source-observed ring/pinky fold prior for HOW ARE YOU and eye-relative index-tip placement
+  for UNDERSTAND. Neutral interpolation was made consistent across quaternion representation changes.
+- V6 transported arm orientation continuously between frames to avoid shortest-arc rest-axis singularities.
+  Rendered samples at frames 95/125/155/185/215 improved arm placement and handshape. This is sampled
+  inspection, not full normal-speed human-motion acceptance.
+- V7 uses fixed endpoint interpolation over the existing 24-frame untracked entry/exit windows, removing
+  additional transition jumps. It preserves observed signing frames and original total clip length.
+  These synthesized neutral transitions still require source matching and human-motion review.
+
+The fit uses a 3-frame optimization grid, engineering parameter bounds and temporal penalties, followed
+by frame-time interpolation; rotation channels receive a symmetric five-frame filter. No global speed-up
+or timestamp compression. Bounds are not validated anatomical limits. Hand fit errors and worst-frame
+rotation measurements are recorded in reports/AVATAR_NEXT_WORDS_REPAIR_20260920.json.
+
+### Review boundaries and next action
+
+The three V7 master candidates are FSL_IM_FINE__SOURCE_FIT_V7,
+FSL_HOW_ARE_YOU__SOURCE_FIT_V7 and FSL_UNDERSTAND__SOURCE_FIT_V7. The playlist adds neutral
+spacing only between clips. Original and rejected files remain protected as separate versions.
+Blender 3.2 emits dependency warnings for retained muted bendy-bone drivers; numerical checks and renders
+complete, but these warnings are not claimed to validate the native controller rig.
+
+No SOURCE, full MECHANICAL, HUMAN_MOTION_VISUAL, EXPORT, Android, device or linguistic PASS is claimed.
+Full collision checks and facial/head/nonmanual motion remain open. HOW ARE YOU contact/occluded finger
+shape and UNDERSTAND face clearance need close review. CORE3 original master/frozen solver blocker remains.
+
+NEXT_EXACT_ACTION=Play V7 playlist at 60 FPS beside clip 0 source videos, inspect hands and contact through preparation/stroke/hold/recovery, and validate collision clearance; adjust failed intervals before any export or ready promotion. Do not treat reduced quaternion steps as full visual acceptance.
+
+Reproduction scripts and requirements: tools/avatar_diagnostics/next_words_repair/README.md.
+Private source, videos, fitted geometry, renders and .blend files stay local and outside Git.
+
 ## Next-word diagnostic checkpoint — 2026-09-20
 
 The user authorized continuing vocabulary work on the selected purchased Avatar working copy.
