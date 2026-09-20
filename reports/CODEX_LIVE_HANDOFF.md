@@ -4,13 +4,13 @@ TIMESTAMP=2026-09-21T00:40:00+08:00
 
 BRANCH=recognition/fsl-dual-dataset-reset-v1
 
-COMMIT=7e23c888 plus Mapua original-NPY canonicalization checkpoint pending
+COMMIT=cbe56fcf plus matched development comparison pending
 
-SOURCE_BASE_COMMIT=7e23c888f8c734a6f433a84cce081538b443117b
+SOURCE_BASE_COMMIT=cbe56fcf
 
 HANDOFF_UPDATE_COMMIT=PENDING_THIS_COMMIT
 
-BRANCH_HEAD=7e23c888 plus reviewed NPY converter/audit work
+BRANCH_HEAD=cbe56fcf plus reviewed matched-development results
 
 CURRENT_GOAL=Compare the supplied Mapua NPY-derived canonical representation against the current MP4/Holistic representation under an identical four-fold development-only RD-TCN48 experiment before making any Android candidate decision.
 
@@ -33,6 +33,12 @@ WORK_COMPLETED=
 - Added and validated the authoritative 105-row FSL-105 numeric-label manifest;
   no original folder was renamed and source quirks are preserved.
 - Added a three-domain A/B/C Samsung parity plan without changing Android.
+- Retrained Pipeline A and Pipeline B from scratch across the same four frozen
+  development folds using identical RD-TCN48 code, seeds, augmentation, class
+  weighting, optimizer, batch size, and early stopping.
+- Selected original-NPY canonicalization as the stronger development pipeline:
+  it improved combined OOF macro-F1, accuracy, weakest-class F1, ECE, and NLL.
+- Verified all eight fold artifacts through an idempotent cached rerun.
 
 FILES_CHANGED=
 
@@ -46,6 +52,8 @@ FILES_CHANGED=
 - reports/fsl_dual_dataset_reset_v1/MAPUA_NPY_CANONICAL_CLASS_METRICS.csv
 - reports/fsl_dual_dataset_reset_v1/FSL105_NUMERIC_LABEL_MANIFEST.csv
 - reports/fsl_dual_dataset_reset_v1/THREE_DOMAIN_PARITY_PLAN.md
+- reports/fsl_dual_dataset_reset_v1/MAPUA_NPY_VS_MP4_DEVELOPMENT_COMPARISON.md
+- reports/fsl_dual_dataset_reset_v1/MAPUA_NPY_VS_MP4_CONFUSION_MATRIX.csv
 - reports/CODEX_LIVE_HANDOFF.md
 
 COMMANDS/TESTS=
@@ -57,10 +65,13 @@ COMMANDS/TESTS=
 - Same-source A/B tensor comparison: 394/394 PASS.
 - Private-path scan of proposed tracked artifacts: PASS.
 - FSL-105 labels/train/test deterministic join: 105 IDs and 2,130 split rows PASS.
+- Matched MP4/Holistic RD-TCN48: four development folds PASS.
+- Matched original-NPY RD-TCN48: four development folds PASS.
+- Idempotent comparison rerun: all 8 folds contract-matched and loaded from cache.
 
 DATASET_STATUS=MAPUA_ORIGINAL_NPY_VERIFIED; NPY_CANONICAL_394_READY; FROZEN_334_DEVELOPMENT_60_SEALED_ASSIGNMENTS_PRESERVED; FSL105_NUMERIC_LABEL_MAP_READY.
 
-TRAINING_STATUS=MATCHED_DEVELOPMENT_COMPARISON_READY_NOT_YET_RUN. Existing Android-bound model remains unchanged.
+TRAINING_STATUS=MATCHED_DEVELOPMENT_COMPARISON_PASS; ORIGINAL_NPY_WINS_OFFLINE_DEVELOPMENT. Existing Android-bound model remains unchanged and no new Android candidate was exported.
 
 SAMSUNG_STATUS=UNCHANGED_FROM_PRIOR_CHECKPOINT. This experiment makes no new live or Android-domain claim.
 
@@ -74,6 +85,14 @@ METRICS=
   HOW_MANY 0.205002830; THANK_YOU 0.219019907.
 - Lowest class mean Pearson=AGAIN 0.833932212; CASH 0.856544278;
   HOW_MANY 0.879250279.
+- Matched MP4 development OOF accuracy=0.955089820; macro-F1=0.950410728;
+  weakest-class F1=0.812500000 HOW_MANY; ECE-10=0.018051216.
+- Matched original-NPY development OOF accuracy=0.964071856;
+  macro-F1=0.962949558; weakest-class F1=0.882352941 HOW_MANY;
+  ECE-10=0.010011780.
+- NPY-minus-MP4 macro-F1 delta=+0.012538830; weakest-class F1
+  delta=+0.069852941.
+- MP4 top confusion=HOW_MANY->COIN x3; NPY top confusion=AGAIN->DISCOUNT x2.
 
 FAILURES=
 
@@ -82,10 +101,12 @@ FAILURES=
   timestamps, and pixels, so exact MP4/Holistic tensor equality is impossible.
 - A/B tensor similarity does not establish Android Tasks domain proximity.
 - Mapua signer IDs remain unavailable; no signer-independent claim is allowed.
+- Original-NPY improved offline development metrics but still has no Samsung
+  Tasks-domain evidence and is not authorized to replace the current model.
 
-CURRENT_HYPOTHESIS=The original NPY representation is valid and strongly related to the MP4/Holistic representation, but its larger class-specific motion/detection shifts may either improve consistency with the published extraction domain or reduce current runtime transfer. Only the fixed development folds can decide offline strength; Samsung domain C remains a later independent gate.
+CURRENT_HYPOTHESIS=Original-NPY canonicalization is the stronger offline development representation under the fixed comparison, particularly for HOW_MANY, but Android transfer remains unknown because Samsung MediaPipe Tasks domain C has not been captured. No model replacement is justified until A/B/C parity evidence exists.
 
-NEXT_ACTION=Train MP4/Holistic and original-NPY RD-TCN48 on the same 334 development clips, folds, seeds, augmentation, class weights, and stopping policy; compare combined out-of-fold metrics without classifier access to the sealed test.
+NEXT_ACTION=On a separately authorized debug-only Android checkpoint, capture Samsung Tasks pose/hand landmarks before classifier normalization for the planned eight-concept diagnostic batch, then compare domain C against A and B before exporting or installing any NPY-derived candidate.
 
 DO_NOT_MODIFY=
 

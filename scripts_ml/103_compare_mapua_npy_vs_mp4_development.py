@@ -305,7 +305,7 @@ def write_report(
         "- Same 334 frozen development clips and four source-group-preserving folds.",
         "- Same seeds, augmentation, class weights, batch size, optimizer, learning rate, and early stopping.",
         "- Metric is combined out-of-fold development performance; signer independence is not claimed.",
-        "- Sealed-test feature files, predictions, labels, and metrics were not loaded by this comparison.",
+        "- Frozen split metadata was read only to select development rows; sealed feature files, predictions, and metrics were not opened.",
         "- No Android model or profile was changed.", "",
         "## Required decision fields", "",
         f"MP4_PIPELINE_CV_MACRO_F1={mp4['macro_f1']:.9f}",
@@ -320,6 +320,18 @@ def write_report(
         "|---|---:|---:|---:|---:|---:|---:|---:|",
         f"| MP4/Holistic | {mp4['accuracy']:.9f} | {mp4['macro_precision']:.9f} | {mp4['macro_recall']:.9f} | {mp4['macro_f1']:.9f} | {mp4['weakest_class_f1']:.9f} | {mp4['expected_calibration_error_10bin']:.9f} | {mp4['negative_log_likelihood']:.9f} |",
         f"| Original NPY | {npy['accuracy']:.9f} | {npy['macro_precision']:.9f} | {npy['macro_recall']:.9f} | {npy['macro_f1']:.9f} | {npy['weakest_class_f1']:.9f} | {npy['expected_calibration_error_10bin']:.9f} | {npy['negative_log_likelihood']:.9f} |",
+        "", "## Fold evidence", "",
+        "| Fold | MP4 macro F1 | NPY macro F1 | MP4 accuracy | NPY accuracy |",
+        "|---:|---:|---:|---:|---:|",
+    ]
+    for fold_index in range(len(reports["MP4_HOLISTIC"]["folds"])):
+        a_fold = reports["MP4_HOLISTIC"]["folds"][fold_index]
+        b_fold = reports["ORIGINAL_NPY"]["folds"][fold_index]
+        lines.append(
+            f"| {fold_index} | {a_fold['macro_f1']:.9f} | {b_fold['macro_f1']:.9f} | "
+            f"{a_fold['accuracy']:.9f} | {b_fold['accuracy']:.9f} |"
+        )
+    lines += [
         "", "## Per-class F1", "",
         "| Class | MP4/Holistic | Original NPY | Delta NPY-MP4 |",
         "|---|---:|---:|---:|",
