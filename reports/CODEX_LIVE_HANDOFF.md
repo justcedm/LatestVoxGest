@@ -1,5 +1,96 @@
 # VoxGest Live Handoff
 
+TIMESTAMP=2026-09-20T14:36:00+08:00
+
+BRANCH=recognition/fsl-dual-dataset-reset-v1
+
+COMMIT=2f76f541abded1fbb7e8d6f11a939e00c9e95e02 plus final reporting
+
+SOURCE_BASE_COMMIT=6afa7322679317a0fac8b1bb0e66fe810ff99b10
+
+HANDOFF_UPDATE_COMMIT=PENDING_THIS_COMMIT
+
+BRANCH_HEAD=2f76f541abded1fbb7e8d6f11a939e00c9e95e02 plus final reporting
+
+CURRENT_GOAL=Offline deep engineering is complete; execute the frozen Samsung qualification protocol when the device returns.
+
+WORK_COMPLETED=
+
+- Verified the requested authority is an ancestor and maintained local/remote parity at every pushed checkpoint.
+- Verified the published Mapua archive (1,107 MP4s, 26 labels) and quarantined all non-authoritative sources.
+- Documented the exact official FSL-105 acquisition blocker without substituting an unofficial mirror.
+- Audited the practical pool, froze a source-clip/group-safe 334/60 development/sealed split, and generated representative landmark/motion evidence.
+- Ran one RD-TCN48 architecture over four frozen development folds and froze the evidence-supported 15-class vocabulary.
+- Retrained once on all development clips, evaluated the sealed set once, exported float32 TFLite, and proved TF/TFLite parity.
+- Replayed all 60 sealed raw videos through MediaPipe, motion extraction, FullSign225, resample48, and the Android-bound TFLite model.
+- Integrated the exact bundle as debug-intent-only FSL_PRACTICAL15_V1 with complete-event capture, mandatory release/re-arm, diagnostics, and no production-default change.
+- Added shared Python/JVM temporal parity and complete-event/dropout/handedness/timeout/incomplete-event tests.
+- Audited fixed rejection behavior on development-only synthetic corruptions and added a conservative no-motion structural guard.
+- Ran 100 JVM tests with zero failures and assembled the debug APK successfully.
+- Wrote the paper-alignment delta and exact Samsung qualification protocol.
+
+FILES_CHANGED=
+
+- training_configs/fsl_practical15_mapua_v1.json
+- scripts_ml/96_prepare_fsl_practical15.py through 101_verify_fsl_temporal_fixture.py
+- reports/fsl_dual_dataset_reset_v1/*
+- android_dry_run/app/src/main/assets/model/fsl_practical15_fullsign225_48f_v1/*
+- android_dry_run/app/src/main/java/com/voxgest/dryrun/FslPractical15Runtime.kt
+- android_dry_run/app/src/main/java/com/voxgest/dryrun/FslPractical15CameraRecognitionController.kt
+- minimal existing debug routing/result-policy files
+- Android practical-profile JVM tests/resources
+- reports/CODEX_LIVE_HANDOFF.md
+
+COMMANDS/TESTS=
+
+- Provenance, archive SHA/count, feature SHA/shape/finite, split-group isolation: PASS.
+- Four-fold RD-TCN48 OOF selection: PASS.
+- Final float32 TFLite parity: PASS, top-1 agreement 1.0.
+- Sealed raw-video replay: 60/60 processed, zero extraction failures, exact cache parity.
+- Python temporal fixture: PASS, maximum position difference 0.0.
+- Android JVM: 26 suites, 100 tests, 0 failures/errors/skips.
+- Android testDebugUnitTest + assembleDebug: BUILD SUCCESSFUL.
+- Protected Standard/Mapua14/demo model hashes: unchanged.
+
+DATASET_STATUS=MAPUA_PUBLISHED_FSL_ONLY_INTERIM; 394 PASS clips; 334 development; 60 sealed; FSL105_PENDING_OFFICIAL_RAW; ASL_CONTAMINATION_QUARANTINED.
+
+TRAINING_STATUS=OFFLINE_PASS. RD-TCN48, 125391 parameters, 15 classes, complete-event FullSign225 resample48. Signer-independent claim prohibited.
+
+SAMSUNG_STATUS=INTENTIONALLY_NOT_TESTED. Device was unavailable by instruction; startup parity, live positives, physical negatives, camera/mirror verification, and live latency remain required.
+
+METRICS=
+
+- Development OOF accuracy=0.9491017964; macro-F1=0.9453016957; weakest F1=0.7878787879 HOW_MANY.
+- Exploratory sealed accuracy=0.95; macro-F1=0.9557183557; weakest F1=0.8571428571 CASH.
+- Sealed confusions: CARD->COIN x1; CASH->PROBLEM x1; NO->YES x1.
+- Raw-video replay accuracy=0.95; cache max absolute difference=0.0; exact envelope matches=60/60.
+- TFLite max probability difference=4.172325134277344e-07.
+- Desktop replay TFLite median=0.9066 ms; p95=1.2948 ms.
+- Provisional gate confidence=0.95, margin=0.05, motion mean-L2 floor=0.02.
+
+FAILURES=
+
+- Official FSL-105 v2 raw is absent; official automated acquisition is blocked by HTTP 403/Cloudflare.
+- Mapua signer IDs are unavailable, so clip metrics cannot establish signer independence.
+- The sealed raw replay repeats the same sealed source clips through the perception path; it is not a second independent dataset.
+- Score-only rejection is weak on synthetic corruptions. Live negative false-accept performance is unknown.
+- Samsung camera framing, landmark quality, per-class generalization, and latency are not yet measured.
+
+CURRENT_HYPOTHESIS=The practical15 profile has exact offline perception/export parity and strong clip-level separability, but clean-event CARD/COIN, CASH/PROBLEM, and NO/YES confusions plus score-only OOD weakness make physical positives and negatives the decisive remaining gate.
+
+NEXT_ACTION=Connect Samsung R5GYC0M1M4P, install the existing debug APK, launch exact debug profile FSL_PRACTICAL15_V1, verify startup/camera parity, then execute the fixed 45-positive initial battery and 30-negative battery in SAMSUNG_QUALIFICATION_PROTOCOL.md without changing thresholds.
+
+DO_NOT_MODIFY=
+
+- Do not access the retired workspace drive.
+- Preserve Standard FSL-105, Mapua14 rescue, demo10/manual5, and Avatar.
+- Do not use quarantined ASL/WLASL/phrase/team/internet data in the FSL claim.
+- Do not change confidence, margin, presence, duration, or motion gates during the first physical battery.
+- Do not commit raw videos, features, checkpoints, APKs, logs, captures, credentials, caches, or private paths.
+- Do not claim live readiness, signer independence, or dual-source training without evidence.
+
+## Earlier same-day checkpoint
+
 TIMESTAMP=2026-09-20T13:42:00+08:00
 
 BRANCH=recognition/fsl-dual-dataset-reset-v1
