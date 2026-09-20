@@ -1,5 +1,78 @@
 # VoxGest Live Handoff
 
+TIMESTAMP=2026-09-20T13:42:00+08:00
+
+BRANCH=recognition/fsl-dual-dataset-reset-v1
+
+COMMIT=6afa7322679317a0fac8b1bb0e66fe810ff99b10 (provenance checkpoint pending)
+
+SOURCE_BASE_COMMIT=6afa7322679317a0fac8b1bb0e66fe810ff99b10
+
+HANDOFF_UPDATE_COMMIT=PENDING
+
+BRANCH_HEAD=6afa7322679317a0fac8b1bb0e66fe810ff99b10 plus reviewed provenance work
+
+CURRENT_GOAL=Deliver the strongest defensible published-FSL practical profile offline by 18:00, including canonical complete-event FullSign225, leakage-safe RD-TCN48 evidence, TFLite parity, isolated Android integration, raw-video replay, rejection preparation, and a ready Samsung protocol.
+
+WORK_COMPLETED=
+
+- Checked out the requested branch cleanly and proved the required commit is its exact remote HEAD.
+- Read the complete offline execution authority and all required provenance, dataset, architecture, and current-runtime references.
+- Verified the original Mapua archive: 590,909,988 bytes, SHA-256 51333b36e8cca082bc5ecb1b53b0242e1c91d9d00393c2a75e18dce27ceb48de.
+- Verified 1,107 Mapua raw MP4s across 26 labels and the existing 670-row PASS-only canonical feature cache.
+- Searched named safe-C roots for FSL-105 raw; none was found.
+- Attempted only the official Mendeley v2 source. Public API/page automation is blocked by HTTP 403 and a Cloudflare JavaScript challenge; no unofficial substitute was used.
+- Activated the authorized Mapua-only contingency without waiting for Samsung or FSL-105.
+
+FILES_CHANGED=
+
+- reports/fsl_dual_dataset_reset_v1/SOURCE_PROVENANCE_INVENTORY.md
+- reports/fsl_dual_dataset_reset_v1/FSL105_ACQUISITION_BLOCKER.md
+- reports/CODEX_LIVE_HANDOFF.md
+
+COMMANDS/TESTS=
+
+- git fetch/checkout/ancestor/local-remote parity: PASS.
+- safe-C raw/archive search: PASS; FSL-105 raw absent.
+- Mapua archive SHA-256 and raw inventory: PASS.
+- official Mendeley metadata/API attempts: HTTP 403.
+- official page command-line attempt: Cloudflare managed challenge.
+- bounded official in-app page attempts: no downloadable artifact.
+
+DATASET_STATUS=MAPUA_RAW_VERIFIED; FSL105_PENDING_RAW; ASL/phrase/team/internet sources QUARANTINED.
+
+TRAINING_STATUS=NOT_STARTED. Candidate audit and frozen split precede training.
+
+SAMSUNG_STATUS=INTENTIONALLY_UNAVAILABLE_UNTIL_APPROX_18:00; offline work continues.
+
+METRICS=
+
+- Mapua raw clips=1,107; labels=26.
+- Mapua raw audit statuses: PASS=670, REVIEW=408, REJECT_TECHNICAL=29.
+- Mapua pose detection rate=1.0; any-hand rate=0.779283; internal dropout=0.022066.
+- Complete-motion temporal retention median: 20f=0.931925, 32f=0.969269, 48f=0.986112.
+
+FAILURES=
+
+- Official FSL-105 raw is absent locally.
+- Official automated acquisition is blocked by HTTP 403/Cloudflare.
+- Mapua signer IDs are unavailable; no signer-independent claim is permitted.
+
+CURRENT_HYPOTHESIS=The published Mapua pool can support a strong 15-concept interim retail/social recognizer by adding COIN and DISCOUNT to the 13 mandated fallback concepts, but the list remains provisional until landmark and leakage-safe separability evidence is complete.
+
+NEXT_ACTION=Generate the 15-class landmark/trajectory audit and representative evidence, freeze a leakage-safe source-clip split, run development-fold RD-TCN48 evidence, then freeze the strongest defensible vocabulary.
+
+DO_NOT_MODIFY=
+
+- Never access the retired D: workspace.
+- Preserve Standard FSL-105, Mapua14 rescue, demo10, and Avatar.
+- Do not redesign UI or touch Avatar.
+- Do not use ASL, WLASL, phrase experiments, random internet signs, or unvalidated team signs in the FSL claim.
+- Do not commit raw video, feature tensors, checkpoints, APKs, captures, credentials, or private paths.
+- Do not claim signer independence or Samsung parity without evidence.
+
+## Archived prior handoff
+
 TIMESTAMP=2026-09-12T22:00:10+08:00
 
 BRANCH=recognition/mapua14-rescue-v1
