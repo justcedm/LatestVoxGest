@@ -32,6 +32,7 @@ private data class OneHandCaptureResult(
 enum class CameraRecognitionRuntime {
     STANDARD_FSL105,
     MAPUA14_RESCUE_V1,
+    FSL_PRACTICAL15_V1,
     LEGACY_DEMO
 }
 
@@ -59,6 +60,7 @@ class VoxGestCameraRecognitionController(
     @Volatile private var cameraProvider: ProcessCameraProvider? = null
     @Volatile private var standardController: StandardFslCameraRecognitionController? = null
     @Volatile private var mapua14Controller: Mapua14RescueCameraRecognitionController? = null
+    @Volatile private var practical15Controller: FslPractical15CameraRecognitionController? = null
     @Volatile private var imageAnalysis: ImageAnalysis? = null
     @Volatile private var extractor: LandmarkExtractor? = null
     @Volatile private var alphabetClassifier: AlphabetClassifier? = null
@@ -106,6 +108,10 @@ class VoxGestCameraRecognitionController(
         }
         if (runtimeMode == CameraRecognitionRuntime.MAPUA14_RESCUE_V1) {
             startMapua14Rescue(previewView)
+            return
+        }
+        if (runtimeMode == CameraRecognitionRuntime.FSL_PRACTICAL15_V1) {
+            startFslPractical15(previewView)
             return
         }
         Log.i(TAG, "LEGACY_DEMO_RUNTIME active=true standard_fsl105=false")
@@ -163,6 +169,12 @@ class VoxGestCameraRecognitionController(
         if (runtimeMode == CameraRecognitionRuntime.MAPUA14_RESCUE_V1) {
             mapua14Controller?.release()
             mapua14Controller = null
+            postStatus("Recognition Paused")
+            return
+        }
+        if (runtimeMode == CameraRecognitionRuntime.FSL_PRACTICAL15_V1) {
+            practical15Controller?.release()
+            practical15Controller = null
             postStatus("Recognition Paused")
             return
         }
@@ -394,6 +406,60 @@ class VoxGestCameraRecognitionController(
         )
         mapua14Controller = controller
         Log.i(TAG, "ACTIVE_PROFILE=${Mapua14RescueProfile.ID} activation=debug_intent_only standard_default_unchanged=true")
+        controller.start(previewView)
+    }
+
+    private fun startFslPractical15(previewView: PreviewView) {
+        analysisMirroredForVisualization = false
+        val controller = FslPractical15CameraRecognitionController(
+            context = appContext,
+            lifecycleOwner = lifecycleOwner,
+            onState = { state ->
+                state.blockedEvidence?.let { Log.e(TAG, "FSL_PRACTICAL15_BLOCKED evidence=$it") }
+                val detection = when {
+                    state.decision?.accepted == true -> DetectionStatus.RECOGNIZED
+                    state.inference != null -> DetectionStatus.DETECTING
+                    state.tracking == StandardFslTrackingState.READY -> DetectionStatus.DETECTING
+                    else -> DetectionStatus.SEARCHING
+                }
+                postFeedback(cleanFeedback(detection, state.inference?.top1?.label.orEmpty()))
+                postStatus(
+                    when {
+                        state.blockedEvidence != null -> "Recognition unavailable"
+                        state.captureState == FslPractical15CaptureState.PRIMING -> "Ready"
+                        state.captureState == FslPractical15CaptureState.WAIT_FOR_RELEASE -> "Return to neutral"
+                        else -> "Hold sign clearly"
+                    }
+                )
+            },
+            onAccepted = { accepted ->
+                val result = RecognitionResult(
+                    accepted.label,
+                    accepted.confidence,
+                    accepted.margin,
+                    true,
+                    "fsl_practical15_v1_experimental_accepted",
+                    accepted.top5.take(3).map { RecognitionResult.TopPrediction(it.label, it.probability) },
+                    RecognitionResult.Source.FSL_PRACTICAL15_V1
+                )
+                Log.i(
+                    TAG,
+                    "FSL_PRACTICAL15_EMIT label=${accepted.label} confidence=${accepted.confidence} " +
+                        "margin=${accepted.margin} source=${result.source} experimental=true"
+                )
+                postFeedback(cleanFeedback(DetectionStatus.RECOGNIZED, accepted.label))
+                mainExecutor.execute { onAcceptedResult(result) }
+                postStatus("Accepted: ${accepted.label}")
+            },
+            initialUseBackCamera = useBackCamera,
+            onFrame = ::postSkeletonFrame
+        )
+        practical15Controller = controller
+        Log.i(
+            TAG,
+            "ACTIVE_PROFILE=${FslPractical15Profile.ID} activation=debug_intent_only " +
+                "experimental=true samsung_qualified=false standard_default_unchanged=true"
+        )
         controller.start(previewView)
     }
 

@@ -7,7 +7,8 @@ public final class RecognitionResult {
     public enum Source {
         LEGACY_DEMO,
         STANDARD_FSL105,
-        MAPUA14_RESCUE_V1
+        MAPUA14_RESCUE_V1,
+        FSL_PRACTICAL15_V1
     }
 
     public static final class TopPrediction {

@@ -227,8 +227,12 @@ object DeveloperRecognitionOverride {
     @Volatile private var requested = CameraRecognitionRuntime.STANDARD_FSL105
 
     fun configure(debugBuild: Boolean, diagnosticsEnabled: Boolean, profileId: String?) {
-        requested = if (debugBuild && diagnosticsEnabled && profileId == Mapua14RescueProfile.ID) {
-            CameraRecognitionRuntime.MAPUA14_RESCUE_V1
+        requested = if (debugBuild && diagnosticsEnabled) {
+            when (profileId) {
+                Mapua14RescueProfile.ID -> CameraRecognitionRuntime.MAPUA14_RESCUE_V1
+                FslPractical15Profile.ID -> CameraRecognitionRuntime.FSL_PRACTICAL15_V1
+                else -> CameraRecognitionRuntime.STANDARD_FSL105
+            }
         } else {
             CameraRecognitionRuntime.STANDARD_FSL105
         }
