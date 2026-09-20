@@ -8,6 +8,20 @@ import org.junit.Test
 
 class FslPractical15CompleteEventTest {
     @Test
+    fun pythonGoldenTemporalPositionsMatchJvmResampler() {
+        val text = requireNotNull(
+            javaClass.classLoader?.getResourceAsStream("fsl_practical15_temporal_golden.json")
+        ).bufferedReader().use { it.readText() }
+        val expectedBlock = text.substringAfter("expected_values").substringAfter("[").substringBefore("]")
+        val expected = expectedBlock.split(",").map { it.trim().toFloat() }
+        val source = (0 until 8).map { value -> FloatArray(225) { value.toFloat() } }
+        val actual = CompleteEventResampler48.resample(source).map { it[0] }
+        assertEquals(48, expected.size)
+        assertEquals(48, actual.size)
+        expected.indices.forEach { assertEquals(expected[it], actual[it], 1e-6f) }
+    }
+
+    @Test
     fun exact48IsCopiedAndEndpointsStayExactForShortAndLongEvents() {
         val exact = (0 until 48).map(::vector)
         val exactOut = CompleteEventResampler48.resample(exact)
@@ -84,6 +98,22 @@ class FslPractical15CompleteEventTest {
         val timeout = collector.onFrame(frame(8_011, pose = true, left = true))
         assertEquals("EVENT_TIMEOUT", timeout.reason)
         assertEquals(FslPractical15CaptureState.WAIT_FOR_RELEASE, timeout.state)
+    }
+
+    @Test
+    fun fixedScoreGateStillRejectsNoMotionTrajectory() {
+        val inference = StandardFslInference(
+            floatArrayOf(0.99f, 0.01f),
+            StandardFslRankedPrediction(0, "HELLO", 0.99f),
+            StandardFslRankedPrediction(1, "NO", 0.01f),
+            emptyList(),
+            1.0
+        )
+        fun quality(motion: Float) = FslPractical15EventQuality(
+            12, 12, 12, 0, 12, 10, 21, motion
+        )
+        assertEquals("LOW_TRAJECTORY_MOTION", FslPractical15Gate().evaluate(inference, quality(0f)).reason)
+        assertEquals("ACCEPTED", FslPractical15Gate().evaluate(inference, quality(0.02f)).reason)
     }
 
     private fun armedCollector() = FslPractical15CompleteEventCollector().also { collector ->

@@ -12,6 +12,7 @@ import java.security.MessageDigest
 import kotlin.math.abs
 import kotlin.math.ceil
 import kotlin.math.floor
+import kotlin.math.sqrt
 
 data class FslPractical15Profile(val labels: List<String>, val modelAsset: String, val labelsAsset: String) {
     val inputShape = intArrayOf(1, SEQUENCE_LENGTH, 225)
@@ -37,6 +38,11 @@ data class FslPractical15Profile(val labels: List<String>, val modelAsset: Strin
             require(manifest.getString("temporal_contract") == "complete_event_resample48")
             require(manifest.getString("coordinate_orientation") == "canonical_unmirrored")
             require(!manifest.getBoolean("anatomical_slot_swap"))
+            val gate = manifest.getJSONObject("development_gate_preparation")
+            require(gate.getDouble("minimum_confidence") == 0.95)
+            require(gate.getDouble("minimum_margin") == 0.05)
+            require(gate.getDouble("minimum_trajectory_motion_mean_l2") == 0.02)
+            require(!gate.getBoolean("live_approved"))
             val input = manifest.getJSONArray("input_shape")
             val output = manifest.getJSONArray("output_shape")
             require(input.length() == 3 && input.getInt(0) == 1 && input.getInt(1) == 48 && input.getInt(2) == 225)
@@ -167,7 +173,8 @@ data class FslPractical15EventQuality(
     val rightHandPresentFrames: Int,
     val anyHandPresentFrames: Int,
     val startTimestampMs: Long,
-    val endTimestampMs: Long
+    val endTimestampMs: Long,
+    val trajectoryMotionMeanL2: Float
 ) {
     val posePresenceRatio get() = posePresentFrames.toFloat() / rawFrameCount.coerceAtLeast(1)
     val anyHandPresenceRatio get() = anyHandPresentFrames.toFloat() / rawFrameCount.coerceAtLeast(1)
@@ -273,7 +280,15 @@ class FslPractical15CompleteEventCollector(
             frames.count { it.quality.rightHandPresent },
             frames.count { it.quality.anyHandPresent },
             frames.first().timestampMs,
-            frames.last().timestampMs
+            frames.last().timestampMs,
+            frames.zipWithNext { before, after ->
+                sqrt(
+                    before.vector.indices.sumOf { index ->
+                        val difference = after.vector[index] - before.vector[index]
+                        (difference * difference).toDouble()
+                    }
+                ).toFloat()
+            }.average().toFloat()
         )
         val candidate = FslPractical15Candidate(
             eventCounter,
@@ -308,13 +323,15 @@ class FslPractical15CompleteEventCollector(
 
 class FslPractical15Gate(
     private val minimumConfidence: Float = 0.95f,
-    private val minimumMargin: Float = 0.05f
+    private val minimumMargin: Float = 0.05f,
+    private val minimumTrajectoryMotionMeanL2: Float = 0.02f
 ) {
     fun evaluate(inference: StandardFslInference, quality: FslPractical15EventQuality): StandardFslGateDecision {
         val reason = when {
             quality.rawFrameCount < 8 -> "INCOMPLETE_EVENT"
             quality.posePresenceRatio < 0.65f -> "LOW_POSE_PRESENCE"
             quality.anyHandPresenceRatio < 0.65f -> "LOW_HAND_PRESENCE"
+            quality.trajectoryMotionMeanL2 < minimumTrajectoryMotionMeanL2 -> "LOW_TRAJECTORY_MOTION"
             inference.top1.probability < minimumConfidence -> "LOW_CONFIDENCE"
             inference.margin < minimumMargin -> "LOW_MARGIN"
             else -> "ACCEPTED"

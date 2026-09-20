@@ -9,6 +9,7 @@
     "live_approved": false,
     "minimum_confidence": 0.95,
     "minimum_margin": 0.05,
+    "minimum_trajectory_motion_mean_l2": 0.02,
     "wrong_accepted_in_development": 2
   },
   "feature_version": "fullsign225_frame_v1_complete_trajectory_v1",

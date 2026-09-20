@@ -93,6 +93,7 @@ class FslPractical15CameraRecognitionController(
                         "input=[1,48,225] output=[1,15] labels=${loadedRuntime.profile.labels.size} " +
                         "feature=fullsign225_frame_v1_complete_trajectory_v1 temporal=complete_event_resample48 " +
                         "model_input=unmirrored threshold_confidence=0.95 threshold_margin=0.05 " +
+                        "minimum_trajectory_motion_mean_l2=0.02 " +
                         "live_approved=false android_default_changed=false"
                 )
                 mainExecutor.execute { bindCamera(previewView) }
@@ -217,6 +218,7 @@ class FslPractical15CameraRecognitionController(
                     "captured_frames=${candidate.quality.rawFrameCount} resample=exact48 " +
                     "pose=${candidate.quality.posePresentFrames} left=${candidate.quality.leftHandPresentFrames} " +
                     "right=${candidate.quality.rightHandPresentFrames} " +
+                    "trajectory_motion_mean_l2=${candidate.quality.trajectoryMotionMeanL2} " +
                     "top5=${inference.top5.joinToString(prefix = "[", postfix = "]") { "${it.label}:${it.probability}" }} " +
                     "raw_top1=${inference.top1.label} probability=${inference.top1.probability} margin=${inference.margin} " +
                     "final=${if (decision.accepted) "ACCEPT" else "REJECT"} reason=${decision.reason} " +

@@ -294,6 +294,7 @@ def main() -> int:
         "development_gate_preparation": {
             "minimum_confidence": selected_gate["minimum_confidence"],
             "minimum_margin": selected_gate["minimum_margin"],
+            "minimum_trajectory_motion_mean_l2": 0.02,
             "wrong_accepted_in_development": selected_gate["wrong_accepted"],
             "live_approved": False,
         },
