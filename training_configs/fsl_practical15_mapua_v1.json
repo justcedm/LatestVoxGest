@@ -1,0 +1,90 @@
+{
+  "experiment_id": "fsl_practical15_mapua_v1",
+  "authorization_date": "2026-09-20",
+  "random_seed": 20260920,
+  "metric_scope": "EXPLORATORY_CLIP_LEVEL_METRICS_NOT_SIGNER_INDEPENDENT",
+  "dataset": {
+    "source_dataset": "MAPUA_TRANSACTIONAL_FSL",
+    "source_doi": "10.17632/jdyrr7cm4z",
+    "source_feature_manifest": "MAPUA26_CALIBRATION_V1/feature_manifest.csv",
+    "raw_audit_root": "TRANSACTIONAL_FSL_V1/audit",
+    "raw_video_root": "TRANSACTIONAL_FSL_V1/extracted",
+    "expected_clip_count": 394,
+    "development_folds": 4,
+    "signer_ids_available": false,
+    "fsl105_raw_status": "PENDING_RAW"
+  },
+  "labels": [
+    "HELLO",
+    "THANK_YOU",
+    "YES",
+    "NO",
+    "PLEASE",
+    "HOW_MUCH",
+    "CASH",
+    "CARD",
+    "RECEIPT",
+    "WAIT",
+    "HOW_MANY",
+    "AGAIN",
+    "PROBLEM",
+    "COIN",
+    "DISCOUNT"
+  ],
+  "presentation": {
+    "HELLO": {"english": "Hello", "filipino": "Kumusta"},
+    "THANK_YOU": {"english": "Thank you", "filipino": "Salamat"},
+    "YES": {"english": "Yes", "filipino": "Oo"},
+    "NO": {"english": "No", "filipino": "Hindi"},
+    "PLEASE": {"english": "Please", "filipino": "Pakiusap"},
+    "HOW_MUCH": {"english": "How much", "filipino": "Magkano"},
+    "CASH": {"english": "Cash", "filipino": "Pera"},
+    "CARD": {"english": "Card", "filipino": "Kard"},
+    "RECEIPT": {"english": "Receipt", "filipino": "Resibo"},
+    "WAIT": {"english": "Wait", "filipino": "Maghintay"},
+    "HOW_MANY": {"english": "How many", "filipino": "Ilan"},
+    "AGAIN": {"english": "Again", "filipino": "Muli"},
+    "PROBLEM": {"english": "Problem", "filipino": "Problema"},
+    "COIN": {"english": "Coin", "filipino": "Barya"},
+    "DISCOUNT": {"english": "Discount", "filipino": "Diskuwento"}
+  },
+  "feature_contract": {
+    "version": "fullsign225_frame_v1_complete_trajectory_v1",
+    "layout": "pose99|anatomical_left63|anatomical_right63",
+    "coordinate_orientation": "canonical_unmirrored",
+    "slot_swapping": false,
+    "mediapipe_version": "0.10.9",
+    "temporal_length": 48,
+    "motion_boundary_frames": 3,
+    "maximum_internal_interpolation_gap_frames": 3,
+    "missing_pose_policy": "zero_entire_225_frame",
+    "missing_hand_policy": "zero_fixed_anatomical_63_slot"
+  },
+  "augmentation": {
+    "version": "fsl_practical15_safe_landmark_aug_v1",
+    "training_folds_only": true,
+    "copies_per_source": 2,
+    "temporal_scale_range": [0.92, 1.08],
+    "jitter_standard_deviation": 0.0025,
+    "coordinate_scale_range": [0.98, 1.02],
+    "maximum_hand_dropout_frames": 2,
+    "mirror": false,
+    "swap_anatomical_slots": false,
+    "rotation": false
+  },
+  "training": {
+    "architecture": "RD-TCN",
+    "temporal_length": 48,
+    "batch_size": 32,
+    "maximum_epochs": 100,
+    "early_stopping_patience": 10,
+    "learning_rate": 0.0003,
+    "parameter_budget": 5000000,
+    "class_balanced_loss": true
+  },
+  "output": {
+    "profile_id": "FSL_PRACTICAL15_V1",
+    "bundle_id": "fsl_practical15_fullsign225_48f_v1",
+    "experiment_root": "FSL_PRACTICAL15_MAPUA_V1"
+  }
+}
