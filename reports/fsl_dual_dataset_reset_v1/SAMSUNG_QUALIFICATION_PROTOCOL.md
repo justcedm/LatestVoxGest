@@ -66,7 +66,7 @@ Record for every event:
 - pose, left-hand, right-hand, and trajectory-motion evidence;
 - top five, raw top-1, probability, and top1-top2 margin;
 - accepted/rejected and reason;
-- MediaPipe/TFLite latency;
+- per-event MediaPipe median/p95 and TFLite latency;
 - estimated sign-end-to-raw and sign-end-to-accepted latency;
 - framing, tracking, identity, or camera failure notes.
 
@@ -149,4 +149,3 @@ correct raw predictions, no-inference rate, negative false-accept rate, median
 and p95 result latency, per-class results, and A-F counts. The profile cannot be
 called live-ready until startup parity, positive trials, and negative trials all
 have recorded evidence.
-

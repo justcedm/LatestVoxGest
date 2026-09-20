@@ -68,7 +68,9 @@ internet signs, or unvalidated team signs entered its training claim.
 - TensorFlow/TFLite top-1 agreement 1.0; maximum probability difference
   4.172325134277344e-07.
 - Shared Python/JVM resampling fixture maximum positional difference 0.0.
-- Android JVM suite: 100 tests, zero failures; debug build successful.
+- Android JVM suite: 101 tests, zero failures; debug build successful.
+- APK packaging audit: all five practical-profile assets present and
+  byte-identical to their source bundle.
 
 All accuracy figures are exploratory clip-level results. They are not
 signer-independent, population-level, or Samsung live accuracy.
@@ -121,4 +123,3 @@ signer-independent, population-level, or Samsung live accuracy.
 - Synthetic corruption tests show confidence/margin alone are insufficient.
 - Camera framing, on-device landmarks, latency, class generalization, and
   negative false accepts remain unmeasured until Samsung qualification.
-

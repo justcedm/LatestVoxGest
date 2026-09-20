@@ -17,8 +17,8 @@ STATUS=OFFLINE_COMPLETE_ANDROID_READY_PHYSICAL_GATE_PENDING
   60/60 bit-identical regenerated cache tensors.
 - TFLite: [1,48,225] -> [1,15], top-1 agreement 1.0, max difference
   4.172325134277344e-07.
-- Android: complete-event collector/resampler integrated; 100/100 JVM tests
-  pass; `assembleDebug` passes.
+- Android: complete-event collector/resampler integrated; 101/101 JVM tests
+  pass; `assembleDebug` and the five-asset APK byte audit pass.
 
 ## Rejection conclusion
 
@@ -49,4 +49,3 @@ and retains 334/334 development clips. Physical negatives are still mandatory.
    `SAMSUNG_QUALIFICATION_PROTOCOL.md`.
 3. Keep the profile experimental unless live raw correctness, wrong-accept,
    negative false-accept, and latency evidence pass.
-

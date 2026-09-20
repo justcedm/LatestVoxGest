@@ -1,18 +1,18 @@
 # VoxGest Live Handoff
 
-TIMESTAMP=2026-09-20T14:36:00+08:00
+TIMESTAMP=2026-09-20T23:24:26+08:00
 
 BRANCH=recognition/fsl-dual-dataset-reset-v1
 
-COMMIT=2f76f541abded1fbb7e8d6f11a939e00c9e95e02 plus final reporting
+COMMIT=39c9f21dbc9702942e90b3e6171bb4d4af43ff07 plus Samsung startup checkpoint
 
 SOURCE_BASE_COMMIT=6afa7322679317a0fac8b1bb0e66fe810ff99b10
 
 HANDOFF_UPDATE_COMMIT=PENDING_THIS_COMMIT
 
-BRANCH_HEAD=2f76f541abded1fbb7e8d6f11a939e00c9e95e02 plus final reporting
+BRANCH_HEAD=39c9f21dbc9702942e90b3e6171bb4d4af43ff07 plus Samsung startup checkpoint
 
-CURRENT_GOAL=Offline deep engineering is complete; execute the frozen Samsung qualification protocol when the device returns.
+CURRENT_GOAL=Complete Samsung anatomical handedness/framing verification, then execute the frozen 45-positive and 30-negative initial battery without threshold changes.
 
 WORK_COMPLETED=
 
@@ -26,8 +26,17 @@ WORK_COMPLETED=
 - Integrated the exact bundle as debug-intent-only FSL_PRACTICAL15_V1 with complete-event capture, mandatory release/re-arm, diagnostics, and no production-default change.
 - Added shared Python/JVM temporal parity and complete-event/dropout/handedness/timeout/incomplete-event tests.
 - Audited fixed rejection behavior on development-only synthetic corruptions and added a conservative no-motion structural guard.
-- Ran 100 JVM tests with zero failures and assembled the debug APK successfully.
+- Ran 101 JVM tests with zero failures and assembled the debug APK successfully.
+- Proved the five embedded practical-profile APK assets are byte-identical to
+  the source bundle and added per-event MediaPipe/result latency logging.
 - Wrote the paper-alignment delta and exact Samsung qualification protocol.
+- Verified Samsung SM-A566B serial R5GYC0M1M4P is authorized, installed the
+  byte-audited debug APK, and proved the installed APK hash matches the build.
+- Launched only FSL_PRACTICAL15_V1 and captured on-device feature parity,
+  TFLite golden parity, model/label shape parity, frozen capture/gate settings,
+  and front-camera mirror contract evidence.
+- Added event-duration and explicit frozen capture-configuration telemetry
+  before any semantic physical trial.
 
 FILES_CHANGED=
 
@@ -48,15 +57,20 @@ COMMANDS/TESTS=
 - Final float32 TFLite parity: PASS, top-1 agreement 1.0.
 - Sealed raw-video replay: 60/60 processed, zero extraction failures, exact cache parity.
 - Python temporal fixture: PASS, maximum position difference 0.0.
-- Android JVM: 26 suites, 100 tests, 0 failures/errors/skips.
+- Android JVM: 26 suites, 101 tests, 0 failures/errors/skips.
 - Android testDebugUnitTest + assembleDebug: BUILD SUCCESSFUL.
+- APK practical-profile asset hash/byte verification: PASS.
 - Protected Standard/Mapua14/demo model hashes: unchanged.
+- Samsung install: PASS; installed/base APK SHA-256 equals the audited build.
+- On-device feature parity: PASS; no hand-slot swapping; model input unmirrored.
+- On-device TFLite golden parity: PASS; input [1,48,225], output [1,15].
+- Camera binding: PASS; FRONT, preview mirrored, analysis unmirrored.
 
 DATASET_STATUS=MAPUA_PUBLISHED_FSL_ONLY_INTERIM; 394 PASS clips; 334 development; 60 sealed; FSL105_PENDING_OFFICIAL_RAW; ASL_CONTAMINATION_QUARANTINED.
 
 TRAINING_STATUS=OFFLINE_PASS. RD-TCN48, 125391 parameters, 15 classes, complete-event FullSign225 resample48. Signer-independent claim prohibited.
 
-SAMSUNG_STATUS=INTENTIONALLY_NOT_TESTED. Device was unavailable by instruction; startup parity, live positives, physical negatives, camera/mirror verification, and live latency remain required.
+SAMSUNG_STATUS=STARTUP_PARITY_PASS; HUMAN_IN_FRAME_CHECK_PENDING. Device is authorized and the experimental profile is active. The empty-room preview is correctly oriented by contract, but anatomical left/right overlays and framing require the operator in frame before semantic signs. Positive/negative attempts remain 0/45 and 0/30.
 
 METRICS=
 
@@ -67,6 +81,8 @@ METRICS=
 - TFLite max probability difference=4.172325134277344e-07.
 - Desktop replay TFLite median=0.9066 ms; p95=1.2948 ms.
 - Provisional gate confidence=0.95, margin=0.05, motion mean-L2 floor=0.02.
+- Installed APK SHA-256=260f79ae1f968c39dde061ba511035c443e5832a1a93525a31505b97cf8a39a6.
+- Model SHA-256=dfe78b557052032b2b288685b1de97108d0ddbb3516e3bdf758c0ef1c26219e6; labels SHA-256=4d3083b853d126c243b7f9a5db94be796a99a7bfe1379ef400d1d3f82a153cb6.
 
 FAILURES=
 
@@ -75,10 +91,13 @@ FAILURES=
 - The sealed raw replay repeats the same sealed source clips through the perception path; it is not a second independent dataset.
 - Score-only rejection is weak on synthetic corruptions. Live negative false-accept performance is unknown.
 - Samsung camera framing, landmark quality, per-class generalization, and latency are not yet measured.
+- ADB entered `offline` twice during startup evidence collection; both incidents
+  recovered through a normal server restart. USB transport stability remains
+  under observation and no event evidence was lost.
 
-CURRENT_HYPOTHESIS=The practical15 profile has exact offline perception/export parity and strong clip-level separability, but clean-event CARD/COIN, CASH/PROBLEM, and NO/YES confusions plus score-only OOD weakness make physical positives and negatives the decisive remaining gate.
+CURRENT_HYPOTHESIS=The installed practical15 profile has exact package, feature, model, temporal, and camera-contract parity. Human-in-frame handedness/tracking and clean-event classifier behavior are now the decisive gates; USB stability must also remain adequate for evidence collection.
 
-NEXT_ACTION=Connect Samsung R5GYC0M1M4P, install the existing debug APK, launch exact debug profile FSL_PRACTICAL15_V1, verify startup/camera parity, then execute the fixed 45-positive initial battery and 30-negative battery in SAMSUNG_QUALIFICATION_PROTOCOL.md without changing thresholds.
+NEXT_ACTION=Place the Samsung upright with the signer centered, run the neutral anatomical-left/right camera sanity check, then execute the exact 45-positive order followed by 30 negatives without changing thresholds.
 
 DO_NOT_MODIFY=
 

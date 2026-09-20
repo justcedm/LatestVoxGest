@@ -45,7 +45,8 @@ class FslPractical15CameraRecognitionController(
     private val running = AtomicBoolean(false)
     private val released = AtomicBoolean(false)
     private val performance = StandardFslPerformanceTracker()
-    private val collector = FslPractical15CompleteEventCollector()
+    private val captureConfig = FslPractical15CaptureConfig()
+    private val collector = FslPractical15CompleteEventCollector(captureConfig)
     private val gate = FslPractical15Gate()
     private val displayFrameCallback = object : Choreographer.FrameCallback {
         override fun doFrame(frameTimeNanos: Long) {
@@ -59,7 +60,9 @@ class FslPractical15CameraRecognitionController(
     @Volatile private var imageAnalysis: ImageAnalysis? = null
     @Volatile private var extractor: LandmarkExtractor? = null
     @Volatile private var runtime: FslPractical15TfliteRuntime? = null
+    @Volatile private var latestLandmarkMetrics: LandmarkExtractionMetrics? = null
     @Volatile private var lastEventLog = ""
+    private val eventMediaPipeMs = mutableListOf<Double>()
 
     fun start(previewView: PreviewView) {
         check(!released.get())
@@ -83,7 +86,10 @@ class FslPractical15CameraRecognitionController(
                 extractor = StandardFslCameraPipeline.createLandmarkExtractor(
                     appContext,
                     if (initialUseBackCamera) GradingCameraLens.BACK else GradingCameraLens.FRONT,
-                    performance::recordLandmarks
+                    { metrics ->
+                        latestLandmarkMetrics = metrics
+                        performance.recordLandmarks(metrics)
+                    }
                 )
                 Log.i(TAG, "${featureParity.marker} ${featureParity.status} ${featureParity.evidence}")
                 Log.i(TAG, "${modelParity.marker} ${modelParity.status} ${modelParity.evidence}")
@@ -95,6 +101,17 @@ class FslPractical15CameraRecognitionController(
                         "model_input=unmirrored threshold_confidence=0.95 threshold_margin=0.05 " +
                         "minimum_trajectory_motion_mean_l2=0.02 " +
                         "live_approved=false android_default_changed=false"
+                )
+                Log.i(
+                    TAG,
+                    "FSL_PRACTICAL15_CAPTURE_CONFIG PASS " +
+                        "neutral_arm_frames=${captureConfig.neutralArmFrames} " +
+                        "release_frames=${captureConfig.releaseFrames} " +
+                        "minimum_raw_event_frames=${captureConfig.minimumEventFrames} " +
+                        "maximum_event_frames=${captureConfig.maximumEventFrames} " +
+                        "maximum_event_duration_ms=${captureConfig.maximumEventDurationMs} " +
+                        "maximum_consecutive_missing_pose=${captureConfig.maximumConsecutiveMissingPose} " +
+                        "minimum_pose_presence_ratio=0.65 minimum_any_hand_presence_ratio=0.65"
                 )
                 mainExecutor.execute { bindCamera(previewView) }
             } catch (error: Throwable) {
@@ -193,6 +210,16 @@ class FslPractical15CameraRecognitionController(
             val published = onFrame(frame)
             performance.recordOverlay((SystemClock.elapsedRealtimeNanos() - overlayStarted) / 1_000_000.0, published)
             val update = collector.onFrame(frame)
+            when {
+                update.reason == "SIGN_ENTRY" -> {
+                    eventMediaPipeMs.clear()
+                    latestLandmarkMetrics?.totalMs?.let(eventMediaPipeMs::add)
+                }
+                update.state == FslPractical15CaptureState.SIGN_ACTIVE ->
+                    latestLandmarkMetrics?.totalMs?.let(eventMediaPipeMs::add)
+                update.state == FslPractical15CaptureState.WAIT_FOR_RELEASE ->
+                    eventMediaPipeMs.clear()
+            }
             logCaptureTransition(update)
             val candidate = update.candidate
             if (candidate == null) {
@@ -212,9 +239,12 @@ class FslPractical15CameraRecognitionController(
             collector.markCandidateHandled()
             val now = SystemClock.elapsedRealtime()
             val endToRawMs = (now - candidate.quality.endTimestampMs).coerceAtLeast(0L)
+            val mediaPipeMedianMs = percentile(eventMediaPipeMs, 0.50)
+            val mediaPipeP95Ms = percentile(eventMediaPipeMs, 0.95)
             Log.i(
                 TAG,
                 "FSL_PRACTICAL15_EVENT event=${candidate.eventNumber} completion=NEUTRAL_RELEASE " +
+                    "event_duration_ms=${candidate.quality.endTimestampMs - candidate.quality.startTimestampMs} " +
                     "captured_frames=${candidate.quality.rawFrameCount} resample=exact48 " +
                     "pose=${candidate.quality.posePresentFrames} left=${candidate.quality.leftHandPresentFrames} " +
                     "right=${candidate.quality.rightHandPresentFrames} " +
@@ -222,7 +252,9 @@ class FslPractical15CameraRecognitionController(
                     "top5=${inference.top5.joinToString(prefix = "[", postfix = "]") { "${it.label}:${it.probability}" }} " +
                     "raw_top1=${inference.top1.label} probability=${inference.top1.probability} margin=${inference.margin} " +
                     "final=${if (decision.accepted) "ACCEPT" else "REJECT"} reason=${decision.reason} " +
-                    "tflite_ms=${inference.latencyMs} sign_end_to_raw_ms=$endToRawMs"
+                    "mediapipe_ms_median=$mediaPipeMedianMs mediapipe_ms_p95=$mediaPipeP95Ms " +
+                    "tflite_ms=${inference.latencyMs} sign_end_to_raw_ms=$endToRawMs " +
+                    "sign_end_to_accepted_ms=${if (decision.accepted) endToRawMs.toString() else "NA"}"
             )
             postState(
                 FslPractical15LiveState(
@@ -249,6 +281,7 @@ class FslPractical15CameraRecognitionController(
                     )
                 }
             }
+            eventMediaPipeMs.clear()
             performance.logIfDue()
         } catch (error: Throwable) {
             Log.e(TAG, "FSL_PRACTICAL15_LIVE ERROR", error)
@@ -287,7 +320,17 @@ class FslPractical15CameraRecognitionController(
         runCatching { runtime?.close() }
         runtime = null
         collector.reset()
+        latestLandmarkMetrics = null
+        eventMediaPipeMs.clear()
         lastEventLog = ""
+    }
+
+    private fun percentile(values: List<Double>, fraction: Double): String {
+        if (values.isEmpty()) return "NA"
+        val sorted = values.filter { it.isFinite() && it >= 0.0 }.sorted()
+        if (sorted.isEmpty()) return "NA"
+        val index = ((sorted.lastIndex) * fraction).toInt().coerceIn(sorted.indices)
+        return String.format(java.util.Locale.US, "%.3f", sorted[index])
     }
 
     companion object {

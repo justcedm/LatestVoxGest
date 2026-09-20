@@ -109,6 +109,26 @@ class RecognitionOutputCoordinatorTest {
         assertEquals(listOf("THANK_YOU"), update.snapshot.tokens)
     }
 
+    @Test
+    fun experimentalPractical15ResultUsesItsOwnSourceLabel() {
+        val fixture = fixture(allowlist = emptySet(), composerLabels = emptySet())
+        val result = RecognitionResult(
+            "HOW_MUCH",
+            0.97f,
+            0.55f,
+            true,
+            "fsl_practical15_v1_experimental_accepted",
+            emptyList(),
+            RecognitionResult.Source.FSL_PRACTICAL15_V1
+        )
+
+        val update = fixture.coordinator.handleRecognition(result)
+
+        assertTrue(update.userFacingAccepted)
+        assertEquals(DemoAllowlistReason.FSL_PRACTICAL15_EXPERIMENTAL.name, update.reason)
+        assertEquals(listOf("HOW_MUCH"), update.snapshot.tokens)
+    }
+
     private fun fixture(allowlist: Set<String>, composerLabels: Set<String>): Fixture {
         val settings = SentenceSuggestionSettings(MemoryStore())
         return Fixture(
