@@ -69,7 +69,11 @@ class FslPractical15CameraRecognitionController(
         if (!running.compareAndSet(false, true)) return
         performance.reset()
         mainExecutor.execute { Choreographer.getInstance().postFrameCallback(displayFrameCallback) }
-        previewView.scaleX = if (initialUseBackCamera) 1f else -1f
+        // CameraX PreviewView already applies the front-camera display mirror.
+        // A second scaleX=-1 here cancels that mirror and puts display-only
+        // landmarks on the opposite side of the person. Keep analysis/model
+        // input untouched and let PreviewView own the camera transform.
+        previewView.scaleX = 1f
         postState(FslPractical15LiveState(StandardFslTrackingState.HOLD_SIGN_CLEARLY, collector.state))
         analysisExecutor.execute {
             try {

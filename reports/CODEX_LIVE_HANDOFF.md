@@ -1,18 +1,18 @@
 # VoxGest Live Handoff
 
-TIMESTAMP=2026-09-20T23:24:26+08:00
+TIMESTAMP=2026-09-20T23:48:14+08:00
 
 BRANCH=recognition/fsl-dual-dataset-reset-v1
 
-COMMIT=3d6f044c86ce2d00e087a320f47a4ab22b5f57df
+COMMIT=c98953dd plus verified preview-mirror repair
 
 SOURCE_BASE_COMMIT=6afa7322679317a0fac8b1bb0e66fe810ff99b10
 
-HANDOFF_UPDATE_COMMIT=3d6f044c86ce2d00e087a320f47a4ab22b5f57df
+HANDOFF_UPDATE_COMMIT=PENDING_THIS_COMMIT
 
-BRANCH_HEAD=3d6f044c86ce2d00e087a320f47a4ab22b5f57df plus metadata-only handoff finalization
+BRANCH_HEAD=c98953dd plus verified preview-mirror repair
 
-CURRENT_GOAL=Complete Samsung anatomical handedness/framing verification, then execute the frozen 45-positive and 30-negative initial battery without threshold changes.
+CURRENT_GOAL=Execute the frozen 45-positive and 30-negative Samsung battery after verified startup, camera, overlay, and anatomical-hand checks.
 
 WORK_COMPLETED=
 
@@ -37,6 +37,12 @@ WORK_COMPLETED=
   and front-camera mirror contract evidence.
 - Added event-duration and explicit frozen capture-configuration telemetry
   before any semantic physical trial.
+- Reproduced and fixed a display-only front-preview double mirror caused by a
+  manual `PreviewView.scaleX=-1` on top of CameraX's native front mirror.
+- Rebuilt, reinstalled, and physically verified that pose/hand skeletons now
+  align with the visible signer while analysis/model input remains unmirrored.
+- Preserved two pre-battery wrong accepts (`CASH` and `COIN`) as negative/OOD
+  evidence without counting them in the frozen 30-trial negative battery.
 
 FILES_CHANGED=
 
@@ -65,12 +71,14 @@ COMMANDS/TESTS=
 - On-device feature parity: PASS; no hand-slot swapping; model input unmirrored.
 - On-device TFLite golden parity: PASS; input [1,48,225], output [1,15].
 - Camera binding: PASS; FRONT, preview mirrored, analysis unmirrored.
+- Physical camera/overlay verification: PASS after isolated display fix;
+  anatomical L/R colors and skeletons align with the visible hands.
 
 DATASET_STATUS=MAPUA_PUBLISHED_FSL_ONLY_INTERIM; 394 PASS clips; 334 development; 60 sealed; FSL105_PENDING_OFFICIAL_RAW; ASL_CONTAMINATION_QUARANTINED.
 
 TRAINING_STATUS=OFFLINE_PASS. RD-TCN48, 125391 parameters, 15 classes, complete-event FullSign225 resample48. Signer-independent claim prohibited.
 
-SAMSUNG_STATUS=STARTUP_PARITY_PASS; HUMAN_IN_FRAME_CHECK_PENDING. Device is authorized and the experimental profile is active. The empty-room preview is correctly oriented by contract, but anatomical left/right overlays and framing require the operator in frame before semantic signs. Positive/negative attempts remain 0/45 and 0/30.
+SAMSUNG_STATUS=STARTUP_PARITY_PASS; CAMERA_MIRROR_HANDNESS_PASS; INITIAL_BATTERY_PENDING. Device is authorized, the exact experimental profile is active, and the physically observed preview/overlay defect is repaired and verified. Positive/negative attempts remain 0/45 and 0/30.
 
 METRICS=
 
@@ -81,23 +89,26 @@ METRICS=
 - TFLite max probability difference=4.172325134277344e-07.
 - Desktop replay TFLite median=0.9066 ms; p95=1.2948 ms.
 - Provisional gate confidence=0.95, margin=0.05, motion mean-L2 floor=0.02.
-- Installed APK SHA-256=260f79ae1f968c39dde061ba511035c443e5832a1a93525a31505b97cf8a39a6.
+- Installed APK SHA-256=fb39fbb1581c50bbba24935a09586e8ba6e847fe9acbc49b27c2b457f5257cf4.
 - Model SHA-256=dfe78b557052032b2b288685b1de97108d0ddbb3516e3bdf758c0ef1c26219e6; labels SHA-256=4d3083b853d126c243b7f9a5db94be796a99a7bfe1379ef400d1d3f82a153cb6.
+- Pre-battery negative diagnostics: 2/2 wrong accepted (`CASH` 0.99784863,
+  `COIN` 0.9908304); these are not included in the formal negative rate.
 
 FAILURES=
 
 - Official FSL-105 v2 raw is absent; official automated acquisition is blocked by HTTP 403/Cloudflare.
 - Mapua signer IDs are unavailable, so clip metrics cannot establish signer independence.
 - The sealed raw replay repeats the same sealed source clips through the perception path; it is not a second independent dataset.
-- Score-only rejection is weak on synthetic corruptions. Live negative false-accept performance is unknown.
-- Samsung camera framing, landmark quality, per-class generalization, and latency are not yet measured.
-- ADB entered `offline` twice during startup evidence collection; both incidents
-  recovered through a normal server restart. USB transport stability remains
-  under observation and no event evidence was lost.
+- Score-only rejection weakness is now visible live: two non-sign camera-check
+  motions were wrongly accepted as `CASH` and `COIN` at frozen thresholds.
+- Per-class Samsung generalization and formal battery latency are not yet measured.
+- ADB entered `offline` repeatedly during early evidence collection. Normal
+  server restarts plus physical cable/USB-mode remediation restored the device;
+  the subsequent recordings, rebuild install, and installed-APK pull stayed online.
 
-CURRENT_HYPOTHESIS=The installed practical15 profile has exact package, feature, model, temporal, and camera-contract parity. Human-in-frame handedness/tracking and clean-event classifier behavior are now the decisive gates; USB stability must also remain adequate for evidence collection.
+CURRENT_HYPOTHESIS=The installed practical15 profile now has exact package, feature, model, temporal, camera, overlay, and anatomical-hand parity. The two diagnostic wrong accepts make classifier/gate behavior on formal positives and negatives the decisive remaining gate; thresholds remain frozen until the complete battery.
 
-NEXT_ACTION=Place the Samsung upright with the signer centered, run the neutral anatomical-left/right camera sanity check, then execute the exact 45-positive order followed by 30 negatives without changing thresholds.
+NEXT_ACTION=Restart recognition with a clean log and execute three valid attempts each for HOW_MANY, HOW_MUCH, and CASH using hands-down neutral -> one sign once -> hands-down neutral -> wait for result/re-arm.
 
 DO_NOT_MODIFY=
 

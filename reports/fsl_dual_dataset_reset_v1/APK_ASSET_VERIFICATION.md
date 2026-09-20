@@ -17,7 +17,7 @@ the source asset:
 APK size: 161,514,586 bytes.
 
 APK SHA-256:
-`260f79ae1f968c39dde061ba511035c443e5832a1a93525a31505b97cf8a39a6`.
+`fb39fbb1581c50bbba24935a09586e8ba6e847fe9acbc49b27c2b457f5257cf4`.
 
 The APK itself remains an uncommitted build artifact.
 
@@ -36,3 +36,7 @@ the audited local APK above. The on-device diagnostic startup then reported:
 
 This proves installation and startup parity. Human-in-frame anatomical overlay,
 positive-class, negative/OOD, and latency qualification remain pending.
+
+The APK was rebuilt after the isolated physical preview-mirror repair. The
+installed repaired `base.apk` was pulled and exactly matched the updated hash
+above. Model, labels, manifest, and both golden assets remained byte-identical.
