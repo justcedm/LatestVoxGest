@@ -1,5 +1,63 @@
 # VoxGest Live Handoff
 
+## Current authority: physical Samsung HELLO qualification — 2026-09-21
+
+TIMESTAMP=2026-09-21T20:22:00+08:00
+
+BRANCH=recognition/fsl-dual-dataset-reset-v1
+
+SOURCE_BASE_COMMIT=2ecd30a128ed90024481f471fcd5c321bf39dd96
+
+COMMIT=Physical evidence/documentation checkpoint; exact commit via git log for this file.
+
+CURRENT_GOAL=Five controlled HELLO attempts and three consecutive correct accepted
+HELLO outputs with the existing model and frozen gates; fix only device-proven defects.
+
+WORK_COMPLETED=Exact required clean branch/remote parity verified; SDK ADB resolved;
+Samsung authorized by owner; audited debug APK installed with Success and exact
+installed SHA identity; correct activity/profile launched; camera started; startup
+feature/model parity and live inference saved. Android16/API36, Samsung SM-A566B,
+arm64-v8a. Live analyzer approximately8.3–10fps in inspected samples.
+
+SAMSUNG_STATUS=CONNECTED_AUTHORIZED; STARTUP_PARITY_PASS; ANATOMICAL_SLOT_MISMATCH.
+
+METRICS=Controlled HELLO0/5, milestone0/3. Uncontrolled setup events1–4 predicted CASH;
+events1/2 rejected confidence, event3 accepted .99757093 with visible CASH text and
+EMIT log, event4 rejected hand presence. TTS audible output not confirmed. No scored
+neutral accuracy or formal wrong-accept rate can be assigned to uncontrolled setup.
+
+FAILURES=Owner identified the raised hand in neutral_ready_screen.png as physical LEFT,
+but app assigned R. Opposite-hand screenshot shows L after request for physical RIGHT;
+explicit owner confirmation of the second check is pending. Current Practical15 uses
+the inherited unmirrored-input reported-side swap. This needs isolation from classifier
+quality and validation before HELLO. Setup also included timeout/incomplete events.
+
+CURRENT_HYPOTHESIS=Tasks-to-anatomical side assignment is reversed for this physical
+configuration; do not retrain or weaken the gate to compensate.
+
+NEXT_ACTION=Get explicit physical-RIGHT confirmation for anatomy_check_screen.png;
+then apply only the smallest Practical15-specific reported-side correction if confirmed,
+add tests, rebuild/reinstall, recheck both hands, and run five HELLO attempts one at a
+time. Raw top1 must be recorded even when rejected. Brief YES/NO controls if needed.
+
+EVIDENCE_PATHS=reports/device_tests/samsung/hello_20260921/ (local, ignored; install,
+device properties, startup/runtime logs, screenshots, command metadata and installed hash).
+
+FILES_CHANGED=.gitignore; scripts_ml/106_samsung_qualification_evidence.py;
+reports/fsl_dual_dataset_reset_v1/SAMSUNG_HELLO_QUALIFICATION_20260921.md; this handoff.
+
+COMMANDS_TESTS=adb devices/install/am start/installed SHA/feature parity/TFLite parity
+and live event inference PASS. No Android source change in this physical checkpoint;
+existing120 JVM tests remain the installed checkpoint's offline evidence.
+
+TRAINING_STATUS=NO_RETRAINING; DATASET_STATUS=UNCHANGED.
+
+DO_NOT_MODIFY=Model/gates/labels/thresholds/debounce/UI/Avatar/StandardFSL105/Mapua14/
+demo10; no profile fusion; no ASL contamination; analysis unmirrored; async non-default.
+Never commit raw evidence or access the retired workspace. Physical success unproven.
+
+[Physical qualification detail](fsl_dual_dataset_reset_v1/SAMSUNG_HELLO_QUALIFICATION_20260921.md)
+
 ## Current authority: offline recognition hardening — 2026-09-21
 
 BRANCH=recognition/fsl-dual-dataset-reset-v1
