@@ -12,7 +12,8 @@ data class HandObservation(
     val slot: String,
     val mediaPipeHandedness: String,
     val averageX: Float,
-    val physicalSideEstimate: String
+    val physicalSideEstimate: String,
+    val handednessScore: Float? = null
 )
 
 data class LandmarkFrame(
@@ -22,7 +23,8 @@ data class LandmarkFrame(
     val timestampMs: Long,
     val handObservations: List<HandObservation> = emptyList(),
     val sourceWidth: Int = 0,
-    val sourceHeight: Int = 0
+    val sourceHeight: Int = 0,
+    val cameraMetadata: CameraFrameMetadata? = null
 ) {
     val hasPose: Boolean = poseLandmarks?.size == 33
     val hasLeftHand: Boolean = leftHandLandmarks?.size == 21

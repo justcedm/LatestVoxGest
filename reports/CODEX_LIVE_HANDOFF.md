@@ -1,5 +1,79 @@
 # VoxGest Live Handoff
 
+## Current authority: offline recognition hardening — 2026-09-21
+
+BRANCH=recognition/fsl-dual-dataset-reset-v1
+
+SOURCE_BASE_COMMIT=a21c2114bd48e62e0d46ced3fd20400b440110bd
+
+CHECKPOINT=Offline camera, raw Domain-C capture and isolated LIVE_STREAM hardening;
+resolve exact checkpoint with git log for this file. Previous task snapshots below
+are historical, not current execution instructions.
+
+Completed:
+
+- Fetched remotes; verified clean worktree and exact remote parity before edits.
+- Audited CameraX -> upright unmirrored Tasks -> anatomy -> FullSign225 -> complete
+  event -> resample48 -> TFLite -> gate; documented device-dependent assumptions.
+- FIT_CENTER camera presentation, explicit display-only mirror toggle, Practical15
+  sensor-matrix overlay, padded RGBA packing, lifecycle event reset/session guards,
+  missing-camera and CameraState-error cleanup. No unrelated UI redesign.
+- Debug opt-in Domain-C recorder: raw pre-normalization xyz/presence/handedness,
+  camera metadata, completion/count/duration and actual canonical tensor SHA256;
+  bounded asynchronous local storage, no pixels, no default capture.
+- Debug-guarded isolated detectAsync adapter: exact hand/pose timestamps, bounded
+  latest-frame admission, expiration and chronological pairing. Not wired into any
+  profile; dedicated physical harness integration is the next experimental step.
+- Rejection review separates closed-set raw classifier confidence from sign validity.
+  CASH/COIN diagnostic false accepts remain unresolved physical evidence; no tuning.
+- Cross-device checklist, external USB/UVC feasibility report and separate drawing
+  communication backlog prepared. Neither optional feature was implemented.
+
+Validation:
+
+- Android testDebugUnitTest + assembleDebug PASS; 120 tests across 30 suites,
+  including 9 pairing, 3 geometry, 3 RGBA packing and 4 capture/invariance tests.
+- Python unittest discovery 34 PASS; standalone Android export comparison 2 PASS.
+  Pytest is not installed; its two function-style export tests ran via their existing
+  standalone entry point. No package upgrade was needed.
+- Python temporal golden fixture PASS, max position difference 0.
+- Practical15 source/APK model+labels hashes PASS; desktop TFLite golden top1 COIN,
+  max probability difference 2.7284841053187847e-11. No Android execution claim.
+- Native APK audit: 32 libraries/4 ABIs; ZIP 16-KiB alignment PASS. Arm64 PT_LOAD
+  alignment PASS; TFLite armeabi-v7a/x86/x86_64 still 4-KiB aligned. General 16-KiB
+  compatibility is NOT certified. Physical and RELRO/runtime checks remain.
+- Tracked model assets, Practical15 runtime/gates, StandardFSL105/Mapua14 rollback
+  runtime source and demo10 assets unchanged from base. Shared camera helpers and
+  camera presentation changed; protected-lane visual smoke tests remain required.
+
+MODEL_RETRAINED=NO
+
+LIVE_STREAM_DEFAULT=NO
+
+PHYSICAL_TESTS_PERFORMED=NO
+
+AVATAR_MODIFIED=NO
+
+No dataset, bulk tensor, device capture, APK, log, checkpoint weight or credential
+belongs in this checkpoint. No retired workspace access.
+
+Next exact action: when owner returns, detect the connected device, install the new
+debug build, activate Practical15 with BOTH developer-diagnostics and profile extras,
+verify startup parity and normal/fullscreen front/rear geometry, then anatomical
+left/right. Enable Domain-C only with owner consent; request compact HOW_MANY,
+HOW_MUCH, CASH (three trials each) before continuing the frozen 45/30 protocol.
+Do not tune thresholds, retrain, or switch to LIVE_STREAM first.
+
+Details:
+
+- [Android audit and cross-device matrix](fsl_dual_dataset_reset_v1/ANDROID_CROSS_DEVICE_HARDENING.md)
+- [Async experiment](fsl_dual_dataset_reset_v1/ASYNC_MEDIAPIPE_EXPERIMENT.md)
+- [Domain-C enable/export protocol](fsl_dual_dataset_reset_v1/DOMAIN_C_CAPTURE_READINESS.md)
+- [External camera feasibility](../docs/EXTERNAL_CAMERA_FEASIBILITY.md)
+- [Drawing communication backlog](../docs/DRAWING_COMMUNICATION_BACKLOG.md)
+
+## Archived: original-NPY matched-development comparison
+
 TIMESTAMP=2026-09-21T00:40:00+08:00
 
 BRANCH=recognition/fsl-dual-dataset-reset-v1

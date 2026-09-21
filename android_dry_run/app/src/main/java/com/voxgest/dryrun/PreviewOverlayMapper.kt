@@ -21,14 +21,16 @@ object PreviewOverlayMapper {
         displayWidth: Float,
         displayHeight: Float,
         analysisMirrored: Boolean,
-        previewMirrored: Boolean
+        previewMirrored: Boolean,
+        fitCenter: Boolean = false
     ): DisplayPoint {
         if (sourceWidth <= 0 || sourceHeight <= 0 || displayWidth <= 0f || displayHeight <= 0f) {
             return DisplayPoint(0f, 0f)
         }
         val x = xForPreview(normalizedX, analysisMirrored, previewMirrored).coerceIn(0f, 1f)
         val y = normalizedY.coerceIn(0f, 1f)
-        val scale = maxOf(displayWidth / sourceWidth.toFloat(), displayHeight / sourceHeight.toFloat())
+        val scale = if (fitCenter) minOf(displayWidth / sourceWidth.toFloat(), displayHeight / sourceHeight.toFloat())
+            else maxOf(displayWidth / sourceWidth.toFloat(), displayHeight / sourceHeight.toFloat())
         val renderedWidth = sourceWidth * scale
         val renderedHeight = sourceHeight * scale
         val offsetX = (displayWidth - renderedWidth) / 2f

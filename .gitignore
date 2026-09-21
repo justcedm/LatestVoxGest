@@ -143,6 +143,8 @@ temp/
 /napshot*
 
 # Local calibration/output data
+domain_c_captures/
+domain_c_capture.enabled
 calibration_static/
 static_calibration/
 

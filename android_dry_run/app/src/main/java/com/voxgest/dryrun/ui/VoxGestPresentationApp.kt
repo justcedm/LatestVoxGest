@@ -1333,7 +1333,7 @@ private fun RecognitionAreaCard(
     val lifecycleOwner = context as LifecycleOwner
     val previewView = remember {
         PreviewView(context).apply {
-            scaleType = PreviewView.ScaleType.FILL_CENTER
+            scaleType = PreviewView.ScaleType.FIT_CENTER
             implementationMode = PreviewView.ImplementationMode.COMPATIBLE
         }
     }
@@ -1460,18 +1460,18 @@ private fun RecognitionAreaCard(
             // One stable PreviewView host is resized in place. It is never moved into another window.
             AndroidView(
                 factory = { previewView },
+                update = { view ->
+                    // Explicit opt-out of CameraX's native front preview mirror only.
+                    view.scaleX = if (!mirrorFrontPreview && preferredCameraLens == PreferredCameraLens.FRONT) -1f else 1f
+                },
                 modifier = Modifier
                     .fillMaxSize()
                     // Preview mirroring is display-only. ImageAnalysis/model input remains untouched.
-                    .graphicsLayer(
-                        scaleX = if (
-                            !mirrorFrontPreview && preferredCameraLens == PreferredCameraLens.FRONT
-                        ) -1f else 1f
-                    )
             )
             if (showAiLandmarks && recognitionRunning && hasCameraPermission && !cameraUnavailable) {
                 SkeletonFeatureOverlay(
                     visualizationFrame = landmarkVisualizationFrame,
+                    previewView = previewView,
                     previewMirrored = preferredCameraLens == PreferredCameraLens.FRONT && mirrorFrontPreview,
                     hudTopPadding = if (expanded) 84.dp else 62.dp,
                     modifier = Modifier.fillMaxSize()
@@ -1975,6 +1975,7 @@ private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawHandSkeleton(
 @Composable
 private fun SkeletonFeatureOverlay(
     visualizationFrame: LandmarkVisualizationFrame?,
+    previewView: PreviewView,
     previewMirrored: Boolean,
     hudTopPadding: Dp,
     modifier: Modifier = Modifier
@@ -1998,6 +1999,21 @@ private fun SkeletonFeatureOverlay(
             val analysisMirrored = visualizationFrame?.analysisMirrored ?: false
 
             fun pointOf(x: Float, y: Float): Offset {
+                val metadata = frame?.cameraMetadata
+                if (metadata != null) {
+                    // CameraX owns sensor crop/rotation and the native preview mirror.
+                    val sensorToView = previewView.sensorToViewTransform
+                    val inverse = metadata.bufferToSensor
+                    if (sensorToView == null || inverse == null) return Offset(-10000f, -10000f)
+                    val point = com.voxgest.dryrun.CameraFrameGeometry.uprightToBuffer(
+                        x, y, metadata.bufferWidth, metadata.bufferHeight, metadata.rotationDegrees
+                    )
+                    android.graphics.Matrix().apply { setValues(inverse) }.mapPoints(point)
+                    sensorToView.mapPoints(point)
+                    // scaleX is an explicit user display toggle outside CameraX's local transform.
+                    if (previewView.scaleX < 0f) point[0] = size.width - point[0]
+                    return Offset(point[0], point[1])
+                }
                 val mapped = com.voxgest.dryrun.PreviewOverlayMapper.centerCropPoint(
                     normalizedX = x,
                     normalizedY = y,
@@ -2006,7 +2022,8 @@ private fun SkeletonFeatureOverlay(
                     displayWidth = size.width,
                     displayHeight = size.height,
                     analysisMirrored = analysisMirrored,
-                    previewMirrored = previewMirrored
+                    previewMirrored = previewMirrored,
+                    fitCenter = true
                 )
                 return Offset(mapped.x, mapped.y)
             }

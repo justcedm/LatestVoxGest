@@ -44,6 +44,7 @@ class FslPractical15CameraRecognitionController(
     private val analysisExecutor: ExecutorService = Executors.newSingleThreadExecutor()
     private val running = AtomicBoolean(false)
     private val released = AtomicBoolean(false)
+    private val sessionId = java.util.concurrent.atomic.AtomicLong(0)
     private val performance = StandardFslPerformanceTracker()
     private val captureConfig = FslPractical15CaptureConfig()
     private val collector = FslPractical15CompleteEventCollector(captureConfig)
@@ -58,22 +59,49 @@ class FslPractical15CameraRecognitionController(
 
     @Volatile private var cameraProvider: ProcessCameraProvider? = null
     @Volatile private var imageAnalysis: ImageAnalysis? = null
+    private var cameraState: androidx.lifecycle.LiveData<androidx.camera.core.CameraState>? = null
     @Volatile private var extractor: LandmarkExtractor? = null
     @Volatile private var runtime: FslPractical15TfliteRuntime? = null
     @Volatile private var latestLandmarkMetrics: LandmarkExtractionMetrics? = null
     @Volatile private var lastEventLog = ""
     private val eventMediaPipeMs = mutableListOf<Double>()
+    private var domainCapture: DomainCCapture? = null
+    @Volatile private var previewHost: PreviewView? = null
+    @Volatile private var previewMirror = !initialUseBackCamera
+    private var lifecycleObserved = false
+    private var resumeAfterStop = false
+    private val lifecycleObserver = androidx.lifecycle.LifecycleEventObserver { _, event ->
+        when (event) {
+            androidx.lifecycle.Lifecycle.Event.ON_STOP -> {
+                val shouldResume = running.get()
+                stop()
+                resumeAfterStop = shouldResume
+            }
+            androidx.lifecycle.Lifecycle.Event.ON_START -> {
+                if (resumeAfterStop && !released.get()) previewHost?.let { start(it) }
+                resumeAfterStop = false
+            }
+            else -> Unit
+        }
+    }
 
     fun start(previewView: PreviewView) {
         check(!released.get())
         if (!running.compareAndSet(false, true)) return
+        val session = sessionId.incrementAndGet()
         performance.reset()
         mainExecutor.execute { Choreographer.getInstance().postFrameCallback(displayFrameCallback) }
         // CameraX PreviewView already applies the front-camera display mirror.
         // A second scaleX=-1 here cancels that mirror and puts display-only
         // landmarks on the opposite side of the person. Keep analysis/model
         // input untouched and let PreviewView own the camera transform.
-        previewView.scaleX = 1f
+        previewHost = previewView
+        if (!lifecycleObserved) {
+            lifecycleObserved = true
+            lifecycleOwner.lifecycle.addObserver(lifecycleObserver)
+        }
+        previewMirror = !initialUseBackCamera && previewView.scaleX > 0f
+        previewView.scaleType = PreviewView.ScaleType.FIT_CENTER
         postState(FslPractical15LiveState(StandardFslTrackingState.HOLD_SIGN_CLEARLY, collector.state))
         analysisExecutor.execute {
             try {
@@ -82,11 +110,12 @@ class FslPractical15CameraRecognitionController(
                 val loadedRuntime = FslPractical15TfliteRuntime(appContext)
                 val modelParity = loadedRuntime.goldenParity()
                 check(modelParity.status == StandardFslParityStatus.PASS) { modelParity.evidence }
-                if (!running.get()) {
+                if (!running.get() || sessionId.get() != session) {
                     loadedRuntime.close()
                     return@execute
                 }
                 runtime = loadedRuntime
+                domainCapture = DomainCCapture.openIfEnabled(appContext)
                 extractor = StandardFslCameraPipeline.createLandmarkExtractor(
                     appContext,
                     if (initialUseBackCamera) GradingCameraLens.BACK else GradingCameraLens.FRONT,
@@ -117,7 +146,7 @@ class FslPractical15CameraRecognitionController(
                         "maximum_consecutive_missing_pose=${captureConfig.maximumConsecutiveMissingPose} " +
                         "minimum_pose_presence_ratio=0.65 minimum_any_hand_presence_ratio=0.65"
                 )
-                mainExecutor.execute { bindCamera(previewView) }
+                mainExecutor.execute { bindCamera(previewView, session) }
             } catch (error: Throwable) {
                 Log.e(TAG, "FSL_PRACTICAL15_MODEL_LOAD BLOCKED", error)
                 running.set(false)
@@ -135,7 +164,10 @@ class FslPractical15CameraRecognitionController(
     }
 
     fun stop() {
-        if (!running.getAndSet(false)) return
+        resumeAfterStop = false
+        running.set(false)
+        sessionId.incrementAndGet()
+        if (analysisExecutor.isShutdown) return
         mainExecutor.execute { Choreographer.getInstance().removeFrameCallback(displayFrameCallback) }
         mainExecutor.execute { unbindCamera() }
         analysisExecutor.execute {
@@ -147,20 +179,26 @@ class FslPractical15CameraRecognitionController(
     fun release() {
         if (!released.compareAndSet(false, true)) return
         stop()
+        lifecycleOwner.lifecycle.removeObserver(lifecycleObserver)
+        previewHost = null
         analysisExecutor.shutdown()
     }
 
-    private fun bindCamera(previewView: PreviewView) {
-        if (!running.get()) return
+    private fun bindCamera(previewView: PreviewView, session: Long) {
+        if (!running.get() || sessionId.get() != session) return
         val future = ProcessCameraProvider.getInstance(appContext)
         future.addListener({
-            if (!running.get()) return@addListener
+            if (!running.get() || sessionId.get() != session) return@addListener
             try {
                 val provider = future.get()
                 cameraProvider = provider
-                val preview = Preview.Builder().build().also { it.setSurfaceProvider(previewView.surfaceProvider) }
+                val selector = if (initialUseBackCamera) CameraSelector.DEFAULT_BACK_CAMERA else CameraSelector.DEFAULT_FRONT_CAMERA
+                check(provider.hasCamera(selector)) { "Requested camera unavailable; select the other lens explicitly" }
+                val rotation = previewView.display?.rotation ?: android.view.Surface.ROTATION_0
+                val preview = Preview.Builder().setTargetRotation(rotation).build().also { it.setSurfaceProvider(previewView.surfaceProvider) }
                 @Suppress("DEPRECATION")
                 val builder = ImageAnalysis.Builder()
+                    .setTargetRotation(rotation)
                     .setTargetResolution(Size(192, 144))
                     .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                     .setOutputImageFormat(ImageAnalysis.OUTPUT_IMAGE_FORMAT_RGBA_8888)
@@ -176,15 +214,27 @@ class FslPractical15CameraRecognitionController(
                     }
                 )
                 val analysis = builder.build()
-                analysis.setAnalyzer(analysisExecutor) { analyze(it) }
+                analysis.setAnalyzer(analysisExecutor) { image ->
+                    // On activity rotation CameraX recreates this lane. Do not infer with stale display geometry.
+                    mainExecutor.execute { previewMirror = !initialUseBackCamera && previewView.scaleX > 0f }
+                    analyze(image)
+                }
                 imageAnalysis = analysis
                 provider.unbindAll()
-                provider.bindToLifecycle(
+                val camera = provider.bindToLifecycle(
                     lifecycleOwner,
-                    if (initialUseBackCamera) CameraSelector.DEFAULT_BACK_CAMERA else CameraSelector.DEFAULT_FRONT_CAMERA,
+                    selector,
                     preview,
                     analysis
                 )
+                cameraState = camera.cameraInfo.cameraState
+                cameraState?.observe(lifecycleOwner) { state ->
+                    if (state.error != null && running.get() && sessionId.get() == session) {
+                        postState(FslPractical15LiveState(StandardFslTrackingState.HOLD_SIGN_CLEARLY,
+                            collector.state, blockedEvidence = "CAMERA_UNAVAILABLE error_code=${state.error?.code}"))
+                        stop() // Fail closed. Explicit camera restart is available in the existing UI.
+                    }
+                }
                 Log.i(
                     TAG,
                     "FSL_PRACTICAL15_CAMERA_BIND PASS lens=${if (initialUseBackCamera) "BACK" else "FRONT"} " +
@@ -193,6 +243,8 @@ class FslPractical15CameraRecognitionController(
                 postState(FslPractical15LiveState(StandardFslTrackingState.READY, collector.state))
             } catch (error: Throwable) {
                 running.set(false)
+                unbindCamera()
+                analysisExecutor.execute { closeRuntime() }
                 Log.e(TAG, "FSL_PRACTICAL15_CAMERA_BIND BLOCKED", error)
                 postState(
                     FslPractical15LiveState(
@@ -206,14 +258,25 @@ class FslPractical15CameraRecognitionController(
     }
 
     private fun analyze(image: ImageProxy) {
+        val analysisSession = sessionId.get()
         try {
             if (!running.get()) return
             performance.recordAnalyzer()
-            val frame = extractor?.processFrame(image) ?: return
+            val rawFrame = extractor?.processFrame(image) ?: return
+            if (!running.get() || sessionId.get() != analysisSession) return
+            val inverse = android.graphics.Matrix()
+            val transform = if (image.imageInfo.sensorToBufferTransformMatrix.invert(inverse))
+                FloatArray(9).also { inverse.getValues(it) } else null
+            val frame = rawFrame.copy(cameraMetadata = CameraFrameMetadata(
+                image.imageInfo.timestamp, image.imageInfo.rotationDegrees, image.width, image.height,
+                transform, if (initialUseBackCamera) "BACK" else "FRONT", previewMirror
+            ))
+            domainCapture?.frame(frame) // Raw Tasks coordinates, before the collector normalizes them.
             val overlayStarted = SystemClock.elapsedRealtimeNanos()
             val published = onFrame(frame)
             performance.recordOverlay((SystemClock.elapsedRealtimeNanos() - overlayStarted) / 1_000_000.0, published)
             val update = collector.onFrame(frame)
+            domainCapture?.update(update)
             when {
                 update.reason == "SIGN_ENTRY" -> {
                     eventMediaPipeMs.clear()
@@ -271,6 +334,7 @@ class FslPractical15CameraRecognitionController(
             )
             if (decision.accepted) {
                 mainExecutor.execute {
+                    if (!running.get() || sessionId.get() != analysisSession) return@execute
                     onAccepted(
                         StandardFslAcceptedResult(
                             inference.top1.label,
@@ -289,6 +353,8 @@ class FslPractical15CameraRecognitionController(
             performance.logIfDue()
         } catch (error: Throwable) {
             Log.e(TAG, "FSL_PRACTICAL15_LIVE ERROR", error)
+            collector.reset() // Never carry a half-event across a failed detector/inference call.
+            eventMediaPipeMs.clear()
             postState(
                 FslPractical15LiveState(
                     StandardFslTrackingState.HOLD_SIGN_CLEARLY,
@@ -311,6 +377,8 @@ class FslPractical15CameraRecognitionController(
     private fun postState(state: FslPractical15LiveState) = mainExecutor.execute { onState(state) }
 
     private fun unbindCamera() {
+        cameraState?.removeObservers(lifecycleOwner)
+        cameraState = null
         imageAnalysis?.clearAnalyzer()
         imageAnalysis = null
         cameraProvider?.unbindAll()
@@ -323,6 +391,8 @@ class FslPractical15CameraRecognitionController(
         mainExecutor.execute { onFrame(null) }
         runCatching { runtime?.close() }
         runtime = null
+        domainCapture?.close()
+        domainCapture = null
         collector.reset()
         latestLandmarkMetrics = null
         eventMediaPipeMs.clear()

@@ -65,6 +65,7 @@ class MediaPipeLandmarkExtractor(
         var poseFinishedNanos = convertedNanos
         return try {
             val mpImage = BitmapImageBuilder(bitmap).build()
+            try {
             val handResult = handLandmarker.detectForVideo(mpImage, timestampMs)
             handFinishedNanos = SystemClock.elapsedRealtimeNanos()
             val poseResult = poseLandmarker.detectForVideo(mpImage, timestampMs)
@@ -77,6 +78,7 @@ class MediaPipeLandmarkExtractor(
             val hands = handResult.landmarks()
             val handedness = handResult.handedness()
             hands.forEachIndexed { index, landmarks ->
+                val score = handedness.getOrNull(index)?.firstOrNull()?.score()
                 val reportedLabel = handedness
                     .getOrNull(index)
                     ?.firstOrNull()
@@ -91,11 +93,11 @@ class MediaPipeLandmarkExtractor(
                 when (anatomicalSide) {
                     AnatomicalHandSide.LEFT -> {
                         leftHand = landmarks.toLandmarkPoints()
-                        observations.add(handObservation("left", reportedLabel, averageX))
+                        observations.add(handObservation("left", reportedLabel, averageX, score))
                     }
                     AnatomicalHandSide.RIGHT -> {
                         rightHand = landmarks.toLandmarkPoints()
-                        observations.add(handObservation("right", reportedLabel, averageX))
+                        observations.add(handObservation("right", reportedLabel, averageX, score))
                     }
                     null -> if (reportedHandednessPolicy == ReportedHandednessPolicy.DIRECT_REPORTED_SIDES) {
                         // Retain the legacy image-X fallback only for existing mirrored profiles.
@@ -122,6 +124,9 @@ class MediaPipeLandmarkExtractor(
                 sourceWidth = bitmap.width,
                 sourceHeight = bitmap.height
             )
+            } finally {
+                mpImage.close()
+            }
         } finally {
             val finishedNanos = SystemClock.elapsedRealtimeNanos()
             onMetrics(
@@ -154,7 +159,7 @@ class MediaPipeLandmarkExtractor(
         return map { landmark -> LandmarkPoint(landmark.x(), landmark.y(), landmark.z()) }
     }
 
-    private fun handObservation(slot: String, label: String, averageX: Float): HandObservation {
+    private fun handObservation(slot: String, label: String, averageX: Float, score: Float? = null): HandObservation {
         val resolvedAnatomy = when (slot) {
             "left" -> "anatomical_left_resolved"
             "right" -> "anatomical_right_resolved"
@@ -165,7 +170,8 @@ class MediaPipeLandmarkExtractor(
             mediaPipeHandedness = label.ifBlank { "unknown" },
             averageX = averageX,
             physicalSideEstimate =
-                "$resolvedAnatomy/policy=$reportedHandednessPolicy/analysis_mirrored=$mirrorCameraFrame"
+                "$resolvedAnatomy/policy=$reportedHandednessPolicy/analysis_mirrored=$mirrorCameraFrame",
+            handednessScore = score
         )
     }
 

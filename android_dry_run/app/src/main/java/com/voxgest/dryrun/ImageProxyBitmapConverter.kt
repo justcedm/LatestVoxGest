@@ -45,7 +45,14 @@ object ImageProxyBitmapConverter {
         val bitmap = Bitmap.createBitmap(imageProxy.width, imageProxy.height, Bitmap.Config.ARGB_8888)
         val buffer = imageProxy.planes[0].buffer.duplicate()
         buffer.rewind()
-        bitmap.copyPixelsFromBuffer(buffer)
+        val plane = imageProxy.planes[0]
+        if (plane.pixelStride == 4 && plane.rowStride == imageProxy.width * 4) {
+            bitmap.copyPixelsFromBuffer(buffer)
+        } else {
+            // CameraX permits row padding. Copy RGBA bytes without assuming packed rows.
+            val packed = RgbaPlanePacking.pack(buffer, imageProxy.width, imageProxy.height, plane.rowStride, plane.pixelStride)
+            bitmap.copyPixelsFromBuffer(packed)
+        }
         return bitmap
     }
 
