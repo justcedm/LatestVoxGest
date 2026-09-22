@@ -1,5 +1,49 @@
 # VoxGest Live Handoff
 
+## Current: installed anatomy correction, physical recheck pending - 2026-09-22
+
+TIMESTAMP=2026-09-22T13:30:00+08:00
+BRANCH=recognition/fsl-dual-dataset-reset-v1
+SOURCE_BASE_COMMIT=ab6a7c508fc6c8cdaae319a2a365ee8108f764c6
+COMMIT=Resolve exact correction checkpoint with git log for this file.
+HANDOFF_UPDATE_COMMIT=This checkpoint; BRANCH_HEAD=base plus scoped correction.
+
+CURRENT_GOAL=Verify corrected hand slots, then five controlled HELLO trials and
+three consecutive correct accepts under unchanged model/gates.
+
+WORK_COMPLETED=Owner confirmed both inverted slots and unintended CASH .99757093
+false accept. Added one Practical15-specific anatomical boundary, nine tests,
+fullscreen-only FILL_CENTER and isolated debug opt-in LIVE_STREAM wiring. Built,
+installed and verified exact installed APK hash. Runtime Practical15/ordered labels,
+feature golden and TFLite golden parity PASS. Front camera analyzing normally.
+
+SAMSUNG_STATUS=AUTHORIZED; UPDATED_APK_INSTALLED; STARTUP_PARITY_PASS;
+PHYSICAL_ANATOMY_RECHECK_REQUESTED. VIDEO_DEFAULT active; experiment inactive.
+METRICS=129 tests/31 suites, zero failures/errors. Analyzer samples9.909-11.701fps.
+Controlled HELLO0/5, milestone0/3; no post-fix controlled result yet.
+
+FAILURES=Earlier unintended CASH is a confirmed false accept, not HELLO success.
+Settings ACTIVE LAUNCHER card describes the packaged default, not debug override;
+runtime ACTIVE_PROFILE/model-load logs prove Practical15. No UI redesign made.
+CURRENT_HYPOTHESIS=Removing the device-proven incorrect side swap restores anatomy;
+physical confirmation pending. No model-failure or retraining conclusion yet.
+
+NEXT_ACTION=Owner LEFT-only2s -> neutral3s -> RIGHT-only2s -> neutral10s; save logs
+and observations, then five individually marked HELLO trials with project reference.
+EVIDENCE_PATHS=reports/device_tests/samsung/anatomy_temporal_fix_20260921/ (ignored).
+See fsl_dual_dataset_reset_v1/ANATOMY_TEMPORAL_FIX_20260922.md.
+
+FILES_CHANGED=Practical15TasksAnatomy/tests; opt-in MediaPipe extractor; Practical15
+controller; isolated adapter; fullscreen scale; .gitignore; physical reports/handoff.
+COMMANDS_TESTS=testDebugUnitTest/assembleDebug PASS; install/hash PASS; feature
+parity maxerror0; TFLite parity maxerror1.1920929E-7; remote/base parity verified.
+DATASET_STATUS=UNCHANGED. TRAINING_STATUS=NO_RETRAINING.
+DO_NOT_MODIFY=Models/labels/gates, StandardFSL105/Mapua14/demo10/OneHand162/Avatar,
+mini-camera layout. Analysis unmirrored; LIVE_STREAM non-default. Never access the
+retired workspace. Physical recognition success remains UNPROVEN.
+
+## Archived physical authority before owner confirmation
+
 ## Current authority: physical Samsung HELLO qualification — 2026-09-21
 
 TIMESTAMP=2026-09-21T20:22:00+08:00

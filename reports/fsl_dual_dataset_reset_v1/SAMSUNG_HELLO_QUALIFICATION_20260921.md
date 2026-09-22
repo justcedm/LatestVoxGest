@@ -1,5 +1,9 @@
 # Samsung HELLO qualification — 2026-09-21
 
+Historical checkpoint; superseded by [installed anatomy correction](ANATOMY_TEMPORAL_FIX_20260922.md).
+Owner subsequently confirmed BOTH slot inversions and that CASH .99757093 was an
+unintended false acceptance. Pending-confirmation statements below are historical.
+
 Status: physical startup verified; handedness mismatch found before controlled HELLO.
 Installed source checkpoint: `2ecd30a128ed90024481f471fcd5c321bf39dd96`.
 Branch: `recognition/fsl-dual-dataset-reset-v1`. Clean exact remote parity before work.

@@ -16,6 +16,7 @@ class MediaPipeLandmarkExtractor(
     private val mirrorCameraFrame: Boolean,
     private val reportedHandednessPolicy: ReportedHandednessPolicy =
         ReportedHandednessPolicy.DIRECT_REPORTED_SIDES,
+    private val practical15AnatomicalSlots: Boolean = false,
     private val onMetrics: (LandmarkExtractionMetrics) -> Unit = {}
 ) : LandmarkExtractor {
     private val appContext = context.applicationContext
@@ -24,6 +25,7 @@ class MediaPipeLandmarkExtractor(
     private var lastTimestampMs: Long = 0L
 
     init {
+        require(!practical15AnatomicalSlots || !mirrorCameraFrame)
         val handOptions = HandLandmarker.HandLandmarkerOptions.builder()
             .setBaseOptions(
                 BaseOptions.builder()
@@ -71,6 +73,15 @@ class MediaPipeLandmarkExtractor(
             val poseResult = poseLandmarker.detectForVideo(mpImage, timestampMs)
             poseFinishedNanos = SystemClock.elapsedRealtimeNanos()
             val poseLandmarks = poseResult.landmarks().firstOrNull()?.toLandmarkPoints()
+
+            if (practical15AnatomicalSlots) {
+                return Practical15TasksAnatomy.frame(poseLandmarks,
+                    handResult.landmarks().mapIndexed { index, points ->
+                        val category = handResult.handedness().getOrNull(index)?.firstOrNull()
+                        Practical15TasksAnatomy.Detection(category?.categoryName().orEmpty(),
+                            points.toLandmarkPoints(), category?.score())
+                    }, timestampMs, bitmap.width, bitmap.height)
+            }
 
             var leftHand: List<LandmarkPoint>? = null
             var rightHand: List<LandmarkPoint>? = null

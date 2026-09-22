@@ -1461,6 +1461,8 @@ private fun RecognitionAreaCard(
             AndroidView(
                 factory = { previewView },
                 update = { view ->
+                    // Only fullscreen changes to fill. The embedded component keeps its exact layout/fit.
+                    view.scaleType = if (expanded) PreviewView.ScaleType.FILL_CENTER else PreviewView.ScaleType.FIT_CENTER
                     // Explicit opt-out of CameraX's native front preview mirror only.
                     view.scaleX = if (!mirrorFrontPreview && preferredCameraLens == PreferredCameraLens.FRONT) -1f else 1f
                 },
@@ -2023,7 +2025,7 @@ private fun SkeletonFeatureOverlay(
                     displayHeight = size.height,
                     analysisMirrored = analysisMirrored,
                     previewMirrored = previewMirrored,
-                    fitCenter = true
+                    fitCenter = previewView.scaleType == PreviewView.ScaleType.FIT_CENTER
                 )
                 return Offset(mapped.x, mapped.y)
             }

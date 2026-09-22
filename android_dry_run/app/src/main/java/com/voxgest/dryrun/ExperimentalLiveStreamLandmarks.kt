@@ -15,7 +15,7 @@ import com.google.mediapipe.tasks.vision.poselandmarker.PoseLandmarkerResult
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
-/** DEBUG laboratory adapter. Not registered in any profile or stable camera controller. */
+/** DEBUG laboratory adapter. Practical15 must explicitly opt in; never the default. */
 class ExperimentalLiveStreamLandmarks(
     context: Context,
     private val onFrame: (LandmarkFrame) -> Unit,
@@ -24,7 +24,7 @@ class ExperimentalLiveStreamLandmarks(
 ) : AutoCloseable {
     data class Metrics(val timestamp: Long, val handMs: Long, val poseMs: Long,
         val pairMs: Long, val replacedFrames: Int)
-    private data class Input(val timestamp: Long, val bitmap: Bitmap)
+    private data class Input(val timestamp: Long, val bitmap: Bitmap, val metadata: CameraFrameMetadata?)
     private data class Active(val input: Input, val image: MPImage, val started: Long,
         var handMs: Long = 0, var poseMs: Long = 0)
     private val worker = Executors.newSingleThreadScheduledExecutor()
@@ -75,14 +75,14 @@ class ExperimentalLiveStreamLandmarks(
     }
 
     /** Caller owns/closes ImageProxy after return. Only an owned upright bitmap crosses threads. */
-    fun submit(image: ImageProxy): Boolean = synchronized(lock) {
+    fun submit(image: ImageProxy, metadata: CameraFrameMetadata? = null): Boolean = synchronized(lock) {
         if (closed) return false
         val timestamp = image.imageInfo.timestamp / 1_000_000L
         if (timestamp <= lastTimestamp) { replaced++; return false }
         lastTimestamp = timestamp
         val bitmap = ImageProxyBitmapConverter.toUprightBitmap(image, false)
         latest?.let { it.bitmap.recycle(); replaced++ } // Never submitted to Tasks.
-        latest = Input(timestamp, bitmap)
+        latest = Input(timestamp, bitmap, metadata)
         if (!pumpQueued) { pumpQueued = true; dispatch { pump() } }
         true
     }
@@ -109,28 +109,16 @@ class ExperimentalLiveStreamLandmarks(
         check(paired.timestamp == owned.input.timestamp)
         fun points(values: List<com.google.mediapipe.tasks.components.containers.NormalizedLandmark>) =
             values.map { LandmarkPoint(it.x(), it.y(), it.z()) }
-        var left: List<LandmarkPoint>? = null
-        var right: List<LandmarkPoint>? = null
-        val observations = mutableListOf<HandObservation>()
-        val policy = ReportedHandednessPolicy.SWAP_REPORTED_SIDES_FOR_UNMIRRORED_INPUT
-        paired.hand.landmarks().forEachIndexed { index, landmarks ->
+        val detections = paired.hand.landmarks().mapIndexed { index, landmarks ->
             val category = paired.hand.handedness().getOrNull(index)?.firstOrNull()
-            val label = category?.categoryName().orEmpty()
-            val side = AnatomicalHandedness.resolve(label, policy)
-            when (side) {
-                AnatomicalHandSide.LEFT -> left = points(landmarks)
-                AnatomicalHandSide.RIGHT -> right = points(landmarks)
-                null -> Unit // Match the stable unmirrored policy: never infer anatomy from image X.
-            }
-            observations += HandObservation(side?.name?.lowercase() ?: "unassigned", label.lowercase(),
-                landmarks.map { it.x() }.average().toFloat(), "policy=$policy/analysis_mirrored=false", category?.score())
+            Practical15TasksAnatomy.Detection(category?.categoryName().orEmpty(), points(landmarks), category?.score())
         }
-        val frame = LandmarkFrame(paired.pose.landmarks().firstOrNull()?.let(::points), left, right,
-            paired.timestamp, observations, owned.input.bitmap.width, owned.input.bitmap.height)
+        val frame = Practical15TasksAnatomy.frame(paired.pose.landmarks().firstOrNull()?.let(::points), detections,
+            paired.timestamp, owned.input.bitmap.width, owned.input.bitmap.height).copy(cameraMetadata = owned.input.metadata)
         try {
-            onFrame(frame)
             onMetrics(Metrics(paired.timestamp, owned.handMs, owned.poseMs,
                 SystemClock.elapsedRealtime() - owned.started, synchronized(lock) { replaced }))
+            onFrame(frame)
         } finally {
             // Both Tasks returned results. Release MPImage's ref; do not manually recycle submitted pixels.
             owned.image.close()

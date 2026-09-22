@@ -145,6 +145,7 @@ temp/
 # Local calibration/output data
 domain_c_captures/
 domain_c_capture.enabled
+practical15_live_stream.enabled
 /reports/device_tests/samsung/
 calibration_static/
 static_calibration/

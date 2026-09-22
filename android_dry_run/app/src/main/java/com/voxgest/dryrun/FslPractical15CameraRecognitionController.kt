@@ -61,6 +61,9 @@ class FslPractical15CameraRecognitionController(
     @Volatile private var imageAnalysis: ImageAnalysis? = null
     private var cameraState: androidx.lifecycle.LiveData<androidx.camera.core.CameraState>? = null
     @Volatile private var extractor: LandmarkExtractor? = null
+    @Volatile private var experimentalPipeline: ExperimentalLiveStreamLandmarks? = null
+    private var adapterName = "VIDEO_DEFAULT"
+    private var lastAnatomyLogMs = 0L
     @Volatile private var runtime: FslPractical15TfliteRuntime? = null
     @Volatile private var latestLandmarkMetrics: LandmarkExtractionMetrics? = null
     @Volatile private var lastEventLog = ""
@@ -101,7 +104,6 @@ class FslPractical15CameraRecognitionController(
             lifecycleOwner.lifecycle.addObserver(lifecycleObserver)
         }
         previewMirror = !initialUseBackCamera && previewView.scaleX > 0f
-        previewView.scaleType = PreviewView.ScaleType.FIT_CENTER
         postState(FslPractical15LiveState(StandardFslTrackingState.HOLD_SIGN_CLEARLY, collector.state))
         analysisExecutor.execute {
             try {
@@ -116,14 +118,43 @@ class FslPractical15CameraRecognitionController(
                 }
                 runtime = loadedRuntime
                 domainCapture = DomainCCapture.openIfEnabled(appContext)
-                extractor = StandardFslCameraPipeline.createLandmarkExtractor(
-                    appContext,
-                    if (initialUseBackCamera) GradingCameraLens.BACK else GradingCameraLens.FRONT,
-                    { metrics ->
-                        latestLandmarkMetrics = metrics
-                        performance.recordLandmarks(metrics)
-                    }
-                )
+                val liveStreamEnabled = BuildConfig.DEBUG &&
+                    java.io.File(appContext.filesDir, "practical15_live_stream.enabled").isFile
+                adapterName = if (liveStreamEnabled) "LIVE_STREAM_EXPERIMENT" else "VIDEO_DEFAULT"
+                if (liveStreamEnabled) {
+                    experimentalPipeline = ExperimentalLiveStreamLandmarks(appContext,
+                        onFrame = { frame ->
+                            // Wait for the serial consumer before admitting another pair: bounded delivery.
+                            if (running.get() && sessionId.get() == session && !analysisExecutor.isShutdown) {
+                                analysisExecutor.submit { handleFrame(frame, session) }
+                                    .get(2, java.util.concurrent.TimeUnit.SECONDS)
+                            }
+                        },
+                        onMetrics = { metrics ->
+                            if (!analysisExecutor.isShutdown) analysisExecutor.execute {
+                                val timing = LandmarkExtractionMetrics(metrics.timestamp * 1_000_000L,
+                                    null, 0.0, metrics.handMs.toDouble(), metrics.poseMs.toDouble(), metrics.pairMs.toDouble())
+                                latestLandmarkMetrics = timing
+                                performance.recordLandmarks(timing)
+                                Log.i(TAG, "FSL_PRACTICAL15_ASYNC timestamp=${metrics.timestamp} " +
+                                    "pair_ms=${metrics.pairMs} dropped_latest=${metrics.replacedFrames}")
+                            }
+                        },
+                        onError = { reason -> mainExecutor.execute {
+                            Log.e(TAG, "FSL_PRACTICAL15_ASYNC BLOCKED reason=$reason")
+                            postState(FslPractical15LiveState(StandardFslTrackingState.HOLD_SIGN_CLEARLY,
+                                collector.state, blockedEvidence = reason))
+                            stop()
+                        } })
+                } else {
+                    extractor = MediaPipeLandmarkExtractor(appContext,
+                        mirrorCameraFrame = Practical15TasksAnatomy.ANALYSIS_MIRRORED,
+                        practical15AnatomicalSlots = true,
+                        onMetrics = { metrics -> latestLandmarkMetrics = metrics; performance.recordLandmarks(metrics) })
+                }
+                Log.i(TAG, "FSL_PRACTICAL15_ADAPTER adapter=$adapterName default=VIDEO_DEFAULT " +
+                    "handedness=${Practical15TasksAnatomy.POLICY} temporal=complete_event_resample48")
+                Log.i(TAG, "FSL_PRACTICAL15_LABELS ${loadedRuntime.profile.labels.joinToString(",")}")
                 Log.i(TAG, "${featureParity.marker} ${featureParity.status} ${featureParity.evidence}")
                 Log.i(TAG, "${modelParity.marker} ${modelParity.status} ${modelParity.evidence}")
                 Log.i(
@@ -262,15 +293,34 @@ class FslPractical15CameraRecognitionController(
         try {
             if (!running.get()) return
             performance.recordAnalyzer()
-            val rawFrame = extractor?.processFrame(image) ?: return
-            if (!running.get() || sessionId.get() != analysisSession) return
             val inverse = android.graphics.Matrix()
             val transform = if (image.imageInfo.sensorToBufferTransformMatrix.invert(inverse))
                 FloatArray(9).also { inverse.getValues(it) } else null
-            val frame = rawFrame.copy(cameraMetadata = CameraFrameMetadata(
+            val metadata = CameraFrameMetadata(
                 image.imageInfo.timestamp, image.imageInfo.rotationDegrees, image.width, image.height,
                 transform, if (initialUseBackCamera) "BACK" else "FRONT", previewMirror
-            ))
+            )
+            experimentalPipeline?.let { it.submit(image, metadata); return }
+            val rawFrame = extractor?.processFrame(image) ?: return
+            handleFrame(rawFrame.copy(cameraMetadata = metadata), analysisSession)
+        } catch (error: Throwable) {
+            frameError(error)
+        } finally {
+            image.close()
+        }
+    }
+
+    /** Both adapters feed the very same frozen collector, normalizer, model and gate. */
+    private fun handleFrame(frame: LandmarkFrame, analysisSession: Long) {
+        try {
+            if (!running.get() || sessionId.get() != analysisSession) return
+            if (frame.timestampMs - lastAnatomyLogMs >= 1000) {
+                lastAnatomyLogMs = frame.timestampMs
+                Log.i(TAG, "FSL_PRACTICAL15_ANATOMY adapter=$adapterName timestamp=${frame.timestampMs} " +
+                    "pose=${frame.hasPose} left=${frame.hasLeftHand} right=${frame.hasRightHand} " +
+                    "assignments=${frame.handObservations.joinToString { "${it.mediaPipeHandedness}->${it.slot}:${it.handednessScore}" }} " +
+                    "analysis_mirrored=false")
+            }
             domainCapture?.frame(frame) // Raw Tasks coordinates, before the collector normalizes them.
             val overlayStarted = SystemClock.elapsedRealtimeNanos()
             val published = onFrame(frame)
@@ -310,11 +360,14 @@ class FslPractical15CameraRecognitionController(
             val mediaPipeP95Ms = percentile(eventMediaPipeMs, 0.95)
             Log.i(
                 TAG,
-                "FSL_PRACTICAL15_EVENT event=${candidate.eventNumber} completion=NEUTRAL_RELEASE " +
+                "FSL_PRACTICAL15_EVENT event=${candidate.eventNumber} adapter=$adapterName completion=NEUTRAL_RELEASE " +
                     "event_duration_ms=${candidate.quality.endTimestampMs - candidate.quality.startTimestampMs} " +
                     "captured_frames=${candidate.quality.rawFrameCount} resample=exact48 " +
                     "pose=${candidate.quality.posePresentFrames} left=${candidate.quality.leftHandPresentFrames} " +
                     "right=${candidate.quality.rightHandPresentFrames} " +
+                    "any_hand=${candidate.quality.anyHandPresentFrames} " +
+                    "effective_window_seconds=${(candidate.quality.endTimestampMs - candidate.quality.startTimestampMs) / 1000.0} " +
+                    "event_sample_fps=${(candidate.quality.rawFrameCount - 1) * 1000.0 / (candidate.quality.endTimestampMs - candidate.quality.startTimestampMs).coerceAtLeast(1)} " +
                     "trajectory_motion_mean_l2=${candidate.quality.trajectoryMotionMeanL2} " +
                     "top5=${inference.top5.joinToString(prefix = "[", postfix = "]") { "${it.label}:${it.probability}" }} " +
                     "raw_top1=${inference.top1.label} probability=${inference.top1.probability} margin=${inference.margin} " +
@@ -352,6 +405,11 @@ class FslPractical15CameraRecognitionController(
             eventMediaPipeMs.clear()
             performance.logIfDue()
         } catch (error: Throwable) {
+            frameError(error)
+        }
+    }
+
+    private fun frameError(error: Throwable) {
             Log.e(TAG, "FSL_PRACTICAL15_LIVE ERROR", error)
             collector.reset() // Never carry a half-event across a failed detector/inference call.
             eventMediaPipeMs.clear()
@@ -362,9 +420,6 @@ class FslPractical15CameraRecognitionController(
                     blockedEvidence = "${error.javaClass.simpleName}: ${error.message}"
                 )
             )
-        } finally {
-            image.close()
-        }
     }
 
     private fun logCaptureTransition(update: FslPractical15CaptureUpdate) {
@@ -386,6 +441,8 @@ class FslPractical15CameraRecognitionController(
     }
 
     private fun closeRuntime() {
+        experimentalPipeline?.close()
+        experimentalPipeline = null
         runCatching { extractor?.close() }
         extractor = null
         mainExecutor.execute { onFrame(null) }
@@ -397,6 +454,7 @@ class FslPractical15CameraRecognitionController(
         latestLandmarkMetrics = null
         eventMediaPipeMs.clear()
         lastEventLog = ""
+        lastAnatomyLogMs = 0L
     }
 
     private fun percentile(values: List<Double>, fraction: Double): String {
