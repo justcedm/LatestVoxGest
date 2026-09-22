@@ -1,5 +1,32 @@
 # VoxGest Live Handoff
 
+## Current: canonical D migration, Stages0-2 only - 2026-09-22
+
+BRANCH=recognition/fsl105-mapua-unified-tasks-v1
+SOURCE_BASE_COMMIT=5ca87048592a0d4cdd880afa6a03a8f5c62e28fb
+COMMIT=Resolve current migration checkpoint through git log for this file.
+CURRENT_GOAL=Organize active versus historical/ASL/unvalidated storage by copy and
+verification. Do not start ML in this session; reopen Codex from the new D repository
+after migration. The new user authority explicitly permits D and supersedes earlier
+historical prohibitions on D access. Original C worktree stays in place.
+
+STAGE1=Fresh clone/branch and canonical layout ready. Both published datasets copied
+with exact hashes;4361 file readability checks passed, including all3237videos.
+New-location Android tests/build PASS129/31. Required ignored Avatar preview restored
+byte-identically, separately manifested. No app source/model/gate behavior change.
+STAGE2=Archive/quarantine verification ongoing; current report:
+reports/storage_migration/STAGE1_20260922.md. Known ASL excluded from FSL; mixed legacy
+recordings labelled unvalidated, not assumed ASL. Rollback models remain immutable.
+
+EXTERNAL_CHANGE=Owner confirmed Downloads cleanup/movement during run;34 planned
+entries missing before copy. Record unresolved/excluded, never as verified retirement.
+DELETIONS_BY_AGENT=0. TRAINING=NOT_STARTED. LIVE_TESTING=NOT_RESUMED.
+NEXT_ACTION=Finish remaining copy/readability/parity evidence, produce exact retirement
+manifest with source-process/approval gates, push only safe migration branch changes,
+then stop for user to reopen D:\VoxGest\repository\LatestVoxGest before ML stages.
+
+## Archived Samsung wrap-up authority
+
 ## Current: Samsung testing stopped by owner - 2026-09-22
 
 TIMESTAMP=2026-09-22T13:41:00+08:00
