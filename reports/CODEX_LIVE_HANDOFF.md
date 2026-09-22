@@ -1,5 +1,34 @@
 # VoxGest Live Handoff
 
+## Current: Samsung testing stopped by owner - 2026-09-22
+
+TIMESTAMP=2026-09-22T13:41:00+08:00
+BRANCH=recognition/fsl-dual-dataset-reset-v1
+SOURCE_BASE_COMMIT=d010246813a3f1815be64c7333ea7ba7b31cf9d7
+COMMIT=Resolve wrap-up documentation checkpoint using git log for this file.
+HANDOFF_UPDATE_COMMIT=This documentation checkpoint. BRANCH_HEAD=base plus wrap-up.
+CURRENT_GOAL=STOP physical testing; provide factual summary for owner/ChatGPT review.
+WORK_COMPLETED=Final filtered runtime log saved; diagnostic app force-stopped with
+returncode0. No new code/model/gate changes. Full review in
+fsl_dual_dataset_reset_v1/SAMSUNG_TEST_WRAPUP_20260922.md.
+SAMSUNG_STATUS=AUTHORIZED_AT_WRAPUP; APP_STOPPED; NOT_PHYSICALLY_QUALIFIED.
+METRICS=129 passing JVM tests; installed/startup parity PASS; accepted controlled
+HELLO success NOT ESTABLISHED. Formal positive/negative accuracy and p95 unavailable.
+FAILURES=Confirmed pre-fix anatomical inversion and unintended CASH false accept;
+post-fix unscored wrong/unverified outputs, timeouts, incomplete events. One raw
+HELLO .9134132 rejected LOW_CONFIDENCE, with expected gesture unconfirmed.
+CURRENT_HYPOTHESIS=Multiple layers remain unresolved; raw HELLO shows inference is
+not universally absent but does not prove classifier correctness or gate suitability.
+NEXT_ACTION=Wait for owner/ChatGPT review; do not request more signs or resume tests
+automatically. Owner said CHECK DONE but did not explicitly confirm corrected L/R.
+FILES_CHANGED=This handoff; SAMSUNG_TEST_WRAPUP_20260922.md.
+COMMANDS_TESTS=Final log collection and am force-stop returncode0; no new build needed.
+DATASET_STATUS=UNCHANGED. TRAINING_STATUS=NO_RETRAINING.
+DO_NOT_MODIFY=Frozen models/labels/gates and protected profiles/UI/Avatar. Analysis
+unmirrored; LIVE_STREAM remains non-default and untested. No retired workspace access.
+
+## Archived installed correction checkpoint
+
 ## Current: installed anatomy correction, physical recheck pending - 2026-09-22
 
 TIMESTAMP=2026-09-22T13:30:00+08:00
