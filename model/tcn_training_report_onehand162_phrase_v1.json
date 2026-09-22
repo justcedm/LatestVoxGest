@@ -20,7 +20,7 @@
     "YOUR",
     "NAME",
     "MY",
-    "NOTHING"
+    "NSAC"
   ],
   "class_stats": {
     "WHAT": {
@@ -51,7 +51,7 @@
       "preferred": 120,
       "used": true
     },
-    "NOTHING": {
+    "NSAC": {
       "sequences": 380,
       "groups": 380,
       "minimum": 180,
@@ -64,14 +64,14 @@
     "YOUR": 120,
     "NAME": 120,
     "MY": 80,
-    "NOTHING": 180
+    "NSAC": 180
   },
   "preferred": {
     "WHAT": 170,
     "YOUR": 170,
     "NAME": 170,
     "MY": 120,
-    "NOTHING": 240
+    "NSAC": 240
   },
   "train_sequences": 1136,
   "val_sequences": 284,
@@ -124,7 +124,7 @@
       "total": 32,
       "accuracy": 100.0
     },
-    "NOTHING": {
+    "NSAC": {
       "correct": 76,
       "total": 76,
       "accuracy": 100.0
@@ -135,7 +135,7 @@
     "YOUR": "-",
     "NAME": "MY",
     "MY": "-",
-    "NOTHING": "-"
+    "NSAC": "-"
   },
   "skipped_wrong_shape": 0,
   "unreadable_files": [],

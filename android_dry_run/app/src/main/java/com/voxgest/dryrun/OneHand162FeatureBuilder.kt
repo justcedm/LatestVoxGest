@@ -1,9 +1,30 @@
 package com.voxgest.dryrun
 
+import android.util.Log
+import kotlin.math.sqrt
+
 class OneHand162FeatureBuilder(private val profile: RecognitionProfile) {
     val featureSize: Int = LandmarkSequenceBuffer.ONEHAND162_FEATURE_SIZE
 
     fun build(frame: LandmarkFrame): FloatArray? {
+        val parts = buildParts(frame) ?: return null
+        return buildOutput162(parts)
+    }
+
+    fun buildWithDelta(current: LandmarkFrame, previous: LandmarkFrame?): FloatArray? {
+        val currentParts = buildParts(current) ?: return null
+        val output162 = buildOutput162(currentParts)
+        val output225 = output162.copyOf(LandmarkSequenceBuffer.FULLSIGN_WITH_DELTA_FEATURE_SIZE)
+        if (previous == null) return output225
+
+        val previousParts = buildParts(previous) ?: return null
+        for (index in 0 until HAND_SIZE) {
+            output225[POSE_SIZE + HAND_SIZE + index] = currentParts.handValues[index] - previousParts.handValues[index]
+        }
+        return output225
+    }
+
+    private fun buildParts(frame: LandmarkFrame): FeatureParts? {
         val pose = frame.poseLandmarks ?: return null
         if (pose.size != POSE_LANDMARK_COUNT) return null
 
@@ -34,13 +55,23 @@ class OneHand162FeatureBuilder(private val profile: RecognitionProfile) {
             handValues[out + 1] = selectedHand[index].y - nose.y
             handValues[out + 2] = selectedHand[index].z - nose.z
         }
+        val scale = normalizeHandByWristToMcp(handValues)
 
+        return FeatureParts(poseValues, handValues, scale)
+    }
+
+    private fun buildOutput162(parts: FeatureParts): FloatArray {
         return FloatArray(featureSize).also { output ->
-            System.arraycopy(poseValues, 0, output, 0, POSE_SIZE)
-            System.arraycopy(handValues, 0, output, POSE_SIZE, HAND_SIZE)
+            System.arraycopy(parts.poseValues, 0, output, 0, POSE_SIZE)
+            System.arraycopy(parts.handValues, 0, output, POSE_SIZE, HAND_SIZE)
             output[0] = 0f
             output[1] = 0f
             output[2] = 0f
+            dampenZValues(output)
+            Log.i(
+                FEATURE_TAG,
+                "scale=${parts.scale} wrist_mcp_normalized=${parts.scale > MIN_WRIST_MCP_SCALE} z_damped=true"
+            )
         }
     }
 
@@ -94,11 +125,41 @@ class OneHand162FeatureBuilder(private val profile: RecognitionProfile) {
         }
     }
 
+    private fun normalizeHandByWristToMcp(handValues: FloatArray): Float {
+        val dx = handValues[0] - handValues[27]
+        val dy = handValues[1] - handValues[28]
+        val dz = handValues[2] - handValues[29]
+        val scale = sqrt(dx * dx + dy * dy + dz * dz)
+        if (scale > MIN_WRIST_MCP_SCALE) {
+            for (index in handValues.indices) {
+                handValues[index] /= scale
+            }
+        }
+        return scale
+    }
+
+    private fun dampenZValues(output: FloatArray) {
+        var index = 2
+        while (index < output.size) {
+            output[index] *= Z_DAMPING
+            index += 3
+        }
+    }
+
+    private data class FeatureParts(
+        val poseValues: FloatArray,
+        val handValues: FloatArray,
+        val scale: Float
+    )
+
     companion object {
+        private const val FEATURE_TAG = "VoxGestFeature"
         private const val POSE_LANDMARK_COUNT = 33
         private const val HAND_LANDMARK_COUNT = 21
         private const val POSE_SIZE = 99
         private const val HAND_SIZE = 63
+        private const val MIN_WRIST_MCP_SCALE = 0.001f
+        private const val Z_DAMPING = 0.3f
         private val HEAD_LANDMARKS = (0..10).toSet()
         private val TORSO_LANDMARKS = setOf(11, 12, 23, 24)
         private val LEFT_ARM_LANDMARKS = setOf(11, 13, 15, 17, 19, 21)

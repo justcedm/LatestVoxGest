@@ -17,7 +17,7 @@
     "STUDENT",
     "WHERE",
     "LIVE",
-    "NOTHING"
+    "NSAC"
   ],
   "zip_files_found": [
     {
@@ -104,7 +104,7 @@
       "STUDENT",
       "WHERE",
       "LIVE",
-      "NOTHING"
+      "NSAC"
     ],
     "status_counts": {
       "copied": 1473,
@@ -124,7 +124,7 @@
       "STUDENT": 92,
       "WHERE": 70,
       "LIVE": 127,
-      "NOTHING": 592
+      "NSAC": 592
     },
     "copied_total": 1473,
     "duplicate_count": 0,
@@ -144,7 +144,7 @@
     "STUDENT": 272,
     "WHERE": 250,
     "LIVE": 307,
-    "NOTHING": 892
+    "NSAC": 892
   },
   "per_signer": {
     "ANASTACIA": 1509,
@@ -172,7 +172,7 @@
       "STUDENT": 104,
       "WHERE": 95,
       "LIVE": 114,
-      "NOTHING": 537
+      "NSAC": 537
     },
     "EARLE": {
       "WHAT": 60,
@@ -184,7 +184,7 @@
       "STUDENT": 60,
       "WHERE": 60,
       "LIVE": 60,
-      "NOTHING": 100
+      "NSAC": 100
     },
     "MARIELLA": {
       "WHAT": 108,
@@ -196,7 +196,7 @@
       "STUDENT": 108,
       "WHERE": 95,
       "LIVE": 133,
-      "NOTHING": 255
+      "NSAC": 255
     }
   },
   "per_signer_per_source": {
@@ -276,7 +276,7 @@
       "missing": 0,
       "ready": true
     },
-    "NOTHING": {
+    "NSAC": {
       "count": 892,
       "minimum": 240,
       "missing": 0,
@@ -338,7 +338,7 @@
       "missing": 0,
       "ready": true
     },
-    "NOTHING": {
+    "NSAC": {
       "count": 892,
       "preferred": 300,
       "missing": 0,

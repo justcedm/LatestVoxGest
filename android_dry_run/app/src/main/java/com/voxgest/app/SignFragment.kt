@@ -236,7 +236,7 @@ class SignFragment : Fragment(R.layout.fragment_sign) {
 
     private fun acceptPrediction(result: LstmClassificationResult) {
         val label = result.label.uppercase(Locale.US)
-        if (label == "NOTHING" || label.isBlank()) return
+        if (label == "NSAC" || label.isBlank()) return
         currentWordText.text = label
         sentenceTokens.add(label)
         sentenceText.text = sentenceTokens.joinToString(" ")
@@ -425,7 +425,7 @@ class SignFragment : Fragment(R.layout.fragment_sign) {
 
     private fun speakSentence() {
         val sentence = sentenceText.text.toString().trim()
-        if (sentence.isBlank() || sentence.equals("NOTHING", ignoreCase = true)) return
+        if (sentence.isBlank() || sentence.equals("NSAC", ignoreCase = true)) return
         speechController?.speak(sentence)
         VoxHistoryStore.add(HistoryType.Sign, sentence, getString(R.string.history_spoken))
     }

@@ -28,7 +28,7 @@
 | YOUR | 310 |
 | NAME | 310 |
 | MY | 160 |
-| NOTHING | 380 |
+| NSAC | 380 |
 
 ## fullsign225_phrase_v1
 
@@ -48,4 +48,4 @@
 | STUDENT | 272 |
 | WHERE | 250 |
 | LIVE | 307 |
-| NOTHING | 892 |
+| NSAC | 892 |

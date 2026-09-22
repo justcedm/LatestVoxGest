@@ -63,9 +63,9 @@ class PhraseBuilderTests(unittest.TestCase):
         result = feed(builder, ["YOU", "LIVE", "WHERE"])
         self.assertEqual(result.finalized_text, "Where do you live?")
 
-    def test_nothing_tokens_are_ignored(self):
+    def test_nsac_tokens_are_ignored(self):
         builder = PhraseBuilder()
-        result = feed(builder, ["WHAT", "NOTHING", "YOUR", "NOTHING", "NAME"])
+        result = feed(builder, ["WHAT", "NSAC", "YOUR", "NSAC", "NAME"])
         self.assertEqual(result.finalized_text, "What is your name?")
 
     def test_partial_phrases_do_not_finalize_early(self):

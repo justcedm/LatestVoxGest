@@ -1,0 +1,39 @@
+{
+  "profile_id": "FSL_PRACTICAL15_V1",
+  "bundle_id": "fsl_practical15_fullsign225_48f_v1",
+  "dataset_profile": "MAPUA_PUBLISHED_FSL_ONLY_INTERIM",
+  "frozen": true,
+  "frozen_date": "2026-09-20",
+  "class_count": 15,
+  "labels": [
+    "HELLO",
+    "THANK_YOU",
+    "YES",
+    "NO",
+    "PLEASE",
+    "HOW_MUCH",
+    "CASH",
+    "CARD",
+    "RECEIPT",
+    "WAIT",
+    "HOW_MANY",
+    "AGAIN",
+    "PROBLEM",
+    "COIN",
+    "DISCOUNT"
+  ],
+  "source_datasets": [
+    {
+      "id": "MAPUA_TRANSACTIONAL_FSL",
+      "doi": "10.17632/jdyrr7cm4z",
+      "selected_clip_count": 394
+    }
+  ],
+  "fsl105_status": "PENDING_OFFICIAL_RAW",
+  "feature_contract": "fullsign225_frame_v1_complete_trajectory_v1",
+  "temporal_contract": "complete_event_resample48",
+  "split_manifest_sha256": "683c55fbb10d4d17413dc5968496c95de0ef22062bc50bd337ae94a406a6c9a1",
+  "pilot_cv_report_sha256": "726686ff8c81c1e9027f14bf8a33b1626979ab74199a67a8b9d018f2a362b8ce",
+  "selection_status": "FROZEN_15_MAPUA_ONLY",
+  "signer_independent_claim": false
+}

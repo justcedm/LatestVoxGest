@@ -20,7 +20,7 @@ The intended runtime flow is:
 
 Raw model predictions must never update sentence text. Only accepted/gated predictions may enter the token composer and phrase builder.
 
-`NOTHING` remains a no-output class. It is ignored by the phrase builder and must never appear in sentence output.
+`NSAC` remains a no-output class. It is ignored by the phrase builder and must never appear in sentence output.
 
 ## Shared Across FullSign225 And OneHand162
 

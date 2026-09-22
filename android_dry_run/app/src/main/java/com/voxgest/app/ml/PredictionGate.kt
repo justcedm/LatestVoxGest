@@ -37,7 +37,7 @@ class PredictionGate(
         val conf = rawOutput[topIdx]
         val margin = conf - rawOutput[secondIdx]
 
-        if (label.equals("NOTHING", ignoreCase = true)) {
+        if (label.equals("NSAC", ignoreCase = true)) {
             return GateResult(false, label, conf, margin, "no_output_class")
         }
 

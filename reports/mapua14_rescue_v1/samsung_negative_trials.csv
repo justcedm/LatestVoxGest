@@ -1,0 +1,1 @@
+attempt_id,negative_type,raw_top1,raw_top1_score,top3,tracking_quality,window_duration_ms,final_accept_reject,rejection_reason,tflite_latency_ms,false_accept

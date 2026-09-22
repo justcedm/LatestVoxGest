@@ -13,11 +13,11 @@
 | WATER | 120 | 80 | 120 | preferred |
 | HELLO | 120 | 80 | 120 | preferred |
 | THANKYOU | 120 | 80 | 120 | preferred |
-| NOTHING | 150 | 120 | 180 | minimum |
+| NSAC | 150 | 120 | 180 | minimum |
 
 ## Per Signer Per Label
 
-| Signer | EAT | WATER | HELLO | THANKYOU | NOTHING | Total |
+| Signer | EAT | WATER | HELLO | THANKYOU | NSAC | Total |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
 | ANASTACIA | 31 | 30 | 30 | 30 | 50 | 171 |
 | CED | 50 | 50 | 50 | 50 | 100 | 300 |
@@ -37,4 +37,4 @@
 - Wrong-shape files: 0
 - Unreadable files: 0
 - Labels under minimum target: none
-- Labels under preferred target: NOTHING
+- Labels under preferred target: NSAC

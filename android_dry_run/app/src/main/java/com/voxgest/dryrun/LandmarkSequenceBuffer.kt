@@ -58,10 +58,21 @@ class LandmarkSequenceBuffer(
         return frames.map { it.copyOf() }.toTypedArray()
     }
 
+    fun snapshotPaddedToSequence(): Array<FloatArray>? {
+        if (frames.isEmpty()) return null
+        val out = frames.map { it.copyOf() }.toMutableList()
+        val last = out.last().copyOf()
+        while (out.size < sequenceLength) {
+            out.add(last.copyOf())
+        }
+        return out.take(sequenceLength).toTypedArray()
+    }
+
     companion object {
-        const val SEQUENCE_LENGTH = 30
+        const val SEQUENCE_LENGTH = 20
         const val ONEHAND162_FEATURE_SIZE = 162
         const val FULLSIGN225_FEATURE_SIZE = 225
-        const val STABLE_FRAME_WARMUP = 6
+        const val FULLSIGN_WITH_DELTA_FEATURE_SIZE = 225
+        const val STABLE_FRAME_WARMUP = 4
     }
 }

@@ -475,8 +475,8 @@ def write_runtime_manifest(classes, report):
                 "sequence_length": SEQ_LEN,
                 "feature_size": FEAT_SIZE,
                 "labels": classes,
-                "negative_label": "NOTHING",
-                "nothing_policy": "ignore_no_output",
+                "negative_label": "NSAC",
+                "nsac_policy": "ignore_no_output",
             }
         },
         "dataset": {
@@ -491,7 +491,7 @@ def write_runtime_manifest(classes, report):
         "runtime_policy": {
             "input_policy": "accepted_predictions_only",
             "raw_prediction_policy": "never_update_sentence_output_directly",
-            "nothing_policy": "NOTHING remains no-output",
+            "nsac_policy": "NSAC remains no-output",
             "word_profile_env": f"VOXGEST_WORD_PROFILE={WORD_PROFILE}",
             "feature_profile_env": f"VOXGEST_FEATURE_PROFILE={FEATURE_PROFILE}",
             "dynamic_model_env": "VOXGEST_DYNAMIC_MODEL=tcn",

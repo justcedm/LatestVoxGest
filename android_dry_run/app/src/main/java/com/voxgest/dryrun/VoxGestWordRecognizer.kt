@@ -29,9 +29,9 @@ class VoxGestWordRecognizer(private val context: Context) {
 
     fun status(): String = status
 
-    fun recognize(sequence30x225: Array<FloatArray>, handPresence: Float = 1f): RecognitionResult {
+    fun recognize(featureSequence: Array<FloatArray>, handPresence: Float = 1f): RecognitionResult {
         val localInterpreter = interpreter ?: return RecognitionResult.inactive(status)
-        if (sequence30x225.size != LandmarkSequenceBuffer.SEQUENCE_LENGTH) {
+        if (featureSequence.size != LandmarkSequenceBuffer.SEQUENCE_LENGTH) {
             return RecognitionResult.inactive("Dynamic sequence length mismatch")
         }
         if (labels.isEmpty()) {
@@ -40,7 +40,7 @@ class VoxGestWordRecognizer(private val context: Context) {
 
         val input = Array(1) {
             Array(LandmarkSequenceBuffer.SEQUENCE_LENGTH) { frameIndex ->
-                val frame = sequence30x225[frameIndex]
+                val frame = featureSequence[frameIndex]
                 if (frame.size == LandmarkSequenceBuffer.FULLSIGN225_FEATURE_SIZE) {
                     frame.copyOf()
                 } else {

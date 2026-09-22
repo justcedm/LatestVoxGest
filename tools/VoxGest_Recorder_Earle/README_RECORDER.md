@@ -10,7 +10,7 @@ You do not need VS Code, Codex, Android Studio, or Ced's `voxgest_env`.
 - `WATER`
 - `HELLO`
 - `THANKYOU`
-- `NOTHING`
+- `NSAC`
 
 Do not train anything. Just record, zip the output, and send it to Ced.
 
@@ -58,7 +58,7 @@ This records 30 accepted samples each for:
 - `HELLO`
 - `THANKYOU`
 
-## Record NOTHING
+## Record NSAC
 
 1. Double-click `run_record_nothing.bat`.
 2. Record neutral or non-word movements.
@@ -66,9 +66,9 @@ This records 30 accepted samples each for:
 
 This records 50 accepted samples for:
 
-- `NOTHING`
+- `NSAC`
 
-Good `NOTHING` examples:
+Good `NSAC` examples:
 
 - idle hands visible
 - open relaxed hands
@@ -108,7 +108,7 @@ recorded_features/
     WATER/
     HELLO/
     THANKYOU/
-    NOTHING/
+    NSAC/
 ```
 
 Saved files include your signer ID, for example:
@@ -116,7 +116,7 @@ Saved files include your signer ID, for example:
 ```text
 TEAMMATE_A_EAT_001.npy
 TEAMMATE_A_WATER_001.npy
-TEAMMATE_A_NOTHING_001.npy
+TEAMMATE_A_NSAC_001.npy
 ```
 
 ## Keys

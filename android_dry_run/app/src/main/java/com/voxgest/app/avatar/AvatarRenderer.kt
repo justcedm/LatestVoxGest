@@ -18,7 +18,7 @@ class CanvasAvatarRenderer(
 
     override fun playWord(word: String): Boolean {
         val normalized = AvatarMotion.normalizeWord(word)
-        if (normalized.isBlank() || normalized == "NOTHING") return false
+        if (normalized.isBlank() || normalized == "NSAC") return false
         view?.signText(normalized)
         return true
     }

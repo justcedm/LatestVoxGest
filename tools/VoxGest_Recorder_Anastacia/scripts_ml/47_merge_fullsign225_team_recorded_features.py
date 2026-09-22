@@ -23,7 +23,7 @@ OUTPUT_ROOT = ROOT / "external_datasets" / "fullsign225_manual5_team_features"
 REPORT_DIR = ROOT / "reports"
 
 EXPECTED_SIGNERS = ["CED", "ANASTACIA", "MARIELLA", "EARLE"]
-EXPECTED_LABELS = ["EAT", "WATER", "HELLO", "THANKYOU", "NOTHING"]
+EXPECTED_LABELS = ["EAT", "WATER", "HELLO", "THANKYOU", "NSAC"]
 EXPECTED_SHAPE = (30, 225)
 SKIP_PARTS = {"_rejected", "recorder_env", "__pycache__"}
 FEATURE_FOLDER = "fullsign225_manual5_team_features"
@@ -215,19 +215,19 @@ def merge():
         "",
         "## Accepted Samples",
         "",
-        "| Signer | EAT | WATER | HELLO | THANKYOU | NOTHING |",
+        "| Signer | EAT | WATER | HELLO | THANKYOU | NSAC |",
         "| --- | ---: | ---: | ---: | ---: | ---: |",
     ]
     for signer in EXPECTED_SIGNERS:
         label_counts = counts.get(signer, {})
         lines.append(
-            "| {signer} | {eat} | {water} | {hello} | {thankyou} | {nothing} |".format(
+            "| {signer} | {eat} | {water} | {hello} | {thankyou} | {nsac} |".format(
                 signer=signer,
                 eat=label_counts.get("EAT", 0),
                 water=label_counts.get("WATER", 0),
                 hello=label_counts.get("HELLO", 0),
                 thankyou=label_counts.get("THANKYOU", 0),
-                nothing=label_counts.get("NOTHING", 0),
+                nsac=label_counts.get("NSAC", 0),
             )
         )
     lines.extend(["", "## Rejected Samples Seen", ""])

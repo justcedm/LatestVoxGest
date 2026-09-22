@@ -4,7 +4,7 @@ This workspace is cleaned for the current defense-ready VoxGest pipeline:
 
 - Static alphabet recognition: `A-Z`, `del`, `space`, `nothing`
 - LSTM word recognition demo profile: `YES`, `NO`, `PLEASE`, `WATER`, `HELLO`, `HELP`, `STOP`, `DOCTOR`, `NAME`, `THANKYOU`
-- Active negative word class: `NOTHING`
+- Active negative word class: `NSAC`
 
 ## Main Commands
 
@@ -45,7 +45,7 @@ Record negative/open-hand samples:
 
 ```powershell
 $env:VOXGEST_WORD_PROFILE='demo10'
-.\voxgest_env\Scripts\python.exe scripts_ml\16_record_manual_words.py NOTHING
+.\voxgest_env\Scripts\python.exe scripts_ml\16_record_manual_words.py NSAC
 ```
 
 Archive contaminated manual samples before re-recording:
@@ -78,7 +78,7 @@ $env:VOXGEST_WORD_PROFILE='demo10'
 ## Current Status
 
 The saved LSTM model is trained for `YES`, `NO`, `PLEASE`, `WATER`, `HELLO`,
-`HELP`, `STOP`, `DOCTOR`, `NAME`, `THANKYOU`, and `NOTHING`.
+`HELP`, `STOP`, `DOCTOR`, `NAME`, `THANKYOU`, and `NSAC`.
 
 For word-sign testing, use `WORDS` mode. Live recognition quality depends
 heavily on your recorded manual calibration samples. If a word still feels weak,

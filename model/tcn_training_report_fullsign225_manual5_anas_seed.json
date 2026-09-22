@@ -27,7 +27,7 @@
     "WATER",
     "HELLO",
     "THANKYOU",
-    "NOTHING"
+    "NSAC"
   ],
   "include_extra_words": false,
   "manual_to_train": true,
@@ -39,7 +39,7 @@
     "WATER",
     "HELLO",
     "THANKYOU",
-    "NOTHING"
+    "NSAC"
   ],
   "missing_target_words": [],
   "skipped_target_words": [],
@@ -70,7 +70,7 @@
       "used": true,
       "skipped_missing_hand_metadata": 0
     },
-    "NOTHING": {
+    "NSAC": {
       "sequences": 50,
       "groups": 1,
       "used": true,
@@ -103,7 +103,7 @@
       "total": 6,
       "accuracy": 83.33333333333334
     },
-    "NOTHING": {
+    "NSAC": {
       "correct": 4,
       "total": 10,
       "accuracy": 40.0
@@ -113,7 +113,7 @@
     "EAT": "HELLO",
     "WATER": "THANKYOU",
     "HELLO": "-",
-    "THANKYOU": "NOTHING",
-    "NOTHING": "HELLO"
+    "THANKYOU": "NSAC",
+    "NSAC": "HELLO"
   }
 }

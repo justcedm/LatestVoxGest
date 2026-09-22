@@ -1,0 +1,184 @@
+{
+  "completed_utc": "2026-09-20T06:33:31.564117+00:00",
+  "development_clip_count": 334,
+  "interpretation": [
+    "event/tracking/duration checks fail closed before inference",
+    "confidence and margin alone do not reliably reject in-distribution trajectory corruptions",
+    "no universal NOTHING class was created",
+    "physical neutral, idle palm, random motion, and partial-sign negatives remain mandatory on Samsung"
+  ],
+  "minimum_confidence": 0.95,
+  "minimum_margin": 0.05,
+  "model_sha256": "dfe78b557052032b2b288685b1de97108d0ddbb3516e3bdf758c0ef1c26219e6",
+  "negative_source_status": "NO_PUBLISHED_NON_SIGN_SET_AVAILABLE_SYNTHETIC_CORRUPTIONS_ONLY",
+  "scope": "DEVELOPMENT_ONLY_SYNTHETIC_CORRUPTION_REJECTION_AUDIT",
+  "split_sha256": "683c55fbb10d4d17413dc5968496c95de0ef22062bc50bd337ae94a406a6c9a1",
+  "structural_rejection_cases": {
+    "event_over_8000ms": {
+      "reason": "EVENT_TIMEOUT",
+      "rejected": 334,
+      "tested": 334
+    },
+    "incomplete_event_under_8_frames": {
+      "reason": "INCOMPLETE_EVENT_REJECTED",
+      "rejected": 334,
+      "tested": 334
+    },
+    "low_hand_presence": {
+      "reason": "LOW_HAND_PRESENCE",
+      "rejected": 334,
+      "tested": 334
+    },
+    "missing_pose": {
+      "reason": "POSE_TRACKING_LOST",
+      "rejected": 334,
+      "tested": 334
+    },
+    "non_finite_tensor": {
+      "reason": "RUNTIME_INPUT_REQUIREMENT",
+      "rejected": 334,
+      "tested": 334
+    },
+    "static_zero_motion": {
+      "reason": "LOW_TRAJECTORY_MOTION",
+      "rejected": 334,
+      "tested": 334
+    }
+  },
+  "synthetic_tensor_corruptions": {
+    "all_zero": {
+      "count": 334,
+      "score_gate_accepted": 0,
+      "score_gate_false_accept_rate": 0.0,
+      "structural_gate_override": "LOW_POSE_PRESENCE",
+      "top_predicted_labels": [
+        {
+          "count": 334,
+          "label": "COIN"
+        }
+      ]
+    },
+    "partial_first_quarter": {
+      "count": 334,
+      "score_gate_accepted": 229,
+      "score_gate_false_accept_rate": 0.6856287425149701,
+      "structural_gate_override": null,
+      "top_predicted_labels": [
+        {
+          "count": 34,
+          "label": "DISCOUNT"
+        },
+        {
+          "count": 32,
+          "label": "RECEIPT"
+        },
+        {
+          "count": 30,
+          "label": "NO"
+        },
+        {
+          "count": 28,
+          "label": "WAIT"
+        },
+        {
+          "count": 27,
+          "label": "PROBLEM"
+        }
+      ]
+    },
+    "reversed": {
+      "count": 334,
+      "score_gate_accepted": 296,
+      "score_gate_false_accept_rate": 0.8862275449101796,
+      "structural_gate_override": null,
+      "top_predicted_labels": [
+        {
+          "count": 32,
+          "label": "PROBLEM"
+        },
+        {
+          "count": 30,
+          "label": "CARD"
+        },
+        {
+          "count": 28,
+          "label": "AGAIN"
+        },
+        {
+          "count": 26,
+          "label": "NO"
+        },
+        {
+          "count": 25,
+          "label": "WAIT"
+        }
+      ]
+    },
+    "shuffled": {
+      "count": 334,
+      "score_gate_accepted": 298,
+      "score_gate_false_accept_rate": 0.8922155688622755,
+      "structural_gate_override": null,
+      "top_predicted_labels": [
+        {
+          "count": 32,
+          "label": "PROBLEM"
+        },
+        {
+          "count": 30,
+          "label": "CARD"
+        },
+        {
+          "count": 28,
+          "label": "AGAIN"
+        },
+        {
+          "count": 26,
+          "label": "NO"
+        },
+        {
+          "count": 25,
+          "label": "WAIT"
+        }
+      ]
+    },
+    "static_first": {
+      "count": 334,
+      "score_gate_accepted": 304,
+      "score_gate_false_accept_rate": 0.9101796407185628,
+      "structural_gate_override": "LOW_TRAJECTORY_MOTION",
+      "top_predicted_labels": [
+        {
+          "count": 180,
+          "label": "COIN"
+        },
+        {
+          "count": 16,
+          "label": "YES"
+        },
+        {
+          "count": 15,
+          "label": "AGAIN"
+        },
+        {
+          "count": 15,
+          "label": "WAIT"
+        },
+        {
+          "count": 13,
+          "label": "NO"
+        }
+      ]
+    }
+  },
+  "threshold_policy": "FROZEN_FROM_DEVELOPMENT_OOF_NOT_TUNED_HERE",
+  "trajectory_motion_guard": {
+    "development_minimum": 0.07282011955976486,
+    "development_p01": 0.24712605953216554,
+    "development_retained": 334,
+    "development_total": 334,
+    "metric": "mean consecutive-frame L2 over raw complete FullSign225 trajectory",
+    "minimum": 0.02,
+    "selection": "conservative guard below the minimum observed development sign; not tuned on sealed test"
+  }
+}

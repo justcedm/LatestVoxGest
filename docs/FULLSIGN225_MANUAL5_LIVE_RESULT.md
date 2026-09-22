@@ -8,7 +8,7 @@ Training snapshot:
 
 - Model: `model/voxgest_tcn_fullsign225_manual5.tflite`
 - Input shape: `[1, 30, 225]`
-- Output labels: `EAT`, `HELLO`, `WATER`, `THANKYOU`, `NOTHING`
+- Output labels: `EAT`, `HELLO`, `WATER`, `THANKYOU`, `NSAC`
 - Validation accuracy: 93.18%
 - Validation warning: random fallback split was used because each manual label currently has one source group.
 
@@ -22,7 +22,7 @@ $env:VOXGEST_DYNAMIC_MODEL='tcn'
 $env:VOXGEST_SINGLE_HAND_POSE='0'
 $env:VOXGEST_MODE='WORDS'
 $env:VOXGEST_LIVE_TEST_CAPTURE_MODE='hand_trigger_auto'
-$env:VOXGEST_LIVE_TEST_LABELS='EAT,NOTHING,HELLO,WATER,THANKYOU'
+$env:VOXGEST_LIVE_TEST_LABELS='EAT,NSAC,HELLO,WATER,THANKYOU'
 $env:VOXGEST_LIVE_TEST_TRIALS_PER_LABEL='5'
 .\voxgest_env\Scripts\python.exe scripts_ml\33_live_word_test_logger.py
 ```
@@ -40,7 +40,7 @@ A label passes only if:
 | Label | Live Matches | Status | Notes |
 | --- | ---: | --- | --- |
 | EAT | not tested | pending | EAT was the strongest prior FullSign225 live candidate. |
-| NOTHING | not tested | pending | Rejected/no-output movement counts as a match for expected NOTHING. |
+| NSAC | not tested | pending | Rejected/no-output movement counts as a match for expected NSAC. |
 | HELLO | not tested | pending | Replace if repeated confusion appears. |
 | WATER | not tested | pending | Replace if repeated confusion appears. |
 | THANKYOU | not tested | pending | Replace if repeated confusion appears. |

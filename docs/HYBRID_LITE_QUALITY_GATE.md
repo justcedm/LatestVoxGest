@@ -37,7 +37,7 @@ For close-hand signs such as `MORE`, the gate should not force a prediction when
 
 ## Safety Rules Preserved
 
-- `NOTHING` remains no-output.
+- `NSAC` remains no-output.
 - Raw predictions still never update sentence output.
 - Only accepted and gated predictions can enter `TokenComposer`.
 - Existing confidence, margin, motion, wrist path, and hand-presence gates remain active.
@@ -105,7 +105,7 @@ $env:VOXGEST_DYNAMIC_MODEL='tcn'
 $env:VOXGEST_DOMINANT_HAND='right'
 $env:VOXGEST_SINGLE_HAND_POSE='1'
 $env:VOXGEST_MODE='WORDS'
-.\voxgest_env\Scripts\python.exe scripts_ml\33_live_word_test_logger.py YES NO PLEASE WATER HELLO HELP STOP DOCTOR NAME THANKYOU SORRY MORE PAIN FINE EAT WANT TIME NOTHING
+.\voxgest_env\Scripts\python.exe scripts_ml\33_live_word_test_logger.py YES NO PLEASE WATER HELLO HELP STOP DOCTOR NAME THANKYOU SORRY MORE PAIN FINE EAT WANT TIME NSAC
 ```
 
 After logging trials, compare results:
@@ -138,7 +138,7 @@ The active stability path is onehand162 plus:
 
 - better frame quality gating,
 - more targeted manual repair data,
-- stronger `NOTHING` hard negatives,
+- stronger `NSAC` hard negatives,
 - continued live-log analysis.
 
 ## Recommendation

@@ -45,7 +45,7 @@ KNOWN_LABELS = [
     "MORE",
     "UNDERSTAND",
     "AGAIN",
-    "NOTHING",
+    "NSAC",
 ]
 
 VIDEO_EXTENSIONS = {".mp4", ".mov", ".m4v", ".avi", ".mkv", ".webm"}

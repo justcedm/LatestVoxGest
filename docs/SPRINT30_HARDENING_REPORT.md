@@ -53,7 +53,7 @@ Priority labels from validation remain weak or risky:
 | EAT | 104 | 8 | 50.0% | 50.0% |
 | TIME | 104 | 8 | 0.0% | 50.0% |
 | MEDICINE | 91 | 7 | 0.0% | 0.0% |
-| NOTHING | 600 | 10 | not in grouped validation split | not in grouped validation split |
+| NSAC | 600 | 10 | not in grouped validation split | not in grouped validation split |
 
 ## Current Live Log Interpretation
 
@@ -65,7 +65,7 @@ Weakest labels from available logs:
 1. NAME
 2. STOP
 3. HELP
-4. NOTHING
+4. NSAC
 5. PLEASE
 6. DOCTOR
 
@@ -73,7 +73,7 @@ Top issues:
 
 - NAME often confused with STOP, PLEASE, THANKYOU, and HELP.
 - STOP still has historical confusion with NAME and HELLO.
-- NOTHING has false word outputs and needs harder negatives.
+- NSAC has false word outputs and needs harder negatives.
 - DOCTOR has confusion with YES in existing logs.
 
 Sprint30-specific live quality is still pending because the right-hand
@@ -88,10 +88,10 @@ Samples added per label in this Codex run:
 
 | Label group | Added |
 | --- | ---: |
-| THANKYOU STOP DOCTOR UNDERSTAND NOTHING | 0 |
-| PAIN GO FINE TIME MEDICINE NOTHING | 0 |
-| PLEASE WATER EAT WANT NOTHING | 0 |
-| extra NOTHING hard negatives | 0 |
+| THANKYOU STOP DOCTOR UNDERSTAND NSAC | 0 |
+| PAIN GO FINE TIME MEDICINE NSAC | 0 |
+| PLEASE WATER EAT WANT NSAC | 0 |
+| extra NSAC hard negatives | 0 |
 
 ## Live Test Command
 
@@ -127,7 +127,7 @@ $env:VOXGEST_WORD_PROFILE='sprint30'
 $env:VOXGEST_SINGLE_HAND_POSE='1'
 $env:VOXGEST_DOMINANT_HAND='right'
 $env:VOXGEST_MANUAL_SEQUENCES_PER_WORD='60'
-.\voxgest_env\Scripts\python.exe scripts_ml\16_record_manual_words.py THANKYOU STOP DOCTOR UNDERSTAND NOTHING
+.\voxgest_env\Scripts\python.exe scripts_ml\16_record_manual_words.py THANKYOU STOP DOCTOR UNDERSTAND NSAC
 ```
 
 Second repair batch:
@@ -138,7 +138,7 @@ $env:VOXGEST_WORD_PROFILE='sprint30'
 $env:VOXGEST_SINGLE_HAND_POSE='1'
 $env:VOXGEST_DOMINANT_HAND='right'
 $env:VOXGEST_MANUAL_SEQUENCES_PER_WORD='60'
-.\voxgest_env\Scripts\python.exe scripts_ml\16_record_manual_words.py PAIN GO FINE TIME MEDICINE NOTHING
+.\voxgest_env\Scripts\python.exe scripts_ml\16_record_manual_words.py PAIN GO FINE TIME MEDICINE NSAC
 ```
 
 Only if live logs show these remain weak:
@@ -149,10 +149,10 @@ $env:VOXGEST_WORD_PROFILE='sprint30'
 $env:VOXGEST_SINGLE_HAND_POSE='1'
 $env:VOXGEST_DOMINANT_HAND='right'
 $env:VOXGEST_MANUAL_SEQUENCES_PER_WORD='60'
-.\voxgest_env\Scripts\python.exe scripts_ml\16_record_manual_words.py PLEASE WATER EAT WANT NOTHING
+.\voxgest_env\Scripts\python.exe scripts_ml\16_record_manual_words.py PLEASE WATER EAT WANT NSAC
 ```
 
-Extra NOTHING negatives:
+Extra NSAC negatives:
 
 - idle hand
 - open hand
@@ -201,5 +201,5 @@ The patched trainers write Sprint30 artifacts only for the Sprint30 profile.
 Keep demo10 as the default. Keep Sprint30 experimental.
 
 Next safest step: run the Sprint30 right-hand live test, record the two
-right-hand repair batches plus NOTHING hard negatives, retrain TCN, then run a
+right-hand repair batches plus NSAC hard negatives, retrain TCN, then run a
 second Sprint30 live test before considering any app-facing promotion.

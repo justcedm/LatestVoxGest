@@ -1,6 +1,6 @@
 # VoxGest Android Dry-Run Demo
 
-This Android scaffold is intentionally focused on today's achievable goal: a buildable dry-run app that exercises the same accepted-token path the real recognizer must use later. Phrase recognition stays off, vocabulary stays at the current demo set, and `NOTHING` remains a no-output class.
+This Android scaffold is intentionally focused on today's achievable goal: a buildable dry-run app that exercises the same accepted-token path the real recognizer must use later. Phrase recognition stays off, vocabulary stays at the current demo set, and `NSAC` remains a no-output class.
 
 ## Project Location
 
@@ -74,13 +74,13 @@ File > Open > android_dry_run > Run app
    - Avatar panel.
 
 3. Debug dry-run screen
-   - Buttons for `YES`, `NO`, `PLEASE`, `WATER`, `HELLO`, `HELP`, `STOP`, `DOCTOR`, `NAME`, `THANKYOU`, `NOTHING`, `A-Z`, `space`, and `del`.
+   - Buttons for `YES`, `NO`, `PLEASE`, `WATER`, `HELLO`, `HELP`, `STOP`, `DOCTOR`, `NAME`, `THANKYOU`, `NSAC`, `A-Z`, `space`, and `del`.
    - Every button goes through `TokenComposer`, the same acceptance path intended for real recognition output.
 
 ## What Works Now
 
 - Dry-run accepted tokens update the sentence strip.
-- `NOTHING` is ignored and does not update the sentence or avatar.
+- `NSAC` is ignored and does not update the sentence or avatar.
 - `del` removes the last active letter or token.
 - Letter buttons compose spelled words.
 - `space` commits an in-progress spelled word.
@@ -114,7 +114,7 @@ Unstable/debug words until more live hardening:
 HELP, STOP, DOCTOR, NAME, PLEASE
 ```
 
-Do not use unstable words as proof of final recognition quality yet. Latest live testing showed STOP can be confused with NAME, and left-hand HELP / STOP / DOCTOR / NAME / NOTHING still need more clean samples.
+Do not use unstable words as proof of final recognition quality yet. Latest live testing showed STOP can be confused with NAME, and left-hand HELP / STOP / DOCTOR / NAME / NSAC still need more clean samples.
 
 ## Integration Classes
 

@@ -11,7 +11,7 @@ Latest live test summary:
 - correct live matches: 0/12
 - YES was confused with PLEASE
 - WATER was confused with NAME and TIME
-- HELLO was confused with NAME and NOTHING
+- HELLO was confused with NAME and NSAC
 - NO was rejected because of BAD_SEQUENCE / UNSTABLE_LANDMARKS
 
 The practical conclusion is that the model needs training samples captured from the same webcam style, distance, lighting, mirror behavior, and MediaPipe tracking behavior used during live testing.
@@ -55,9 +55,9 @@ OneHand162 is still important, but the immediate goal is to make FullSign225 wor
 
 The active manual16 labels are:
 
-YES, NO, WATER, HELLO, HELP, STOP, DOCTOR, NAME, THANKYOU, PLEASE, SORRY, PAIN, EAT, WANT, TIME, NOTHING
+YES, NO, WATER, HELLO, HELP, STOP, DOCTOR, NAME, THANKYOU, PLEASE, SORRY, PAIN, EAT, WANT, TIME, NSAC
 
-`NOTHING` remains the no-output class.
+`NSAC` remains the no-output class.
 
 ## Record Samples
 
@@ -78,7 +78,7 @@ $env:VOXGEST_WORD_PROFILE='fullsign225_manual16'
 $env:VOXGEST_FEATURE_PROFILE='fullsign225'
 $env:VOXGEST_SINGLE_HAND_POSE='0'
 $env:VOXGEST_MANUAL_SEQUENCES_PER_WORD='30'
-.\voxgest_env\Scripts\python.exe scripts_ml\41_record_manual_fullsign225_words.py YES NO WATER HELLO HELP STOP DOCTOR NAME THANKYOU PLEASE SORRY PAIN EAT WANT TIME NOTHING
+.\voxgest_env\Scripts\python.exe scripts_ml\41_record_manual_fullsign225_words.py YES NO WATER HELLO HELP STOP DOCTOR NAME THANKYOU PLEASE SORRY PAIN EAT WANT TIME NSAC
 ```
 
 Recording behavior:
@@ -90,7 +90,7 @@ Recording behavior:
 - rejected samples logged in `rejected_samples.jsonl`
 - rejected sequences, when available, are saved under `_rejected`
 
-For `NOTHING`, record hard negatives:
+For `NSAC`, record hard negatives:
 
 - idle hands visible
 - open hands
@@ -121,7 +121,7 @@ Before training, check:
 - no missing labels
 - no label under 20 samples for a quick first pass
 - 30+ samples per label preferred
-- NOTHING has enough hard negatives
+- NSAC has enough hard negatives
 
 ## Train TCN
 

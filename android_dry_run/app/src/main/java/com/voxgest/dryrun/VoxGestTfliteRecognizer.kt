@@ -12,6 +12,8 @@ class VoxGestTfliteRecognizer(private val context: Context) : AutoCloseable {
     private var profile: RecognitionProfile? = null
     private var labels: List<String> = emptyList()
     private var loadStatus: String = "Recognizer not loaded"
+    private var inferenceBlockedByShapeMismatch: Boolean = false
+    private var modelInputShape: IntArray = intArrayOf()
 
     fun load(profileId: String = RecognitionProfile.activeRecognitionProfileId(context)): RecognitionProfile {
         val loadedProfile = RecognitionProfile.load(context, profileId)
@@ -27,15 +29,33 @@ class VoxGestTfliteRecognizer(private val context: Context) : AutoCloseable {
         Log.i(TAG, "startup runtime_manifest_path=${loadedProfile.manifestAsset}")
         Log.i(TAG, "startup runtime_manifest_exists=${assetExists(loadedProfile.manifestAsset)}")
         val loadedInterpreter = modelLoader.loadInterpreterWithOptions(options, loadedProfile.modelAsset)
-        loadedInterpreter.resizeInput(0, loadedProfile.inputShape)
+        val originalInputShape = loadedInterpreter.getInputTensor(0).shape()
+        val oldModelDetected = originalInputShape.contentEquals(OLD_ONEHAND162_INPUT_SHAPE) &&
+            loadedProfile.inputShape.contentEquals(RecognitionProfile.ONEHAND162_INPUT_SHAPE)
+        // The model must be retrained at 20 frames before this runtime profile can produce
+        // valid predictions. Until then, keep startup stable and block inference cleanly.
+        if (oldModelDetected) {
+            Log.e(
+                TAG,
+                "SHAPE_MISMATCH old_model_detected model_input_shape=${originalInputShape.contentToString()} buffer_input_shape=${loadedProfile.shapeText()} inference_blocked=true"
+            )
+        } else {
+            loadedInterpreter.resizeInput(0, loadedProfile.inputShape)
+        }
         loadedInterpreter.allocateTensors()
-        validateInterpreterShape(loadedInterpreter, loadedProfile)
+        validateInterpreterShape(loadedInterpreter, loadedProfile, allowOldModel = oldModelDetected)
 
         interpreter?.close()
         interpreter = loadedInterpreter
         profile = loadedProfile
         labels = loadedLabels
-        loadStatus = "Loaded ${loadedProfile.id} ${loadedProfile.shapeText()}"
+        inferenceBlockedByShapeMismatch = oldModelDetected
+        modelInputShape = loadedInterpreter.getInputTensor(0).shape().copyOf()
+        loadStatus = if (oldModelDetected) {
+            "Loaded ${loadedProfile.id}; inference blocked by old model shape"
+        } else {
+            "Loaded ${loadedProfile.id} ${loadedProfile.shapeText()}"
+        }
         logStartupValidation(loadedProfile, loadedInterpreter, loadedLabels)
         return loadedProfile
     }
@@ -48,6 +68,13 @@ class VoxGestTfliteRecognizer(private val context: Context) : AutoCloseable {
         val shapeStatus = validateSequenceShape(sequence, loadedProfile)
         val actualInputShape = "[1,${sequence.size},${sequence.firstOrNull()?.size ?: 0}]"
         Log.i(TAG, "attempt profile=${loadedProfile.id} model=${loadedProfile.modelAsset} actual_input_shape=$actualInputShape expected_input_shape=${loadedProfile.shapeText()}")
+        if (inferenceBlockedByShapeMismatch && modelInputShape.contentEquals(OLD_ONEHAND162_INPUT_SHAPE)) {
+            Log.e(
+                TAG,
+                "SHAPE_MISMATCH old_model_detected model_input_shape=${modelInputShape.contentToString()} buffer_input_shape=$actualInputShape inference_blocked=true"
+            )
+            return RecognitionResult.inactive("SHAPE_MISMATCH old_model_detected")
+        }
         if (shapeStatus != null) {
             Log.e(TAG, "attempt rejected reason=SHAPE_MISMATCH detail=$shapeStatus")
             return RecognitionResult.inactive("SHAPE_MISMATCH: $shapeStatus")
@@ -87,9 +114,16 @@ class VoxGestTfliteRecognizer(private val context: Context) : AutoCloseable {
         )
     }
 
-    private fun validateInterpreterShape(interpreter: Interpreter, profile: RecognitionProfile) {
+    private fun validateInterpreterShape(interpreter: Interpreter, profile: RecognitionProfile, allowOldModel: Boolean) {
         val actual = interpreter.getInputTensor(0).shape()
         if (!actual.contentEquals(profile.inputShape)) {
+            if (allowOldModel && actual.contentEquals(OLD_ONEHAND162_INPUT_SHAPE)) {
+                val output = interpreter.getOutputTensor(0).shape()
+                if (output.size < 2 || output[1] != profile.labels.size) {
+                    throw IOException("TFLite output shape ${output.contentToString()} does not match ${profile.labels.size} labels")
+                }
+                return
+            }
             throw IOException("TFLite input shape ${actual.contentToString()} does not match ${profile.shapeText()}")
         }
         val output = interpreter.getOutputTensor(0).shape()
@@ -117,7 +151,7 @@ class VoxGestTfliteRecognizer(private val context: Context) : AutoCloseable {
             throw IOException("Only onehand162 camera recognition is enabled")
         }
         if (!profile.inputShape.contentEquals(RecognitionProfile.ONEHAND162_INPUT_SHAPE)) {
-            throw IOException("SHAPE_MISMATCH: ${profile.shapeText()} != [1, 30, 162]")
+            throw IOException("SHAPE_MISMATCH: ${profile.shapeText()} != [1, 20, 162]")
         }
         if (loadedLabels != RecognitionProfile.ONEHAND162_LABELS) {
             throw IOException("Model/labels mismatch: $loadedLabels")
@@ -125,7 +159,7 @@ class VoxGestTfliteRecognizer(private val context: Context) : AutoCloseable {
         if (profile.labels != RecognitionProfile.ONEHAND162_LABELS) {
             throw IOException("Model/labels mismatch: manifest=${profile.labels}")
         }
-        if (profile.featureProfile != "onehand162" || profile.featureSize != 162 || profile.sequenceLength != 30) {
+        if (profile.featureProfile != "onehand162" || profile.featureSize != 162 || profile.sequenceLength != 20) {
             throw IOException("Model/labels mismatch: feature=${profile.featureProfile} sequence=${profile.sequenceLength} featureSize=${profile.featureSize}")
         }
     }
@@ -137,7 +171,7 @@ class VoxGestTfliteRecognizer(private val context: Context) : AutoCloseable {
         Log.i(TAG, "startup dominant_hand=${profile.dominantHand}")
         Log.i(TAG, "startup mirrored_input=${profile.mirroredInput}")
         Log.i(TAG, "startup labels=$loadedLabels")
-        Log.i(TAG, "feature_check onehand162=pose99+selected_hand63 sequence=30x162 expected_model_input=[1,30,162]")
+        Log.i(TAG, "feature_check onehand162=pose99+selected_hand63 sequence=20x162 expected_model_input=[1,20,162]")
         Log.w(TAG, "MIRRORING_UNVERIFIED profile=${profile.id} mirrored_input=${profile.mirroredInput}")
     }
 
@@ -171,5 +205,6 @@ class VoxGestTfliteRecognizer(private val context: Context) : AutoCloseable {
 
     companion object {
         private const val TAG = "VoxGestRecognition"
+        private val OLD_ONEHAND162_INPUT_SHAPE = intArrayOf(1, 30, 162)
     }
 }

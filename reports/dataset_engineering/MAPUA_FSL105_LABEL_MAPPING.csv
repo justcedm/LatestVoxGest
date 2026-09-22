@@ -1,0 +1,117 @@
+MAPUA_LABEL,FSL105_LABEL,CANONICAL_CONCEPT,STATUS,REASON
+AGAIN,,AGAIN,MAPUA_ONLY,No exact normalized text match in the deployed 105-label vocabulary.
+CARD,,CARD,MAPUA_ONLY,No exact normalized text match in the deployed 105-label vocabulary.
+CASH,,CASH,MAPUA_ONLY,No exact normalized text match in the deployed 105-label vocabulary.
+COIN,,COIN,MAPUA_ONLY,No exact normalized text match in the deployed 105-label vocabulary.
+DISCOUNT,,DISCOUNT,MAPUA_ONLY,No exact normalized text match in the deployed 105-label vocabulary.
+EIGHT,EIGHT,EIGHT,EXACT_TEXT_MATCH,"Text matches after underscore/space normalization; raw FSL-105 media is missing, so trajectory equivalence and dataset merge require qualified FSL review."
+FIVE,FIVE,FIVE,EXACT_TEXT_MATCH,"Text matches after underscore/space normalization; raw FSL-105 media is missing, so trajectory equivalence and dataset merge require qualified FSL review."
+FOUR,FOUR,FOUR,EXACT_TEXT_MATCH,"Text matches after underscore/space normalization; raw FSL-105 media is missing, so trajectory equivalence and dataset merge require qualified FSL review."
+HELLO,HELLO,HELLO,EXACT_TEXT_MATCH,"Text matches after underscore/space normalization; raw FSL-105 media is missing, so trajectory equivalence and dataset merge require qualified FSL review."
+HOW_MANY,,HOW_MANY,MAPUA_ONLY,No exact normalized text match in the deployed 105-label vocabulary.
+HOW_MUCH,,HOW_MUCH,MAPUA_ONLY,No exact normalized text match in the deployed 105-label vocabulary.
+NINE,NINE,NINE,EXACT_TEXT_MATCH,"Text matches after underscore/space normalization; raw FSL-105 media is missing, so trajectory equivalence and dataset merge require qualified FSL review."
+NO,NO,NO,EXACT_TEXT_MATCH,"Text matches after underscore/space normalization; raw FSL-105 media is missing, so trajectory equivalence and dataset merge require qualified FSL review."
+ONE,ONE,ONE,EXACT_TEXT_MATCH,"Text matches after underscore/space normalization; raw FSL-105 media is missing, so trajectory equivalence and dataset merge require qualified FSL review."
+PLEASE,,PLEASE,MAPUA_ONLY,No exact normalized text match in the deployed 105-label vocabulary.
+PROBLEM,,PROBLEM,MAPUA_ONLY,No exact normalized text match in the deployed 105-label vocabulary.
+RECEIPT,,RECEIPT,MAPUA_ONLY,No exact normalized text match in the deployed 105-label vocabulary.
+SEVEN,SEVEN,SEVEN,EXACT_TEXT_MATCH,"Text matches after underscore/space normalization; raw FSL-105 media is missing, so trajectory equivalence and dataset merge require qualified FSL review."
+SIX,SIX,SIX,EXACT_TEXT_MATCH,"Text matches after underscore/space normalization; raw FSL-105 media is missing, so trajectory equivalence and dataset merge require qualified FSL review."
+TEN,TEN,TEN,EXACT_TEXT_MATCH,"Text matches after underscore/space normalization; raw FSL-105 media is missing, so trajectory equivalence and dataset merge require qualified FSL review."
+THANK_YOU,THANK YOU,THANK_YOU,EXACT_TEXT_MATCH,"Text matches after underscore/space normalization; raw FSL-105 media is missing, so trajectory equivalence and dataset merge require qualified FSL review."
+THREE,THREE,THREE,EXACT_TEXT_MATCH,"Text matches after underscore/space normalization; raw FSL-105 media is missing, so trajectory equivalence and dataset merge require qualified FSL review."
+TWO,TWO,TWO,EXACT_TEXT_MATCH,"Text matches after underscore/space normalization; raw FSL-105 media is missing, so trajectory equivalence and dataset merge require qualified FSL review."
+WAIT,,WAIT,MAPUA_ONLY,No exact normalized text match in the deployed 105-label vocabulary.
+WELCOME,YOURE WELCOME,UNRESOLVED_WELCOME_RELATION,SEMANTIC_CANDIDATE_REQUIRES_FSL_REVIEW,WELCOME and YOURE WELCOME are not assumed equivalent; raw FSL-105 comparison and qualified FSL review are required.
+YES,YES,YES,EXACT_TEXT_MATCH,"Text matches after underscore/space normalization; raw FSL-105 media is missing, so trajectory equivalence and dataset merge require qualified FSL review."
+,APRIL,APRIL,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,AUGUST,AUGUST,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,AUNTIE,AUNTIE,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,BEER,BEER,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,BLACK,BLACK,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,BLIND,BLIND,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,BLUE,BLUE,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,BOY,BOY,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,BREAD,BREAD,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,BROWN,BROWN,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,CHICKEN,CHICKEN,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,COFFEE,COFFEE,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,COLD,COLD,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,CORRECT,CORRECT,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,COUSIN,COUSIN,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,CRAB,CRAB,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,DARK,DARK,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,DAUGHTER,DAUGHTER,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,DEAF,DEAF,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,DEAF BLIND,DEAF_BLIND,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,DECEMBER,DECEMBER,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,DON’T KNOW,DONT_KNOW,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,DON’T UNDERSTAND,DONT_UNDERSTAND,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,EGG,EGG,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,FAST,FAST,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,FATHER,FATHER,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,FEBRUARY,FEBRUARY,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,FISH,FISH,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,FRIDAY,FRIDAY,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,GIRL,GIRL,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,GOOD AFTERNOON,GOOD_AFTERNOON,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,GOOD EVENING,GOOD_EVENING,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,GOOD MORNING,GOOD_MORNING,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,GRANDFATHER,GRANDFATHER,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,GRANDMOTHER,GRANDMOTHER,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,GRAY,GRAY,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,GREEN,GREEN,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,HARD OF HEARING,HARD_OF_HEARING,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,HOT,HOT,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,HOW ARE YOU,HOW_ARE_YOU,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,IM FINE,IM_FINE,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,JANUARY,JANUARY,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,JUICE,JUICE,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,JULY,JULY,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,JUNE,JUNE,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,KNOW,KNOW,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,LIGHT,LIGHT,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,LONGANISA,LONGANISA,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,MAN,MAN,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,MARCH,MARCH,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,MARRIED,MARRIED,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,MAY,MAY,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,MEAT,MEAT,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,MILK,MILK,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,MONDAY,MONDAY,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,MOTHER,MOTHER,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,NICE TO MEET YOU,NICE_TO_MEET_YOU,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,NO SUGAR,NO_SUGAR,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,NOVEMBER,NOVEMBER,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,OCTOBER,OCTOBER,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,ORANGE,ORANGE,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,PARENTS,PARENTS,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,PINK,PINK,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,RED,RED,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,RICE,RICE,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,SATURDAY,SATURDAY,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,SEE YOU TOMORROW,SEE_YOU_TOMORROW,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,SEPTEMBER,SEPTEMBER,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,SHRIMP,SHRIMP,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,SLOW,SLOW,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,SON,SON,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,SPAGHETTI,SPAGHETTI,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,SUGAR,SUGAR,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,SUNDAY,SUNDAY,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,TEA,TEA,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,THURSDAY,THURSDAY,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,TODAY,TODAY,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,TOMORROW,TOMORROW,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,TUESDAY,TUESDAY,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,UNCLE,UNCLE,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,UNDERSTAND,UNDERSTAND,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,VIOLET,VIOLET,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,WEDNESDAY,WEDNESDAY,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,WEELCHAIR PERSON,WEELCHAIR_PERSON,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,WHITE,WHITE,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,WINE,WINE,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,WOMAN,WOMAN,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,WRONG,WRONG,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,YELLOW,YELLOW,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.
+,YESTERDAY,YESTERDAY,FSL105_ONLY,No Mapúa Transactional FSL v1 exact-text or designated semantic-candidate label.

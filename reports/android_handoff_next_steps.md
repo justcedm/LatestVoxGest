@@ -38,7 +38,7 @@ Optional motion-letter model for J/Z:
 ```text
 input:  [1, 30, 162]
 output: [1, 3]
-labels: J, Z, NOTHING
+labels: J, Z, NSAC
 purpose: recognize motion-based alphabet letters separately from word gestures
 ```
 
@@ -47,7 +47,7 @@ Dynamic word model:
 ```text
 input:  [1, 30, 162]
 output: [1, 11]
-labels: YES, NO, PLEASE, WATER, HELLO, HELP, STOP, DOCTOR, NAME, THANKYOU, NOTHING
+labels: YES, NO, PLEASE, WATER, HELLO, HELP, STOP, DOCTOR, NAME, THANKYOU, NSAC
 ```
 
 Android must load labels from JSON and must not hard-code label order.
@@ -63,7 +63,7 @@ Rules:
 - `space` commits a word boundary.
 - `del` deletes the latest character or token.
 - accepted word gestures append full word tokens.
-- `nothing` and `NOTHING` are ignored and never displayed/spoken.
+- `nothing` and `NSAC` are ignored and never displayed/spoken.
 
 Reference:
 
@@ -85,7 +85,7 @@ Behavior:
 - known word token -> play `avatar/signs/<WORD>.json`
 - unknown word token -> fingerspell
 - spelled words -> fingerspell
-- `NOTHING` -> no animation
+- `NSAC` -> no animation
 
 ## Bidirectional Flow
 

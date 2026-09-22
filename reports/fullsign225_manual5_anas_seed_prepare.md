@@ -20,6 +20,6 @@ Expected shape: `[30, 225]`
 | WATER | 30 | 0 |
 | HELLO | 30 | 0 |
 | THANKYOU | 30 | 0 |
-| NOTHING | 50 | 0 |
+| NSAC | 50 | 0 |
 
 This is a seed/spoiler dataset prepared from Anastacia's accepted recorder output only. It is not the final team dataset.

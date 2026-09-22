@@ -28,7 +28,7 @@ Details:
 - Camera input captures the signer.
 - MediaPipe landmarks convert frames into hand and pose points.
 - Static model handles alphabet/control signs.
-- Dynamic LSTM/TCN model handles demo10 word signs plus `NOTHING`.
+- Dynamic LSTM/TCN model handles demo10 word signs plus `NSAC`.
 - Gates check confidence, margin, motion, wrist path, and hand presence.
 - Token composer updates text only from accepted predictions.
 - Output is shown as text, spoken with TTS, or passed to the avatar.
@@ -91,9 +91,9 @@ vocabulary expansion.
 The next data cycle is:
 
 ```text
-record NAME/STOP/NOTHING contrast samples -> retrain LSTM/TCN -> live test NAME and STOP -> decide whether sprint20 can begin
+record NAME/STOP/NSAC contrast samples -> retrain LSTM/TCN -> live test NAME and STOP -> decide whether sprint20 can begin
 ```
 
 Sprint20 is treated as an expansion profile, not the guaranteed production
 profile. Android remains defaulted to demo10 until the expanded profile passes
-live testing and preserves `NOTHING` as a no-output class.
+live testing and preserves `NSAC` as a no-output class.

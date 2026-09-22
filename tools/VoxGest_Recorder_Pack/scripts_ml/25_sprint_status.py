@@ -124,7 +124,7 @@ def word_stats(word, metadata):
 
 
 def sessions_needed(word, stats):
-    target = NEGATIVE_TARGET if word == "NOTHING" else WORD_TARGET
+    target = NEGATIVE_TARGET if word == "NSAC" else WORD_TARGET
     seq_need = max(0, target - stats["usable"])
     group_need = max(0, MIN_GROUPS - len(stats["groups"]))
     by_sequence = math.ceil(seq_need / max(1, SESSION_SIZE))
@@ -132,7 +132,7 @@ def sessions_needed(word, stats):
 
 
 def manual_sessions_needed(word, stats):
-    target = NEGATIVE_TARGET if word == "NOTHING" else MANUAL_WORD_TARGET
+    target = NEGATIVE_TARGET if word == "NSAC" else MANUAL_WORD_TARGET
     seq_need = max(0, target - stats["manual"])
     group_need = max(0, MIN_GROUPS - len(stats["manual_groups"]))
     by_sequence = math.ceil(seq_need / max(1, SESSION_SIZE))
@@ -160,11 +160,11 @@ def main():
     print("  VoxGest Motion Data Sprint Status")
     print("=" * 88)
     print(f"  Profile       : {WORD_PROFILE}")
-    print(f"  Target words  : {len(TARGET_WORDS)} + NOTHING")
+    print(f"  Target words  : {len(TARGET_WORDS)} + NSAC")
     print(f"  Dataset       : {DATA_DIR}")
     print(f"  Word target   : {WORD_TARGET} usable sequences")
     print(f"  Manual target : {MANUAL_WORD_TARGET} webcam sequences per word")
-    print(f"  NOTHING target: {NEGATIVE_TARGET} usable sequences")
+    print(f"  NSAC target: {NEGATIVE_TARGET} usable sequences")
     print()
     print(
         f"  {'Word':<14} {'Use':>5} {'Groups':>6} {'Manual':>6} "
@@ -176,7 +176,7 @@ def main():
         status = "TRAIN_OK" if readiness(stats) else "DATA"
         if manual_sessions > 0:
             status += "/LIVE_REC"
-        if word != "NOTHING" and stats["videos"] < MIN_VIDEOS:
+        if word != "NSAC" and stats["videos"] < MIN_VIDEOS:
             status += "/DL"
         if stats["skipped_meta"]:
             status += f" skip_meta={stats['skipped_meta']}"
@@ -200,7 +200,7 @@ def main():
     low_video = [
         word
         for word, stats, _, _, _, _ in rows
-        if word != "NOTHING" and stats["videos"] < MIN_VIDEOS
+        if word != "NSAC" and stats["videos"] < MIN_VIDEOS
     ]
     if low_video:
         print("\n  Need more source videos before extraction:")

@@ -13,7 +13,7 @@
       "Keep strict gate profile as default.",
       "Demo profile lowers low-motion label thresholds.",
       "Manual capture waits for stable hands before recording one gesture window.",
-      "NOTHING remains no-output and is never accepted as spoken output."
+      "NSAC remains no-output and is never accepted as spoken output."
     ]
   },
   "profiles": {
@@ -30,7 +30,7 @@
       "categories": {
         "stable_labels": [
           "MY",
-          "NOTHING"
+          "NSAC"
         ],
         "partially_stable_labels": [
           "WHAT"
@@ -45,7 +45,7 @@
         "capture_blocked_labels": [
           "MY",
           "NAME",
-          "NOTHING",
+          "NSAC",
           "WHAT"
         ]
       },
@@ -89,10 +89,10 @@
           "gate_block_rate": 0.0,
           "capture_block_rate": 0.0,
           "top_confusions": {
-            "NOTHING": 8
+            "NSAC": 8
           },
           "top_failure_reasons": {
-            "wrong_label:NOTHING": 8
+            "wrong_label:NSAC": 8
           }
         },
         "NAME": {
@@ -109,11 +109,11 @@
           "gate_block_rate": 0.0,
           "capture_block_rate": 0.25,
           "top_confusions": {
-            "NOTHING": 6,
+            "NSAC": 6,
             "(blocked)": 2
           },
           "top_failure_reasons": {
-            "wrong_label:NOTHING": 6,
+            "wrong_label:NSAC": 6,
             "wrong_label:": 2,
             "quality:LOW_HAND_PRESENCE": 1,
             "quality:UNSTABLE_LANDMARKS": 1
@@ -140,7 +140,7 @@
             "wrong_label:": 2
           }
         },
-        "NOTHING": {
+        "NSAC": {
           "trials": 5,
           "matched": 5,
           "accepted_correct": 0,
@@ -177,7 +177,7 @@
         "stable_labels": [
           "LIVE",
           "MY",
-          "NOTHING"
+          "NSAC"
         ],
         "partially_stable_labels": [
           "OKAY"
@@ -377,7 +377,7 @@
           "top_confusions": {},
           "top_failure_reasons": {}
         },
-        "NOTHING": {
+        "NSAC": {
           "trials": 1,
           "matched": 1,
           "accepted_correct": 0,

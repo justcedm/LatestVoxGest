@@ -26,7 +26,7 @@ $env:VOXGEST_DOMINANT_HAND='left'
 Required dynamic labels:
 
 ```text
-YES, NO, PLEASE, WATER, HELLO, HELP, STOP, DOCTOR, NAME, THANKYOU, NOTHING
+YES, NO, PLEASE, WATER, HELLO, HELP, STOP, DOCTOR, NAME, THANKYOU, NSAC
 ```
 
 ## Trial Matrix
@@ -41,7 +41,7 @@ For each word:
 - farther from camera
 - closer to camera
 
-For `NOTHING`:
+For `NSAC`:
 
 - idle hand
 - open hand
@@ -72,7 +72,7 @@ reports/live_word_test_*.json
 | DOCTOR | 0 | 0 | Pending | Pending | Pending |
 | NAME | 0 | 0 | Pending | Pending | Pending |
 | THANKYOU | 0 | 0 | Pending | Pending | Pending |
-| NOTHING | 0 | 0 | Pending | Pending | Pending |
+| NSAC | 0 | 0 | Pending | Pending | Pending |
 
 ## Failure Diagnosis
 
@@ -92,7 +92,7 @@ Do not record every word blindly. Prepare commands only after live results show 
 Likely first target set if live testing confirms weakness:
 
 ```text
-NOTHING WATER THANKYOU YES NO
+NSAC WATER THANKYOU YES NO
 ```
 
 Right-hand recording command:
@@ -103,7 +103,7 @@ $env:VOXGEST_WORD_PROFILE='demo10'
 $env:VOXGEST_SINGLE_HAND_POSE='1'
 $env:VOXGEST_DOMINANT_HAND='right'
 $env:VOXGEST_MANUAL_SEQUENCES_PER_WORD='60'
-.\voxgest_env\Scripts\python.exe scripts_ml\16_record_manual_words.py NOTHING WATER THANKYOU YES NO
+.\voxgest_env\Scripts\python.exe scripts_ml\16_record_manual_words.py NSAC WATER THANKYOU YES NO
 ```
 
 For contaminated data, archive instead of deleting:

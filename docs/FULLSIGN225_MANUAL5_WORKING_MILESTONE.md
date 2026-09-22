@@ -35,7 +35,7 @@ The profile trains only the manual5 labels and ignores all other folders in that
 - Feature profile: `fullsign225`
 - Input shape: `[1, 30, 225]`
 - Per frame: pose `99` + left hand `63` + right hand `63`
-- `NOTHING` remains the no-output class
+- `NSAC` remains the no-output class
 
 ## Target Labels
 
@@ -45,7 +45,7 @@ Training labels:
 - `HELLO`
 - `WATER`
 - `THANKYOU`
-- `NOTHING`
+- `NSAC`
 
 Backup labels if one target fails live:
 
@@ -65,7 +65,7 @@ If a label fails, replace it with the strongest backup candidate instead of keep
 
 ## Safety Position
 
-This model is experimental. It does not replace demo10, onehand162, or any Android default model. Raw predictions must not update sentence output, and `NOTHING` must never be spoken, displayed, saved as a token, or routed to avatar.
+This model is experimental. It does not replace demo10, onehand162, or any Android default model. Raw predictions must not update sentence output, and `NSAC` must never be spoken, displayed, saved as a token, or routed to avatar.
 
 ## Audit Result
 
@@ -76,7 +76,7 @@ Latest audit result:
 - HELLO: 30
 - WATER: 30
 - THANKYOU: 30
-- NOTHING: 100
+- NSAC: 100
 - Wrong-shape files: 0
 - Unreadable files: 0
 - Rejected samples logged: 363
@@ -100,9 +100,9 @@ Per-class validation:
 | --- | ---: | ---: | ---: | --- |
 | EAT | 6 | 6 | 100.0% | - |
 | HELLO | 6 | 6 | 100.0% | - |
-| WATER | 5 | 6 | 83.3% | NOTHING |
+| WATER | 5 | 6 | 83.3% | NSAC |
 | THANKYOU | 5 | 6 | 83.3% | EAT |
-| NOTHING | 19 | 20 | 95.0% | HELLO |
+| NSAC | 19 | 20 | 95.0% | HELLO |
 
 This is a training result only. The profile is not considered demo-ready until the live test passes.
 
@@ -140,7 +140,7 @@ $env:VOXGEST_DYNAMIC_MODEL='tcn'
 $env:VOXGEST_SINGLE_HAND_POSE='0'
 $env:VOXGEST_MODE='WORDS'
 $env:VOXGEST_LIVE_TEST_CAPTURE_MODE='hand_trigger_auto'
-$env:VOXGEST_LIVE_TEST_LABELS='EAT,NOTHING,HELLO,WATER,THANKYOU'
+$env:VOXGEST_LIVE_TEST_LABELS='EAT,NSAC,HELLO,WATER,THANKYOU'
 $env:VOXGEST_LIVE_TEST_TRIALS_PER_LABEL='5'
 .\voxgest_env\Scripts\python.exe scripts_ml\33_live_word_test_logger.py
 ```

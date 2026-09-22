@@ -81,7 +81,7 @@
         "YOUR",
         "NAME",
         "MY",
-        "NOTHING"
+        "NSAC"
       ],
       "status_counts": {
         "rejected": 1473,
@@ -96,7 +96,7 @@
         "YOUR": 80,
         "NAME": 80,
         "MY": 80,
-        "NOTHING": 160
+        "NSAC": 160
       },
       "copied_total": 480,
       "duplicate_count": 0,
@@ -124,7 +124,7 @@
         "STUDENT",
         "WHERE",
         "LIVE",
-        "NOTHING"
+        "NSAC"
       ],
       "status_counts": {
         "copied": 1473,
@@ -144,7 +144,7 @@
         "STUDENT": 92,
         "WHERE": 70,
         "LIVE": 127,
-        "NOTHING": 592
+        "NSAC": 592
       },
       "copied_total": 1473,
       "duplicate_count": 0,
@@ -161,7 +161,7 @@
         "YOUR": 310,
         "NAME": 310,
         "MY": 160,
-        "NOTHING": 380
+        "NSAC": 380
       },
       "per_signer": {
         "ANASTACIA": 240,
@@ -188,7 +188,7 @@
         "STUDENT": 272,
         "WHERE": 250,
         "LIVE": 307,
-        "NOTHING": 892
+        "NSAC": 892
       },
       "per_signer": {
         "ANASTACIA": 1509,

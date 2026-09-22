@@ -5,6 +5,9 @@ voxgest_env/
 .venv/
 venv/
 env/
+.conda/
+.tox/
+*.egg-info/
 __pycache__/
 *.py[cod]
 *$py.class
@@ -19,6 +22,18 @@ __pycache__/
 **/build/
 **/captures/
 **/local.properties
+**/keystore.properties
+**/signing.properties
+**/secrets.properties
+**/google-services.json
+*.jks
+*.keystore
+*.p12
+*.pfx
+*.pem
+.env
+.env.*
+!.env.example
 *.apk
 *.aab
 *.ap_
@@ -27,11 +42,18 @@ __pycache__/
 
 # Local datasets, downloaded videos, and extracted feature arrays
 external_datasets/
+datasets/raw/
+datasets/downloads/
+data/raw/
+downloads/
 tools/VoxGest_Recorder_Pack/recorded_features/
 tools/VoxGest_Recorder_Pack/recorder_env/
 tools/VoxGest_Recorder_*_FINAL_LAST/recorded_features/
 tools/VoxGest_Recorder_*_FINAL_LAST/recorder_env/
 dataset_*/
+!reports/dataset_engineering/
+!reports/dataset_engineering/*.md
+!reports/dataset_engineering/*.csv
 wlasl_videos/
 phrase_videos/
 asl_citizen*/
@@ -54,6 +76,19 @@ model/*.h5
 model/*.keras
 model/*.ckpt
 model/*.pb
+model/**/*.h5
+model/**/*.keras
+model/**/*.ckpt
+model/**/*.pb
+model/**/*.pt
+model/**/*.pth
+model/**/*.onnx
+model/**/*.safetensors
+**/checkpoints/
+training_cache/
+runs/
+wandb/
+tensorboard/
 model/extraction_log*.txt
 
 # Keep small demo TFLite files, manifests, and labels available for review.
@@ -67,6 +102,24 @@ reports/*.json
 reports/live_word_test_log_*
 reports/live_log_comparison.*
 !reports/*.md
+!reports/fsl105_dataset_audit.json
+!reports/fsl105_dataset_audit.csv
+!reports/fsl105_split_manifest.csv
+!reports/fsl_tcn_evaluation.json
+!reports/fsl_rdtcn_evaluation.json
+!reports/fsl_model_comparison.csv
+!reports/fsl_artifact_validation.json
+!reports/activity_detector_v1_evaluation.json
+!reports/fsl_rejection_calibration.json
+!reports/autonomous_sprint_validation.json
+!reports/android_fsl_integration_audit.json
+reports/smoke/
+android_dry_run/reports/evidence/
+android_dry_run/reports/*.patch
+android_dry_run/reports/*.INTERRUPTED_*.kt
+
+# Keep only completed experimental model artifacts; smoke outputs are local QA.
+model/experimental/smoke/
 
 # Archives and temporary output
 *.zip
@@ -74,11 +127,26 @@ reports/live_log_comparison.*
 *.rar
 *.tar
 *.tar.gz
+*.tgz
+*.gz
 tmp/
 temp/
 *.log
+*.bak
+*.backup
+*.backup_*
+*.orig
+*.rej
+
+# Accidental local shell/editor fragments
+/hot overlay failed.*
+/napshot*
 
 # Local calibration/output data
+domain_c_captures/
+domain_c_capture.enabled
+practical15_live_stream.enabled
+/reports/device_tests/samsung/
 calibration_static/
 static_calibration/
 

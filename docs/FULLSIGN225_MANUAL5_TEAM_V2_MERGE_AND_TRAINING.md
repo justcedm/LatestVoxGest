@@ -10,7 +10,7 @@ The goal remains a Basic TCN model for:
 - WATER
 - HELLO
 - THANKYOU
-- NOTHING
+- NSAC
 
 This profile is experimental and does not replace demo10, onehand162, or the previous FullSign225 team model.
 
@@ -32,7 +32,7 @@ The merge script found five `fullsign225_manual5_team_features` folders under:
 
 Current signer contribution after merge:
 
-| Signer | EAT | WATER | HELLO | THANKYOU | NOTHING | Total |
+| Signer | EAT | WATER | HELLO | THANKYOU | NSAC | Total |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
 | ANASTACIA | 31 | 30 | 30 | 30 | 50 | 171 |
 | EARLE | 1 | 0 | 0 | 0 | 0 | 1 |
@@ -59,7 +59,7 @@ Current v2 counts:
 | WATER | 70 | 80 | 120 | Under minimum |
 | HELLO | 70 | 80 | 120 | Under minimum |
 | THANKYOU | 70 | 80 | 120 | Under minimum |
-| NOTHING | 50 | 120 | 180 | Under minimum |
+| NSAC | 50 | 120 | 180 | Under minimum |
 
 Shape check:
 
@@ -71,7 +71,7 @@ Shape check:
 
 Training was intentionally not run because the v2 dataset did not pass the minimum data gate.
 
-This avoids exporting a weak model that could look successful in validation but fail live due to low class coverage, especially for NOTHING.
+This avoids exporting a weak model that could look successful in validation but fail live due to low class coverage, especially for NSAC.
 
 ## Training Command For Later
 
@@ -107,7 +107,7 @@ $env:VOXGEST_DYNAMIC_MODEL='tcn'
 $env:VOXGEST_SINGLE_HAND_POSE='0'
 $env:VOXGEST_MODE='WORDS'
 $env:VOXGEST_LIVE_TEST_CAPTURE_MODE='hand_trigger_auto'
-$env:VOXGEST_LIVE_TEST_LABELS='EAT,WATER,HELLO,THANKYOU,NOTHING'
+$env:VOXGEST_LIVE_TEST_LABELS='EAT,WATER,HELLO,THANKYOU,NSAC'
 $env:VOXGEST_LIVE_TEST_TRIALS_PER_LABEL='5'
 .\voxgest_env\Scripts\python.exe scripts_ml\33_live_word_test_logger.py
 ```
@@ -120,9 +120,9 @@ Minimum remaining samples needed before training:
 - WATER: at least 10 more valid samples
 - HELLO: at least 10 more valid samples
 - THANKYOU: at least 10 more valid samples
-- NOTHING: at least 70 more valid samples
+- NSAC: at least 70 more valid samples
 
-Practical recommendation: prioritize NOTHING first, then collect another small balanced set for EAT, WATER, HELLO, and THANKYOU from CED and EARLE.
+Practical recommendation: prioritize NSAC first, then collect another small balanced set for EAT, WATER, HELLO, and THANKYOU from CED and EARLE.
 
 ## Safety Statement
 

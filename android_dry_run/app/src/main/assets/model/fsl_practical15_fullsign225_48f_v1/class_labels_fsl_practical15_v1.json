@@ -1,0 +1,98 @@
+{
+  "class_count": 15,
+  "classes": [
+    {
+      "english": "Hello",
+      "filipino": "Kumusta",
+      "id": "HELLO",
+      "index": 0
+    },
+    {
+      "english": "Thank you",
+      "filipino": "Salamat",
+      "id": "THANK_YOU",
+      "index": 1
+    },
+    {
+      "english": "Yes",
+      "filipino": "Oo",
+      "id": "YES",
+      "index": 2
+    },
+    {
+      "english": "No",
+      "filipino": "Hindi",
+      "id": "NO",
+      "index": 3
+    },
+    {
+      "english": "Please",
+      "filipino": "Pakiusap",
+      "id": "PLEASE",
+      "index": 4
+    },
+    {
+      "english": "How much",
+      "filipino": "Magkano",
+      "id": "HOW_MUCH",
+      "index": 5
+    },
+    {
+      "english": "Cash",
+      "filipino": "Pera",
+      "id": "CASH",
+      "index": 6
+    },
+    {
+      "english": "Card",
+      "filipino": "Kard",
+      "id": "CARD",
+      "index": 7
+    },
+    {
+      "english": "Receipt",
+      "filipino": "Resibo",
+      "id": "RECEIPT",
+      "index": 8
+    },
+    {
+      "english": "Wait",
+      "filipino": "Maghintay",
+      "id": "WAIT",
+      "index": 9
+    },
+    {
+      "english": "How many",
+      "filipino": "Ilan",
+      "id": "HOW_MANY",
+      "index": 10
+    },
+    {
+      "english": "Again",
+      "filipino": "Muli",
+      "id": "AGAIN",
+      "index": 11
+    },
+    {
+      "english": "Problem",
+      "filipino": "Problema",
+      "id": "PROBLEM",
+      "index": 12
+    },
+    {
+      "english": "Coin",
+      "filipino": "Barya",
+      "id": "COIN",
+      "index": 13
+    },
+    {
+      "english": "Discount",
+      "filipino": "Diskuwento",
+      "id": "DISCOUNT",
+      "index": 14
+    }
+  ],
+  "feature_version": "fullsign225_frame_v1_complete_trajectory_v1",
+  "profile_id": "FSL_PRACTICAL15_V1",
+  "temporal_length": 48
+}

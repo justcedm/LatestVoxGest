@@ -7,12 +7,12 @@ still be followed by a smaller webcam calibration pass.
 
 Expected folders:
   phrase_videos/ASK_NAME/*.mp4
-  phrase_videos/NOTHING/*.mp4
+  phrase_videos/NSAC/*.mp4
   phrase_videos/PARTIAL_ASK_NAME/*.mp4
 
 Examples:
   python scripts_ml/28_extract_phrase_videos.py ASK_NAME
-  python scripts_ml/28_extract_phrase_videos.py ASK_NAME PARTIAL_ASK_NAME NOTHING
+  python scripts_ml/28_extract_phrase_videos.py ASK_NAME PARTIAL_ASK_NAME NSAC
 """
 
 import json
@@ -169,7 +169,7 @@ def segments_from_video(label, video_path, holistic):
     frames = read_feature_frames(video_path, holistic)
     if len(frames) < MIN_FRAMES:
         return []
-    if label == "NOTHING":
+    if label == "NSAC":
         return extract_timed_segments(frames)
     return extract_endpoint_segments(frames)
 
@@ -246,7 +246,7 @@ def save_sequence(label, source_id, source_video, source_stem, aug_idx, seq, met
         "phrase_text": phrase_output_text(label),
         "source_id": source_id,
         "source_video": str(source_video),
-        "capture_mode": "video_timed" if label == "NOTHING" else "video_endpoint",
+        "capture_mode": "video_timed" if label == "NSAC" else "video_endpoint",
         "augment_index": aug_idx,
         "shape": [PHRASE_SEQ_LEN, FEAT_SIZE],
         "dominant_hand": configured_hand_preference(),

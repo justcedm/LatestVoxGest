@@ -65,7 +65,7 @@ $env:VOXGEST_WORD_PROFILE='demo10'
 $env:VOXGEST_SINGLE_HAND_POSE='1'
 $env:VOXGEST_DOMINANT_HAND='right'
 $env:VOXGEST_MANUAL_SEQUENCES_PER_WORD='60'
-.\voxgest_env\Scripts\python.exe scripts_ml\16_record_manual_words.py YES NO WATER NOTHING
+.\voxgest_env\Scripts\python.exe scripts_ml\16_record_manual_words.py YES NO WATER NSAC
 ```
 
 Do not use `VOXGEST_DOMINANT_HAND='auto'` for controlled recording.
