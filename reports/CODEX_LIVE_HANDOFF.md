@@ -21,6 +21,10 @@ SAMSUNG_STATUS=AUTHORIZED; UPDATED_APK_INSTALLED; STARTUP_PARITY_PASS;
 PHYSICAL_ANATOMY_RECHECK_REQUESTED. VIDEO_DEFAULT active; experiment inactive.
 METRICS=129 tests/31 suites, zero failures/errors. Analyzer samples9.909-11.701fps.
 Controlled HELLO0/5, milestone0/3; no post-fix controlled result yet.
+POST_INSTALL_UNSCORED=Saved CARD .98868203 ACCEPT/EMIT, PROBLEM .6892044 REJECT,
+DISCOUNT .80464745 REJECT plus timeout/incomplete transitions. Expected actions
+remain unconfirmed; no HELLO success or formal neutral rate claimed. Details in
+ANATOMY_TEMPORAL_FIX_20260922.md; physical hand identity reply remains required.
 
 FAILURES=Earlier unintended CASH is a confirmed false accept, not HELLO success.
 Settings ACTIVE LAUNCHER card describes the packaged default, not debug override;

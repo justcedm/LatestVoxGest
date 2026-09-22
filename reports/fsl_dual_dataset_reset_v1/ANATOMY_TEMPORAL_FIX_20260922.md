@@ -65,3 +65,21 @@ Requested LEFT-only2s -> neutral3s -> RIGHT-only2s -> neutral10s. Owner response
 interpretation pending. Controlled HELLO0/5, YES/NO untested. Next five HELLO events
 use the published project reference, individually marked; record rawtop5, scores,
 margin, presence, motion, quality/state/reason, latency and UI/TTS. No success claim.
+## Unscored post-install observations through 13:33:58
+
+Saved anatomy_recheck_log_01/02. Owner physical-hand confirmation still pending;
+these are NOT controlled HELLO trials. Event numbering restarts with controller.
+
+| Time | Raw top1 | Probability | Margin | Frames / seconds | Gate | End-to-raw ms |
+|---|---|---|---|---|---|---|
+| 13:29:17 | CARD | .98868203 | .981793 | 34 / 5.783 | ACCEPT | 916 |
+| 13:32:01 | PROBLEM | .6892044 | .39903963 | 61 / 7.433 | LOW_CONFIDENCE | 653 |
+| 13:33:02 | DISCOUNT | .80464745 | .6442541 | 25 / 3.216 | LOW_CONFIDENCE | 962 |
+
+CARD has an EMIT log; intended action and audible TTS are unconfirmed. Preserve as
+an unintended-output candidate, not success. Several held-hand events hit the
+unchanged8s timeout and released/re-armed; incomplete events also occurred. Logged
+Tasks sides now map left->left and right->right, but mapping logs alone cannot prove
+physical handedness. Human identity remains necessary. No scored neutral trial or
+physical A/B outcome is claimed. Current hand-free intervals contain no EMIT, but
+one incomplete event at13:33:27 prevents treating the whole interval as clean idle.
