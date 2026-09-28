@@ -3,7 +3,7 @@ import unittest
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts_ml"))
-from core5_boundary_v2_replay import Config, replay
+from core5_boundary_v2_replay import Config, replay, score_rows
 
 
 def synthetic(levels):
@@ -45,6 +45,13 @@ class BoundaryV2ReplayTests(unittest.TestCase):
         result = replay(rows, CONFIG)
         self.assertEqual(len(result["events"]), 1)
         self.assertGreater(result["high_motion_frames_after_first_cut"], 0)
+
+    def test_causal_score_filter_does_not_anticipate_future_motion(self):
+        quiet = synthetic([(True, .1)] * 8)
+        moving = synthetic([(True, .1)] * 8 + [(True, 4)] * 5)
+        for tau in (0, 100, 200):
+            self.assertEqual(score_rows(quiet, tau), score_rows(moving, tau)[:8])
+        self.assertLess(score_rows(moving, 200)[8], score_rows(moving, 0)[10])
 
 
 if __name__ == "__main__":

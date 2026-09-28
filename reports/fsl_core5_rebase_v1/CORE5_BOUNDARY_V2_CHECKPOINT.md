@@ -12,27 +12,41 @@ The preserved modern UI rollback APK remains local, SHA256 `6354700532f8e49eb7e1
 
 An isolated analysis script produced 3,779 per-frame timeline rows for all 69 retained events: torso-normalized XY palm translation speed, wrist-relative/hand-scale-normalized robust finger articulation speed, shoulder-relative wrist/elbow speed, separate Z speed, hand/pose presence, real elapsed timestamps, scale and tracking gaps. Private CSV/JSON: `D:/VoxGest/evidence/fsl_core5_rebase_v1/core5_boundary_descriptors_20260928.{csv,json}`. The explicit fully visible/still THANK YOU hold has last-ten translation median/MAD/p90 0.234/0.124/1.641 body-scales/s and articulation 2.323/1.230/7.241 hand-scales/s; full-vector L2 jitter had median 2.758. These are landmark-derived hold-tail proxies, not independently video-validated true stillness. Z is measured separately and not used for the candidate boundary score.
 
-An offline-only IDLE/PRE_ROLL/CAPTURING/END_PENDING/POST_ROLL/REARM_WAIT prototype swept 144 high/low-hysteresis, 250–700-ms dwell, 300–600-ms minimum duration and 100–200-ms post-roll configurations over all 69 saved events. It ranks using intended automatic and manual positives only; wave/partial negatives are sealed checks, not threshold-fitting data. The most timeout-responsive explored setting generated candidate endings in 5/9 legacy timeout events, but flagged meaningful high motion after an early cut in 4/18 automatic and 4/35 manual-positive events, and generated 6/16 negative candidate events. The eight explored settings with **zero** such positive early-cut proxy flags ended **0/9** legacy timeouts. None is defensible for Android implementation. Raw saved events lack human-verified linguistic end timestamps/video, and the source auto-release events stop immediately after release, limiting post-roll replay. Private search: `core5_boundary_v2_all_events_search_20260928.json`. No candidate is selected, no threshold is approved, and no Samsung V2 test is requested.
+An offline-only IDLE/PRE_ROLL/CAPTURING/END_PENDING/POST_ROLL/REARM_WAIT prototype first swept 144 high/low-hysteresis, 250–700-ms dwell, 300–600-ms minimum duration and 100–200-ms post-roll configurations over all 69 saved events. It ranks using intended automatic and manual positives only; wave/partial negatives are sealed checks, not threshold-fitting data. The most timeout-responsive unfiltered setting generated candidate endings in 5/9 legacy timeout events, but flagged meaningful high motion after an early cut in 4/18 automatic and 4/35 manual-positive events, and generated 6/16 negative candidate events. The eight unfiltered settings with **zero** such positive early-cut proxy flags ended **0/9** legacy timeouts. Private search: `core5_boundary_v2_all_events_search_20260928.json`.
+
+A timestamp-aware **causal EMA on the boundary score only** (100- and 200-ms time constants; authentic classifier input untouched) expanded the search to 432 total configurations. Among zero-positive-early-cut-proxy settings, the best filtered configurations generated an end in only **1/9** old timeout events, with 16/18 automatic events having no candidate ending and 3–4/16 negative events generating candidates. The most timeout-responsive filtered setting still ended 5/9 but flagged 4/18 automatic and 3/35 manual-positive later-motion early-cut risks and generated 5/16 negative candidates. Filtering therefore does not establish a safe operating point; it can also add end latency. Private search: `core5_boundary_v2_filter_sensitivity_20260928.json`. Unit tests, including filter causality, passed 5/5. Raw saved events lack human-verified linguistic end timestamps/video, and the source auto-release events stop immediately after release, limiting post-roll replay. No candidate is selected, no threshold is approved, and no Samsung V2 test is requested.
 
 A separate **diagnostic-only** capture-quality index was computed for all 69 events from pose/hand presence, useful frames, tracking gaps and hand-scale stability; palm-edge fraction is only a framing proxy, not an occlusion detector. Five wrong-accepted non-sign events had index 95.0–97.7, overlapping accepted intended signs (76.8–99.6), so quality alone cannot reject the observed OOD false accepts. No gate changed. Private matrix: `core5_capture_quality_diagnostic_20260928.{json,csv}`.
 
 Official FSL-105 feasibility inventory confirms authoritative `labels.csv` has 105 classes, official train/test 1,704/426 clips, Core5 subset 81/20 and other-FSL subset 1,623/406. Existing Core5 extracted features cover 101 clips only; no separate OOD model has been fitted and no Samsung diagnostic event has entered training. A future binary Core5-like rejector would require leakage-safe FSL-105-only extraction/splitting, neutral-region validation, then sealed Samsung wave/partial testing. It cannot be claimed as a current solution.
+
+Class-conditioned **source diagnostics** now cover the 81 official FSL-105 **train** clips only (including development-validation clips); the 20 official test clips were not opened by this analysis. The script uses the same first-to-last observed pose+hand envelope with 100-ms context as Core5, and reports per-clip duration, L/R/two-hand presence, torso-normalized trajectory length, XY translation/articulation/arm speed, and start/end torso-relative palm positions. Private evidence: `core5_official_train_envelope_class_diagnostics_20260928.json`; analysis script: `scripts_ml/core5_source_class_diagnostics.py`. Source medians:
+
+| Class | Train clips | Envelope median | Median L/R presence | Median two-hand presence |
+|---|---:|---:|---:|---:|
+| HELLO | 16 | 1,417 ms | 0.03 / 0.80 | 0.00 |
+| THANK YOU | 16 | 1,508 ms | 0.83 / 0.84 | 0.81 |
+| YES | 16 | 1,458 ms | 0.03 / 0.82 | 0.00 |
+| NO | 17 | 1,517 ms | 0.03 / 0.85 | 0.00 |
+| UNDERSTAND | 16 | 1,542 ms | 0.03 / 0.83 | 0.00 |
+
+These are source-dataset descriptions, not Android thresholds or proof of correct sign semantics. Raw source clips have approximately four-second duration with substantial outer no-hand padding, so using untrimmed clip duration would have distorted the comparison. The earlier full-clip diagnostic JSON was preserved but superseded by the envelope-only result. Source pose/hand geometry and Samsung camera geometry remain different domains; no rigid class-conditioned rule was introduced.
 
 ## Exact current decisions
 
 - OLD_BOUNDARY_ROOT_CAUSE: legacy end requires hand disappearance; visible tracked hands never satisfy its three no-hand frames.
 - MOTION_DESCRIPTOR: timestamp-normalized torso-relative XY palm translation, robust hand-relative XY articulation, shoulder-relative arm motion; Z separate.
 - NOISE_FLOOR_MEASURED: YES, landmark-derived explicit hold-tail median/MAD/percentiles; no human-verified sign-end annotations.
-- HYSTERESIS_SEARCH: 144 exploratory offline configurations; none approved.
+- HYSTERESIS_SEARCH: 432 exploratory offline configurations including 0/100/200-ms causal score-filter sensitivity; none approved.
 - OFFLINE_BOUNDARY_V2: FAIL qualification / analysis prototype only.
-- EARLY_CUTS: best timeout-responsive configuration flags 4 auto + 4 manual positive events by conservative later-high-motion proxy.
-- TIMEOUTS_RESOLVED_OFFLINE: 5/9 for unsafe candidate; 0/9 among zero-early-cut-proxy candidates.
+- EARLY_CUTS: best timeout-responsive filtered configuration flags 4 auto + 3 manual positive events by conservative later-high-motion proxy.
+- TIMEOUTS_RESOLVED_OFFLINE: 5/9 for unsafe candidate; at most 1/9 among zero-early-cut-proxy filtered candidates, with 16/18 auto events having no candidate end.
 - GHOST_EVENTS: one prior unintended accepted HELLO remains; no simulated extra candidate in these truncated saved attempts, so prevention is unproven.
 - CAPTURE_QUALITY_GATE: DIAGNOSTIC_ONLY; not separating five false-accepted non-signs.
-- OOD_REJECTOR_EXPERIMENT: FSL-105 source inventory/feasibility only, not trained.
+- OOD_REJECTOR_EXPERIMENT: FSL-105 source inventory/feasibility only, not trained; 1,623/406 official non-Core5 train/test clips need same-contract extraction before a binary rejector can be evaluated. Samsung waves/partials remain sealed.
 - MODERN_UI_PRESERVED: YES; installed user-0 APK hash unchanged at `6354700532f8e49eb7e16ec2e8efc7edd884dd24db1f90c1c1444c8cdd08e912` after lab install.
 - SEPARATE_RECOGNITION_PACKAGE: YES built and installed alongside modern UI and Avatar; no V2 signing test.
 - ANDROID_BUILD: PASS; recognition-lab 139 JVM tests, lab/default APK build PASS.
 - SAMSUNG_V2_TEST: NOT_RUN; offline candidate failed. Samsung is authorized again; package coexistence/hash verification PASS.
-- GIT_COMMIT / REMOTE_PUSH_VERIFIED: `fb3edaf5a43aaa8bfcedc96823a23d26e3f1ef1b` / YES for Phase-0 safe evidence. Current V2 analysis edits not yet pushed.
+- GIT_COMMIT / REMOTE_PUSH_VERIFIED: `4479ec46f9569ae8efb4d5c1c97a034df47773e8` / YES for prior safe analysis checkpoint. Filter sensitivity and this report are pending their own safe checkpoint.
 - NEXT_EXACT_ACTION: obtain human-verified sign-end/hold annotations or video on a small consented debug sample, then improve and hold out the robust boundary detector; require zero premature cuts and sealed non-sign safety before any Android V2. Keep the already co-installed modern UI and lab package hashes frozen. Continue FSL-105-only OOD feasibility separately.

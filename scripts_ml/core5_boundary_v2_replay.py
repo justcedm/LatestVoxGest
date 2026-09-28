@@ -27,9 +27,10 @@ class Config:
     no_hand_ms: int = 350
     pre_ms: int = 200
     rearm_neutral_ms: int = 400
+    filter_tau_ms: int = 0
 
 
-def score_rows(rows):
+def score_rows(rows, filter_tau_ms=0):
     """XY-only, robust temporal fusion; Z is intentionally excluded."""
     raw = []
     for row in rows:
@@ -48,11 +49,28 @@ def score_rows(rows):
     for index in range(len(raw)):
         values = [v for v in raw[max(0, index - 2): index + 1] if v is not None]
         filtered.append(float(np.median(values)) if values else None)
-    return filtered
+    if filter_tau_ms == 0:
+        return filtered
+    # Timestamp-aware, causal low-pass on the detector score only. The model's
+    # authentic 225-feature observations remain untouched.
+    smoothed = []
+    previous = None
+    for index, value in enumerate(filtered):
+        if value is None:
+            smoothed.append(previous)
+            continue
+        if previous is None:
+            previous = value
+        else:
+            dt = rows[index]["timestamp_ms"] - rows[index - 1]["timestamp_ms"]
+            alpha = 1 - np.exp(-dt / filter_tau_ms)
+            previous = float(previous + alpha * (value - previous))
+        smoothed.append(previous)
+    return smoothed
 
 
 def replay(rows, config: Config):
-    scores = score_rows(rows)
+    scores = score_rows(rows, config.filter_tau_ms)
     state = "IDLE"
     high_start = None
     high_count = 0
@@ -182,10 +200,10 @@ def run(events_dir: Path, output: Path):
         raise FileExistsError("Preserve earlier boundary search evidence")
     events = load_events(events_dir)
     configs = [Config(start=start, end=start * ratio, dwell_ms=dwell,
-                      min_event_ms=minimum, post_ms=post)
-               for start, ratio, dwell, minimum, post in itertools.product(
+                      min_event_ms=minimum, post_ms=post, filter_tau_ms=tau)
+               for start, ratio, dwell, minimum, post, tau in itertools.product(
                    (1.0, 1.5, 2.0, 3.0), (.35, .5, .65), (250, 400, 700),
-                   (300, 600), (100, 200))]
+                   (300, 600), (100, 200), (0, 100, 200))]
     search = []
     for config in configs:
         metrics, _ = evaluate(events, config)
@@ -204,6 +222,7 @@ def run(events_dir: Path, output: Path):
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps({"status": "EXPLORATORY_NOT_VALIDATED",
                                   "scoring_note": "No human sign-end annotations; high motion after cut is a conservative proxy",
+                                  "filter_note": "0=3-sample causal median only; 100/200ms=additional timestamp-aware causal EMA on detector score; classifier input unchanged",
                                   "sealed_negative_note": "Wave/partial are diagnostic only, not threshold training examples",
                                   "events": len(events), "candidate_configs": len(search),
                                   "search": search, "top_examples": examples}, indent=2) + "\n", encoding="utf-8")
