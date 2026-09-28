@@ -1,13 +1,13 @@
 {
-  "timestamp": "2026-09-28T16:24:19.160105+08:00",
+  "timestamp": "2026-09-28T16:36:46.165673+08:00",
   "branch": "avatar/astra-calibration-20260914",
   "base_commit": "fcacf3ffdb80bdf8d1bdf3e5e08dd316fa7a9531",
   "head": "THIS_CHECKPOINT_COMMIT_USE_GIT_REV_PARSE_HEAD",
   "worktree": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-15\\files-mentioned-by-the-user-voxgest-2\\work\\avatar_core5_survey_20260928",
-  "active_blender_file": "LOCAL_ROOT/work/core3_rebuild_20260927/artifacts/avatar_rebuild/voxgest_core3_supervised9_rebuild_v2.blend",
+  "active_blender_file": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-15\\files-mentioned-by-the-user-voxgest-2\\outputs\\core5_survey_20260928\\private_evidence\\thank_you_fullspeed_v2\\THANK_YOU_review_only.blend",
   "active_action": "THANK_YOU",
-  "source_reference": "Original FSL_THANK_YOU__PURCHASED_REVIEW_C7; exact reference video reconciliation in progress",
-  "current_gate": "THANK_YOU_SOURCE_REFERENCE",
+  "source_reference": "FSL-105 clips/7/0.MOV; 243 frames at 60 FPS; reviewer approval unavailable per user",
+  "current_gate": "THANK_YOU_SOURCE_REFERENCE_FAILED_REVIEWER_APPROVAL_UNAVAILABLE",
   "priority": [
     "THANK YOU",
     "YES",
@@ -29,34 +29,50 @@
     "EIGHT"
   ],
   "files_created": [
-    "reports/ASTRA_AVATAR_SURVEY_STATE_20260928.json"
+    "reports/ASTRA_AVATAR_SURVEY_STATE_20260928.json",
+    "tools/avatar_survey/audit_runtime.py",
+    "tools/avatar_survey/render_review.py",
+    "tools/avatar_survey/compare_video.py",
+    "reports/CORE5_RUNTIME_DATA_AUDIT_20260928.json",
+    "reports/CORE5_RUNTIME_DATA_AUDIT_20260928_v2.json",
+    "reports/CORE5_EXISTING_APK_AUDIT_20260928.json",
+    "reports/CORE5_SURVEY_AUDIT_20260928.md",
+    "avatar_handoff/OWNER_FILE_REQUESTS_20260928.md",
+    "avatar_handoff/CORE5_SURVEY_ACTION_MAPPING_20260928.json",
+    "avatar_handoff/CORE5_SURVEY_REPRODUCE_20260928.md"
   ],
   "scripts_run": [
     "git status/branch/HEAD/remotes; fetch origin --prune",
     "Read all seven required documents completely from origin Avatar branch and main",
-    "Clean clone at required remote branch; old dirty checkout preserved"
+    "Clean clone at required remote branch; old dirty checkout preserved",
+    "tools/avatar_survey/audit_runtime.py --core CORE3 --candidate EXISTING_12_CLIP --out reports/CORE5_RUNTIME_DATA_AUDIT_20260928_v2.json",
+    "Blender 3.2 tools/avatar_survey/render_review.py; first relative-path save failed; fixed absolute output; second render completed 243 frames",
+    "tools/avatar_survey/compare_video.py; source and candidate counts/FPS verified 243/60",
+    "Read existing isolated build log; checked APK embedded GLB SHA256"
   ],
   "hashes": {
     "core3_glb": "30f13fb65e7557992a8c3109460a790a69161e69f3ba9771a1e64a33f98294f8",
     "original_supervised9": "38869f60ff9fe91bed7308be96b573a0483906c840f5927dc46780a0d00db3a9",
     "previous_four_clip_prototype": "fc547ea41136404c303cfd459fcaa52a7edd54f6f6ec5c874f2c31e94614bf98",
-    "previous_12_clip_candidate": "a8739dbe270b4da970fe0f7756ddb0c335458c6a25c36f200adad28e04310488"
+    "previous_12_clip_candidate": "a8739dbe270b4da970fe0f7756ddb0c335458c6a25c36f200adad28e04310488",
+    "review_blend": "64d90f1bf0d199f4ed720c4b86cd558406fe560aa5944fe60eba5e925c220c1c",
+    "comparison_video": "b3515004a4c12271501851734b2abfc3198d47288c7c6f3dc315663b2bea4e21"
   },
   "status": {
     "THANK YOU": {
-      "SOURCE_REFERENCE": "PENDING",
-      "MECHANICAL": "PENDING_FULL_COLLISION_REVIEW",
-      "HUMAN_MOTION_VISUAL": "PENDING_NORMAL_SPEED_COMPARISON",
-      "EXPORT": "PREEXISTING_STRUCTURAL_CANDIDATE_NOT_PROMOTED",
+      "SOURCE_REFERENCE": "FAIL_PLACEMENT_COMPARISON",
+      "MECHANICAL": "PENDING_CONTACT_AND_ROTATION_STEP_REVIEW",
+      "HUMAN_MOTION_VISUAL": "PENDING_FULL_SPEED_HUMAN_REVIEW",
+      "EXPORT": "BLOCKED_NO_NEW_SURVEY_EXPORT",
       "OWNER_DEVICE": "PENDING",
-      "FSL_APPROVAL": "PENDING",
+      "FSL_APPROVAL": "PENDING_USER_CONFIRMED_NO_REVIEWER_APPROVAL",
       "listen_ready": false
     },
     "YES": {
       "SOURCE_REFERENCE": "PENDING",
       "MECHANICAL": "PENDING_FULL_COLLISION_REVIEW",
       "HUMAN_MOTION_VISUAL": "PENDING_NORMAL_SPEED_COMPARISON",
-      "EXPORT": "PREEXISTING_STRUCTURAL_CANDIDATE_NOT_PROMOTED",
+      "EXPORT": "BLOCKED_THANK_YOU_FIRST_GATE",
       "OWNER_DEVICE": "PENDING",
       "FSL_APPROVAL": "PENDING",
       "listen_ready": false
@@ -65,7 +81,7 @@
       "SOURCE_REFERENCE": "PENDING",
       "MECHANICAL": "PENDING_FULL_COLLISION_REVIEW",
       "HUMAN_MOTION_VISUAL": "PENDING_NORMAL_SPEED_COMPARISON",
-      "EXPORT": "PREEXISTING_STRUCTURAL_CANDIDATE_NOT_PROMOTED",
+      "EXPORT": "BLOCKED_THANK_YOU_FIRST_GATE",
       "OWNER_DEVICE": "PENDING",
       "FSL_APPROVAL": "PENDING",
       "listen_ready": false
@@ -74,7 +90,7 @@
       "SOURCE_REFERENCE": "PENDING",
       "MECHANICAL": "PENDING_FULL_COLLISION_REVIEW",
       "HUMAN_MOTION_VISUAL": "PENDING_NORMAL_SPEED_COMPARISON",
-      "EXPORT": "PREEXISTING_STRUCTURAL_CANDIDATE_NOT_PROMOTED",
+      "EXPORT": "BLOCKED_THANK_YOU_FIRST_GATE",
       "OWNER_DEVICE": "PENDING",
       "FSL_APPROVAL": "PENDING",
       "listen_ready": false
@@ -86,5 +102,29 @@
     "rebuild_reference_blob": "23b3681edd46f8704a36c4c6aa8d1aa52cbe2cf8"
   },
   "private_files_committed": false,
-  "next_action": "Identify and hash the exact THANK YOU clip-0 reference; prepare full-speed source/candidate comparison and targeted deformation/contact audit before deciding acceptance or producing a new survey export."
+  "next_action": "Obtain reviewer decision for exact clips/7/0.MOV via REF-TY-001; after approved contact target, create a new Core3 THANK_YOU correction derivative and inspect frames 127-128 plus mouth contact, repeat A-D before export. After Git sign-in, push safe checkpoint and verify local/remote equality.",
+  "head_before_checkpoint": "d6f500fd1eae90fa24df64ead33bf8fb2281b03e",
+  "source_reference_sha256": "fc0003d10b31d6e04e0effca02a288b0d05135ac2cbc15a1f94cd07fa8641ea4",
+  "core3_regression": {
+    "HELLO": "PASS_EXACT_DATA_ONLY",
+    "MILK": "PASS_EXACT_DATA_ONLY",
+    "RICE": "PASS_EXACT_DATA_ONLY",
+    "owner_visual_device": "PENDING"
+  },
+  "visual_findings": [
+    "Sampled frame 153: source fingertips at lips; candidate fingertips below chin. Source-relative placement fails.",
+    "Frames 127/128: 34.8303-degree ring-finger local rotation flag; stills insufficient to resolve deformation/contact.",
+    "243-frame 60-FPS side-by-side video created, not a completed normal-speed human acceptance review."
+  ],
+  "failures": [
+    "Source placement mismatch",
+    "First render used relative Blender save path; repaired using absolute path and NEW v2 directory",
+    "Git push authentication helper failed with MSYS signal-pipe Win32 error 5; no remote delivery confirmed"
+  ],
+  "owner_requests": [
+    "REF-TY-001"
+  ],
+  "handoff_zip": null,
+  "candidate_glb": "NO_NEW_SURVEY_EXPORT",
+  "remote_checkpoint_delivered": false
 }

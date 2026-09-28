@@ -1,0 +1,14 @@
+{
+  "apk_sha256": "1fb707c5646ac17d765357d17537d08ec2625f35c42996116adee8f5cae45890",
+  "apk_bytes": 76465752,
+  "embedded_glbs": [
+    {
+      "asset": "assets/avatar/voxgest_avatar_CORE3_PLUS_SUPERVISED9_RC1.glb",
+      "sha256": "a8739dbe270b4da970fe0f7756ddb0c335458c6a25c36f200adad28e04310488",
+      "bytes": 50487552
+    }
+  ],
+  "build": "PREEXISTING_ISOLATED_12_CLIP_BUILD_SUCCESSFUL",
+  "new_core5_build": "NOT_CREATED_GATE_BLOCKED",
+  "device": "PENDING"
+}
