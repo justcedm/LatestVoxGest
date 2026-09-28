@@ -1,0 +1,23 @@
+{
+  "timestamp": "2026-09-28T07:35:00+08:00",
+  "phase": "PHASE_5_OFFLINE_AB_AND_EXISTING_DEBUG_BOUNDARY_AUDIT_COMPLETE",
+  "branch": "recognition/fsl-core5-rebase-v1",
+  "head": "1c99f95ee5f4446e8a146963db80b256e8f7dafc",
+  "device": {"serial": "R5GYC0M1M4P", "model": "SM-A566B", "android": "16", "adb_status": "device"},
+  "installed_packages": {
+    "com.voxgest.dryrun": {"version": "0.1.0", "apk_sha256": "924e81190c44ac4e804bb2738e8c6e35b8cde664f435e0f5bf814230150dcec8", "launcher": "com.voxgest.app.MainActivity", "core5_activity_present": true},
+    "com.voxgest.dryrun.avatartrial": {"version": "0.1.0", "apk_sha256": "f87c8a0935bfdd9c0cc83e332e63d3cb60a5ed4cf82c7531b98b39fc6b289c88", "untouched": true}
+  },
+  "validated_diagnostic_apk_sha256": "924e81190c44ac4e804bb2738e8c6e35b8cde664f435e0f5bf814230150dcec8",
+  "profile": "FSL_CORE5_SIM10FPS_V1",
+  "model_sha256": "3702ff77c1c44a60f0dc7f06e19e778b6498df7dbf7e205991dc15158b8e888f",
+  "feature_contract": "core5_tasks_fullsign225_timestamp48_v1",
+  "tests_completed": ["git worktree inventory", "authorized ADB recheck", "installed package inventory", "APK hashes", "139 Android JVM tests pass after battery", "analysis scripts py_compile PASS", "private same-tensor and motion audit scripts executed PASS", "Python pytest unavailable in local environment", "diagnostic APK install and device hash parity", "runtime feature and temporal parity PASS", "golden Android TFLite parity PASS at max difference 1.1920929e-7", "camera framing screenshot saved"],
+  "events_captured_this_turn": 59,
+  "preserved_hello": {"manual_raw": "5/5", "manual_accepted": "5/5", "timeout_raw_hello": "4/4"},
+  "results": "Startup parity PASS; MANUAL: THANK YOU 5/5 raw 4/5 accepted, YES right-hand 4/6 raw 0/6 accepted correct, NO 6/6 raw 3/6 accepted, UNDERSTAND right-hand 5/5 raw 3/5 accepted. NEGATIVE: 5/16 false accepts. AUTO_LEGACY: 9/18 released after 3 no-hand frames; 9/18 timed out with hand tracked in every frame; YES 0/4 raw, NO 3/3 raw but 0 accepted, UNDERSTAND 3/3 raw/accepted. All 54 inferred current-turn events replay parity PASS. Same-tensor Baseline/Native48/SIM10 raw YES 9/8/4 of 11; all three models retain 4/6 wave and 1/5 partial false accepts. Existing debug AUTO_MOTION rule offline triggered 0/18 automatic events before saved ending. Diagnostic profile NOT user-facing ready.",
+  "evidence_paths": ["reports/fsl_core5_rebase_v1/SIM10FPS_SAMSUNG_QUALIFICATION_20260927.md", "reports/fsl_core5_rebase_v1/CORE5_SAMSUNG_MULTICLASS_QUALIFICATION_20260927.md", "D:/VoxGest/evidence/fsl_core5_rebase_v1/"],
+  "files_changed_this_turn": ["reports/CODEX_LIVE_HANDOFF.md", "reports/fsl_core5_rebase_v1/CORE5_5PM_8PM_CHECKPOINT.md", "reports/fsl_core5_rebase_v1/CORE5_5PM_8PM_STATE.json", "reports/fsl_core5_rebase_v1/CORE5_SAMSUNG_MULTICLASS_QUALIFICATION_20260927.md", "reports/fsl_core5_rebase_v1/CORE5_YES_CLASS_FAILURE_20260928.md", "reports/fsl_core5_rebase_v1/CORE5_AUTO_BOUNDARY_FORENSICS_20260928.md", "reports/fsl_core5_rebase_v1/CORE5_SAME_TENSOR_MODEL_COMPARISON_20260928.md", "reports/fsl_core5_rebase_v1/CORE5_MOTION_SETTLE_OFFLINE_AUDIT_20260928.md", "scripts_ml/core5_same_tensor_ab.py", "scripts_ml/core5_motion_settle_offline.py"],
+  "unresolved_blocker": "Wrong accepted negatives and YES raw confusion block user-facing profile; motion-settle debug proposal needs offline replay before code or device testing",
+  "next_exact_action": "Offline class-agnostic timestamp-normalized motion candidate study with truncated-tensor TFLite/gate replay and non-sign safety checks; keep installed Android/model/gates untouched and request no more signing until that study passes."
+}

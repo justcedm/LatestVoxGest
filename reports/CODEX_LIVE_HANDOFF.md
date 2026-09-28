@@ -1,5 +1,42 @@
 # VoxGest Live Handoff
 
+LATEST_CORE5_AB_20260928=Read-only same-Samsung-tensor replay complete for YES 11, THANK YOU 9, NO 9, UNDERSTAND 10, wave 6, and partial 5 events. Baseline/Native48/SIM10 raw-correct counts: YES 9/8/4 of 11; THANK YOU 9/9/9 of 9; NO 7/9/9 of 9; UNDERSTAND 8/8/8 of 10. Under the unchanged saved-event gate, all three models still falsely accept 4/6 arbitrary waves and 1/5 partial gestures. Baseline accepts two correct YES but also the same wrong THANK YOU for a left-only YES event; none is a safe user-facing replacement. See `reports/fsl_core5_rebase_v1/CORE5_SAME_TENSOR_MODEL_COMPARISON_20260928.md` and private full vectors in the evidence folder. No model switch, retraining, threshold, UI, Avatar, or production change. Next: offline class-agnostic motion-settle/OOD trajectory audit; no further human signing requested now.
+
+## Current: Core5 Samsung multiclass and OOD qualification — 2026-09-28
+
+BRANCH=recognition/fsl-core5-rebase-v1; HEAD=1c99f95ee5f4446e8a146963db80b256e8f7dafc. Existing Core5 worktree remains dirty; do not reset/clean it. Samsung SM-A566B serial R5GYC0M1M4P authorized. Exact diagnostic APK SHA256 924e81190c44ac4e804bb2738e8c6e35b8cde664f435e0f5bf814230150dcec8 was restored with adb install -r after backing up the prior UI V2 APK to private evidence; no uninstall/data clear, Avatar package untouched. Debug-only profile FSL_CORE5_SIM10FPS_V1; model SHA256 3702ff77c1c44a60f0dc7f06e19e778b6498df7dbf7e205991dc15158b8e888f. Startup feature/temporal/golden TFLite parity PASS. Android JVM tests 139/139 PASS. No model, gate, threshold, production-route, UI, or Avatar change.
+
+MANUAL_POSITIVES=Preserved HELLO 5/5 raw and accepted. New THANK YOU 5/5 raw, 4/5 accepted (one timeout). NO six confirmed physical-right-hand attempts: 6/6 raw, 3/6 accepted (two timeouts, one low confidence). UNDERSTAND: physical-right-hand subset 5/5 raw and 3/5 accepted; two deliberately left-hand signs were raw wrong and rejected. YES: six right-hand tracked attempts raw YES 4/6, raw HELLO 2/6, accepted YES 0/6; an additional left-only YES attempt was raw THANK YOU and wrongly accepted. All inferred saved events have exact tensor rebuild and desktop/Android TFLite parity PASS. These are controlled operator-intent diagnostics, not formal accuracy claims. Do not retrain from Samsung events.
+
+NEGATIVE_OOD=Five neutral events: 0/5 false accepts, no inference. Six confirmed arbitrary non-FSL waves: 4/6 wrong accepted (THANK YOU twice, HELLO twice). Five confirmed incomplete/aborted gestures: 1/5 wrong accepted UNDERSTAND. Overall frozen negative battery 5/16 false accepts. The current candidate is **NOT user-facing/survey ready**. Confidence is very high even on accepted waves; do not attempt to fix by weakening or blindly raising thresholds.
+
+AUTO_BOUNDARY=Initial battery complete, 18 saved events including two explicit hold controls. All nine releases had exactly three trailing no-hand frames; all nine timeouts retained a hand in every frame. Four AUTO_LEGACY HELLO events all raw/accepted HELLO but only three were deliberate signs and the extra accepted event cannot be mapped: do not score four correct. THANK YOU four raw correct, two releases/two timeouts. NO three raw correct, all timed out. YES four deliberate right-hand events, all raw HELLO and timed out. UNDERSTAND three raw/accepted and released. Deliberate visible/stationary-hand hold reproduced raw-correct timeout with both hands tracked in all 55 frames; lower-edge hold lost hand tracking for three frames and released. State-level root: legacy collector requires hand disappearance, not motion settle. This is separate from classifier/OOD failures. No collector code changed.
+
+EVIDENCE=reports/fsl_core5_rebase_v1/CORE5_5PM_8PM_CHECKPOINT.md; CORE5_5PM_8PM_STATE.json; CORE5_SAMSUNG_MULTICLASS_QUALIFICATION_20260927.md; CORE5_YES_CLASS_FAILURE_20260928.md; CORE5_AUTO_BOUNDARY_FORENSICS_20260928.md. Private 69-event matrix is D:/VoxGest/evidence/fsl_core5_rebase_v1/core5_samsung_event_matrix_20260927.json and .csv; current turn added 59 events, 54 with tensors and replay PASS, five neutral/no-inference. Private raw events, tensors, replays, screenshots and logs remain outside Git. Rollback UI V2 APK is retained privately as rollback_ui_v2_6354700532f8.apk (SHA256 6354700532f8e49eb7e16ec2e8efc7edd884dd24db1f90c1c1444c8cdd08e912). NEXT_EXACT_ACTION=Read-only same-tensor YES Baseline/Native48/SIM10 comparison and offline motion-settle/OOD trajectory analysis. Any later repair must be isolated/debug-only with rollback; do not connect this profile to production Sign text/TTS.
+
+## Current: Core5 multiclass qualification paused after Phase 0 — 2026-09-27
+
+BRANCH=recognition/fsl-core5-rebase-v1
+HEAD=1c99f95ee5f4446e8a146963db80b256e8f7dafc; existing Core5 worktree remains uncommitted.
+PHASE0=Nine preserved Samsung HELLO tensors replayed through Baseline, Native48, and SIM10. All 27 raw top-1 outcomes are HELLO; full vectors in D:/VoxGest/evidence/fsl_core5_rebase_v1/core5_hello_same_tensor_ab_20260927.json and .csv. No top-1 advantage is established for SIM10 on HELLO.
+PHASE1-3=NOT_STARTED. Current installed com.voxgest.dryrun APK SHA256 6fbf1c0ed078201a629095065c9cce3569137ee662c181db034daa0ee6ffd8c9 differs from validated SIM10 APK 924e81190c44ac4e804bb2738e8c6e35b8cde664f435e0f5bf814230150dcec8. Core5DiagnosticActivity is absent from current installed APK. No replacement or reinstall has been made; owner direction to restore the validated debug APK is pending.
+EXTRA_EVENT=7dc79689-2fb9-407b-b205-23f8cfd94a34, UI-labelled HELLO after Phase0. Operator's performed sign unconfirmed; preserved and excluded from scored battery.
+REPORT=reports/fsl_core5_rebase_v1/CORE5_SAMSUNG_MULTICLASS_QUALIFICATION_20260927.md (in progress).
+NEXT_ACTION=If owner authorizes restoring the validated SIM10 APK, use adb install -r without uninstall/data clear, recheck installed hash and startup parity, then collect THANK YOU/YES/NO/UNDERSTAND manual batches, negatives, and finally unchanged AUTO_LEGACY events. Do not alter production/default models or gates.
+
+## Current: Core5 SIM10 Samsung HELLO-only candidate gate — 2026-09-27
+
+BRANCH=recognition/fsl-core5-rebase-v1
+HEAD=1c99f95ee5f4446e8a146963db80b256e8f7dafc; Core5 worktree remains uncommitted.
+PROFILE=FSL_CORE5_SIM10FPS_V1, explicit debug-only candidate; baseline is the default.
+MODEL_SHA256=3702ff77c1c44a60f0dc7f06e19e778b6498df7dbf7e205991dc15158b8e888f
+DEVICE=Authorized Samsung SM-A566B; installed APK hash matches built APK.
+PARITY=Supplied golden top-1 HELLO; Android max probability delta 1.1920929e-7 (PASS). Five saved live events have exact desktop/Android replay PASS.
+HELLO=Five timely-ended MANUAL events, raw HELLO 5/5 and accepted HELLO 5/5. Four other HELLO-labelled events timed out and were correctly rejected; do not turn the five-event diagnostic result into a general accuracy claim.
+PRESERVATION=Core5 V1 model SHA unchanged; no production gate, UI, Avatar, demo10, or other model change. Private events/logs/screenshots remain outside Git.
+REPORT=reports/fsl_core5_rebase_v1/SIM10FPS_SAMSUNG_QUALIFICATION_20260927.md
+NEXT_ACTION=Stop at HELLO and await review/authorization for other classes and negative/OOD tests. Do not retrain or change gates from this result.
+
 ## Current: canonical D migration, Stages0-2 only - 2026-09-22
 
 BRANCH=recognition/fsl105-mapua-unified-tasks-v1
