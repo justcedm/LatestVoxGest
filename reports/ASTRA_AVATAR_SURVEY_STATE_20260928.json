@@ -1,0 +1,90 @@
+{
+  "timestamp": "2026-09-28T16:24:19.160105+08:00",
+  "branch": "avatar/astra-calibration-20260914",
+  "base_commit": "fcacf3ffdb80bdf8d1bdf3e5e08dd316fa7a9531",
+  "head": "THIS_CHECKPOINT_COMMIT_USE_GIT_REV_PARSE_HEAD",
+  "worktree": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-15\\files-mentioned-by-the-user-voxgest-2\\work\\avatar_core5_survey_20260928",
+  "active_blender_file": "LOCAL_ROOT/work/core3_rebuild_20260927/artifacts/avatar_rebuild/voxgest_core3_supervised9_rebuild_v2.blend",
+  "active_action": "THANK_YOU",
+  "source_reference": "Original FSL_THANK_YOU__PURCHASED_REVIEW_C7; exact reference video reconciliation in progress",
+  "current_gate": "THANK_YOU_SOURCE_REFERENCE",
+  "priority": [
+    "THANK YOU",
+    "YES",
+    "NO",
+    "UNDERSTAND"
+  ],
+  "parked": [
+    "IM FINE",
+    "HOW ARE YOU",
+    "GOOD EVENING",
+    "KNOW",
+    "WRONG",
+    "ONE",
+    "TWO",
+    "THREE",
+    "FOUR",
+    "FIVE",
+    "SEVEN",
+    "EIGHT"
+  ],
+  "files_created": [
+    "reports/ASTRA_AVATAR_SURVEY_STATE_20260928.json"
+  ],
+  "scripts_run": [
+    "git status/branch/HEAD/remotes; fetch origin --prune",
+    "Read all seven required documents completely from origin Avatar branch and main",
+    "Clean clone at required remote branch; old dirty checkout preserved"
+  ],
+  "hashes": {
+    "core3_glb": "30f13fb65e7557992a8c3109460a790a69161e69f3ba9771a1e64a33f98294f8",
+    "original_supervised9": "38869f60ff9fe91bed7308be96b573a0483906c840f5927dc46780a0d00db3a9",
+    "previous_four_clip_prototype": "fc547ea41136404c303cfd459fcaa52a7edd54f6f6ec5c874f2c31e94614bf98",
+    "previous_12_clip_candidate": "a8739dbe270b4da970fe0f7756ddb0c335458c6a25c36f200adad28e04310488"
+  },
+  "status": {
+    "THANK YOU": {
+      "SOURCE_REFERENCE": "PENDING",
+      "MECHANICAL": "PENDING_FULL_COLLISION_REVIEW",
+      "HUMAN_MOTION_VISUAL": "PENDING_NORMAL_SPEED_COMPARISON",
+      "EXPORT": "PREEXISTING_STRUCTURAL_CANDIDATE_NOT_PROMOTED",
+      "OWNER_DEVICE": "PENDING",
+      "FSL_APPROVAL": "PENDING",
+      "listen_ready": false
+    },
+    "YES": {
+      "SOURCE_REFERENCE": "PENDING",
+      "MECHANICAL": "PENDING_FULL_COLLISION_REVIEW",
+      "HUMAN_MOTION_VISUAL": "PENDING_NORMAL_SPEED_COMPARISON",
+      "EXPORT": "PREEXISTING_STRUCTURAL_CANDIDATE_NOT_PROMOTED",
+      "OWNER_DEVICE": "PENDING",
+      "FSL_APPROVAL": "PENDING",
+      "listen_ready": false
+    },
+    "NO": {
+      "SOURCE_REFERENCE": "PENDING",
+      "MECHANICAL": "PENDING_FULL_COLLISION_REVIEW",
+      "HUMAN_MOTION_VISUAL": "PENDING_NORMAL_SPEED_COMPARISON",
+      "EXPORT": "PREEXISTING_STRUCTURAL_CANDIDATE_NOT_PROMOTED",
+      "OWNER_DEVICE": "PENDING",
+      "FSL_APPROVAL": "PENDING",
+      "listen_ready": false
+    },
+    "UNDERSTAND": {
+      "SOURCE_REFERENCE": "PENDING",
+      "MECHANICAL": "PENDING_FULL_COLLISION_REVIEW",
+      "HUMAN_MOTION_VISUAL": "PENDING_NORMAL_SPEED_COMPARISON",
+      "EXPORT": "PREEXISTING_STRUCTURAL_CANDIDATE_NOT_PROMOTED",
+      "OWNER_DEVICE": "PENDING",
+      "FSL_APPROVAL": "PENDING",
+      "listen_ready": false
+    }
+  },
+  "protocol_sources": {
+    "avatar_tip": "fcacf3ffdb80bdf8d1bdf3e5e08dd316fa7a9531",
+    "main_readiness_ui_docs": "b6def3d7ac082865dcf2ce8aeb36b78cb150dc17",
+    "rebuild_reference_blob": "23b3681edd46f8704a36c4c6aa8d1aa52cbe2cf8"
+  },
+  "private_files_committed": false,
+  "next_action": "Identify and hash the exact THANK YOU clip-0 reference; prepare full-speed source/candidate comparison and targeted deformation/contact audit before deciding acceptance or producing a new survey export."
+}

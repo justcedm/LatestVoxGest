@@ -1,5 +1,37 @@
 # ASTRA LIVE HANDOFF
 
+## Remote Core5 survey restart — 2026-09-28
+
+UPDATED_AT=2026-09-28T16:24:19.160105+08:00
+BRANCH=avatar/astra-calibration-20260914
+BASE_COMMIT=fcacf3ffdb80bdf8d1bdf3e5e08dd316fa7a9531
+HEAD=THIS_CHECKPOINT_COMMIT_USE_GIT_REV_PARSE_HEAD
+WORKTREE=C_SAFE_CLEAN_SURVEY_CLONE
+PHASE=THANK_YOU_SOURCE_REFERENCE_PENDING
+FROZEN_SOLVER=NOT_RECOVERED_RUNTIME_RECONSTRUCTION_ONLY
+CORE3_FALLBACK_PRESERVED=YES
+SOURCE_ASSETS=PRIVATE_LOCAL_IMMUTABLE
+CORE3_STATUS=ANIMATION_AND_PLATFORM_DATA_PRESERVED_DEVICE_REGRESSION_PENDING
+RUNTIME_READY_SIGNS=NO_NEW_SIGNS
+REVIEW_REQUIRED_SIGNS=THANK_YOU;YES;NO;UNDERSTAND
+ANDROID_STATUS=PREVIOUS_ISOLATED_12_CLIP_BUILD_PASS_NOT_SURVEY_ACCEPTANCE
+SAMSUNG_PHYSICAL_GATE=PENDING_OWNER_ONLY
+BLOCKERS=SOURCE_COMPARISON_FULL_MOTION_AND_COLLISION_GATES_NOT_YET_ACCEPTED
+CHANGED_FILES=reports/ASTRA_LIVE_HANDOFF.md;reports/ASTRA_AVATAR_SURVEY_STATE_20260928.json
+NEXT_EXACT_COMMAND=Inspect exact THANK YOU source reference and existing Core3-derived prototype without changing source assets.
+NEXT_EXACT_TASK=THANK YOU source, mechanical/contact and normal-speed visual assessment before promotion.
+NEXT_EXACT_ACTION=Identify and hash the exact THANK YOU clip-0 reference; prepare full-speed source/candidate comparison and targeted deformation/contact audit before deciding acceptance or producing a new survey export.
+CLAIMS_STILL_PROHIBITED=SURVEY_READY;LISTEN_READY;SAMSUNG_PASS;FSL_APPROVAL;FINAL_ANDROID_FPS
+
+Read the complete current remote protocol on the Avatar branch and all six supporting documents. Readiness/UI/rebuild documents are absent on this branch but were fetched from main at b6def3d7ac082865dcf2ce8aeb36b78cb150dc17; no recognition/UI worktree was modified. Required remote acceptance order is THANK YOU -> YES -> NO -> UNDERSTAND. Earlier prepared nine-word and seven-number candidates are private, unapproved and parked. Preparation did not waive acceptance or allow production promotion.
+
+The old local checkout at 35c9d6d has unrelated/uncommitted work and is preserved. This clean clone starts at the current required branch tip. No binaries, source recordings, .blend files, mesh data, or fitted pose arrays are staged. Existing Core3 plus nine candidate runtime checks are evidence only of their stated structural scope. Full source/visual/collision gates remain pending; no new survey export is authorized by their existence.
+
+Machine-readable state: reports/ASTRA_AVATAR_SURVEY_STATE_20260928.json.
+
+---
+
+
 ## Corrected next-word review V7 — 2026-09-20
 
 The user requested fixing the rejected new words urgently. Separate corrected candidates now replace
