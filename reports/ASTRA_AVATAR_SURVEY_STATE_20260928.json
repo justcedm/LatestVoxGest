@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-09-28T16:36:46.165673+08:00",
+  "timestamp": "2026-09-28T16:40:03.959822+08:00",
   "branch": "avatar/astra-calibration-20260914",
   "base_commit": "fcacf3ffdb80bdf8d1bdf3e5e08dd316fa7a9531",
   "head": "THIS_CHECKPOINT_COMMIT_USE_GIT_REV_PARSE_HEAD",
@@ -103,7 +103,7 @@
   },
   "private_files_committed": false,
   "next_action": "Obtain reviewer decision for exact clips/7/0.MOV via REF-TY-001; after approved contact target, create a new Core3 THANK_YOU correction derivative and inspect frames 127-128 plus mouth contact, repeat A-D before export. After Git sign-in, push safe checkpoint and verify local/remote equality.",
-  "head_before_checkpoint": "d6f500fd1eae90fa24df64ead33bf8fb2281b03e",
+  "head_before_checkpoint": "58652f6cdf91dadcf87baf9280b19e711085911a",
   "source_reference_sha256": "fc0003d10b31d6e04e0effca02a288b0d05135ac2cbc15a1f94cd07fa8641ea4",
   "core3_regression": {
     "HELLO": "PASS_EXACT_DATA_ONLY",
@@ -119,12 +119,14 @@
   "failures": [
     "Source placement mismatch",
     "First render used relative Blender save path; repaired using absolute path and NEW v2 directory",
-    "Git push authentication helper failed with MSYS signal-pipe Win32 error 5; no remote delivery confirmed"
+    "Git push authentication helper failed with MSYS signal-pipe Win32 error 5; no remote delivery confirmed",
+    "Final push exit 128; remote ls-remote differs from local committed checkpoint. Live handoff encoding normalized to UTF-8, prior checkpoint history restored byte-equivalently as text."
   ],
   "owner_requests": [
     "REF-TY-001"
   ],
   "handoff_zip": null,
   "candidate_glb": "NO_NEW_SURVEY_EXPORT",
-  "remote_checkpoint_delivered": false
+  "remote_checkpoint_delivered": false,
+  "remote_verified_head": "fcacf3ffdb80bdf8d1bdf3e5e08dd316fa7a9531"
 }

@@ -1,34 +1,66 @@
-# Remote Core5 source-gate checkpoint — 2026-09-28
+# Remote Core5 source-gate checkpoint â€” 2026-09-28
+
+
 
 UPDATED_AT=2026-09-28T16:36:46.165673+08:00
+
 BRANCH=avatar/astra-calibration-20260914
+
 BASE_COMMIT=fcacf3ffdb80bdf8d1bdf3e5e08dd316fa7a9531
+
 HEAD_BEFORE_CHECKPOINT=d6f500fd1eae90fa24df64ead33bf8fb2281b03e
+
 HEAD=resolve git rev-parse HEAD after commit
+
 WORKTREE=work/avatar_core5_survey_20260928 on Earle C: machine
+
 PHASE=THANK_YOU_SOURCE_GATE_BLOCKED
+
 FROZEN_SOLVER=NOT_RECOVERED
+
 CORE3_FALLBACK_PRESERVED=YES
+
 SOURCE_ASSETS=PRIVATE_LOCAL_IMMUTABLE
+
 CORE3_STATUS=PASS_EXACT_ANIMATION_AND_PLATFORM_DATA_ONLY
+
 RUNTIME_READY_SIGNS=NO_NEW_SIGNS
+
 REVIEW_REQUIRED_SIGNS=THANK_YOU;YES;NO;UNDERSTAND
+
 ANDROID_STATUS=EXISTING_12_CLIP_BUILD_PASS;NEW_SURVEY_BUILD_NOT_CREATED
+
 SAMSUNG_PHYSICAL_GATE=PENDING_OWNER_ONLY
+
 BLOCKERS=THANK_YOU_PLACEMENT_MISMATCH;REVIEWER_APPROVAL_UNAVAILABLE;GIT_PUSH_AUTH_HELPER_FAILURE
+
 CHANGED_FILES=see ASTRA_AVATAR_SURVEY_STATE_20260928.json files_created
+
 NEXT_EXACT_COMMAND=After authentication: git push origin HEAD:avatar/astra-calibration-20260914
+
 NEXT_EXACT_TASK=Resolve REF-TY-001 before changing contact target; no other word promotion.
+
 NEXT_EXACT_ACTION=Obtain reviewer decision for exact clips/7/0.MOV via REF-TY-001; after approved contact target, create a new Core3 THANK_YOU correction derivative and inspect frames 127-128 plus mouth contact, repeat A-D before export. After Git sign-in, push safe checkpoint and verify local/remote equality.
+
 CLAIMS_STILL_PROHIBITED=SURVEY_READY;LISTEN_READY;SAMSUNG_PASS;FSL_APPROVAL;FINAL_ANDROID_FPS
+
+
 
 Source SHA256 fc0003d10b31d6e04e0effca02a288b0d05135ac2cbc15a1f94cd07fa8641ea4. At frame 153 the source fingertips reach the lips while the reconstructed candidate stays below the chin. This is a failed placement comparison, not a claim about FSL validity. User confirmed reviewer approval is unavailable. A complete 243-frame 60-FPS comparison and new review-only Blender derivative exist privately. Human full-speed acceptance and collision checks remain pending. Maximum local finger step 34.8303 degrees (ring.03.R, keys 126 to 127 / Blender frames 127 to 128) is flagged, not smoothed away.
 
+
+
 No new survey GLB/ZIP was exported. Existing GLBs are diagnostic, unapproved candidates. Existing 12-clip APK embedded hash was rechecked. All lower-priority words and number words remain parked. Public scripts contain no source geometry, recordings, or fitted pose arrays. Remote delivery is NOT confirmed; push failed locally before authentication.
+
+
 
 Detailed evidence: reports/CORE5_SURVEY_AUDIT_20260928.md. Machine state: reports/ASTRA_AVATAR_SURVEY_STATE_20260928.json.
 
+
+
 ---
+
+
 
 # ASTRA LIVE HANDOFF
 
