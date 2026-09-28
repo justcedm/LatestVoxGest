@@ -61,7 +61,7 @@ def audit(core, candidate):
             exact_data_pass=actual == expected, visual_device='PENDING')
     joints = set(g.j['skins'][0]['joints'])
     rows = []
-    for name in ('THANK_YOU', 'YES', 'NO', 'UNDERSTAND'):
+    for name in new:
         if name not in new:
             continue
         a = new[name]

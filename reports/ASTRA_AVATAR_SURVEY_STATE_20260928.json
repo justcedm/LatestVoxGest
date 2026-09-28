@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-09-28T16:40:03.959822+08:00",
+  "timestamp": "2026-09-28T16:45:44.105599+08:00",
   "branch": "avatar/astra-calibration-20260914",
   "base_commit": "fcacf3ffdb80bdf8d1bdf3e5e08dd316fa7a9531",
   "head": "THIS_CHECKPOINT_COMMIT_USE_GIT_REV_PARSE_HEAD",
@@ -7,7 +7,7 @@
   "active_blender_file": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-15\\files-mentioned-by-the-user-voxgest-2\\outputs\\core5_survey_20260928\\private_evidence\\thank_you_fullspeed_v2\\THANK_YOU_review_only.blend",
   "active_action": "THANK_YOU",
   "source_reference": "FSL-105 clips/7/0.MOV; 243 frames at 60 FPS; reviewer approval unavailable per user",
-  "current_gate": "THANK_YOU_SOURCE_REFERENCE_FAILED_REVIEWER_APPROVAL_UNAVAILABLE",
+  "current_gate": "RECALIBRATION_GEOMETRY_REPRODUCTION",
   "priority": [
     "THANK YOU",
     "YES",
@@ -102,7 +102,7 @@
     "rebuild_reference_blob": "23b3681edd46f8704a36c4c6aa8d1aa52cbe2cf8"
   },
   "private_files_committed": false,
-  "next_action": "Obtain reviewer decision for exact clips/7/0.MOV via REF-TY-001; after approved contact target, create a new Core3 THANK_YOU correction derivative and inspect frames 127-128 plus mouth contact, repeat A-D before export. After Git sign-in, push safe checkpoint and verify local/remote equality.",
+  "next_action": "Reproduce reported body/head overlap versus hair/teeth using read-only world-space skin bounds and identify the affected file; preserve Core3 and continue engineering review copies, without promotion.",
   "head_before_checkpoint": "58652f6cdf91dadcf87baf9280b19e711085911a",
   "source_reference_sha256": "fc0003d10b31d6e04e0effca02a288b0d05135ac2cbc15a1f94cd07fa8641ea4",
   "core3_regression": {
@@ -128,5 +128,6 @@
   "handoff_zip": null,
   "candidate_glb": "NO_NEW_SURVEY_EXPORT",
   "remote_checkpoint_delivered": false,
-  "remote_verified_head": "fcacf3ffdb80bdf8d1bdf3e5e08dd316fa7a9531"
+  "remote_verified_head": "fcacf3ffdb80bdf8d1bdf3e5e08dd316fa7a9531",
+  "user_direction": "2026-09-28: recalibrate remaining words; prioritize accuracy and overlap removal, no rush. This authorizes engineering corrections, not linguistic or device approval."
 }
