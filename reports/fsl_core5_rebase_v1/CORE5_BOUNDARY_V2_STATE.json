@@ -1,0 +1,31 @@
+{
+  "timestamp_local": "2026-09-28",
+  "branch": "recognition/fsl-core5-rebase-v1",
+  "phase0_commit": "fb3edaf5a43aaa8bfcedc96823a23d26e3f1ef1b",
+  "phase0_remote_verified": true,
+  "current_goal": "Offline Boundary V2 and OOD feasibility without altering production or the modern UI",
+  "device": "Samsung SM-A566B authorized after USB reconnection; package coexistence/hash verified; no Samsung V2 signing test",
+  "lab_application_id": "com.voxgest.dryrun.recognitionlab",
+  "lab_apk_sha256": "1a3d2770634c79ce4e6b3ce00a3dacab289773ee389599d573a05f7d4957cd07",
+  "modern_ui_rollback_apk_sha256": "6354700532f8e49eb7e16ec2e8efc7edd884dd24db1f90c1c1444c8cdd08e912",
+  "installed_packages": {
+    "com.voxgest.dryrun": "6354700532f8e49eb7e16ec2e8efc7edd884dd24db1f90c1c1444c8cdd08e912",
+    "com.voxgest.dryrun.recognitionlab": "1a3d2770634c79ce4e6b3ce00a3dacab289773ee389599d573a05f7d4957cd07",
+    "com.voxgest.dryrun.avatartrial": "f87c8a0935bfdd9c0cc83e332e63d3cb60a5ed4cf82c7531b98b39fc6b289c88"
+  },
+  "android_tests": "recognitionLab 139/139 PASS; assembleRecognitionLab and assembleDebug PASS",
+  "saved_events_described": 69,
+  "timeline_rows": 3779,
+  "offline_configurations": 144,
+  "offline_boundary_status": "FAIL_NO_DEFENSIBLE_CONFIG",
+  "zero_early_cut_configurations": 8,
+  "timeouts_resolved_by_zero_early_cut_configs": 0,
+  "best_timeout_responsive": {"timeouts_candidate_ended": 5, "of": 9, "auto_early_cut_risk": 4, "manual_positive_early_cut_risk": 4, "negative_candidate_events": 6},
+  "quality_gate": "DIAGNOSTIC_ONLY; false-accepted non-sign quality overlaps intended signs",
+  "ood_inventory": {"official_labels": 105, "core_train": 81, "core_test": 20, "other_fsl_train": 1623, "other_fsl_test": 406, "rejector_trained": false},
+  "model_or_gate_changed": false,
+  "android_boundary_v2_implemented": false,
+  "private_evidence_root": "D:/VoxGest/evidence/fsl_core5_rebase_v1/",
+  "unresolved_blocker": "No validated safe offline boundary operating point; missing independent sign-end annotations; OOD false accepts unresolved",
+  "next_exact_action": "Obtain consented sign-end/hold annotations, improve offline detector with holdout and truncated-tensor/OOD replay, then consider debug-only Android V2 while keeping co-installed modern UI and lab hashes frozen."
+}
