@@ -11,6 +11,7 @@ from audit_runtime import GLB
 p=argparse.ArgumentParser()
 for k in ('glb','fit','out'):p.add_argument('--'+k,required=True)
 p.add_argument('--baseline',action='store_true')
+p.add_argument('--include-body',action='store_true',help='Also test hands against torso, legs and opposite forearms; diagnostic only')
 a=p.parse_args(sys.argv[sys.argv.index('--')+1:]);out=pathlib.Path(a.out).resolve();assert not out.exists()
 g=GLB(a.glb);data=np.load(a.fit);poses=data['original' if a.baseline else 'corrected'];names=list(data['names']);skin=g.j['skins'][0];joints=skin['joints'];ib=g.acc(skin['inverseBindMatrices']).reshape(-1,4,4).transpose(0,2,1)
 node=next(n for n in g.j['nodes'] if n.get('name')=='body');vs=[];ids=[];ws=[];ts=[];offset=0
@@ -26,6 +27,11 @@ for side in ['L','R']:
     for finger in ['f_index','f_middle','f_ring','f_pinky','thumb']:
         parts[finger+'.'+side]=mask(lambda n:finger in n and '.'+side in n and ('.02.' in n or '.03.' in n))
 neutral=deform(poses[0]);parts['face']=(neutral[:,1]>1.3)&~parts['hand.L']&~parts['hand.R']
+if a.include_body:
+    limb=mask(lambda n:any(x in n for x in ['upper_arm','forearm','hand','palm','f_index','f_middle','f_ring','f_pinky','thumb']))
+    parts['torso_legs']=(neutral[:,1]<=1.3)&~limb
+    for side in ['L','R']:
+        parts['forearm.'+side]=mask(lambda n:'forearm' in n and '.'+side in n)
 regions={}
 for name,selected in parts.items():
     faces=tri[selected[tri].all(axis=1)];unique,inverse=np.unique(faces,return_inverse=True)
@@ -39,6 +45,8 @@ pairs=[('hand.L','face'),('hand.R','face'),('hand.L','hand.R')]
 for side in ['L','R']:
     fingers=[f+'.'+side for f in ['f_index','f_middle','f_ring','f_pinky','thumb']]
     pairs += [(x,y) for i,x in enumerate(fingers) for y in fingers[i+1:]]
+if a.include_body:
+    pairs += [('hand.L','torso_legs'),('hand.R','torso_legs'),('hand.L','forearm.R'),('hand.R','forearm.L')]
 flags=[]
 for f,m in enumerate(poses,1):
     vertices=deform(m)
@@ -47,5 +55,5 @@ for f,m in enumerate(poses,1):
         overlaps=trees[x].overlap(trees[y])
         if overlaps:flags.append(dict(frame=f,parts=[x,y],triangle_overlap_pairs=len(overlaps)))
     if f%60==0:print('COLLISION_FRAME',f,flush=True)
-result=dict(baseline=a.baseline,frames=243,regions={name:len(faces) for name,(_,faces) in regions.items()},pairs_per_frame=len(pairs),flags=flags,scope='Triangle overlap diagnostics: face/hands, inter-hand and distal inter-finger; excludes proximal shared bases, not all body collision types',listen_ready=False)
+result=dict(baseline=a.baseline,frames=len(poses),include_body=a.include_body,regions={name:len(faces) for name,(_,faces) in regions.items()},pairs_per_frame=len(pairs),flags=flags,scope='Triangle overlap diagnostics: face/hands, inter-hand and distal inter-finger; excludes proximal shared bases, not all body collision types; optional body tests include torso/legs and opposite forearm surfaces',listen_ready=False)
 out.write_text(json.dumps(result,indent=2)+'\n',encoding='utf8');print('INTERSECTION_CHECK_COMPLETE',len(flags),flush=True)

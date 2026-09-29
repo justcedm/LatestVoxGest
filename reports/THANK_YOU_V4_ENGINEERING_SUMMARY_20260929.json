@@ -1,0 +1,51 @@
+{
+  "action": "THANK_YOU__BODY_CLEARANCE_REVIEW_V4",
+  "frames": 243,
+  "pairs_per_frame": 27,
+  "overlap_flag_count": 0,
+  "collision_scope": "Triangle overlap diagnostics: face/hands, inter-hand and distal inter-finger; excludes proximal shared bases, not all body collision types; optional body tests include torso/legs and opposite forearm surfaces",
+  "face_penetration_flags_129_180": 0,
+  "max_adjacent_quaternion": {
+    "bone": "RT_DEF-f_ring.03.R_07",
+    "max_adjacent_degrees": 34.91764403825966,
+    "frames": [
+      127,
+      128
+    ],
+    "quaternion_norm_error": 1.318170852471212e-07,
+    "max_scale_unit_error": 1.1920928955078125e-06,
+    "max_local_translation_step": 0.16773291985582053
+  },
+  "neutral_unchanged": true,
+  "source": "PENDING_REVIEW",
+  "mechanical": "PENDING_VISUAL_DEFORMATION_REVIEW",
+  "visual": "PENDING_FULL_SPEED_REVIEW",
+  "export": "BLOCKED",
+  "listen_ready": false,
+  "original_actions_unchanged": true,
+  "original_action_hashes": {
+    "FSL_HELLO": "ae19fb83411f961effb6e2a7920be49a81547047341a0498bda0e6a8efa341b4",
+    "FSL_MILK": "bcf963f483d5ebf0c3be9e10b1fb8ef5a793bcba68316b5511aa4f9eda3f8582",
+    "FSL_RICE": "9084b938873348604aff5d266f98d6f104051b3b8d6588b5c66d59603a2e12d3",
+    "GOOD_EVENING": "590299415534557cd370b582becd5ed2a6835f43ac40e3edffdf954756da4c12",
+    "HOW_ARE_YOU": "356ed66755e7926364a018f6e50808606ef81d04772b2488e2d5663c6905130d",
+    "IM_FINE": "41ac8cb2c6e215368addc004d81868b0a530b3923eadd363934a1a42d5e988f6",
+    "KNOW": "60a82398636516eaec36176c3043a966637a1745b039071df8761aa1bef9d967",
+    "NO": "27f481c140fb4d52551b79d636c03c33a9217cfa170216498b47e6b33c15aa32",
+    "THANK_YOU": "760bdc11903cd2edf63fdf0a132ec1cc4675eabe4d3607ea4e9bdb7662ac92f4",
+    "UNDERSTAND": "c2efa9f2af684e1fc02935806c627acf2b820fd9f84be33d3341693bd118e1e4",
+    "WRONG": "16a6d01bad92b5fb57883982a546edc8502f81562b7b20df84c83b35bd19ecb4",
+    "YES": "640896ea746626c39ee4028a0941da1642fbba5c6beea2cc2bf879d29133bf76"
+  },
+  "blender_pose_parity": {
+    "frames": 243,
+    "bones": 238,
+    "max_evaluated_world_matrix_error": 9.5367431640625e-07,
+    "parity_pass": true,
+    "source_file_modified": false,
+    "scope": "Evaluated pose parity only; not visual/FSL acceptance"
+  },
+  "blend_sha256": "a61a1f69e0bee8bcb23ef07a76790ce47ae0c621a476976719f75a27bc9af1c0",
+  "comparison_sha256": "799c4b7b646295fca7ea0861bfbbd5f6217e6db0267e6eeddc88b544f34ccdf8",
+  "user_review": "User explicitly replied Review pending for V4 normal-speed review"
+}

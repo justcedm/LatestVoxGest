@@ -1,3 +1,11 @@
+# Current V4 checkpoint — 2026-09-29T14:35:52.246232+08:00
+
+V4 supersedes V3. Broader torso checks found V3 overlaps; V4 has zero flags across 243 frames ×27 pair tests. Original action hashes preserved and Blender pose parity PASS. Lip phase129–180 and neutral endpoints exactly preserved. Review-only private Blender and 60-FPS comparison saved; hashes/paths in machine state and V4 report. User explicitly answered Review pending. SOURCE=PENDING_REVIEW; MECHANICAL=PENDING_VISUAL_DEFORMATION_REVIEW; VISUAL=PENDING; EXPORT=BLOCKED; no new GLB/ZIP; LISTEN_READY=false.
+
+NEXT_EXACT_ACTION=User/reviewer watches V4 comparison at 60 FPS and records findings for frames 2-24, 101-128, 140-166 and 201-218. Resolve any defect, then finish engineering acceptance/export before YES.
+
+---
+
 REMOTE_DELIVERY_VERIFIED=aca0ccf40211c2059184e5995fff4f195cedc2af (normal push, fetched origin equals local; checkpoint 54d14a2 retained). This metadata record is committed afterward; resolve branch tip for final checkpoint.
 
 # Current checkpoint — THANK YOU V3 — 2026-09-29T13:32:57.324262+08:00
