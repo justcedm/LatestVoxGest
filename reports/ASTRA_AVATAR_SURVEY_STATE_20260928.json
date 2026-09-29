@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-09-29T13:32:57.324262+08:00",
+  "timestamp": "2026-09-29T13:33:56.946806+08:00",
   "branch": "avatar/astra-calibration-20260914",
   "base_commit": "fcacf3ffdb80bdf8d1bdf3e5e08dd316fa7a9531",
   "head": "THIS_CHECKPOINT_COMMIT_USE_GIT_REV_PARSE_HEAD",
@@ -134,12 +134,13 @@
   ],
   "handoff_zip": null,
   "candidate_glb": "NO_NEW_SURVEY_EXPORT",
-  "remote_checkpoint_delivered": false,
-  "remote_verified_head": "553ea38a515a933b14716197c7b0e3354f194c9b",
+  "remote_checkpoint_delivered": true,
+  "remote_verified_head": "aca0ccf40211c2059184e5995fff4f195cedc2af",
   "user_direction": "2026-09-28: recalibrate remaining words; prioritize accuracy and overlap removal, no rush. This authorizes engineering corrections, not linguistic or device approval.",
   "source_mapping_confirmation": "User reported reviewer approval unavailable. Latest instruction explicitly permits engineering comparison/correction while mapping stays PENDING_REVIEW.",
   "remote_reconciled_commit": "4d28eeda98e30b5406f9dcf4db59492224690b47",
   "preserved_checkpoint": "54d14a25a03133dd374b74b932f5db53f4adb740",
   "failures_are_historical": true,
-  "v3_engineering_summary": "reports/THANK_YOU_V3_ENGINEERING_SUMMARY_20260929.json"
+  "v3_engineering_summary": "reports/THANK_YOU_V3_ENGINEERING_SUMMARY_20260929.json",
+  "remote_verification": "Normal push exit0; fetch; local HEAD equals origin branch; clean worktree; 54d14a2 remains ancestor. Final metadata commit also requires push verification."
 }

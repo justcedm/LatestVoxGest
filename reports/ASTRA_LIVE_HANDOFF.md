@@ -1,3 +1,5 @@
+REMOTE_DELIVERY_VERIFIED=aca0ccf40211c2059184e5995fff4f195cedc2af (normal push, fetched origin equals local; checkpoint 54d14a2 retained). This metadata record is committed afterward; resolve branch tip for final checkpoint.
+
 # Current checkpoint — THANK YOU V3 — 2026-09-29T13:32:57.324262+08:00
 
 V3 has zero tested triangle-overlap flags across 243 frames and exact original Action preservation. Blender pose parity passes. Full-speed human/deformation review and source mapping approval remain pending; export BLOCKED. No new GLB/ZIP; LISTEN_READY=false. See reports/THANK_YOU_V3_REVIEW_20260929.md and machine state for exact private paths, hashes, evidence scope and commands. Historical failures below do not describe the current V3 draft.
