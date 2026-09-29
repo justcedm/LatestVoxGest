@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://voxgest.local/schemas/core5_devset_v1_trial.schema.json",
+  "title": "CORE5_DEVSET_V1 trial metadata",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "trial_id", "dataset_role", "intended_label", "negative_type",
+    "signer_alias", "device_alias", "capture_timestamp", "camera_orientation",
+    "effective_result_rate", "human_sign_start_ms", "human_sign_end_ms",
+    "return_neutral_ms", "safe_rearm_ms", "pose_presence", "left_hand_presence",
+    "right_hand_presence", "raw_landmark_path", "tensor_sha256",
+    "raw_capture_sha256", "baseline_output", "native48_output", "sim10_output",
+    "capture_valid", "invalid_reason", "notes", "capture_package",
+    "source_event_id", "linguistic_ground_truth_validated", "supervised_training_allowed",
+    "marker_clock_uncertainty_ms", "files"
+  ],
+  "properties": {
+    "schema_version": {"const": "CORE5_DEVSET_V1"},
+    "trial_id": {"type": "string", "pattern": "^core5dev_v1__[A-Za-z][A-Za-z0-9_-]*__[A-Za-z][A-Za-z0-9_-]*__(HELLO|THANK_YOU|YES|NO|UNDERSTAND|RANDOM_NON_FSL|PARTIAL_ABORTED|NEUTRAL)__trial[0-9]{3}$"},
+    "dataset_role": {"enum": ["DEV_TUNE", "DEV_HOLDOUT", "SEALED_FINAL"]},
+    "intended_label": {"type": ["string", "null"], "enum": ["HELLO", "THANK YOU", "YES", "NO", "UNDERSTAND", null]},
+    "negative_type": {"type": ["string", "null"], "enum": ["RANDOM_NON_FSL", "PARTIAL_ABORTED", "NEUTRAL", null]},
+    "signer_alias": {"type": "string"},
+    "device_alias": {"type": "string"},
+    "capture_timestamp": {"type": "string", "format": "date-time"},
+    "camera_orientation": {"type": "string"},
+    "effective_result_rate": {"type": ["number", "null"], "minimum": 0},
+    "human_sign_start_ms": {"type": "integer"},
+    "human_sign_end_ms": {"type": "integer"},
+    "return_neutral_ms": {"type": "integer"},
+    "safe_rearm_ms": {"type": "integer"},
+    "hold_start_ms": {"type": ["integer", "null"]},
+    "hold_end_ms": {"type": ["integer", "null"]},
+    "pose_presence": {"$ref": "#/$defs/presence"},
+    "left_hand_presence": {"$ref": "#/$defs/presence"},
+    "right_hand_presence": {"$ref": "#/$defs/presence"},
+    "raw_landmark_path": {"const": "raw_landmarks.npz"},
+    "tensor_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+    "raw_capture_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "baseline_output": {"$ref": "#/$defs/model_output"},
+    "native48_output": {"$ref": "#/$defs/model_output"},
+    "sim10_output": {"$ref": "#/$defs/model_output"},
+    "capture_valid": {"type": "boolean"},
+    "invalid_reason": {"type": ["string", "null"]},
+    "notes": {"type": "string"},
+    "capture_package": {"const": "com.voxgest.dryrun.recognitionlab"},
+    "source_event_id": {"type": "string"},
+    "linguistic_ground_truth_validated": {"const": false},
+    "supervised_training_allowed": {"const": false},
+    "marker_clock_uncertainty_ms": {"type": "number", "minimum": 0},
+    "files": {"type": "object"}
+  },
+  "$defs": {
+    "presence": {
+      "type": "object", "additionalProperties": false,
+      "required": ["count", "total", "ratio"],
+      "properties": {
+        "count": {"type": "integer", "minimum": 0},
+        "total": {"type": "integer", "minimum": 0},
+        "ratio": {"type": ["number", "null"], "minimum": 0, "maximum": 1}
+      }
+    },
+    "model_output": {
+      "oneOf": [
+        {"type": "null"},
+        {
+          "type": "object", "additionalProperties": false,
+          "required": ["model_sha256", "top1", "probabilities"],
+          "properties": {
+            "model_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+            "top1": {"enum": ["HELLO", "THANK YOU", "YES", "NO", "UNDERSTAND"]},
+            "probabilities": {"type": "array", "minItems": 5, "maxItems": 5,
+                              "items": {"type": "number", "minimum": 0, "maximum": 1}}
+          }
+        }
+      ]
+    }
+  }
+}
