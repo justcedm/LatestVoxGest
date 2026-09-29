@@ -7,6 +7,7 @@ from mathutils import Matrix,Vector
 from mathutils.bvhtree import BVHTree
 p=argparse.ArgumentParser()
 for k in ('blend','fit','out'):p.add_argument('--'+k,required=True)
+p.add_argument('--action',default='THANK_YOU__LIPFIT_REVIEW_V2')
 a=p.parse_args(sys.argv[sys.argv.index('--')+1:]);out=pathlib.Path(a.out).resolve();assert not out.exists();out.mkdir(parents=True)
 bpy.ops.wm.open_mainfile(filepath=str(pathlib.Path(a.blend).resolve()),load_ui=False)
 def digest(action):
@@ -29,7 +30,8 @@ for f in [1,128,153,180,243]:
             predicted=G@Matrix(original[f-1,ix[b.name]].tolist())@offset[b.name]
             baseline_error=max(baseline_error,max(abs(x-y) for row1,row2 in zip(predicted,world@b.matrix) for x,y in zip(row1,row2)))
 assert baseline_error<2e-5,baseline_error
-new=bpy.data.actions['THANK_YOU'].copy();new.name='THANK_YOU__LIPFIT_REVIEW_V2';new.use_fake_user=True;arm.animation_data.action=new
+assert a.action not in bpy.data.actions
+new=bpy.data.actions['THANK_YOU'].copy();new.name=a.action;new.use_fake_user=True;arm.animation_data.action=new
 changed=[b for b in arm.pose.bones if b.name in ix and np.max(np.abs(target[:,ix[b.name]]-original[:,ix[b.name]]))>1e-10]
 for f in range(1,len(target)+1):
     scene.frame_set(f)
@@ -49,8 +51,8 @@ cam=scene.camera;cam.data.type='ORTHO';cam.data.ortho_scale=1.05
 def aim(pos):cam.location=pos;cam.rotation_euler=(Vector((0,0,1.18))-cam.location).to_track_quat('-Z','Y').to_euler()
 aim((0,-4,1.18))
 bpy.data.texts.new('LIPFIT_REVIEW_STATUS').write('EXPERIMENTAL THANK_YOU-only IK correction. Source mapping PENDING_REVIEW.\nNo GLB export. Face clearance and full-speed human acceptance required.\nOriginal THANK_YOU and all Core3 Actions preserved. No global transforms changed.\n')
-bpy.ops.wm.save_as_mainfile(filepath=str(out/'THANK_YOU_CORE3_LIPFIT_REVIEW_V2.blend'))
-for frame in [128,140,153,166,179]:
+bpy.ops.wm.save_as_mainfile(filepath=str(out/('THANK_YOU_CORE3_LIPFIT_REVIEW_'+a.action.rsplit('_',1)[-1]+'.blend')))
+for frame in [128,140,153,166,179,206,218]:
     scene.frame_set(frame)
     for view,pos in [('front',(0,-4,1.18)),('side',(4,0,1.18)),('perspective',(2,-4,1.4))]:
         aim(pos);scene.render.image_settings.file_format='PNG';scene.render.filepath=str(out/f'{view}_{frame}.png');bpy.ops.render.render(write_still=True)

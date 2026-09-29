@@ -1,3 +1,11 @@
+# Current checkpoint — THANK YOU V3 — 2026-09-29T13:32:57.324262+08:00
+
+V3 has zero tested triangle-overlap flags across 243 frames and exact original Action preservation. Blender pose parity passes. Full-speed human/deformation review and source mapping approval remain pending; export BLOCKED. No new GLB/ZIP; LISTEN_READY=false. See reports/THANK_YOU_V3_REVIEW_20260929.md and machine state for exact private paths, hashes, evidence scope and commands. Historical failures below do not describe the current V3 draft.
+
+NEXT_EXACT_ACTION=Review V3 comparison at normal speed, especially 127-128, 140-166, 201-218; complete deformation/body clearance review before export. Source mapping remains pending.
+
+---
+
 # THANK YOU correction resume — 2026-09-29
 
 Preserved 54d14a2; remote documentation reconciled and checkpoint 553ea38 pushed/verified before interruption. Current V2 private lip-fit draft improves lip placement and preserves all Core3 curves, but remains mechanically rejected: inherited distal finger overlaps and inter-hand recovery overlaps at 203–211. Baseline has 126 overlap records; V2 has 113, with no new distal finger-pair categories. Face-distance audit was interrupted and its per-frame JSONL is preserved. No GLB export. SOURCE=PENDING_REVIEW; VISUAL=PENDING; LISTEN_READY=false.

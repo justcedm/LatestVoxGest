@@ -3,6 +3,7 @@ import argparse,sys,pathlib,json,bpy,numpy as np
 from mathutils import Matrix
 p=argparse.ArgumentParser()
 for k in ('blend','fit','out'):p.add_argument('--'+k,required=True)
+p.add_argument('--action',default='THANK_YOU__LIPFIT_REVIEW_V2')
 a=p.parse_args(sys.argv[sys.argv.index('--')+1:]);out=pathlib.Path(a.out).resolve();assert not out.exists()
 bpy.ops.wm.open_mainfile(filepath=str(pathlib.Path(a.blend).resolve()),load_ui=False)
 arm=next(o for o in bpy.context.scene.objects if o.type=='ARMATURE');scene=bpy.context.scene
@@ -13,7 +14,7 @@ data=np.load(a.fit);original=data['original'];target=data['corrected'];ix={str(n
 G=Matrix(((1,0,0,0),(0,0,-1,0),(0,1,0,0),(0,0,0,1)));world=arm.matrix_world.copy()
 arm.animation_data.action=bpy.data.actions['THANK_YOU'];scene.frame_set(1)
 offset={b.name:(G@Matrix(original[0,ix[b.name]].tolist())).inverted()@world@b.matrix for b in arm.pose.bones if b.name in ix}
-arm.animation_data.action=bpy.data.actions['THANK_YOU__LIPFIT_REVIEW_V2'];maximum=0
+arm.animation_data.action=bpy.data.actions[a.action];maximum=0
 for f in range(1,244):
     scene.frame_set(f)
     for b in arm.pose.bones:
