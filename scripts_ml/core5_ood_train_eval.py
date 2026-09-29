@@ -157,7 +157,7 @@ def run(manifest_path: Path, features_dir: Path, classifier: Path, output_dir: P
     predictions = {}
     geometry_records = [{"record_id": r["record_id"], "label": r["source_label"],
                          "partition": "train" if r["partition"] == "fit" else "development_validation",
-                         "vector": r["geometry_vector"]}
+                         "vector": r["geometry_vector"], "summary": r["semantic"]}
                         for r in records if r["binary_label"] == "CORE5_LIKE" and r["tensor"] is not None]
     geometry_profile = SourceGeometryProfile(geometry_records)
     for partition in ("calibration", "holdout"):
@@ -214,6 +214,9 @@ def run(manifest_path: Path, features_dir: Path, classifier: Path, output_dir: P
             metrics["core5_wrong_accepted"] = sum(bool(choice) and entry["expected_binary"] == "CORE5_LIKE"
                                                      and entry["classifier_top1"] != entry["expected_class"]
                                                      for entry, choice in zip(entries, choices))
+            pass_indices = [index for index, entry in enumerate(entries) if entry["quality_status"] == "PASS"]
+            metrics["quality_pass_only"] = method_metrics([subset[index] for index in pass_indices],
+                                                            [choices[index] for index in pass_indices])
             evaluations[partition][name] = metrics
         for index, entry in enumerate(entries):
             entry["decisions"] = {name: bool(choices[index]) for name, choices in methods.items()}
