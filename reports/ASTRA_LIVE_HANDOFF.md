@@ -1,3 +1,11 @@
+# Private export delivered — 2026-09-29T19:50:15.651579+08:00
+
+User explicitly requested export after pending review was disclosed. Private 12-action GLB/ZIP now exists: 3 Core3 +9 unapproved Supervised9 candidates, THANK YOU V4. Structural validation and Blender import PASS; full-speed, FSL and owner Android gates remain pending. No APK. LISTEN_READY=false. See reports/PRIVATE_AVATAR_EXPORT_20260929.json for exact binary paths/SHA/bytes. Binaries remain outside Git.
+
+NEXT_EXACT_ACTION=Privately transfer the ZIP to the authorized programmer. Verify hashes, load only in isolated Avatar activity, complete pending V4 motion review and owner device tests; no production promotion.
+
+---
+
 V4_CONTENT_REMOTE_VERIFIED=b1ab7360f2a26ba17c75bc5ea494233966eb4b61; normal push/fetch; local equals origin. Delivery metadata follows in the branch tip.
 
 # Current V4 checkpoint — 2026-09-29T14:35:52.246232+08:00

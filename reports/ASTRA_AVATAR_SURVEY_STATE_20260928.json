@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-09-29T14:35:52.246232+08:00",
+  "timestamp": "2026-09-29T19:50:15.651579+08:00",
   "branch": "avatar/astra-calibration-20260914",
   "base_commit": "fcacf3ffdb80bdf8d1bdf3e5e08dd316fa7a9531",
   "head": "THIS_CHECKPOINT_COMMIT_USE_GIT_REV_PARSE_HEAD",
@@ -7,7 +7,7 @@
   "active_blender_file": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-15\\files-mentioned-by-the-user-voxgest-2\\outputs\\core5_survey_20260929\\thank_you_bodyclear_blender_v4\\THANK_YOU_CORE3_LIPFIT_REVIEW_V4.blend",
   "active_action": "THANK_YOU__BODY_CLEARANCE_REVIEW_V4",
   "source_reference": "FSL-105 clips/7/0.MOV; 243 frames at 60 FPS; reviewer approval unavailable per user",
-  "current_gate": "WAITING_V4_NORMAL_SPEED_HUMAN_REVIEW_USER_CONFIRMED_PENDING",
+  "current_gate": "PRIVATE_EXPORT_DELIVERED_VISUAL_FSL_ANDROID_PENDING",
   "priority": [
     "THANK YOU",
     "YES",
@@ -64,7 +64,11 @@
     "check_hand_intersections.py --include-body V3:14 flags; V4trial1:5; V4trial2:3; V4trial3:0",
     "fit_preparation_clearance.py --hand-spacing-m .04 --forward-m .035; V4trial3 private pose saved",
     "blender_face_clearance.py V4; build_lipfit_review.py V4; verify_lipfit_blender.py V4:PASS",
-    "render_review.py V4 and compare_video.py 243frames/60fps; original Action hashes unchanged"
+    "render_review.py V4 and compare_video.py 243frames/60fps; original Action hashes unchanged",
+    "export_private_candidate.py appends V4 local TRS; all243 world poses verified",
+    "audit_runtime.py: finite/accessor/platform/Core3 PASS",
+    "Blender empty-scene GLB import:1 armature/17mesh PASS",
+    "Deterministic private ZIP; archive contents, CRC and SHA checks PASS"
   ],
   "hashes": {
     "core3_glb": "30f13fb65e7557992a8c3109460a790a69161e69f3ba9771a1e64a33f98294f8",
@@ -72,14 +76,16 @@
     "previous_four_clip_prototype": "fc547ea41136404c303cfd459fcaa52a7edd54f6f6ec5c874f2c31e94614bf98",
     "previous_12_clip_candidate": "a8739dbe270b4da970fe0f7756ddb0c335458c6a25c36f200adad28e04310488",
     "review_blend": "a61a1f69e0bee8bcb23ef07a76790ce47ae0c621a476976719f75a27bc9af1c0",
-    "comparison_video": "799c4b7b646295fca7ea0861bfbbd5f6217e6db0267e6eeddc88b544f34ccdf8"
+    "comparison_video": "799c4b7b646295fca7ea0861bfbbd5f6217e6db0267e6eeddc88b544f34ccdf8",
+    "candidate_glb": "1f566e98e020b8e46e8a625c3910794be86a2017392093950f467bad68c7689b",
+    "handoff_zip": "40e2f67c51c41571971da6491eecf437930d91d667d0fd5f02be8bd4fc6a0c92"
   },
   "status": {
     "THANK YOU": {
       "SOURCE_REFERENCE": "PENDING_REVIEW",
       "MECHANICAL": "PENDING_VISUAL_DEFORMATION_REVIEW_NUMERIC_CHECKS_PASS",
       "HUMAN_MOTION_VISUAL": "PENDING_USER_CONFIRMED",
-      "EXPORT": "BLOCKED",
+      "EXPORT": "STRUCTURAL_PASS_UNAPPROVED_USER_REQUESTED_EXPORT",
       "OWNER_DEVICE": "PENDING",
       "FSL_APPROVAL": "PENDING_USER_CONFIRMED_NO_REVIEWER_APPROVAL",
       "listen_ready": false
@@ -118,8 +124,8 @@
     "rebuild_reference_blob": "23b3681edd46f8704a36c4c6aa8d1aa52cbe2cf8"
   },
   "private_files_committed": false,
-  "next_action": "User/reviewer watches V4 comparison at 60 FPS and records findings for frames 2-24, 101-128, 140-166 and 201-218. Resolve any defect, then finish engineering acceptance/export before YES.",
-  "head_before_checkpoint": "2eb0c58106e94c97c48ab00d43d98485688d07b3",
+  "next_action": "Privately transfer the ZIP to the authorized programmer. Verify hashes, load only in isolated Avatar activity, complete pending V4 motion review and owner device tests; no production promotion.",
+  "head_before_checkpoint": "d223a17e0ad6f19129ea6426f3cef0499b0e0bb0",
   "source_reference_sha256": "fc0003d10b31d6e04e0effca02a288b0d05135ac2cbc15a1f94cd07fa8641ea4",
   "core3_regression": {
     "HELLO": "PASS_EXACT_DATA_ONLY",
@@ -141,9 +147,9 @@
   "owner_requests": [
     "REF-TY-001"
   ],
-  "handoff_zip": null,
-  "candidate_glb": "NO_NEW_SURVEY_EXPORT",
-  "remote_checkpoint_delivered": true,
+  "handoff_zip": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-15\\files-mentioned-by-the-user-voxgest-2\\outputs\\VOXGEST_AVATAR_PRIVATE_APP_TEST_20260929_v1.zip",
+  "candidate_glb": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-15\\files-mentioned-by-the-user-voxgest-2\\outputs\\VOXGEST_AVATAR_PRIVATE_APP_TEST_20260929_v1\\voxgest_avatar_CORE3_PLUS_SUPERVISED9_TYV4_TEST.glb",
+  "remote_checkpoint_delivered": false,
   "remote_verified_head": "b1ab7360f2a26ba17c75bc5ea494233966eb4b61",
   "user_direction": "2026-09-28: recalibrate remaining words; prioritize accuracy and overlap removal, no rush. This authorizes engineering corrections, not linguistic or device approval.",
   "source_mapping_confirmation": "User reported reviewer approval unavailable. Latest instruction explicitly permits engineering comparison/correction while mapping stays PENDING_REVIEW.",
@@ -158,5 +164,6 @@
     "reports/ASTRA_AVATAR_SURVEY_STATE_20260928.json",
     "reports/ASTRA_LIVE_HANDOFF.md"
   ],
-  "v4_engineering_summary": "reports/THANK_YOU_V4_ENGINEERING_SUMMARY_20260929.json"
+  "v4_engineering_summary": "reports/THANK_YOU_V4_ENGINEERING_SUMMARY_20260929.json",
+  "export_authorization": "Latest direct user request: export the calibrated words and the avatar. Engineering export exception only; approval gates remain pending."
 }

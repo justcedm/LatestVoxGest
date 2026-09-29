@@ -1,0 +1,35 @@
+{
+  "timestamp": "2026-09-29T19:50:15.651579+08:00",
+  "zip_path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-15\\files-mentioned-by-the-user-voxgest-2\\outputs\\VOXGEST_AVATAR_PRIVATE_APP_TEST_20260929_v1.zip",
+  "zip_sha256": "40e2f67c51c41571971da6491eecf437930d91d667d0fd5f02be8bd4fc6a0c92",
+  "zip_bytes": 27917855,
+  "glb_path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-15\\files-mentioned-by-the-user-voxgest-2\\outputs\\VOXGEST_AVATAR_PRIVATE_APP_TEST_20260929_v1\\voxgest_avatar_CORE3_PLUS_SUPERVISED9_TYV4_TEST.glb",
+  "glb_sha256": "1f566e98e020b8e46e8a625c3910794be86a2017392093950f467bad68c7689b",
+  "glb_bytes": 52887544,
+  "animations": 12,
+  "blender_import": {
+    "load": "PASS",
+    "armatures": 1,
+    "meshes": 17,
+    "actions": [
+      "FSL_HELLO_Waitress RIG",
+      "FSL_MILK_Waitress RIG",
+      "FSL_RICE_Waitress RIG",
+      "GOOD_EVENING_Waitress RIG",
+      "HOW_ARE_YOU_Waitress RIG",
+      "IM_FINE_Waitress RIG",
+      "KNOW_Waitress RIG",
+      "NO_Waitress RIG",
+      "THANK_YOU_Waitress RIG",
+      "UNDERSTAND_Waitress RIG",
+      "WRONG_Waitress RIG",
+      "YES_Waitress RIG"
+    ],
+    "bones": 238,
+    "scope": "Blender import only; Android/device and visual review pending"
+  },
+  "private_files_committed": false,
+  "listen_ready": false,
+  "owner_device": "PENDING",
+  "export_class": "USER_REQUESTED_UNAPPROVED_PRIVATE_APP_TEST_EXPORT"
+}
