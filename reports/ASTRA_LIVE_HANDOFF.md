@@ -1,3 +1,5 @@
+V4_CONTENT_REMOTE_VERIFIED=b1ab7360f2a26ba17c75bc5ea494233966eb4b61; normal push/fetch; local equals origin. Delivery metadata follows in the branch tip.
+
 # Current V4 checkpoint — 2026-09-29T14:35:52.246232+08:00
 
 V4 supersedes V3. Broader torso checks found V3 overlaps; V4 has zero flags across 243 frames ×27 pair tests. Original action hashes preserved and Blender pose parity PASS. Lip phase129–180 and neutral endpoints exactly preserved. Review-only private Blender and 60-FPS comparison saved; hashes/paths in machine state and V4 report. User explicitly answered Review pending. SOURCE=PENDING_REVIEW; MECHANICAL=PENDING_VISUAL_DEFORMATION_REVIEW; VISUAL=PENDING; EXPORT=BLOCKED; no new GLB/ZIP; LISTEN_READY=false.
