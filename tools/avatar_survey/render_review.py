@@ -47,7 +47,7 @@ cam.location=(0,-4,1.18)
 cam.rotation_euler=(Vector((0,0,1.18))-cam.location).to_track_quat('-Z','Y').to_euler()
 scene.frame_set(scene.frame_start)
 out.mkdir(parents=True)
-bpy.data.texts.new('SURVEY_REVIEW_STATUS').write('UNAPPROVED. THANK YOU source placement failed sampled inspection.\n60 FPS review movie is not human visual approval.\nNo Android qualification, no FSL approval, listen_ready=false.\n')
+bpy.data.texts.new('SURVEY_REVIEW_STATUS').write('UNAPPROVED engineering review: '+args.action+'\n60 FPS review movie is not human visual approval.\nSource mapping/reviewer confirmation and contact review remain pending.\nNo Android qualification, no FSL approval, listen_ready=false.\n')
 bpy.ops.wm.save_as_mainfile(filepath=str(out/'THANK_YOU_review_only.blend'))
 scene.render.image_settings.file_format='FFMPEG'
 scene.render.ffmpeg.format='MPEG4'

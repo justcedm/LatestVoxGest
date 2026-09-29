@@ -1,13 +1,13 @@
 {
-  "timestamp": "2026-09-28T16:45:44.105599+08:00",
+  "timestamp": "2026-09-29T13:12:16.336917+08:00",
   "branch": "avatar/astra-calibration-20260914",
   "base_commit": "fcacf3ffdb80bdf8d1bdf3e5e08dd316fa7a9531",
   "head": "THIS_CHECKPOINT_COMMIT_USE_GIT_REV_PARSE_HEAD",
   "worktree": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-15\\files-mentioned-by-the-user-voxgest-2\\work\\avatar_core5_survey_20260928",
-  "active_blender_file": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-15\\files-mentioned-by-the-user-voxgest-2\\outputs\\core5_survey_20260928\\private_evidence\\thank_you_fullspeed_v2\\THANK_YOU_review_only.blend",
-  "active_action": "THANK_YOU",
+  "active_blender_file": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-15\\files-mentioned-by-the-user-voxgest-2\\outputs\\core5_survey_20260928\\thank_you_lipfit_blender_v2\\THANK_YOU_CORE3_LIPFIT_REVIEW_V2.blend",
+  "active_action": "THANK_YOU__LIPFIT_REVIEW_V2",
   "source_reference": "FSL-105 clips/7/0.MOV; 243 frames at 60 FPS; reviewer approval unavailable per user",
-  "current_gate": "RECALIBRATION_GEOMETRY_REPRODUCTION",
+  "current_gate": "THANK_YOU_V2_REJECTED_DISTAL_FINGER_AND_RECOVERY_OVERLAPS",
   "priority": [
     "THANK YOU",
     "YES",
@@ -60,10 +60,10 @@
   },
   "status": {
     "THANK YOU": {
-      "SOURCE_REFERENCE": "FAIL_PLACEMENT_COMPARISON",
-      "MECHANICAL": "PENDING_CONTACT_AND_ROTATION_STEP_REVIEW",
-      "HUMAN_MOTION_VISUAL": "PENDING_FULL_SPEED_HUMAN_REVIEW",
-      "EXPORT": "BLOCKED_NO_NEW_SURVEY_EXPORT",
+      "SOURCE_REFERENCE": "PENDING_REVIEW",
+      "MECHANICAL": "FAIL_INHERITED_FINGER_AND_RECOVERY_INTERSECTIONS",
+      "HUMAN_MOTION_VISUAL": "PENDING_FULL_SPEED_REVIEW",
+      "EXPORT": "BLOCKED",
       "OWNER_DEVICE": "PENDING",
       "FSL_APPROVAL": "PENDING_USER_CONFIRMED_NO_REVIEWER_APPROVAL",
       "listen_ready": false
@@ -102,8 +102,8 @@
     "rebuild_reference_blob": "23b3681edd46f8704a36c4c6aa8d1aa52cbe2cf8"
   },
   "private_files_committed": false,
-  "next_action": "Reproduce reported body/head overlap versus hair/teeth using read-only world-space skin bounds and identify the affected file; preserve Core3 and continue engineering review copies, without promotion.",
-  "head_before_checkpoint": "58652f6cdf91dadcf87baf9280b19e711085911a",
+  "next_action": "Create V3 engineering-only derivative: minimal bounded finger separation and coherent Core3-neutral recovery; rerun intersection and source projection audits. Do not export or advance to YES.",
+  "head_before_checkpoint": "553ea38a515a933b14716197c7b0e3354f194c9b",
   "source_reference_sha256": "fc0003d10b31d6e04e0effca02a288b0d05135ac2cbc15a1f94cd07fa8641ea4",
   "core3_regression": {
     "HELLO": "PASS_EXACT_DATA_ONLY",
@@ -127,7 +127,10 @@
   ],
   "handoff_zip": null,
   "candidate_glb": "NO_NEW_SURVEY_EXPORT",
-  "remote_checkpoint_delivered": false,
-  "remote_verified_head": "fcacf3ffdb80bdf8d1bdf3e5e08dd316fa7a9531",
-  "user_direction": "2026-09-28: recalibrate remaining words; prioritize accuracy and overlap removal, no rush. This authorizes engineering corrections, not linguistic or device approval."
+  "remote_checkpoint_delivered": true,
+  "remote_verified_head": "553ea38a515a933b14716197c7b0e3354f194c9b",
+  "user_direction": "2026-09-28: recalibrate remaining words; prioritize accuracy and overlap removal, no rush. This authorizes engineering corrections, not linguistic or device approval.",
+  "source_mapping_confirmation": "User reported reviewer approval unavailable. Latest instruction explicitly permits engineering comparison/correction while mapping stays PENDING_REVIEW.",
+  "remote_reconciled_commit": "4d28eeda98e30b5406f9dcf4db59492224690b47",
+  "preserved_checkpoint": "54d14a25a03133dd374b74b932f5db53f4adb740"
 }

@@ -1,3 +1,11 @@
+# THANK YOU correction resume — 2026-09-29
+
+Preserved 54d14a2; remote documentation reconciled and checkpoint 553ea38 pushed/verified before interruption. Current V2 private lip-fit draft improves lip placement and preserves all Core3 curves, but remains mechanically rejected: inherited distal finger overlaps and inter-hand recovery overlaps at 203–211. Baseline has 126 overlap records; V2 has 113, with no new distal finger-pair categories. Face-distance audit was interrupted and its per-frame JSONL is preserved. No GLB export. SOURCE=PENDING_REVIEW; VISUAL=PENDING; LISTEN_READY=false.
+
+NEXT_EXACT_ACTION=Build V3 bounded finger separation and coherent recovery derivative, preserving V2 and originals; rerun overlap and source-projection checks before any export.
+
+---
+
 # Remote Core5 source-gate checkpoint — 2026-09-28
 
 

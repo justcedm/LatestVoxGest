@@ -1,0 +1,12 @@
+{
+  "frames": [
+    129,
+    153,
+    166,
+    180
+  ],
+  "sampled_points_per_frame": 8,
+  "max_difference_m": 0.0,
+  "spatial_pruning_matches_brute_force": true,
+  "scope": "Validation of conservative acceleration on representative surface points; not motion acceptance"
+}

@@ -1,0 +1,183 @@
+{
+  "candidate_sha256": "f98a90e6de6265f781b9f80ad98f0903eb93867702b4b37cb1084ebbb5463410",
+  "clips": 19,
+  "frames": 4216,
+  "platform_unchanged": true,
+  "core3_exact_data_regression": {
+    "FSL_HELLO": {
+      "expected_sha256": "5ac3ea8e23d9b17558b46bcf32a2c93c0d122511eb3a376f81f39a5d60f9ac6b",
+      "actual_sha256": "5ac3ea8e23d9b17558b46bcf32a2c93c0d122511eb3a376f81f39a5d60f9ac6b",
+      "exact_data_pass": true,
+      "visual_device": "PENDING"
+    },
+    "FSL_MILK": {
+      "expected_sha256": "311673b55ea7d66bb0950da891d9791a841137ad8c376d93587cc3793af15764",
+      "actual_sha256": "311673b55ea7d66bb0950da891d9791a841137ad8c376d93587cc3793af15764",
+      "exact_data_pass": true,
+      "visual_device": "PENDING"
+    },
+    "FSL_RICE": {
+      "expected_sha256": "aeba292d93f7b651075141065fb6bd2d599d12abceba3cbc9a7a355eb8de3d33",
+      "actual_sha256": "aeba292d93f7b651075141065fb6bd2d599d12abceba3cbc9a7a355eb8de3d33",
+      "exact_data_pass": true,
+      "visual_device": "PENDING"
+    }
+  },
+  "finite_all_sampled_skin_vertices": true,
+  "max_endpoint_extent_error_m": 0.0,
+  "per_action": [
+    {
+      "action": "FSL_HELLO",
+      "frames": 98,
+      "max_local_rotation_step_degrees": 27.660792738102142,
+      "visual": "PENDING",
+      "collision": "PENDING",
+      "listen_ready": false
+    },
+    {
+      "action": "FSL_MILK",
+      "frames": 120,
+      "max_local_rotation_step_degrees": 67.31915455512978,
+      "visual": "PENDING",
+      "collision": "PENDING",
+      "listen_ready": false
+    },
+    {
+      "action": "FSL_RICE",
+      "frames": 98,
+      "max_local_rotation_step_degrees": 178.74521128972088,
+      "visual": "PENDING",
+      "collision": "PENDING",
+      "listen_ready": false
+    },
+    {
+      "action": "THANK_YOU",
+      "frames": 243,
+      "max_local_rotation_step_degrees": 34.830298985140104,
+      "visual": "PENDING",
+      "collision": "PENDING",
+      "listen_ready": false
+    },
+    {
+      "action": "YES",
+      "frames": 243,
+      "max_local_rotation_step_degrees": 13.847166578638573,
+      "visual": "PENDING",
+      "collision": "PENDING",
+      "listen_ready": false
+    },
+    {
+      "action": "NO",
+      "frames": 244,
+      "max_local_rotation_step_degrees": 28.908473177637173,
+      "visual": "PENDING",
+      "collision": "PENDING",
+      "listen_ready": false
+    },
+    {
+      "action": "IM_FINE",
+      "frames": 243,
+      "max_local_rotation_step_degrees": 23.228183188746204,
+      "visual": "PENDING",
+      "collision": "PENDING",
+      "listen_ready": false
+    },
+    {
+      "action": "HOW_ARE_YOU",
+      "frames": 244,
+      "max_local_rotation_step_degrees": 20.62613611760253,
+      "visual": "PENDING",
+      "collision": "PENDING",
+      "listen_ready": false
+    },
+    {
+      "action": "UNDERSTAND",
+      "frames": 245,
+      "max_local_rotation_step_degrees": 17.46717266620415,
+      "visual": "PENDING",
+      "collision": "PENDING",
+      "listen_ready": false
+    },
+    {
+      "action": "GOOD_EVENING",
+      "frames": 244,
+      "max_local_rotation_step_degrees": 21.36833648738392,
+      "visual": "PENDING",
+      "collision": "PENDING",
+      "listen_ready": false
+    },
+    {
+      "action": "KNOW",
+      "frames": 244,
+      "max_local_rotation_step_degrees": 23.040562720881184,
+      "visual": "PENDING",
+      "collision": "PENDING",
+      "listen_ready": false
+    },
+    {
+      "action": "WRONG",
+      "frames": 243,
+      "max_local_rotation_step_degrees": 20.040638215199436,
+      "visual": "PENDING",
+      "collision": "PENDING",
+      "listen_ready": false
+    },
+    {
+      "action": "ONE",
+      "frames": 245,
+      "max_local_rotation_step_degrees": 14.778587751763112,
+      "visual": "PENDING",
+      "collision": "PENDING",
+      "listen_ready": false
+    },
+    {
+      "action": "TWO",
+      "frames": 244,
+      "max_local_rotation_step_degrees": 20.448738680821194,
+      "visual": "PENDING",
+      "collision": "PENDING",
+      "listen_ready": false
+    },
+    {
+      "action": "THREE",
+      "frames": 244,
+      "max_local_rotation_step_degrees": 19.78367339444234,
+      "visual": "PENDING",
+      "collision": "PENDING",
+      "listen_ready": false
+    },
+    {
+      "action": "FOUR",
+      "frames": 244,
+      "max_local_rotation_step_degrees": 7.788514901556555,
+      "visual": "PENDING",
+      "collision": "PENDING",
+      "listen_ready": false
+    },
+    {
+      "action": "FIVE",
+      "frames": 244,
+      "max_local_rotation_step_degrees": 8.169980726845303,
+      "visual": "PENDING",
+      "collision": "PENDING",
+      "listen_ready": false
+    },
+    {
+      "action": "SEVEN",
+      "frames": 243,
+      "max_local_rotation_step_degrees": 19.88292580734224,
+      "visual": "PENDING",
+      "collision": "PENDING",
+      "listen_ready": false
+    },
+    {
+      "action": "EIGHT",
+      "frames": 243,
+      "max_local_rotation_step_degrees": 20.524958171118843,
+      "visual": "PENDING",
+      "collision": "PENDING",
+      "listen_ready": false
+    }
+  ],
+  "scope": "All 4216 frames skinning and bounds, not full collision or semantic approval. Earlier work completed; other words now parked by latest direction."
+}
