@@ -1,0 +1,139 @@
+{
+  "timestamp": "2026-10-01T00:20:03.864259+08:00",
+  "branch": "avatar/astra-calibration-20260914",
+  "head_before_checkpoint": "6b6941010a9f150ab4f6bea115306ed7ddd2c5ef",
+  "authority_main_commit": "8b2ac0ce822eaa00e8e0873d455f63f02856568e",
+  "authority_documents_sha256": {
+    "docs/avatar/EARLE_SURVEY_PHRASE_CALIBRATION_PROTOCOL_20260930.md": "aa2ef1909c86fa3cd05b8cb600394310b05e8403aa86cf9ee00cc1d267da5f15",
+    "docs/avatar/SURVEY_DIALOGUE_TRANSLATION_PLAN_20260930.md": "e8c4e10e38ef96b57417733f9f5f9b722407770fdf79230b7a88c205fcb36aae",
+    "docs/avatar/AVATAR_SENTENCE_BILINGUAL_FINGERSPELLING_PLAN_20260930.md": "784538a120ea35489a7cd5d1acd33b50c8eb1cb18141d7add49b6ef12f9335c6",
+    "docs/avatar/VOXGEST_AVATAR_REBUILD_REFERENCE_20260927.md": "523a22adabf0b0150c522f767f27e03d98fe0aad799b369056d86fad1492fe28"
+  },
+  "live_handoff_source": "avatar branch; absent on main",
+  "phase": "REFERENCE_REQUEST_NO_ANIMATION",
+  "phrases": {
+    "SURVEY_INTRO": {
+      "action_id": "FSL_PHRASE_SURVEY_INTRO_V1",
+      "reference": "MISSING",
+      "calibration": "NOT_STARTED_BLOCKED_APPROVED_REFERENCE",
+      "manual_component_supported": "NOT_ASSESSED_FOR_PHRASE",
+      "head_component_supported": "NOT_ASSESSED_FOR_PHRASE",
+      "facial_component_supported": "NOT_ASSESSED_FOR_PHRASE",
+      "current_rig_limitation": "Face bones present; no exported morph-target primitives; exact required manual/head/facial realization and fidelity unvalidated without approved phrase reference",
+      "fingerspell_slots": [],
+      "non_manual_requirements": "PENDING_APPROVED_REFERENCE",
+      "listen_ready": false
+    },
+    "FSL_LEARNING": {
+      "action_id": "FSL_PHRASE_FSL_LEARNING_V1",
+      "reference": "MISSING",
+      "calibration": "NOT_STARTED_BLOCKED_APPROVED_REFERENCE",
+      "manual_component_supported": "NOT_ASSESSED_FOR_PHRASE",
+      "head_component_supported": "NOT_ASSESSED_FOR_PHRASE",
+      "facial_component_supported": "NOT_ASSESSED_FOR_PHRASE",
+      "current_rig_limitation": "Face bones present; no exported morph-target primitives; exact required manual/head/facial realization and fidelity unvalidated without approved phrase reference",
+      "fingerspell_slots": [],
+      "non_manual_requirements": "PENDING_APPROVED_REFERENCE",
+      "listen_ready": false
+    },
+    "TRY_AND_RATE": {
+      "action_id": "FSL_PHRASE_TRY_AND_RATE_V1",
+      "reference": "MISSING",
+      "calibration": "NOT_STARTED_BLOCKED_APPROVED_REFERENCE",
+      "manual_component_supported": "NOT_ASSESSED_FOR_PHRASE",
+      "head_component_supported": "NOT_ASSESSED_FOR_PHRASE",
+      "facial_component_supported": "NOT_ASSESSED_FOR_PHRASE",
+      "current_rig_limitation": "Face bones present; no exported morph-target primitives; exact required manual/head/facial realization and fidelity unvalidated without approved phrase reference",
+      "fingerspell_slots": [],
+      "non_manual_requirements": "PENDING_APPROVED_REFERENCE",
+      "listen_ready": false
+    }
+  },
+  "search": {
+    "roots": [
+      {
+        "label": "VOXGEST_APPDEV_TAKEOVER",
+        "files": 45,
+        "videos": 0,
+        "metadata_read": 33
+      },
+      {
+        "label": "outputs",
+        "files": 352,
+        "videos": 27,
+        "metadata_read": 108
+      },
+      {
+        "label": "core3_rebuild_20260927",
+        "files": 1552,
+        "videos": 0,
+        "metadata_read": 273
+      },
+      {
+        "label": "SOURCE_HANDOFF",
+        "files": 6527,
+        "videos": 105,
+        "metadata_read": 2141
+      },
+      {
+        "label": "VOXGEST_AVATAR_HANDOFF",
+        "files": 6527,
+        "videos": 105,
+        "metadata_read": 2141
+      }
+    ],
+    "archives": [
+      {
+        "filename": "VOXGEST_AVATAR_DATA_FINAL-20260902T030613Z-1-001.zip",
+        "entries": 6499,
+        "video_count": 105,
+        "phrase_matches": 0
+      },
+      {
+        "filename": "VOXGEST_AVATAR_HANDOFF.zip",
+        "entries": 6744,
+        "video_count": 105,
+        "phrase_matches": 0
+      },
+      {
+        "filename": "VOXGEST_EARLE_AVATAR_AUTHORITATIVE.zip",
+        "entries": 6532,
+        "video_count": 105,
+        "phrase_matches": 0
+      },
+      {
+        "filename": "VOXGEST_EARLE_PRIVATE_AVATAR_TRANSFER-20260927T073414Z-1-001.zip",
+        "entries": 285,
+        "video_count": 0,
+        "phrase_matches": 0
+      },
+      {
+        "filename": "VOXGEST_EARLE_PRIVATE_AVATAR_TRANSFER.zip",
+        "entries": 287,
+        "video_count": 0,
+        "phrase_matches": 0
+      }
+    ],
+    "reference_manifest": "105 isolated lexical entries, no target full phrases",
+    "false_positive": "Historical project log mentions BSIT students; no FSL source or approval",
+    "recorder_directory": "No video or reference/approval manifest found",
+    "limitation": "Scoped local package/metadata search, not proof that no external or unlabelled recording exists; no linguistic review of all105 recordings"
+  },
+  "mapua_required_now": false,
+  "mapua_use_case": "Optional licensed isolated lexical evidence only; arrays engineering-only",
+  "fingerspell_slots_identified": false,
+  "core3_sha256": "30f13fb65e7557992a8c3109460a790a69161e69f3ba9771a1e64a33f98294f8",
+  "core3_regression": "UNCHANGED_SOURCE_HASH; owner runtime PASS previously reported, no new asset",
+  "open_defects": {
+    "THANK_YOU": "ONSET_TIMING_MISMATCH_PENDING",
+    "UNDERSTAND": "OWNER_REPORTED_INCORRECT_HEIGHT_REFERENCE_CORRECTION_REQUIRED"
+  },
+  "private_reference_files_committed": false,
+  "next_action": "Privately obtain three clean takes per phrase plus metadata; qualified reviewer approves one exact take/hash per phrase before calibration.",
+  "files_created": [
+    "avatar_handoff/FSL_SURVEY_PHRASE_REFERENCE_REQUEST_V1.md",
+    "avatar_handoff/FSL_SURVEY_PHRASE_TAKE_METADATA_TEMPLATE_V1.json",
+    "reports/SURVEY_PHRASE_REFERENCE_AUDIT_20261001.md",
+    "reports/ASTRA_SURVEY_PHRASE_STATE_20261001.json"
+  ]
+}

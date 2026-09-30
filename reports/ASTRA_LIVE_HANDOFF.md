@@ -1,3 +1,13 @@
+# Survey phrase reference gate — 2026-10-01T00:20:03.864259+08:00
+
+SURVEY_INTRO_REFERENCE=MISSING; FSL_LEARNING_REFERENCE=MISSING; TRY_AND_RATE_REFERENCE=MISSING. No phrase animation/export. Request packet and9-take metadata template created in avatar_handoff. Read authority on origin/main at 8b2ac0ce822eaa00e8e0873d455f63f02856568e. See reports/ASTRA_SURVEY_PHRASE_STATE_20261001.json for exact search scope/provenance.
+
+OPEN_DEFECTS: THANK YOU onset mismatch remains; UNDERSTAND owner reports incorrect signing height and requires FSL/reference correction. Core3/current candidates preserved. All new listen_ready=false.
+
+NEXT_EXACT_ACTION=Privately obtain three clean takes per phrase plus metadata; qualified reviewer approves one exact take/hash per phrase before calibration.
+
+---
+
 # Current onset audit — 2026-09-30T17:49:14.288979+08:00
 
 Owner reports Samsung Core3 controls and all9 technical playback PASS for unchanged exported SHA. THANK YOU suspected snap at0.9–1.0s from Play. Exact GLB interval0.8–1.1s is static; separate34.9176deg finger flag at2.12s is not yet correlated. No derivative/export changed. Need owner applied-animation timing/recording. All new listen_ready=false. See reports/THANK_YOU_ONSET_AUDIT_20260930.md/json.
