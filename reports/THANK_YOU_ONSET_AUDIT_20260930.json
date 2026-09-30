@@ -1,0 +1,79 @@
+{
+  "sha256": "1f566e98e020b8e46e8a625c3910794be86a2017392093950f467bad68c7689b",
+  "all_world_matrices_identical_frames48_66": true,
+  "windows": [
+    {
+      "window": "reported_time_with_margin",
+      "frames": [
+        48,
+        66
+      ],
+      "sides": {
+        "L": {
+          "max_world_wrist_rotation_step_degrees": 0.0,
+          "max_palm_normal_step_degrees": 0.0,
+          "max_wrist_translation_step_m": 0.0,
+          "max_elbow_translation_step_m": 0.0,
+          "max_shoulder_translation_step_m": 0.0
+        },
+        "R": {
+          "max_world_wrist_rotation_step_degrees": 1.7075472925031877e-06,
+          "max_palm_normal_step_degrees": 0.0,
+          "max_wrist_translation_step_m": 0.0,
+          "max_elbow_translation_step_m": 0.0,
+          "max_shoulder_translation_step_m": 0.0
+        }
+      }
+    },
+    {
+      "window": "preparation_stroke",
+      "frames": [
+        102,
+        135
+      ],
+      "sides": {
+        "L": {
+          "max_world_wrist_rotation_step_degrees": 9.603296557740222,
+          "max_palm_normal_step_degrees": 7.434424759936608,
+          "max_wrist_translation_step_m": 0.05321654495196633,
+          "max_elbow_translation_step_m": 0.04061721230104435,
+          "max_shoulder_translation_step_m": 1.0311314883615894e-07
+        },
+        "R": {
+          "max_world_wrist_rotation_step_degrees": 13.271435790661682,
+          "max_palm_normal_step_degrees": 10.181207540472647,
+          "max_wrist_translation_step_m": 0.05417682486709746,
+          "max_elbow_translation_step_m": 0.04255184366423661,
+          "max_shoulder_translation_step_m": 7.651994992502464e-09
+        }
+      }
+    },
+    {
+      "window": "face_adjacent",
+      "frames": [
+        135,
+        180
+      ],
+      "sides": {
+        "L": {
+          "max_world_wrist_rotation_step_degrees": 1.8119182852001534,
+          "max_palm_normal_step_degrees": 1.5234961230159758,
+          "max_wrist_translation_step_m": 0.02674523530282643,
+          "max_elbow_translation_step_m": 0.011875177243234213,
+          "max_shoulder_translation_step_m": 1.0310056408613377e-07
+        },
+        "R": {
+          "max_world_wrist_rotation_step_degrees": 2.077500575846464,
+          "max_palm_normal_step_degrees": 1.272987573524549,
+          "max_wrist_translation_step_m": 0.025781595518985227,
+          "max_elbow_translation_step_m": 0.017465840184698714,
+          "max_shoulder_translation_step_m": 1.2912717013723618e-08
+        }
+      }
+    }
+  ],
+  "palm_definition": "Normal of index-to-pinky base crossed with wrist-to-middle base; orientation proxy, not FSL validation",
+  "timing": "User says 0.9-1.0s from Play; mapping to animator applied time not yet provided",
+  "snap_at_reported_glb_time": "NOT_REPRODUCED",
+  "separate_finger_flag": "34.917646 degrees at frames127-128 (2.116667-2.133333s); not linked to reported event"
+}

@@ -1,3 +1,11 @@
+# Current onset audit — 2026-09-30T17:49:14.288979+08:00
+
+Owner reports Samsung Core3 controls and all9 technical playback PASS for unchanged exported SHA. THANK YOU suspected snap at0.9–1.0s from Play. Exact GLB interval0.8–1.1s is static; separate34.9176deg finger flag at2.12s is not yet correlated. No derivative/export changed. Need owner applied-animation timing/recording. All new listen_ready=false. See reports/THANK_YOU_ONSET_AUDIT_20260930.md/json.
+
+NEXT_EXACT_ACTION=Owner captures screen recording from Play plus applied animation name/time near snap; inspect owner APK playback clock before any new THANK YOU derivative. V4 preserved.
+
+---
+
 # Private export delivered — 2026-09-29T19:50:15.651579+08:00
 
 User explicitly requested export after pending review was disclosed. Private 12-action GLB/ZIP now exists: 3 Core3 +9 unapproved Supervised9 candidates, THANK YOU V4. Structural validation and Blender import PASS; full-speed, FSL and owner Android gates remain pending. No APK. LISTEN_READY=false. See reports/PRIVATE_AVATAR_EXPORT_20260929.json for exact binary paths/SHA/bytes. Binaries remain outside Git.
