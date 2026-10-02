@@ -12,7 +12,7 @@ Status: **NO-GO pending controlled Samsung qualification** (2026-10-03). Build r
 | False accepts / fail-closed behavior | Historical manual negative events: 5/16 wrong accepted | Not qualified |
 | Modern SIGN result / SPEAK / RETRY | Production UI intentionally unchanged | Not integrated |
 
-Samsung `R5GYC0M1M4P` is now authorized; only the isolated Lab APK was installed. SIM10 startup feature/temporal/TFLite parity passed and analyzer frames were observed. The owner must select `CONTROLLED_WINDOW`, confirm framing, then record exactly one cued HELLO event before larger batches. Earlier MANUAL timeouts remain unscored setup evidence.
+Samsung `R5GYC0M1M4P` is now authorized; only the isolated Lab APK was installed. SIM10 startup feature/temporal/TFLite parity passed and analyzer frames were observed. The owner selected `CONTROLLED_WINDOW`, but repeated private preview checks still show label NO and a ceiling/wall with no signer in view. The owner must select HELLO, correct framing, then record exactly one cued HELLO event before larger batches. Earlier MANUAL timeouts remain unscored setup evidence.
 
 The previous saved 69-event set remains sealed diagnostic evidence; on it, identical-tensor raw correctness was HELLO 14/14 for each model, THANK YOU 9/9 for each, YES 9/11 Baseline vs 8/11 Native48 vs 4/11 SIM10, NO 7/9 vs 9/9 vs 9/9, UNDERSTAND 8/10 for each. These are **not** new controlled-window results and cannot decide today's winner. The same historical negative set had 4/6 arbitrary waves and 1/5 partials falsely accepted by each model. No frozen classifier is selected or promoted on the basis of those figures alone.
 
