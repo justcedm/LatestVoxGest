@@ -16,6 +16,15 @@ android {
         versionName "0.1.0"
     }
 
+    // Isolated physical recognition laboratory. Normal debug/release IDs are unchanged.
+    buildTypes {
+        recognitionLab {
+            initWith debug
+            applicationIdSuffix ".recognitionlab"
+            matchingFallbacks = ["debug"]
+        }
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
@@ -41,6 +50,12 @@ android {
             assets.srcDirs = [
                     "src/main/assets"
             ]
+        }
+        recognitionLab {
+            java.srcDirs += ["src/debug/java"]
+            assets.srcDirs += ["src/debug/assets"]
+            res.srcDirs += ["src/debug/res"]
+            manifest.srcFile "src/recognitionLab/AndroidManifest.xml"
         }
     }
 }

@@ -1,0 +1,19 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <application android:label="VoxGest Recognition Lab" tools:replace="android:label">
+        <activity
+            android:name="com.voxgest.app.MainActivity"
+            tools:node="remove" />
+        <activity
+            android:name="com.voxgest.dryrun.Core5DiagnosticActivity"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:label="VoxGest Recognition Lab"
+            android:theme="@style/FslDebugSystemTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>

@@ -1,0 +1,1 @@
+trial_id,event_id,dataset_role,intended,android_model,raw_top1,top1_confidence,top2,margin,capture_duration_ms,raw_mediapipe_result_count,envelope_frame_count,nonzero_hand_presence,pose_presence,termination,gate_reason,result,tensor_sha256,android_desktop_max_probability_difference

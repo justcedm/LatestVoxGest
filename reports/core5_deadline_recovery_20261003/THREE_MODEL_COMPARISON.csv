@@ -1,0 +1,1 @@
+trial_id,event_id,intended,tensor_sha256,model,model_sha256,top1,top1_confidence,top2,margin,p_hello,p_thank_you,p_yes,p_no,p_understand,gate_reason,accepted,android_desktop_max_probability_difference
