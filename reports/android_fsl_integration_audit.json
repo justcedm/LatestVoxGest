@@ -1,0 +1,282 @@
+{
+  "schema_version": 1,
+  "audit_name": "android_fsl_experimental_integration",
+  "evidence_date_utc": "2026-08-28T00:47:54.8977520Z",
+  "repository": {
+    "original_fsl_baseline_commit": "44f52b7b",
+    "integration_base_commit": "e8b4aa8131f683d66b8d0fb6f6b9099ac3e18aaf",
+    "integration_base_subject": "Implement experimental two-stage FSL runtime sprint"
+  },
+  "device": {
+    "status": "NOT_DETECTED",
+    "detected": false,
+    "model": null,
+    "android_version": null,
+    "serial": null,
+    "adb_path": "C:\\Users\\loldk\\AppData\\Local\\Android\\Sdk\\platform-tools\\adb.exe",
+    "command": "& 'C:\\Users\\loldk\\AppData\\Local\\Android\\Sdk\\platform-tools\\adb.exe' devices -l",
+    "exit_code": 0,
+    "stdout": "List of devices attached\r\n\r\n",
+    "authorized_device_count": 0
+  },
+  "profiles": {
+    "stable": {
+      "profile_id": "onehand162_android_calibrated_v1",
+      "remains_default_when_assets_present": true,
+      "launcher_activity": "com.voxgest.app.MainActivity",
+      "model_asset_modified": false,
+      "labels_asset_modified": false,
+      "manifest_asset_modified": false,
+      "feature_builder_modified": false,
+      "gates_modified": false,
+      "cooldowns_modified": false
+    },
+    "experimental": {
+      "profile_id": "fsl_onehand162_20f_rdtcn_v2",
+      "status": "experimental_not_android_default",
+      "deployment_eligible": false,
+      "source_set": "debug",
+      "activity": "com.voxgest.dryrun.fsl.FslExperimentalActivity",
+      "explicit_profile_extra_required": true,
+      "registered_in_stable_profile_loader": false,
+      "camera_blocked_until_golden_parity_passes": true
+    }
+  },
+  "artifacts": {
+    "asset_root": "android_dry_run/app/src/main/assets/model/fsl_onehand162_20f_rdtcn_v2",
+    "model": {
+      "filename": "voxgest_fsl_rdtcn_v2_float16.tflite",
+      "size_bytes": 271016,
+      "sha256": "8673eac3f7bf4da7b98570afe09e9cb6aeafd97f29927eee89eda9f809f3372d",
+      "input_shape": [1, 20, 162],
+      "input_dtype": "float32",
+      "output_shape": [1, 64],
+      "output_dtype": "float32",
+      "weight_quantization": "float16"
+    },
+    "labels": {
+      "filename": "class_labels_fsl_v2.json",
+      "class_count": 64,
+      "indices": "0..63",
+      "sha256": "f9ff2d9acae609130878eebe58edbbebb8b905ad2eec63fc0df25b56b5911642"
+    },
+    "runtime_manifest": {
+      "filename": "runtime_manifest.json",
+      "sha256": "b3982e344c3ba3a792055929fe749aa457fad733e9b3f69b3aa47d0b4b5f9030"
+    },
+    "golden_window": {
+      "filename": "golden_window_f32.bin",
+      "shape": [20, 162],
+      "dtype": "float32_little_endian",
+      "sha256": "a3302f5cc8f18023caa02fcf4c23bb2d1a4acd77b1554e29244c8e4a1f2b6695",
+      "source_split": "test",
+      "source_label": "AUNTIE"
+    },
+    "golden_feature_fixture": {
+      "filename": "golden_feature_fixture_f32.bin",
+      "case_count": 3,
+      "sha256": "3d54832f32bde281f3d965f35e9ae6bc434f87babffce9a172814fb01b32ac2e"
+    }
+  },
+  "feature_contract": {
+    "feature_version": "onehand162_20f_nose_mcp_z03_v2",
+    "frame_shape": [162],
+    "sequence_shape": [20, 162],
+    "dtype": "float32",
+    "pose_slots": [0, 99],
+    "pose_landmark_indices": "0..32",
+    "selected_hand_slots": [99, 162],
+    "selected_hand_landmark_indices": "0..20",
+    "selected_hand_policy": "fixed_anatomical_right",
+    "coordinate_reference": "pose_nose_landmark_0",
+    "hand_scale": "euclidean_wrist_0_to_middle_finger_mcp_9",
+    "minimum_hand_scale_exclusive": 0.001,
+    "z_damping": 0.3,
+    "missing_hand": "fixed_63_zeros",
+    "missing_pose": "entire_162_frame_zeros",
+    "legacy_30x162_reused": false,
+    "android_handedness_equivalence_status": "NOT_VALIDATED_ON_DEVICE"
+  },
+  "parity": {
+    "local_kotlin_canonical_builder": {
+      "status": "PASS",
+      "test_class": "com.voxgest.dryrun.fsl.FslCanonicalFeatureBuilderTest",
+      "cases": [
+        "pose_and_anatomical_right_hand",
+        "missing_hand_zero_fills_hand_slots",
+        "missing_pose_zero_fills_entire_frame"
+      ],
+      "absolute_tolerance": 0.000001,
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "is_android_device_evidence": false
+    },
+    "python_tflite_golden_replay": {
+      "status": "PASS",
+      "maximum_absolute_probability_error": 0.0,
+      "top1_index": 0,
+      "top1_label": "AUNTIE",
+      "top1_probability": 0.9996241331100464,
+      "margin": 0.9994725584983826,
+      "is_android_device_evidence": false
+    },
+    "android_feature_parity": {
+      "marker": "ANDROID_FEATURE_PARITY",
+      "status": "NOT_RUN",
+      "passed": null,
+      "reason": "No connected or authorized ADB device; neither the on-device golden runner nor a real Android export comparison has run."
+    },
+    "android_tflite_parity": {
+      "marker": "ANDROID_TFLITE_PARITY",
+      "status": "NOT_RUN",
+      "passed": null,
+      "maximum_absolute_probability_error_allowed": 0.0001,
+      "maximum_mean_absolute_probability_error_allowed": 0.00001,
+      "top1_index_must_match": true,
+      "reason": "No connected or authorized ADB device."
+    }
+  },
+  "diagnostic_runtime": {
+    "status": "IMPLEMENTED_NOT_RUN_ON_DEVICE",
+    "log_tag": "VoxGestFsl",
+    "markers": [
+      "ANDROID_FEATURE_PARITY",
+      "ANDROID_TFLITE_PARITY",
+      "FSL_PROFILE_READY",
+      "FSL_LIVE_DIAGNOSTIC",
+      "FSL_PROBE_RECORD",
+      "FSL_LIVE_ERROR"
+    ],
+    "logged_fields": [
+      "profile",
+      "class",
+      "top1_label_and_probability",
+      "top2_label_and_probability",
+      "margin",
+      "hand_present",
+      "pose_present",
+      "hand_ratio",
+      "pose_ratio",
+      "readiness",
+      "latency_ms",
+      "accepted",
+      "state",
+      "reason",
+      "activity_state",
+      "selected_hand"
+    ],
+    "confidence_threshold": 0.5,
+    "margin_threshold": 0.1,
+    "cooldown_frames": 10,
+    "threshold_source": "validation_only",
+    "cooldown_source": "stored_validation_windows_at_stride_5",
+    "production_rejection_reliable": false
+  },
+  "activity_and_background": {
+    "classifier_has_nsac_class": false,
+    "nsac_class_index": null,
+    "activity_detector_validation_accuracy": 0.8646,
+    "activity_detector_required_accuracy": ">0.95",
+    "activity_detector_target_met": false,
+    "activity_detector_used_by_android_experimental_runtime": false,
+    "live_activity_state_log_value": "UNVALIDATED_NO_BACKGROUND_CLASS"
+  },
+  "probe": {
+    "status": "IMPLEMENTED_NOT_RUN_ON_DEVICE",
+    "attempts_per_expected_class": 5,
+    "class_count": 64,
+    "manual_capture_required": true,
+    "capture_button": "Capture probe attempt",
+    "signer_id_required_for_probe_launch": true,
+    "signer_extra": "voxgest.signer_id",
+    "non_overlapping_windows": true,
+    "attempt_cap_persists_within_session": true,
+    "summary_formats": ["CSV", "JSONL"],
+    "detailed_window_format": "JSON",
+    "app_internal_root": "files/fsl_probe_f4719270",
+    "shape": [20, 162],
+    "dtype": "float32",
+    "metadata_fields": [
+      "feature_version",
+      "shape",
+      "dtype",
+      "expected",
+      "predicted",
+      "top1",
+      "top2",
+      "margin",
+      "latency_ms",
+      "accepted",
+      "state",
+      "timestamp_ms",
+      "timestamp_iso_utc",
+      "signer_id",
+      "session_id",
+      "device_id",
+      "model_id",
+      "profile_id"
+    ],
+    "raw_export_contains": [
+      "pose_landmarks_33x3_or_null_per_frame",
+      "right_hand_landmarks_21x3_or_null_per_frame",
+      "canonical_features_20x162"
+    ],
+    "python_comparator": "scripts_ml/88_compare_android_fsl_export.py"
+  },
+  "build_install_launch": {
+    "gradle_tasks": [":app:testDebugUnitTest", ":app:assembleDebug"],
+    "last_verified_build_status": "PASS",
+    "last_verified_build_scope": "Final current tree including required signer ID and manual-capture probe workflow.",
+    "current_tree_final_recheck_status": "PASS",
+    "unit_tests": {
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "lint_debug": {
+      "status": "PASS",
+      "errors": 0,
+      "warnings": 325,
+      "note": "Warnings are existing project-wide Android lint findings; lintDebug completed successfully."
+    },
+    "last_verified_apk": {
+      "path": "android_dry_run/app/build/outputs/apk/debug/app-debug.apk",
+      "size_bytes": 127963228,
+      "sha256": "9534e13c623646f9fe01d7468da71fcdff71949681e5ecf1a622accc312991cb",
+      "includes_final_signer_capture_delta": true
+    },
+    "install_status": "NOT_RUN",
+    "install_preserves_data_command": "adb install -r app-debug.apk",
+    "launch_status": "NOT_RUN",
+    "stable_launcher_verified_on_device": false,
+    "experimental_profile_verified_on_device": false,
+    "live_inference_status": "NOT_RUN"
+  },
+  "unchanged_scope": {
+    "stable_android_baseline_removed": false,
+    "fsl_made_default": false,
+    "stable_gate_thresholds_changed": false,
+    "stable_cooldown_changed": false,
+    "transformer_added": false,
+    "usb_rtsp_smart_glasses_added": false,
+    "flashlight_added": false,
+    "profanity_filter_added": false,
+    "alphabet_recording_or_model_integration_changed": false,
+    "excluded_two_handed_classes_forced_into_model": false,
+    "new_model_trained_in_this_android_task": false
+  },
+  "blockers": [
+    "No connected or authorized Android device appears in adb devices -l.",
+    "ANDROID_FEATURE_PARITY has not run on Android.",
+    "ANDROID_TFLITE_PARITY has not run on Android.",
+    "Installation, launch, camera-to-MediaPipe-to-buffer-to-RD-TCN inference, and Samsung probe are not run.",
+    "Front-camera mirroring and the MediaPipe right slot have not been proven equivalent to anatomical right on Samsung.",
+    "The 64-class classifier has no trained NSAC/background class.",
+    "The activity detector achieved 0.8646 validation accuracy and missed the >0.95 target.",
+    "Confidence, margin, and cooldown values are validation-only and are not calibrated on a continuous Samsung live stream.",
+    "Multi-device validation is incomplete."
+  ],
+  "next_procedure_document": "docs/ANDROID_FSL_EXPERIMENTAL_INTEGRATION.md"
+}

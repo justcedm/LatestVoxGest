@@ -61,7 +61,7 @@
     "TIME",
     "WANT",
     "MEDICINE",
-    "NOTHING"
+    "NSAC"
   ],
   "include_extra_words": false,
   "manual_to_train": false,
@@ -87,7 +87,7 @@
     "TIME",
     "WANT",
     "MEDICINE",
-    "NOTHING"
+    "NSAC"
   ],
   "missing_target_words": [],
   "skipped_target_words": [],
@@ -220,7 +220,7 @@
       "used": true,
       "skipped_missing_hand_metadata": 0
     },
-    "NOTHING": {
+    "NSAC": {
       "sequences": 600,
       "groups": 10,
       "used": true,
@@ -338,7 +338,7 @@
       "total": 25,
       "accuracy": 92.0
     },
-    "NOTHING": {
+    "NSAC": {
       "correct": 120,
       "total": 120,
       "accuracy": 100.0
@@ -366,6 +366,6 @@
     "TIME": "STOP",
     "WANT": "MEDICINE",
     "MEDICINE": "HELP",
-    "NOTHING": "-"
+    "NSAC": "-"
   }
 }

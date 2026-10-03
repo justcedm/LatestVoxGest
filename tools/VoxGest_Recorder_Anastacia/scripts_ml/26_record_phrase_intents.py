@@ -3,13 +3,13 @@ Endpoint-based phrase-intent recorder.
 
 Phrase intents are longer than word signs. This recorder captures complete
 motion segments by waiting for a start motion and a final hold before saving a
-60x162 sequence. The NOTHING class uses timed windows so idle/no-motion
+60x162 sequence. The NSAC class uses timed windows so idle/no-motion
 examples can also be recorded.
 
 Examples:
   python scripts_ml/26_record_phrase_intents.py ASK_NAME
   python scripts_ml/26_record_phrase_intents.py PARTIAL_ASK_NAME
-  python scripts_ml/26_record_phrase_intents.py NOTHING
+  python scripts_ml/26_record_phrase_intents.py NSAC
 """
 
 import json
@@ -143,7 +143,7 @@ def draw_status(frame, label, recording, saved, target, capture_mode, segmenter,
 
 
 def capture_mode_for(label):
-    return "timed" if label == "NOTHING" else "endpoint"
+    return "timed" if label == "NSAC" else "endpoint"
 
 
 def record_label(label, holistic, metadata):

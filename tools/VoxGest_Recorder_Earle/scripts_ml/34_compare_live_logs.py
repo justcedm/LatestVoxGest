@@ -34,7 +34,7 @@ DEMO10_LABELS = [
     "DOCTOR",
     "NAME",
     "THANKYOU",
-    "NOTHING",
+    "NSAC",
 ]
 PROFILE_LABELS = list(dict.fromkeys(DEMO10_LABELS + list(TRAINING_WORDS)))
 
@@ -49,10 +49,10 @@ SPRINT30_HARDENING_PRIORITY = [
     "EAT",
     "TIME",
     "MEDICINE",
-    "NOTHING",
+    "NSAC",
 ]
 KNOWN_WEAK_WATCH = list(
-    dict.fromkeys(["STOP", "NAME", "HELP", "DOCTOR", "NOTHING", "PLEASE"] + SPRINT30_HARDENING_PRIORITY)
+    dict.fromkeys(["STOP", "NAME", "HELP", "DOCTOR", "NSAC", "PLEASE"] + SPRINT30_HARDENING_PRIORITY)
 )
 KNOWN_SAFER_DEMO = ["YES", "NO", "WATER", "HELLO", "THANKYOU"]
 
@@ -199,13 +199,13 @@ def recommendation_for(row):
     label = row["label"]
     if row["trials"] == 0:
         return "needs live test coverage"
-    if label == "NOTHING":
+    if label == "NSAC":
         if row["false_accepts"] or row["correct_match_rate"] < 0.85:
-            return "record hard negatives and transition/partial-sign NOTHING samples"
+            return "record hard negatives and transition/partial-sign NSAC samples"
         return "keep as active negative class"
     if row["true_accept_rate"] < 0.70:
         if label in SPRINT30_HARDENING_PRIORITY:
-            return "record sprint30 hardening repair samples and confusable NOTHING negatives"
+            return "record sprint30 hardening repair samples and confusable NSAC negatives"
         if label in KNOWN_WEAK_WATCH:
             return "record targeted repair samples for this known weak label"
         return "record more controlled demo10 samples"

@@ -11,7 +11,7 @@
     "hand_size": 63,
     "feature_size": 162,
     "pose_policy": "head_torso_and_selected_arm_only_when_VOXGEST_SINGLE_HAND_POSE_is_enabled",
-    "negative_label": "NOTHING"
+    "negative_label": "NSAC"
   },
   "models": {
     "lstm": {
@@ -54,7 +54,7 @@
       "TIME",
       "WANT",
       "MEDICINE",
-      "NOTHING"
+      "NSAC"
     ]
   },
   "runtime_gates": {
@@ -83,7 +83,7 @@
       "motion": 0.07,
       "wrist_path": 0.8
     },
-    "nothing_policy": "NOTHING is no-output and must never enter displayed/spoken sentence text."
+    "nsac_policy": "NSAC is no-output and must never enter displayed/spoken sentence text."
   },
   "notes": [
     "This manifest is optional and must not replace runtime_manifest_v1.json until sprint30 passes live testing.",

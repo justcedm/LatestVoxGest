@@ -1,0 +1,79 @@
+{
+  "class_counts": {
+    "EIGHT": 33,
+    "FIVE": 32,
+    "FOUR": 27,
+    "HELLO": 19,
+    "NINE": 27,
+    "NO": 33,
+    "ONE": 21,
+    "SEVEN": 25,
+    "SIX": 25,
+    "TEN": 22,
+    "THANK_YOU": 24,
+    "THREE": 28,
+    "TWO": 25,
+    "YES": 26
+  },
+  "created_utc": "2026-09-12T13:35:27.568100+00:00",
+  "development_fold_counts": {
+    "0": 82,
+    "1": 79,
+    "2": 77,
+    "3": 73
+  },
+  "duplicate_evidence": {
+    "exact_duplicate_partition_crossings": 0,
+    "near_duplicate_partition_crossings": 0,
+    "selected_exact_duplicate_groups": 0,
+    "selected_near_duplicate_pairs": 0
+  },
+  "duplicate_policy": "exact SHA and audited perceptual-neighbor groups cannot cross a partition or development fold",
+  "experiment_id": "mapua14_rescue_v1",
+  "extraction": {
+    "completed": 367,
+    "external_feature_manifest": "C:\\VOXGEST_TRAINING\\MAPUA14_RESCUE_V1\\feature_manifest.csv",
+    "external_feature_manifest_sha256": "be74846c9c74c0017bfbf758e8306e40b505b51652f61b7aa03ad6091d035141",
+    "failed": 0,
+    "mediapipe_version": "0.10.9"
+  },
+  "feature_contract": {
+    "candidate_temporal_lengths": [
+      32,
+      48
+    ],
+    "coordinate_orientation": "canonical_unmirrored",
+    "frame_version": "fullsign225_frame_v1",
+    "layout": "pose99|anatomical_left63|anatomical_right63",
+    "maximum_internal_interpolation_gap_frames": 3,
+    "mediapipe_min_detection_confidence": 0.5,
+    "mediapipe_min_tracking_confidence": 0.5,
+    "missing_hand_policy": "zero_fixed_anatomical_63_slot",
+    "missing_pose_policy": "zero_entire_225_frame",
+    "motion_boundary_frames": 3,
+    "normalization": {
+      "coordinate_reference": "pose_nose_landmark_0",
+      "hand_order": "mediapipe_hand_0_through_20_xyz",
+      "hand_scale": "independent_euclidean_wrist_0_to_middle_finger_mcp_9",
+      "minimum_hand_scale": 0.0010000000474974513,
+      "mirrored_input": false,
+      "missing_hand": "zero_fixed_anatomical_63_slot",
+      "missing_pose": "zero_entire_225_frame",
+      "pose_order": "mediapipe_pose_0_through_32_xyz",
+      "slot_swapping": false,
+      "z_damping": 0.30000001192092896
+    },
+    "slot_swapping": false,
+    "version": "fullsign225_frame_v1_complete_trajectory_v1"
+  },
+  "metric_scope": "EXPLORATORY_CLIP_LEVEL_METRICS_NOT_SIGNER_INDEPENDENT",
+  "partition_counts": {
+    "development": 311,
+    "sealed_test": 56
+  },
+  "pass_only_video_count": 367,
+  "raw_features_checkpoints_outside_git": "C:\\VOXGEST_TRAINING\\MAPUA14_RESCUE_V1",
+  "signer_overlap_claim": "NOT_MEASURABLE_SIGNER_IDS_UNAVAILABLE",
+  "source_video_overlap_count": 0,
+  "split_manifest_sha256": "5ee4ba671d1022ab02fd0068804f391450fe477a0f5f83ee4e689f6210fdbc09"
+}

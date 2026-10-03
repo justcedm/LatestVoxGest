@@ -12,10 +12,10 @@ set "VOXGEST_MANUAL_SEQUENCES_PER_WORD=50"
 set "VOXGEST_RECORDER_OUTPUT_ROOT=recorded_features\fullsign225_manual5_team_features"
 
 echo ============================================================
-echo  VoxGest Recorder - NOTHING
+echo  VoxGest Recorder - NSAC
 echo ============================================================
 echo Signer ID: %VOXGEST_SIGNER_ID%
-echo Words    : NOTHING
+echo Words    : NSAC
 echo Output   : %VOXGEST_RECORDER_OUTPUT_ROOT%
 echo.
 
@@ -25,7 +25,7 @@ if not exist recorder_env\Scripts\python.exe (
     exit /b 1
 )
 
-recorder_env\Scripts\python.exe scripts_ml\41_record_manual_fullsign225_words.py NOTHING
+recorder_env\Scripts\python.exe scripts_ml\41_record_manual_fullsign225_words.py NSAC
 if errorlevel 1 (
     echo.
     echo ERROR: Recording failed. Screenshot this window and send it to Ced.

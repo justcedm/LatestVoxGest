@@ -31,9 +31,9 @@ class AlphabetAcceptanceGate {
         }
 
         val label = normalizeLabel(prediction.label)
-        if (label == "NOTHING" || label.isBlank()) {
+        if (label == "NSAC" || label.isBlank()) {
             resetCandidate()
-            return AlphabetGateResult(false, label, prediction.confidence, prediction.margin, "nothing_no_output")
+            return AlphabetGateResult(false, label, prediction.confidence, prediction.margin, "nsac_no_output")
         }
         if (!isSupportedOutput(label)) {
             resetCandidate()
@@ -95,7 +95,7 @@ class AlphabetAcceptanceGate {
         return when (value.trim().uppercase(Locale.US)) {
             "DEL", "DELETE" -> "DEL"
             "SPACE" -> "SPACE"
-            "NOTHING" -> "NOTHING"
+            "NSAC" -> "NSAC"
             else -> value.trim().uppercase(Locale.US)
         }
     }

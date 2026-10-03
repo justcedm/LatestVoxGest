@@ -1,0 +1,178 @@
+{
+  "schema_version": 1,
+  "profile_id": "fsl_onehand162_20f_rdtcn_v2",
+  "purpose": "android_tflite_golden_parity",
+  "reference_engine": "python_tflite_builtin_without_default_delegates_single_thread",
+  "fixture": {
+    "filename": "golden_window_f32.bin",
+    "format": "raw_ieee754_float32_little_endian_row_major",
+    "shape": [
+      20,
+      162
+    ],
+    "value_count": 3240,
+    "byte_count": 12960,
+    "sha256": "a3302f5cc8f18023caa02fcf4c23bb2d1a4acd77b1554e29244c8e4a1f2b6695",
+    "source": {
+      "project_relative_path": "external_datasets\\fsl_features\\AUNTIE\\fsl105_0_w23.npy",
+      "split": "test",
+      "label": "AUNTIE",
+      "signer_id": "fsl105_0",
+      "source_video": "clips/59/0.MOV",
+      "feature_version": "onehand162_20f_nose_mcp_z03_v2",
+      "split_manifest_content_sha256": "a3302f5cc8f18023caa02fcf4c23bb2d1a4acd77b1554e29244c8e4a1f2b6695"
+    }
+  },
+  "model": {
+    "filename": "voxgest_fsl_rdtcn_v2_float16.tflite",
+    "sha256": "8673eac3f7bf4da7b98570afe09e9cb6aeafd97f29927eee89eda9f809f3372d",
+    "input_shape": [
+      1,
+      20,
+      162
+    ],
+    "input_dtype": "float32",
+    "output_shape": [
+      1,
+      64
+    ],
+    "output_dtype": "float32",
+    "weight_quantization": "float16"
+  },
+  "labels": {
+    "filename": "class_labels_fsl_v2.json",
+    "sha256": "f9ff2d9acae609130878eebe58edbbebb8b905ad2eec63fc0df25b56b5911642",
+    "class_count": 64
+  },
+  "runtime_manifest": {
+    "filename": "runtime_manifest.json",
+    "sha256": "b3982e344c3ba3a792055929fe749aa457fad733e9b3f69b3aa47d0b4b5f9030"
+  },
+  "expected_output": {
+    "shape": [
+      1,
+      64
+    ],
+    "dtype": "float32",
+    "probabilities": [
+      0.9996241331100464,
+      1.5136786259972723e-06,
+      6.40145880748122e-10,
+      1.7361993250082793e-15,
+      2.315440455471704e-14,
+      1.1679995512436925e-11,
+      5.521629160842867e-12,
+      2.9475603815359852e-12,
+      4.306896173034147e-09,
+      1.2242794451833294e-11,
+      4.708526901708865e-08,
+      3.950280103026671e-08,
+      1.4283032222228709e-11,
+      1.2630996479856549e-06,
+      3.6287921452438088e-12,
+      3.152791805405286e-06,
+      1.5238538783688554e-13,
+      6.238296843890767e-19,
+      3.5115116245537994e-14,
+      5.397655513661448e-07,
+      4.0519324102206156e-05,
+      4.790977618540637e-05,
+      5.0062006096140976e-08,
+      5.563558037120948e-15,
+      8.932626502627244e-15,
+      1.3919129742134828e-05,
+      5.794831845276627e-13,
+      6.705096211589989e-08,
+      3.5569725604592956e-14,
+      1.803933884624272e-18,
+      6.53712246010199e-14,
+      1.0255925531055254e-07,
+      7.604940677197192e-09,
+      1.593667349197858e-07,
+      1.4771915786936096e-14,
+      8.152569297545289e-15,
+      1.0421510876490458e-10,
+      2.2184698522664803e-11,
+      5.674977598035726e-15,
+      6.370758143248167e-08,
+      1.7414311637674318e-13,
+      2.1065952920186785e-15,
+      9.088801082189277e-14,
+      1.5750726944929738e-08,
+      3.607276153130834e-15,
+      6.104824795910655e-16,
+      3.2839257300878305e-14,
+      4.257245564076584e-06,
+      2.3221244263398055e-13,
+      4.733627974928822e-06,
+      4.141082627029391e-06,
+      3.6390112654771656e-05,
+      4.9452119418755904e-17,
+      2.2330246918049468e-13,
+      7.826561443380342e-08,
+      4.4913320634766725e-15,
+      7.276851105193771e-13,
+      8.986019935965095e-13,
+      3.9256352465599775e-05,
+      4.107717312996917e-13,
+      2.6080108000314794e-05,
+      2.5135709069701306e-09,
+      0.00015155519940890372,
+      1.1648981258771673e-11
+    ],
+    "float32_little_endian_sha256": "ffa9240fab1a39b44286c0be8d051ae560cb072ccacd9df8cb2db1c98695a3cf",
+    "probability_sum": 1.0000000030129974,
+    "top_k": [
+      {
+        "rank": 1,
+        "index": 0,
+        "token": "AUNTIE",
+        "label": "AUNTIE",
+        "probability": 0.9996241331100464
+      },
+      {
+        "rank": 2,
+        "index": 62,
+        "token": "YESTERDAY",
+        "label": "YESTERDAY",
+        "probability": 0.00015155519940890372
+      },
+      {
+        "rank": 3,
+        "index": 21,
+        "token": "GOOD_EVENING",
+        "label": "GOOD EVENING",
+        "probability": 4.790977618540637e-05
+      },
+      {
+        "rank": 4,
+        "index": 20,
+        "token": "GOOD_AFTERNOON",
+        "label": "GOOD AFTERNOON",
+        "probability": 4.0519324102206156e-05
+      },
+      {
+        "rank": 5,
+        "index": 58,
+        "token": "WOMAN",
+        "label": "WOMAN",
+        "probability": 3.9256352465599775e-05
+      }
+    ],
+    "top1_index": 0,
+    "top1_token": "AUNTIE",
+    "top1_label": "AUNTIE",
+    "top1_probability": 0.9996241331100464,
+    "top2_index": 62,
+    "top2_token": "YESTERDAY",
+    "top2_label": "YESTERDAY",
+    "top2_probability": 0.00015155519940890372,
+    "margin": 0.9994725584983826
+  },
+  "android_parity_thresholds": {
+    "top1_index_must_match": true,
+    "maximum_absolute_probability_error": 0.0001,
+    "maximum_mean_absolute_probability_error": 1e-05,
+    "raw_output_sha256_is_diagnostic_only": true
+  }
+}

@@ -156,7 +156,7 @@ object WordProfileManager {
             "DOCTOR" to PredictionGate.WordThreshold(0.70f, 0.15f, 0.020f, 0.20f),
             "NAME" to PredictionGate.WordThreshold(0.55f, 0.05f, 0.020f, 0.20f),
             "THANKYOU" to PredictionGate.WordThreshold(0.52f, 0.03f, 0.010f, 0.08f, 6),
-            "NOTHING" to PredictionGate.WordThreshold(0.55f, 0.05f, 0.0f, 0.0f, 4)
+            "NSAC" to PredictionGate.WordThreshold(0.55f, 0.05f, 0.0f, 0.0f, 4)
         )
     }
 

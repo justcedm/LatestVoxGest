@@ -8,7 +8,7 @@ from dataclasses import dataclass
 import time
 
 
-NO_OUTPUT_TOKENS = {"", "NOTHING", "NONE", "NO_WORD", "IDLE", "REST"}
+NO_OUTPUT_TOKENS = {"", "NSAC", "NONE", "NO_WORD", "IDLE", "REST"}
 CONTROL_CLEAR = {"CLEAR", "RESET"}
 CONTROL_DELETE = {"DEL", "DELETE", "BACKSPACE"}
 CONTROL_SPACE = {"SPACE", "_"}

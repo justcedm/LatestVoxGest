@@ -1,6 +1,7 @@
 package com.voxgest.dryrun;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -10,7 +11,7 @@ public final class TokenComposer {
     private static final Set<String> NO_OUTPUT_LABELS = new HashSet<>();
 
     static {
-        NO_OUTPUT_LABELS.add("NOTHING");
+        NO_OUTPUT_LABELS.add("NSAC");
         NO_OUTPUT_LABELS.add("IDLE");
         NO_OUTPUT_LABELS.add("REST");
         NO_OUTPUT_LABELS.add("NO_WORD");
@@ -20,6 +21,36 @@ public final class TokenComposer {
     private final Set<String> wordLabels;
     private final List<String> tokens = new ArrayList<>();
     private final List<String> letters = new ArrayList<>();
+
+    /**
+     * Immutable point-in-time view of composer state.
+     *
+     * Sentence suggestion code accepts this type instead of raw recognition labels. That keeps
+     * suggestions downstream of composition and prevents them from mutating recognition history.
+     */
+    public static final class Snapshot {
+        private final List<String> tokens;
+        private final List<String> pendingLetters;
+        private final String sentence;
+
+        private Snapshot(List<String> tokens, List<String> pendingLetters, String sentence) {
+            this.tokens = Collections.unmodifiableList(new ArrayList<>(tokens));
+            this.pendingLetters = Collections.unmodifiableList(new ArrayList<>(pendingLetters));
+            this.sentence = sentence;
+        }
+
+        public List<String> getTokens() {
+            return tokens;
+        }
+
+        public List<String> getPendingLetters() {
+            return pendingLetters;
+        }
+
+        public String getSentence() {
+            return sentence;
+        }
+    }
 
     public TokenComposer(Set<String> wordLabels) {
         this.wordLabels = new HashSet<>();
@@ -49,6 +80,10 @@ public final class TokenComposer {
             out.append(part);
         }
         return out.toString().trim();
+    }
+
+    public Snapshot snapshot() {
+        return new Snapshot(tokens, letters, sentence());
     }
 
     public String strip(int maxChars) {
@@ -99,6 +134,25 @@ public final class TokenComposer {
         }
 
         return result(raw, "ignore", false, "", "", "unknown_label");
+    }
+
+    /** Accepts an exact label emitted by the parity-gated STANDARD_FSL105 runtime. */
+    public TokenResult acceptVerifiedWord(String label) {
+        String raw = label == null ? "" : label.trim();
+        if (raw.length() == 0) {
+            return result(raw, "ignore", false, "", "", "empty");
+        }
+        String upper = raw.toUpperCase(Locale.US);
+        if (NO_OUTPUT_LABELS.contains(upper)) {
+            return result(raw, "noop", false, "", "", "no_output");
+        }
+        if ("DEL".equals(upper) || "SPACE".equals(upper) ||
+                "CLEAR".equals(upper) || "SPEAK".equals(upper)) {
+            return result(raw, "ignore", false, "", "", "ui_control");
+        }
+        String flushed = flushLetters();
+        tokens.add(raw);
+        return result(raw, "append_verified_word", true, raw, flushed, "");
     }
 
     private TokenResult result(

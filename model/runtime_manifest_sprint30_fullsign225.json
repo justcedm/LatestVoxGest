@@ -10,8 +10,8 @@
   "notes": [
     "Experimental full-sign dynamic word model. Do not promote until live testing improves.",
     "Uses fixed physical left-hand and right-hand slots. Missing hand slots are zero-filled.",
-    "NOTHING is a no-output class. Raw predictions must not update sentence output.",
-    "Current NOTHING data is bootstrapped from onehand162 manual hard negatives and should be replaced with native fullsign225 recordings."
+    "NSAC is a no-output class. Raw predictions must not update sentence output.",
+    "Current NSAC data is bootstrapped from onehand162 manual hard negatives and should be replaced with native fullsign225 recordings."
   ],
   "camera": {
     "width": 640,
@@ -73,7 +73,7 @@
       "TIME",
       "WANT",
       "MEDICINE",
-      "NOTHING"
+      "NSAC"
     ],
     "grouped_validation_accuracy": 54.91638779640198,
     "model_size_bytes": 316544
@@ -192,7 +192,7 @@
         "wrist_path": 0.08,
         "stable_frames": 6
       },
-      "NOTHING": {
+      "NSAC": {
         "confidence": 0.55,
         "margin": 0.05,
         "motion": 0.0,
@@ -204,7 +204,7 @@
   },
   "token_composer": {
     "input_policy": "accepted_predictions_only",
-    "nothing_policy": "ignore_no_output",
+    "nsac_policy": "ignore_no_output",
     "raw_prediction_policy": "never_update_sentence_output"
   },
   "comparison": {

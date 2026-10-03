@@ -170,7 +170,7 @@ THRESHOLDS = {
     "DOCTOR": {"conf": 0.70, "margin": 0.15, "motion": 0.020, "path": 0.20, "presence": 0.25},
     "NAME": {"conf": 0.55, "margin": 0.05, "motion": 0.020, "path": 0.20, "presence": 0.25},
     "THANKYOU": {"conf": 0.52, "margin": 0.03, "motion": 0.010, "path": 0.08, "presence": 0.25},
-    "NOTHING": {"conf": 0.55, "margin": 0.05, "motion": 0.0, "path": 0.0, "presence": 0.0},
+    "NSAC": {"conf": 0.55, "margin": 0.05, "motion": 0.0, "path": 0.0, "presence": 0.0},
 }
 DEFAULT_THRESHOLD = {"conf": 0.65, "margin": 0.12, "motion": 0.03, "path": 0.35, "presence": 0.25}
 PROFILE_THRESHOLDS = {

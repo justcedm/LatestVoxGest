@@ -49,7 +49,7 @@
     "WANT",
     "WATER",
     "YES",
-    "NOTHING"
+    "NSAC"
   ],
   "include_extra_words": false,
   "manual_to_train": true,
@@ -69,7 +69,7 @@
     "WANT",
     "WATER",
     "YES",
-    "NOTHING"
+    "NSAC"
   ],
   "missing_target_words": [],
   "skipped_target_words": [],
@@ -166,7 +166,7 @@
       "used": true,
       "skipped_missing_hand_metadata": 0
     },
-    "NOTHING": {
+    "NSAC": {
       "sequences": 153,
       "groups": 17,
       "used": true,
@@ -254,7 +254,7 @@
       "total": 36,
       "accuracy": 100.0
     },
-    "NOTHING": {
+    "NSAC": {
       "correct": 9,
       "total": 27,
       "accuracy": 33.33333333333333
@@ -276,6 +276,6 @@
     "WANT": "HELP",
     "WATER": "YES",
     "YES": "-",
-    "NOTHING": "HELLO"
+    "NSAC": "HELLO"
   }
 }

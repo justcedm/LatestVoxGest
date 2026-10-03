@@ -9,7 +9,7 @@ from dataclasses import dataclass
 
 ALPHABET_LABELS = tuple("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
 CONTROL_LABELS = {"space", "del"}
-NO_OUTPUT_LABELS = {"NOTHING", "nothing", "idle", "rest", "no_word", "none"}
+NO_OUTPUT_LABELS = {"NSAC", "nsac", "idle", "rest", "no_word", "none"}
 
 
 @dataclass

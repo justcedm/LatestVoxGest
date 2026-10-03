@@ -7,7 +7,7 @@ in the repo, but live testing defaults to:
 
 - static alphabet: `A-Z`, `del`, `space`, `nothing`
 - dynamic words: `YES`, `NO`, `PLEASE`, `WATER`, `HELLO`, `HELP`, `STOP`, `DOCTOR`, `NAME`, `THANKYOU`
-- dynamic negative/no-output class: `NOTHING`
+- dynamic negative/no-output class: `NSAC`
 
 Sentence output is built only from confirmed accepted tokens:
 
@@ -15,7 +15,7 @@ Sentence output is built only from confirmed accepted tokens:
 - `space` commits the current spelled word boundary
 - `del` deletes
 - accepted word gestures append full word tokens
-- `NOTHING` is ignored and never displayed/spoken as a word
+- `NSAC` is ignored and never displayed/spoken as a word
 
 Phrase recognition is opt-in only:
 
@@ -27,7 +27,7 @@ This workspace is cleaned for the current defense-ready VoxGest pipeline:
 
 - Static alphabet recognition: `A-Z`, `del`, `space`, `nothing`
 - LSTM word recognition demo profile: `YES`, `NO`, `PLEASE`, `WATER`, `HELLO`, `HELP`, `STOP`, `DOCTOR`, `NAME`, `THANKYOU`
-- Active negative word class: `NOTHING`
+- Active negative word class: `NSAC`
 
 ## Main Commands
 
@@ -57,7 +57,7 @@ $env:VOXGEST_MODE='LETTERS'
 .\voxgest_env\Scripts\python.exe scripts_ml\20_webcam_dual.py
 ```
 
-Audit the 10-word + `NOTHING` dataset:
+Audit the 10-word + `NSAC` dataset:
 
 ```powershell
 $env:VOXGEST_WORD_PROFILE='demo10'
@@ -90,7 +90,7 @@ $env:VOXGEST_ENABLE_PHRASE='0'
 $env:VOXGEST_SINGLE_HAND_POSE='1'
 $env:VOXGEST_DOMINANT_HAND='right'
 $env:VOXGEST_MOTION_LETTER_SEQUENCES_PER_LABEL='20'
-.\voxgest_env\Scripts\python.exe scripts_ml\34_record_motion_letters.py J Z NOTHING
+.\voxgest_env\Scripts\python.exe scripts_ml\34_record_motion_letters.py J Z NSAC
 ```
 
 Run the recorder three separate times so each class has at least three manual
@@ -138,12 +138,12 @@ Record negative/open-hand samples:
 
 ```powershell
 $env:VOXGEST_WORD_PROFILE='demo10'
-.\voxgest_env\Scripts\python.exe scripts_ml\16_record_manual_words.py NOTHING
+.\voxgest_env\Scripts\python.exe scripts_ml\16_record_manual_words.py NSAC
 ```
 
-For `NOTHING`, record hard negatives: idle hands, natural transitions,
+For `NSAC`, record hard negatives: idle hands, natural transitions,
 partial/incomplete signs, aborted signs, and hand entering/leaving frame.
-`NOTHING` is no-output data, not a word token.
+`NSAC` is no-output data, not a word token.
 
 Record webcam calibration samples for current weak words:
 
@@ -201,7 +201,7 @@ $env:VOXGEST_DOMINANT_HAND='right'
 $env:VOXGEST_SINGLE_HAND_POSE='1'
 $env:VOXGEST_PHRASE_SEQUENCES_PER_LABEL='60'
 .\voxgest_env\Scripts\python.exe scripts_ml\26_record_phrase_intents.py ASK_NAME
-.\voxgest_env\Scripts\python.exe scripts_ml\26_record_phrase_intents.py NOTHING
+.\voxgest_env\Scripts\python.exe scripts_ml\26_record_phrase_intents.py NSAC
 .\voxgest_env\Scripts\python.exe scripts_ml\26_record_phrase_intents.py PARTIAL_ASK_NAME
 ```
 
@@ -212,23 +212,23 @@ Train the separate 60-frame phrase-intent TCN:
 ```
 
 Phrase trainer readiness uses separate recording groups. If you already have
-one 60-sample session for `ASK_NAME` and `NOTHING`, use two shorter sessions per
+one 60-sample session for `ASK_NAME` and `NSAC`, use two shorter sessions per
 label instead of one long tiring session:
 
 ```powershell
 $env:VOXGEST_PHRASE_SEQUENCES_PER_LABEL='30'
 .\voxgest_env\Scripts\python.exe scripts_ml\26_record_phrase_intents.py ASK_NAME
-.\voxgest_env\Scripts\python.exe scripts_ml\26_record_phrase_intents.py NOTHING
+.\voxgest_env\Scripts\python.exe scripts_ml\26_record_phrase_intents.py NSAC
 .\voxgest_env\Scripts\python.exe scripts_ml\26_record_phrase_intents.py ASK_NAME
-.\voxgest_env\Scripts\python.exe scripts_ml\26_record_phrase_intents.py NOTHING
+.\voxgest_env\Scripts\python.exe scripts_ml\26_record_phrase_intents.py NSAC
 ```
 
 Extract selected phrase-intent videos before webcam calibration:
 
 ```powershell
-# Place selected videos under phrase_videos\ASK_NAME, phrase_videos\NOTHING,
+# Place selected videos under phrase_videos\ASK_NAME, phrase_videos\NSAC,
 # and phrase_videos\PARTIAL_ASK_NAME.
-.\voxgest_env\Scripts\python.exe scripts_ml\28_extract_phrase_videos.py ASK_NAME NOTHING PARTIAL_ASK_NAME
+.\voxgest_env\Scripts\python.exe scripts_ml\28_extract_phrase_videos.py ASK_NAME NSAC PARTIAL_ASK_NAME
 ```
 
 Check expansion readiness for the 25-word sprint:
@@ -265,7 +265,7 @@ $env:VOXGEST_WORD_PROFILE='sprint25'
 ## Current Status
 
 The saved LSTM model is trained for `YES`, `NO`, `PLEASE`, `WATER`, `HELLO`,
-`HELP`, `STOP`, `DOCTOR`, `NAME`, `THANKYOU`, and `NOTHING`.
+`HELP`, `STOP`, `DOCTOR`, `NAME`, `THANKYOU`, and `NSAC`.
 
 `AUTO` mode now protects detected letters first. A word such as `HELLO` only
 overrides a letter when confidence, margin, and wrist movement are all strong.
@@ -308,8 +308,8 @@ The current best next step is Recognition Hardening v1:
 - live-test all 10 words in `WORDS` mode
 - record extra manual sessions for weak words such as `WATER`, `THANKYOU`,
   `YES`, `NO`, `DOCTOR`, `PLEASE`, and `HELLO`
-- keep `NOTHING` in the model as the negative/no-word class
-- save partial/incomplete/transition movements as `NOTHING`
+- keep `NSAC` in the model as the negative/no-word class
+- save partial/incomplete/transition movements as `NSAC`
 - retrain both `19_train_lstm.py` and `24_train_tcn.py`
 - compare validation with live behavior before choosing the active model
 - tune per-word live thresholds from diagnostic results

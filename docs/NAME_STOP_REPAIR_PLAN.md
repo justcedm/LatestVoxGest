@@ -8,7 +8,7 @@ The latest right-hand TCN live log confirms the remaining demo10 blocker:
 
 - `NAME`: 0/5 correct, 5/5 predicted as accepted `STOP`
 - `STOP`: 4/4 correct, no false accepts in the latest right-hand log
-- `NOTHING`: 3/3 correct, no false word output in the latest right-hand log
+- `NSAC`: 3/3 correct, no false word output in the latest right-hand log
 - `PLEASE`: mostly correct, with one accepted `STOP` confusion
 
 This means the next repair must strengthen `NAME` without weakening the already
@@ -27,7 +27,7 @@ and hand-presence can all pass while the top class is still `STOP`.
 Non-technical explanation: the model already knows what a good `STOP` looks
 like, but it does not yet see enough clean difference between `NAME` and `STOP`
 when the right hand is used. It needs contrast examples: clean `NAME`, clean
-`STOP`, and messy in-between attempts labeled as `NOTHING`.
+`STOP`, and messy in-between attempts labeled as `NSAC`.
 
 ## Samples To Record
 
@@ -35,14 +35,14 @@ Record one controlled right-hand repair pass with:
 
 - clean `NAME` samples first
 - clean `STOP` samples second
-- `NOTHING` hard negatives last
+- `NSAC` hard negatives last
 
 For `NAME`, make the gesture clearly different from `STOP`. For `STOP`, preserve
-the currently working version instead of changing the sign style. For `NOTHING`,
+the currently working version instead of changing the sign style. For `NSAC`,
 record confusing partials and transitions so the model learns that incomplete
 or aborted motion should not become either word.
 
-`NOTHING` must include:
+`NSAC` must include:
 
 - partial `NAME`
 - aborted `NAME`
@@ -61,7 +61,7 @@ $env:VOXGEST_WORD_PROFILE='demo10'
 $env:VOXGEST_SINGLE_HAND_POSE='1'
 $env:VOXGEST_DOMINANT_HAND='right'
 $env:VOXGEST_MANUAL_SEQUENCES_PER_WORD='60'
-.\voxgest_env\Scripts\python.exe scripts_ml\16_record_manual_words.py NAME STOP NOTHING
+.\voxgest_env\Scripts\python.exe scripts_ml\16_record_manual_words.py NAME STOP NSAC
 ```
 
 Recording rules:
@@ -71,7 +71,7 @@ Recording rules:
 - Keep the same camera distance used during demo.
 - Start neutral, perform the sign, return neutral.
 - Keep phrase recognition disabled.
-- Keep `NOTHING` as the no-output class.
+- Keep `NSAC` as the no-output class.
 
 ## Retrain After Recording
 
@@ -109,7 +109,7 @@ $env:VOXGEST_MODE='WORDS'
 Ordered test labels:
 
 ```text
-NAME, STOP, NAME, STOP, NOTHING, NAME, STOP, PLEASE, YES, NO, WATER, HELLO, HELP, DOCTOR, THANKYOU
+NAME, STOP, NAME, STOP, NSAC, NAME, STOP, PLEASE, YES, NO, WATER, HELLO, HELP, DOCTOR, THANKYOU
 ```
 
 If using command-line expected labels, run:
@@ -120,7 +120,7 @@ $env:VOXGEST_WORD_PROFILE='demo10'
 $env:VOXGEST_DYNAMIC_MODEL='auto'
 $env:VOXGEST_DOMINANT_HAND='right'
 $env:VOXGEST_MODE='WORDS'
-.\voxgest_env\Scripts\python.exe scripts_ml\33_live_word_test_logger.py NAME STOP NAME STOP NOTHING NAME STOP PLEASE YES NO WATER HELLO HELP DOCTOR THANKYOU
+.\voxgest_env\Scripts\python.exe scripts_ml\33_live_word_test_logger.py NAME STOP NAME STOP NSAC NAME STOP PLEASE YES NO WATER HELLO HELP DOCTOR THANKYOU
 ```
 
 ## Acceptance Gate For Expansion
@@ -129,8 +129,8 @@ Move toward controlled vocabulary expansion only if:
 
 - `NAME` is at least 4/5 correct.
 - `STOP` remains at least 4/5 correct.
-- `NOTHING` does not create false word outputs.
+- `NSAC` does not create false word outputs.
 - `PLEASE` does not frequently become `STOP`.
 
 If this fails, do not create or train the expansion profile yet. Repeat targeted
-contrast recording for `NAME`, `STOP`, and `NOTHING`.
+contrast recording for `NAME`, `STOP`, and `NSAC`.

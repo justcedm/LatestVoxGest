@@ -29,9 +29,9 @@ The current LSTM model has 11 output classes:
 8. `DOCTOR`
 9. `NAME`
 10. `THANKYOU`
-11. `NOTHING`
+11. `NSAC`
 
-`NOTHING` is a negative/no-word class and should not be displayed as a spoken output word.
+`NSAC` is a negative/no-word class and should not be displayed as a spoken output word.
 
 ## Problem Discovered
 
@@ -197,7 +197,7 @@ Updated behavior:
 - uses configured dominant hand
 - prints active hand policy
 - prints active pose policy
-- supports `NOTHING` as a no-output class
+- supports `NSAC` as a no-output class
 - keeps lighter `WORDS` mode gates for compact signs
 
 ### LSTM diagnostic
@@ -235,7 +235,7 @@ File:
 Updated:
 
 - current LSTM output is `[1, 11]`
-- `NOTHING` is included
+- `NSAC` is included
 - dominant-hand env var documented
 - single-hand pose env var documented
 - pose policy documented for Android
@@ -358,7 +358,7 @@ Expected result:
 
 - same input shape: `[1, 30, 162]`
 - output shape remains `[1, 11]`
-- labels remain the 10 words plus `NOTHING`
+- labels remain the 10 words plus `NSAC`
 
 ### Step 6: Test saved data
 

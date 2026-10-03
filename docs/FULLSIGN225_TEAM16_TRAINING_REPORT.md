@@ -15,7 +15,7 @@ This experiment trains a separate FullSign225 Team16 dynamic-word TCN using the 
 
 ## Labels Used
 
-DOCTOR, EAT, HELLO, HELP, NAME, NO, PAIN, PLEASE, SORRY, STOP, THANKYOU, TIME, WANT, WATER, YES, NOTHING
+DOCTOR, EAT, HELLO, HELP, NAME, NO, PAIN, PLEASE, SORRY, STOP, THANKYOU, TIME, WANT, WATER, YES, NSAC
 
 ## Successful Videos Per Label
 
@@ -36,12 +36,12 @@ DOCTOR, EAT, HELLO, HELP, NAME, NO, PAIN, PLEASE, SORRY, STOP, THANKYOU, TIME, W
 | WANT | 21 | 189 | 21 |
 | WATER | 30 | 270 | 30 |
 | YES | 19 | 171 | 19 |
-| NOTHING | 17 | 153 | 17 |
+| NSAC | 17 | 153 | 17 |
 
 ## Failed Or Skipped Videos
 
-- `NOTHING_fullsign225_011.mp4` skipped: low_hand_ratio<0.20
-- `NOTHING_fullsign225_018.mp4` skipped: low_hand_ratio<0.20
+- `NSAC_fullsign225_011.mp4` skipped: low_hand_ratio<0.20
+- `NSAC_fullsign225_018.mp4` skipped: low_hand_ratio<0.20
 
 ## Feature Contract
 
@@ -110,7 +110,7 @@ $env:VOXGEST_ENABLE_PHRASE='0'; $env:VOXGEST_WORD_PROFILE='fullsign225_team16'; 
 | WANT | 34 | 36 | 94.4% | HELP |
 | WATER | 43 | 54 | 79.6% | YES |
 | YES | 36 | 36 | 100.0% | - |
-| NOTHING | 9 | 27 | 33.3% | HELLO |
+| NSAC | 9 | 27 | 33.3% | HELLO |
 
 ## Top Confusion Map
 
@@ -124,11 +124,11 @@ $env:VOXGEST_ENABLE_PHRASE='0'; $env:VOXGEST_WORD_PROFILE='fullsign225_team16'; 
 - THANKYOU -> PLEASE
 - WANT -> HELP
 - WATER -> YES
-- NOTHING -> HELLO
+- NSAC -> HELLO
 
 ## Weakest Labels
 
-- NOTHING: 33.3% (9/27), top miss HELLO
+- NSAC: 33.3% (9/27), top miss HELLO
 - THANKYOU: 75.0% (27/36), top miss PLEASE
 - HELP: 77.8% (35/45), top miss STOP
 - WATER: 79.6% (43/54), top miss YES
@@ -140,15 +140,15 @@ $env:VOXGEST_ENABLE_PHRASE='0'; $env:VOXGEST_WORD_PROFILE='fullsign225_team16'; 
 - Keras H5: 3,558,928 bytes (3.39 MB)
 - TFLite: 316,136 bytes (309 KB)
 
-## NOTHING Warning
+## NSAC Warning
 
-NOTHING has only 17 passing videos after skipping `NOTHING_fullsign225_011.mp4` and `NOTHING_fullsign225_018.mp4`. Validation accuracy for NOTHING was 33.3%, so this class needs more hard-negative capture before this model can be trusted live.
+NSAC has only 17 passing videos after skipping `NSAC_fullsign225_011.mp4` and `NSAC_fullsign225_018.mp4`. Validation accuracy for NSAC was 33.3%, so this class needs more hard-negative capture before this model can be trusted live.
 
 ## Manual Capture Recommendations
 
-- Priority 1: record more NOTHING hard negatives: idle hand, open hand, both hands visible, hand entering/leaving frame, partial signs, aborted signs, and transition movement.
+- Priority 1: record more NSAC hard negatives: idle hand, open hand, both hands visible, hand entering/leaving frame, partial signs, aborted signs, and transition movement.
 - Priority 2: strengthen validation-weak labels: THANKYOU, HELP, WATER, and PLEASE contrast samples.
-- Priority 3: expand labels under 30 passing videos: EAT, HELLO, HELP, NAME, NO, NOTHING, PAIN, PLEASE, STOP, THANKYOU, TIME, WANT, YES.
+- Priority 3: expand labels under 30 passing videos: EAT, HELLO, HELP, NAME, NO, NSAC, PAIN, PLEASE, STOP, THANKYOU, TIME, WANT, YES.
 - Keep capture in FullSign225 mode with both hands visible when the sign needs both hands; do not mix these videos into onehand162.
 
 ## Live Test Command
@@ -165,4 +165,4 @@ $env:VOXGEST_MODE='WORDS'
 
 ## Recommendation
 
-Continue the FullSign225 Team16 experiment, but do not promote it yet. Grouped validation is promising at 89.04%, yet NOTHING is weak and live testing has not confirmed stability. demo10 remains the safe baseline, onehand162 remains the active app-compatible hardening path, and this model is experimental and does not replace demo10 or onehand162.
+Continue the FullSign225 Team16 experiment, but do not promote it yet. Grouped validation is promising at 89.04%, yet NSAC is weak and live testing has not confirmed stability. demo10 remains the safe baseline, onehand162 remains the active app-compatible hardening path, and this model is experimental and does not replace demo10 or onehand162.

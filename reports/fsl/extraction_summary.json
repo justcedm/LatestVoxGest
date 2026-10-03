@@ -1,0 +1,628 @@
+{
+  "source": "fsl105",
+  "split": "train.csv_only",
+  "confirmed_label_count": 64,
+  "confirmed_labels": [
+    "AUNTIE",
+    "BEER",
+    "BLACK",
+    "BLIND",
+    "BLUE",
+    "BOY",
+    "CHICKEN",
+    "COUSIN",
+    "DEAF",
+    "DEAF BLIND",
+    "DON’T KNOW",
+    "DON’T UNDERSTAND",
+    "EIGHT",
+    "FAST",
+    "FATHER",
+    "FISH",
+    "FIVE",
+    "FOUR",
+    "FRIDAY",
+    "GIRL",
+    "GOOD AFTERNOON",
+    "GOOD EVENING",
+    "GOOD MORNING",
+    "GRANDFATHER",
+    "GRANDMOTHER",
+    "GREEN",
+    "HARD OF HEARING",
+    "HELLO",
+    "HOT",
+    "IM FINE",
+    "KNOW",
+    "MAN",
+    "MILK",
+    "MONDAY",
+    "MOTHER",
+    "NINE",
+    "NO",
+    "NO SUGAR",
+    "ONE",
+    "ORANGE",
+    "PARENTS",
+    "PINK",
+    "RED",
+    "SEE YOU TOMORROW",
+    "SEVEN",
+    "SIX",
+    "SUGAR",
+    "TEN",
+    "THREE",
+    "THURSDAY",
+    "TOMORROW",
+    "TUESDAY",
+    "TWO",
+    "UNCLE",
+    "UNDERSTAND",
+    "WEDNESDAY",
+    "WHITE",
+    "WINE",
+    "WOMAN",
+    "WRONG",
+    "YELLOW",
+    "YES",
+    "YESTERDAY",
+    "YOURE WELCOME"
+  ],
+  "train_video_count": 1038,
+  "completed_video_count": 1038,
+  "sequence_length": 20,
+  "feature_size": 162,
+  "expected_shape": [
+    20,
+    162
+  ],
+  "stride": 5,
+  "minimum_right_hand_frames": 13,
+  "cleanup": {
+    "removed_npy": 0,
+    "removed_meta": 0,
+    "malformed_meta": 0
+  },
+  "total_sequences": 16146,
+  "shape_mismatches": [],
+  "metadata_errors": [],
+  "output_integrity": {
+    "expected_files": 16146,
+    "actual_files": 16146,
+    "missing_output_files": [],
+    "unexpected_output_files": [],
+    "orphan_metadata": []
+  },
+  "per_label": {
+    "AUNTIE": {
+      "train_videos": 16,
+      "sequence_count": 214,
+      "needs_supplemental": false,
+      "candidate_windows": 720,
+      "skipped_low_hand_windows": 506
+    },
+    "BEER": {
+      "train_videos": 16,
+      "sequence_count": 267,
+      "needs_supplemental": false,
+      "candidate_windows": 720,
+      "skipped_low_hand_windows": 453
+    },
+    "BLACK": {
+      "train_videos": 16,
+      "sequence_count": 238,
+      "needs_supplemental": false,
+      "candidate_windows": 720,
+      "skipped_low_hand_windows": 482
+    },
+    "BLIND": {
+      "train_videos": 16,
+      "sequence_count": 216,
+      "needs_supplemental": false,
+      "candidate_windows": 720,
+      "skipped_low_hand_windows": 504
+    },
+    "BLUE": {
+      "train_videos": 16,
+      "sequence_count": 213,
+      "needs_supplemental": false,
+      "candidate_windows": 725,
+      "skipped_low_hand_windows": 512
+    },
+    "BOY": {
+      "train_videos": 17,
+      "sequence_count": 276,
+      "needs_supplemental": false,
+      "candidate_windows": 768,
+      "skipped_low_hand_windows": 492
+    },
+    "CHICKEN": {
+      "train_videos": 16,
+      "sequence_count": 274,
+      "needs_supplemental": false,
+      "candidate_windows": 720,
+      "skipped_low_hand_windows": 446
+    },
+    "COUSIN": {
+      "train_videos": 17,
+      "sequence_count": 242,
+      "needs_supplemental": false,
+      "candidate_windows": 765,
+      "skipped_low_hand_windows": 523
+    },
+    "DEAF": {
+      "train_videos": 17,
+      "sequence_count": 255,
+      "needs_supplemental": false,
+      "candidate_windows": 765,
+      "skipped_low_hand_windows": 510
+    },
+    "DEAF BLIND": {
+      "train_videos": 16,
+      "sequence_count": 318,
+      "needs_supplemental": false,
+      "candidate_windows": 720,
+      "skipped_low_hand_windows": 402
+    },
+    "DON’T KNOW": {
+      "train_videos": 16,
+      "sequence_count": 243,
+      "needs_supplemental": false,
+      "candidate_windows": 720,
+      "skipped_low_hand_windows": 477
+    },
+    "DON’T UNDERSTAND": {
+      "train_videos": 17,
+      "sequence_count": 282,
+      "needs_supplemental": false,
+      "candidate_windows": 765,
+      "skipped_low_hand_windows": 483
+    },
+    "EIGHT": {
+      "train_videos": 17,
+      "sequence_count": 233,
+      "needs_supplemental": false,
+      "candidate_windows": 765,
+      "skipped_low_hand_windows": 532
+    },
+    "FAST": {
+      "train_videos": 17,
+      "sequence_count": 268,
+      "needs_supplemental": false,
+      "candidate_windows": 765,
+      "skipped_low_hand_windows": 497
+    },
+    "FATHER": {
+      "train_videos": 16,
+      "sequence_count": 248,
+      "needs_supplemental": false,
+      "candidate_windows": 725,
+      "skipped_low_hand_windows": 477
+    },
+    "FISH": {
+      "train_videos": 16,
+      "sequence_count": 263,
+      "needs_supplemental": false,
+      "candidate_windows": 720,
+      "skipped_low_hand_windows": 457
+    },
+    "FIVE": {
+      "train_videos": 16,
+      "sequence_count": 196,
+      "needs_supplemental": false,
+      "candidate_windows": 720,
+      "skipped_low_hand_windows": 524
+    },
+    "FOUR": {
+      "train_videos": 16,
+      "sequence_count": 209,
+      "needs_supplemental": false,
+      "candidate_windows": 720,
+      "skipped_low_hand_windows": 511
+    },
+    "FRIDAY": {
+      "train_videos": 16,
+      "sequence_count": 290,
+      "needs_supplemental": false,
+      "candidate_windows": 720,
+      "skipped_low_hand_windows": 430
+    },
+    "GIRL": {
+      "train_videos": 16,
+      "sequence_count": 242,
+      "needs_supplemental": false,
+      "candidate_windows": 720,
+      "skipped_low_hand_windows": 478
+    },
+    "GOOD AFTERNOON": {
+      "train_videos": 17,
+      "sequence_count": 352,
+      "needs_supplemental": false,
+      "candidate_windows": 765,
+      "skipped_low_hand_windows": 413
+    },
+    "GOOD EVENING": {
+      "train_videos": 17,
+      "sequence_count": 366,
+      "needs_supplemental": false,
+      "candidate_windows": 765,
+      "skipped_low_hand_windows": 399
+    },
+    "GOOD MORNING": {
+      "train_videos": 16,
+      "sequence_count": 327,
+      "needs_supplemental": false,
+      "candidate_windows": 724,
+      "skipped_low_hand_windows": 397
+    },
+    "GRANDFATHER": {
+      "train_videos": 14,
+      "sequence_count": 251,
+      "needs_supplemental": false,
+      "candidate_windows": 630,
+      "skipped_low_hand_windows": 379
+    },
+    "GRANDMOTHER": {
+      "train_videos": 16,
+      "sequence_count": 228,
+      "needs_supplemental": false,
+      "candidate_windows": 720,
+      "skipped_low_hand_windows": 492
+    },
+    "GREEN": {
+      "train_videos": 17,
+      "sequence_count": 216,
+      "needs_supplemental": false,
+      "candidate_windows": 765,
+      "skipped_low_hand_windows": 549
+    },
+    "HARD OF HEARING": {
+      "train_videos": 16,
+      "sequence_count": 205,
+      "needs_supplemental": false,
+      "candidate_windows": 720,
+      "skipped_low_hand_windows": 515
+    },
+    "HELLO": {
+      "train_videos": 16,
+      "sequence_count": 219,
+      "needs_supplemental": false,
+      "candidate_windows": 720,
+      "skipped_low_hand_windows": 501
+    },
+    "HOT": {
+      "train_videos": 16,
+      "sequence_count": 250,
+      "needs_supplemental": false,
+      "candidate_windows": 726,
+      "skipped_low_hand_windows": 476
+    },
+    "IM FINE": {
+      "train_videos": 16,
+      "sequence_count": 227,
+      "needs_supplemental": false,
+      "candidate_windows": 720,
+      "skipped_low_hand_windows": 493
+    },
+    "KNOW": {
+      "train_videos": 17,
+      "sequence_count": 264,
+      "needs_supplemental": false,
+      "candidate_windows": 765,
+      "skipped_low_hand_windows": 501
+    },
+    "MAN": {
+      "train_videos": 16,
+      "sequence_count": 290,
+      "needs_supplemental": false,
+      "candidate_windows": 720,
+      "skipped_low_hand_windows": 430
+    },
+    "MILK": {
+      "train_videos": 16,
+      "sequence_count": 258,
+      "needs_supplemental": false,
+      "candidate_windows": 720,
+      "skipped_low_hand_windows": 462
+    },
+    "MONDAY": {
+      "train_videos": 16,
+      "sequence_count": 293,
+      "needs_supplemental": false,
+      "candidate_windows": 724,
+      "skipped_low_hand_windows": 431
+    },
+    "MOTHER": {
+      "train_videos": 16,
+      "sequence_count": 180,
+      "needs_supplemental": false,
+      "candidate_windows": 720,
+      "skipped_low_hand_windows": 540
+    },
+    "NINE": {
+      "train_videos": 16,
+      "sequence_count": 231,
+      "needs_supplemental": false,
+      "candidate_windows": 720,
+      "skipped_low_hand_windows": 489
+    },
+    "NO": {
+      "train_videos": 17,
+      "sequence_count": 254,
+      "needs_supplemental": false,
+      "candidate_windows": 765,
+      "skipped_low_hand_windows": 511
+    },
+    "NO SUGAR": {
+      "train_videos": 16,
+      "sequence_count": 317,
+      "needs_supplemental": false,
+      "candidate_windows": 720,
+      "skipped_low_hand_windows": 403
+    },
+    "ONE": {
+      "train_videos": 16,
+      "sequence_count": 216,
+      "needs_supplemental": false,
+      "candidate_windows": 727,
+      "skipped_low_hand_windows": 511
+    },
+    "ORANGE": {
+      "train_videos": 16,
+      "sequence_count": 195,
+      "needs_supplemental": false,
+      "candidate_windows": 720,
+      "skipped_low_hand_windows": 525
+    },
+    "PARENTS": {
+      "train_videos": 16,
+      "sequence_count": 258,
+      "needs_supplemental": false,
+      "candidate_windows": 720,
+      "skipped_low_hand_windows": 462
+    },
+    "PINK": {
+      "train_videos": 16,
+      "sequence_count": 232,
+      "needs_supplemental": false,
+      "candidate_windows": 720,
+      "skipped_low_hand_windows": 488
+    },
+    "RED": {
+      "train_videos": 16,
+      "sequence_count": 200,
+      "needs_supplemental": false,
+      "candidate_windows": 720,
+      "skipped_low_hand_windows": 520
+    },
+    "SEE YOU TOMORROW": {
+      "train_videos": 16,
+      "sequence_count": 320,
+      "needs_supplemental": false,
+      "candidate_windows": 723,
+      "skipped_low_hand_windows": 403
+    },
+    "SEVEN": {
+      "train_videos": 17,
+      "sequence_count": 253,
+      "needs_supplemental": false,
+      "candidate_windows": 765,
+      "skipped_low_hand_windows": 512
+    },
+    "SIX": {
+      "train_videos": 16,
+      "sequence_count": 256,
+      "needs_supplemental": false,
+      "candidate_windows": 720,
+      "skipped_low_hand_windows": 464
+    },
+    "SUGAR": {
+      "train_videos": 17,
+      "sequence_count": 263,
+      "needs_supplemental": false,
+      "candidate_windows": 765,
+      "skipped_low_hand_windows": 502
+    },
+    "TEN": {
+      "train_videos": 16,
+      "sequence_count": 229,
+      "needs_supplemental": false,
+      "candidate_windows": 720,
+      "skipped_low_hand_windows": 491
+    },
+    "THREE": {
+      "train_videos": 16,
+      "sequence_count": 230,
+      "needs_supplemental": false,
+      "candidate_windows": 720,
+      "skipped_low_hand_windows": 490
+    },
+    "THURSDAY": {
+      "train_videos": 16,
+      "sequence_count": 288,
+      "needs_supplemental": false,
+      "candidate_windows": 720,
+      "skipped_low_hand_windows": 432
+    },
+    "TOMORROW": {
+      "train_videos": 17,
+      "sequence_count": 245,
+      "needs_supplemental": false,
+      "candidate_windows": 765,
+      "skipped_low_hand_windows": 520
+    },
+    "TUESDAY": {
+      "train_videos": 16,
+      "sequence_count": 283,
+      "needs_supplemental": false,
+      "candidate_windows": 720,
+      "skipped_low_hand_windows": 437
+    },
+    "TWO": {
+      "train_videos": 16,
+      "sequence_count": 198,
+      "needs_supplemental": false,
+      "candidate_windows": 720,
+      "skipped_low_hand_windows": 522
+    },
+    "UNCLE": {
+      "train_videos": 17,
+      "sequence_count": 238,
+      "needs_supplemental": false,
+      "candidate_windows": 765,
+      "skipped_low_hand_windows": 527
+    },
+    "UNDERSTAND": {
+      "train_videos": 16,
+      "sequence_count": 257,
+      "needs_supplemental": false,
+      "candidate_windows": 725,
+      "skipped_low_hand_windows": 468
+    },
+    "WEDNESDAY": {
+      "train_videos": 16,
+      "sequence_count": 285,
+      "needs_supplemental": false,
+      "candidate_windows": 720,
+      "skipped_low_hand_windows": 435
+    },
+    "WHITE": {
+      "train_videos": 16,
+      "sequence_count": 222,
+      "needs_supplemental": false,
+      "candidate_windows": 720,
+      "skipped_low_hand_windows": 498
+    },
+    "WINE": {
+      "train_videos": 16,
+      "sequence_count": 261,
+      "needs_supplemental": false,
+      "candidate_windows": 720,
+      "skipped_low_hand_windows": 459
+    },
+    "WOMAN": {
+      "train_videos": 16,
+      "sequence_count": 272,
+      "needs_supplemental": false,
+      "candidate_windows": 720,
+      "skipped_low_hand_windows": 448
+    },
+    "WRONG": {
+      "train_videos": 17,
+      "sequence_count": 265,
+      "needs_supplemental": false,
+      "candidate_windows": 765,
+      "skipped_low_hand_windows": 500
+    },
+    "YELLOW": {
+      "train_videos": 16,
+      "sequence_count": 211,
+      "needs_supplemental": false,
+      "candidate_windows": 720,
+      "skipped_low_hand_windows": 509
+    },
+    "YES": {
+      "train_videos": 16,
+      "sequence_count": 239,
+      "needs_supplemental": false,
+      "candidate_windows": 720,
+      "skipped_low_hand_windows": 481
+    },
+    "YESTERDAY": {
+      "train_videos": 16,
+      "sequence_count": 238,
+      "needs_supplemental": false,
+      "candidate_windows": 720,
+      "skipped_low_hand_windows": 482
+    },
+    "YOURE WELCOME": {
+      "train_videos": 16,
+      "sequence_count": 277,
+      "needs_supplemental": false,
+      "candidate_windows": 720,
+      "skipped_low_hand_windows": 443
+    }
+  },
+  "config": {
+    "confirmed_labels": [
+      "AUNTIE",
+      "BEER",
+      "BLACK",
+      "BLIND",
+      "BLUE",
+      "BOY",
+      "CHICKEN",
+      "COUSIN",
+      "DEAF",
+      "DEAF BLIND",
+      "DON’T KNOW",
+      "DON’T UNDERSTAND",
+      "EIGHT",
+      "FAST",
+      "FATHER",
+      "FISH",
+      "FIVE",
+      "FOUR",
+      "FRIDAY",
+      "GIRL",
+      "GOOD AFTERNOON",
+      "GOOD EVENING",
+      "GOOD MORNING",
+      "GRANDFATHER",
+      "GRANDMOTHER",
+      "GREEN",
+      "HARD OF HEARING",
+      "HELLO",
+      "HOT",
+      "IM FINE",
+      "KNOW",
+      "MAN",
+      "MILK",
+      "MONDAY",
+      "MOTHER",
+      "NINE",
+      "NO",
+      "NO SUGAR",
+      "ONE",
+      "ORANGE",
+      "PARENTS",
+      "PINK",
+      "RED",
+      "SEE YOU TOMORROW",
+      "SEVEN",
+      "SIX",
+      "SUGAR",
+      "TEN",
+      "THREE",
+      "THURSDAY",
+      "TOMORROW",
+      "TUESDAY",
+      "TWO",
+      "UNCLE",
+      "UNDERSTAND",
+      "WEDNESDAY",
+      "WHITE",
+      "WINE",
+      "WOMAN",
+      "WRONG",
+      "YELLOW",
+      "YES",
+      "YESTERDAY",
+      "YOURE WELCOME"
+    ],
+    "confirmed_labels_sha256": "ceb0184ab975cd56fe74375d7bb575655f0b5fb05a8ba39cb5483666e9556079",
+    "train_csv_sha256": "861a76cae835e284ac76ef37dc077ae0b6c793beb9c378eda1fce5f408dc609f",
+    "output_root": "D:\\BSIT 3RD YEAR\\New VovGest\\external_datasets\\fsl_features",
+    "sequence_length": 20,
+    "feature_size": 162,
+    "stride": 5,
+    "minimum_right_hand_frames": 13,
+    "minimum_hand_presence_ratio": 0.65,
+    "wrist_mcp_scale_threshold": 0.001,
+    "z_damping": 0.3,
+    "model_complexity": 1,
+    "min_detection_confidence": 0.5,
+    "min_tracking_confidence": 0.5,
+    "split": "train.csv_only"
+  }
+}

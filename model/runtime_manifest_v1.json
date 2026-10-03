@@ -67,7 +67,7 @@
       "Y",
       "Z",
       "del",
-      "nothing",
+      "nsac",
       "space"
     ]
   },
@@ -92,7 +92,7 @@
       "DOCTOR",
       "NAME",
       "THANKYOU",
-      "NOTHING"
+      "NSAC"
     ],
     "run_every_n_frames": 3
   },
@@ -109,7 +109,7 @@
     "selection_env": "VOXGEST_DYNAMIC_MODEL",
     "selection_values": ["auto", "tcn", "lstm"],
     "selection_default": "auto_uses_best_available_training_report",
-    "recognition_hardening_contract": "must contain only YES, NO, PLEASE, WATER, HELLO, HELP, STOP, DOCTOR, NAME, THANKYOU, NOTHING unless VOXGEST_ALLOW_EXTRA_WORD_LABELS is explicitly enabled",
+    "recognition_hardening_contract": "must contain only YES, NO, PLEASE, WATER, HELLO, HELP, STOP, DOCTOR, NAME, THANKYOU, NSAC unless VOXGEST_ALLOW_EXTRA_WORD_LABELS is explicitly enabled",
     "run_every_n_frames": 3
   },
   "motion_letter_tcn_model": {
@@ -120,10 +120,10 @@
     "output_shape": [1, 3],
     "sequence_length": 30,
     "feature_size": 162,
-    "labels": ["J", "Z", "NOTHING"],
+    "labels": ["J", "Z", "NSAC"],
     "purpose": "optional dynamic alphabet classifier for motion-based letters J and Z",
     "runtime_policy": "separate from word model; only accepted J/Z outputs enter token composer as letters",
-    "negative_label": "NOTHING"
+    "negative_label": "NSAC"
   },
   "phrase_tcn_model": {
     "enabled_default": false,
@@ -143,7 +143,7 @@
     "phrase_outputs": {
       "ASK_NAME": "What is your name?"
     },
-    "negative_labels": ["NOTHING", "PARTIAL_ASK_NAME"]
+    "negative_labels": ["NSAC", "PARTIAL_ASK_NAME"]
   },
   "token_composer": {
     "file": "scripts_ml/token_composer.py",
@@ -153,7 +153,7 @@
       "space": "commit current spelled word boundary",
       "del": "delete latest character or token",
       "word": "append full word token",
-      "NOTHING": "ignore_no_output"
+      "NSAC": "ignore_no_output"
     }
   },
   "avatar": {
@@ -269,7 +269,7 @@
         "wrist_path": 0.08,
         "stable_frames": 6
       },
-      "NOTHING": {
+      "NSAC": {
         "confidence": 0.55,
         "margin": 0.05,
         "motion": 0.0,

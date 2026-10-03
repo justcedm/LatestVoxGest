@@ -6,21 +6,21 @@ Dataset: `C:\BSIT 3RD YEAR\New VovGest\external_datasets\fullsign225_manual5_ana
 Feature profile: `fullsign225`
 Expected shape: `[30, 225]`
 Target words: EAT, WATER, HELLO, THANKYOU
-Training labels: EAT, WATER, HELLO, THANKYOU, NOTHING
+Training labels: EAT, WATER, HELLO, THANKYOU, NSAC
 
 ## Summary
 
 - Total valid samples: 171
 - Missing labels: none
 - Labels under minimum: none
-- NOTHING samples: 50
+- NSAC samples: 50
 - Ready to train seed TCN: YES
 
 ## Readiness Gates
 
 - Every seed label exists: PASS
 - Normal labels have at least 20 samples: PASS
-- NOTHING has at least 30 samples: PASS
+- NSAC has at least 30 samples: PASS
 - No wrong-shape or unreadable files: PASS
 
 ## Per Label
@@ -31,7 +31,7 @@ Training labels: EAT, WATER, HELLO, THANKYOU, NOTHING
 | WATER | 30 | 20 | 1 | 0 | 0 |
 | HELLO | 30 | 20 | 1 | 0 | 0 |
 | THANKYOU | 30 | 20 | 1 | 0 | 0 |
-| NOTHING | 50 | 30 | 1 | 0 | 0 |
+| NSAC | 50 | 30 | 1 | 0 | 0 |
 
 ## Warning
 

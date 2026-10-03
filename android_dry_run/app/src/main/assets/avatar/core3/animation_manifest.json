@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "created_at": "2026-09-08T13:01:10.026647+00:00",
+  "status": "VERIFIED_HANDOFF",
+  "main_asset": "runtime_avatar/voxgest_avatar_B32_CORE3_RC2.glb",
+  "sha256": "30f13fb65e7557992a8c3109460a790a69161e69f3ba9771a1e64a33f98294f8",
+  "runtime_format": "GLB/glTF 2.0",
+  "runtime_root": "VoxGestAvatar",
+  "skeleton": "Waitress RIG",
+  "height_meters": 1.65,
+  "root_uniform_scale": 0.10810877711128736,
+  "ground_translation_gltf": [
+    0,
+    0.0036586435329126242,
+    0
+  ],
+  "axes": {
+    "up": "+Y",
+    "forward": "+Z",
+    "anatomical_left": "+X"
+  },
+  "clip_count": 3,
+  "clips": [
+    {
+      "id": 3,
+      "canonical_label": "HELLO",
+      "runtime_clip_name": "FSL_HELLO",
+      "duration": 1.6333333333333333,
+      "fps": 60,
+      "frames": 98,
+      "first_key_seconds": 0.016666666666666666,
+      "loop": false,
+      "neutral_transition_frames_each_end": 18,
+      "guide_enabled": true,
+      "voice_to_fsl_enabled": true,
+      "fsl_validation_status": "NOT_FSL_VALIDATED",
+      "solver_version": "retarget_general_B32_release_candidate_v1",
+      "solver_checksum": "e0f71510a454db80eb6d47950c9a3ed44da06ac43f5f3a50b1f2f2b2e3dce4e2",
+      "source_blend_sha256": "f83b9022a7151ace81c8b5094a3dcaf121d5652421272394b360cf3b23f3871b",
+      "runtime_asset_sha256": "30f13fb65e7557992a8c3109460a790a69161e69f3ba9771a1e64a33f98294f8"
+    },
+    {
+      "id": 98,
+      "canonical_label": "MILK",
+      "runtime_clip_name": "FSL_MILK",
+      "duration": 2,
+      "fps": 60,
+      "frames": 120,
+      "first_key_seconds": 0.016666666666666666,
+      "loop": false,
+      "neutral_transition_frames_each_end": 18,
+      "guide_enabled": true,
+      "voice_to_fsl_enabled": true,
+      "fsl_validation_status": "NOT_FSL_VALIDATED",
+      "solver_version": "retarget_general_B32_release_candidate_v1",
+      "solver_checksum": "e0f71510a454db80eb6d47950c9a3ed44da06ac43f5f3a50b1f2f2b2e3dce4e2",
+      "source_blend_sha256": "2b968656351142bcebb157e420272acb378bcde17266882b742e1956c7b9789e",
+      "runtime_asset_sha256": "30f13fb65e7557992a8c3109460a790a69161e69f3ba9771a1e64a33f98294f8"
+    },
+    {
+      "id": 91,
+      "canonical_label": "RICE",
+      "runtime_clip_name": "FSL_RICE",
+      "duration": 1.6333333333333333,
+      "fps": 60,
+      "frames": 98,
+      "first_key_seconds": 0.016666666666666666,
+      "loop": false,
+      "neutral_transition_frames_each_end": 18,
+      "guide_enabled": true,
+      "voice_to_fsl_enabled": true,
+      "fsl_validation_status": "NOT_FSL_VALIDATED",
+      "solver_version": "retarget_general_B32_release_candidate_v1",
+      "solver_checksum": "e0f71510a454db80eb6d47950c9a3ed44da06ac43f5f3a50b1f2f2b2e3dce4e2",
+      "source_blend_sha256": "06af4b775bef488d9ea08c58ad65b067e0476f799344f9eab42d165c47cc6d9a",
+      "runtime_asset_sha256": "30f13fb65e7557992a8c3109460a790a69161e69f3ba9771a1e64a33f98294f8"
+    }
+  ],
+  "default_pose": "Neutral; all included clips explicitly key every skin joint TRS.",
+  "availability_policy": "Enable a canonical label only when it appears in clips. Never infer availability from generated/source-quality status.",
+  "nmm_status": "UNSUPPORTED_BY_FULLSIGN225_NEUTRAL_FACE",
+  "expert_fsl_validation": false
+}

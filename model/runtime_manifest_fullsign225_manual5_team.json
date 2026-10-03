@@ -30,10 +30,10 @@
         "WATER",
         "HELLO",
         "THANKYOU",
-        "NOTHING"
+        "NSAC"
       ],
-      "negative_label": "NOTHING",
-      "nothing_policy": "ignore_no_output"
+      "negative_label": "NSAC",
+      "nsac_policy": "ignore_no_output"
     }
   },
   "dataset": {
@@ -63,7 +63,7 @@
         "used": true,
         "skipped_missing_hand_metadata": 0
       },
-      "NOTHING": {
+      "NSAC": {
         "sequences": 50,
         "groups": 1,
         "used": true,
@@ -94,7 +94,7 @@
         "total": 40,
         "accuracy": 35.0
       },
-      "NOTHING": {
+      "NSAC": {
         "correct": 5,
         "total": 10,
         "accuracy": 50.0
@@ -105,13 +105,13 @@
       "WATER": "EAT",
       "HELLO": "EAT",
       "THANKYOU": "EAT",
-      "NOTHING": "THANKYOU"
+      "NSAC": "THANKYOU"
     }
   },
   "runtime_policy": {
     "input_policy": "accepted_predictions_only",
     "raw_prediction_policy": "never_update_sentence_output_directly",
-    "nothing_policy": "NOTHING remains no-output",
+    "nsac_policy": "NSAC remains no-output",
     "word_profile_env": "VOXGEST_WORD_PROFILE=fullsign225_manual5_team",
     "feature_profile_env": "VOXGEST_FEATURE_PROFILE=fullsign225",
     "dynamic_model_env": "VOXGEST_DYNAMIC_MODEL=tcn"

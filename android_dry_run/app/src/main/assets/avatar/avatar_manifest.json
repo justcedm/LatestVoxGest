@@ -6,7 +6,7 @@
   "input_contract": {
     "source": "confirmed token composer output only",
     "raw_predictions_allowed": false,
-    "nothing_behavior": "no animation"
+    "nsac_behavior": "no animation"
   },
   "renderer": {
     "style": "simple_2d_cartoon",
@@ -19,7 +19,7 @@
     "unknown_word": "fingerspell A-Z",
     "missing_animation": "clean placeholder fallback",
     "empty_animation": "clean placeholder fallback",
-    "NOTHING": "ignore"
+    "NSAC": "ignore"
   },
   "known_words": {
     "YES": "signs/YES.json",

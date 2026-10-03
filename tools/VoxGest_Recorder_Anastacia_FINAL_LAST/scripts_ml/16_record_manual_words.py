@@ -12,7 +12,7 @@ Run only selected words:
   python scripts_ml/16_record_manual_words.py HELP WATER YES
 
 Record no-word/open-hand examples:
-  python scripts_ml/16_record_manual_words.py NOTHING
+  python scripts_ml/16_record_manual_words.py NSAC
 """
 
 import json
@@ -150,15 +150,15 @@ def record_word(word, holistic, metadata):
     print(f"  Existing manual sequences: {already}")
     print(f"  New target: {TARGET_SEQUENCES_PER_WORD}")
     print(f"  Hand map: {hand_map}")
-    if word == "NOTHING":
+    if word == "NSAC":
         print(
             "  Record hard negatives: idle hands, transitions, partial signs, "
             "aborted signs, hand entering/leaving frame, and natural pauses."
         )
-        print("  NOTHING is a no-output class; it should never become a word token.")
+        print("  NSAC is a no-output class; it should never become a word token.")
     else:
         print("  Sign naturally. Vary distance, angle, and speed a little.")
-        print("  Save partial/incomplete/transition movements as NOTHING, not as this word.")
+        print("  Save partial/incomplete/transition movements as NSAC, not as this word.")
 
     cap = cv2.VideoCapture(0)
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)

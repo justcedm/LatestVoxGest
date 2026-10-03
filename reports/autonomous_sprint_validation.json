@@ -1,0 +1,73 @@
+{
+  "generated_at_utc": "2026-08-26T13:04:39.949501+00:00",
+  "sprint": "autonomous_no_new_recordings",
+  "checks": {
+    "nsac_terminology": {
+      "status": "DONE",
+      "reason": "No deprecated class-token text remains in scoped repository text files.",
+      "remaining_files": []
+    },
+    "activity_detector": {
+      "status": "DONE",
+      "reason": "TFLite contract validated; validation accuracy=0.8646; >95% target met=False.",
+      "contract": {
+        "input_shape": [
+          1,
+          162
+        ],
+        "input_dtype": "float32",
+        "output_shape": [
+          1,
+          1
+        ],
+        "output_dtype": "float32"
+      }
+    },
+    "live_pipeline": {
+      "status": "DONE",
+      "reason": "Actual detector rejects a canonical zero frame before sequence buffering."
+    },
+    "runtime_manifest": {
+      "status": "DONE",
+      "reason": "Validation-only gates: confidence=0.5, margin=0.1, cooldown=10."
+    },
+    "confusion_analysis": {
+      "status": "DONE",
+      "reason": "Held-out 64-class table and top-10 directed confusions are documented."
+    },
+    "android_handoff": {
+      "status": "DONE",
+      "reason": "Required files exist and copied model/manifest hashes match source artifacts."
+    },
+    "paper_alignment": {
+      "status": "DONE",
+      "reason": "Copy-ready Chapter 3 text and Chapter 4 tables are present."
+    },
+    "system_architecture": {
+      "status": "DONE",
+      "reason": "Figure-ready two-stage architecture and status legend are present."
+    }
+  },
+  "all_requested_deliverables_present": true,
+  "activity_detector_performance_target_met": false,
+  "deployment_eligible": false,
+  "classifier_contract": {
+    "input_shape": [
+      1,
+      20,
+      162
+    ],
+    "input_dtype": "float32",
+    "output_shape": [
+      1,
+      64
+    ],
+    "output_dtype": "float32"
+  },
+  "deployment_blockers": [
+    "No real no-sign/activity recordings are available for detector validation.",
+    "Activity detector held-out synthetic accuracy is below the >95% target.",
+    "Cooldown calibration has not been validated on a continuous live stream.",
+    "Multi-device validation is incomplete."
+  ]
+}

@@ -6,7 +6,7 @@ WLASL metadata: `C:\BSIT 3RD YEAR\New VovGest\scripts_ml\WLASL_v0.3.json`
 
 ## Recommended Sprint30 Labels
 
-YES, NO, PLEASE, WATER, HELLO, HELP, STOP, DOCTOR, NAME, THANKYOU, AGAIN, MORE, SORRY, UNDERSTAND, PAIN, FINE, GO, WANT, EAT, TIME, MEDICINE, NOTHING
+YES, NO, PLEASE, WATER, HELLO, HELP, STOP, DOCTOR, NAME, THANKYOU, AGAIN, MORE, SORRY, UNDERSTAND, PAIN, FINE, GO, WANT, EAT, TIME, MEDICINE, NSAC
 
 ## Availability
 
@@ -52,7 +52,7 @@ YES, NO, PLEASE, WATER, HELLO, HELP, STOP, DOCTOR, NAME, THANKYOU, AGAIN, MORE, 
 | GO | A | True | 9 | 26 | 117 | 9 | GREEN | ready |
 | COME | A | True | 0 | 8 | 0 | 0 | YELLOW | needs_download |
 | MONEY | A | True | 0 | 14 | 0 | 0 | YELLOW | needs_download |
-| NOTHING | negative | True | 0 | 9 | 600 | 10 | GREEN | ready |
+| NSAC | negative | True | 0 | 9 | 600 | 10 | GREEN | ready |
 
 ## External Dataset Roots
 

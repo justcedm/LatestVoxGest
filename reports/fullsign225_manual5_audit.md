@@ -6,14 +6,14 @@ Dataset: `C:\BSIT 3RD YEAR\New VovGest\external_datasets\fullsign225_manual16_fe
 Feature profile: `fullsign225`
 Expected shape: `[30, 225]`
 Target words: EAT, HELLO, WATER, THANKYOU
-Training labels: EAT, HELLO, WATER, THANKYOU, NOTHING
+Training labels: EAT, HELLO, WATER, THANKYOU, NSAC
 
 ## Summary
 
 - Total valid samples: 220
 - Missing labels: none
 - Labels under minimum: none
-- NOTHING samples: 100
+- NSAC samples: 100
 - Rejected/failed samples logged: 363
 - Ready to train TCN: YES
 
@@ -21,7 +21,7 @@ Training labels: EAT, HELLO, WATER, THANKYOU, NOTHING
 
 - Every manual5 label exists: PASS
 - Normal labels have at least 30 samples: PASS
-- NOTHING has at least 100 samples: PASS
+- NSAC has at least 100 samples: PASS
 - No wrong-shape or unreadable files: PASS
 
 ## Per Label
@@ -32,7 +32,7 @@ Training labels: EAT, HELLO, WATER, THANKYOU, NOTHING
 | HELLO | 30 | 30 | 1 | 0 | 0 |
 | WATER | 30 | 30 | 1 | 0 | 0 |
 | THANKYOU | 30 | 30 | 1 | 0 | 0 |
-| NOTHING | 100 | 100 | 1 | 0 | 0 |
+| NSAC | 100 | 100 | 1 | 0 | 0 |
 
 ## Training Rule
 

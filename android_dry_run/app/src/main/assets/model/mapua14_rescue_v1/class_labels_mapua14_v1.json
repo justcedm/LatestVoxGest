@@ -1,0 +1,92 @@
+{
+  "class_count": 14,
+  "classes": [
+    {
+      "english": "Eight",
+      "filipino": "Walo",
+      "id": "EIGHT",
+      "index": 0
+    },
+    {
+      "english": "Five",
+      "filipino": "Lima",
+      "id": "FIVE",
+      "index": 1
+    },
+    {
+      "english": "Four",
+      "filipino": "Apat",
+      "id": "FOUR",
+      "index": 2
+    },
+    {
+      "english": "Hello",
+      "filipino": "Kumusta",
+      "id": "HELLO",
+      "index": 3
+    },
+    {
+      "english": "Nine",
+      "filipino": "Siyam",
+      "id": "NINE",
+      "index": 4
+    },
+    {
+      "english": "No",
+      "filipino": "Hindi",
+      "id": "NO",
+      "index": 5
+    },
+    {
+      "english": "One",
+      "filipino": "Isa",
+      "id": "ONE",
+      "index": 6
+    },
+    {
+      "english": "Seven",
+      "filipino": "Pito",
+      "id": "SEVEN",
+      "index": 7
+    },
+    {
+      "english": "Six",
+      "filipino": "Anim",
+      "id": "SIX",
+      "index": 8
+    },
+    {
+      "english": "Ten",
+      "filipino": "Sampu",
+      "id": "TEN",
+      "index": 9
+    },
+    {
+      "english": "Thank you",
+      "filipino": "Salamat",
+      "id": "THANK_YOU",
+      "index": 10
+    },
+    {
+      "english": "Three",
+      "filipino": "Tatlo",
+      "id": "THREE",
+      "index": 11
+    },
+    {
+      "english": "Two",
+      "filipino": "Dalawa",
+      "id": "TWO",
+      "index": 12
+    },
+    {
+      "english": "Yes",
+      "filipino": "Oo",
+      "id": "YES",
+      "index": 13
+    }
+  ],
+  "feature_version": "fullsign225_frame_v1_complete_trajectory_v1",
+  "profile_id": "MAPUA14_RESCUE_V1",
+  "temporal_length": 48
+}

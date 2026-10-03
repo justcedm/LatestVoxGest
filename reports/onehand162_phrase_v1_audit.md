@@ -17,7 +17,7 @@
 | YOUR | 310 | 120 | True | 170 | True |
 | NAME | 310 | 120 | True | 170 | True |
 | MY | 160 | 80 | True | 120 | True |
-| NOTHING | 380 | 180 | True | 240 | True |
+| NSAC | 380 | 180 | True | 240 | True |
 
 ## Per Signer Counts
 
@@ -35,17 +35,17 @@
 | ANASTACIA | YOUR | 40 |
 | ANASTACIA | NAME | 40 |
 | ANASTACIA | MY | 40 |
-| ANASTACIA | NOTHING | 80 |
+| ANASTACIA | NSAC | 80 |
 | EARLE | WHAT | 90 |
 | EARLE | YOUR | 140 |
 | EARLE | NAME | 140 |
 | EARLE | MY | 40 |
-| EARLE | NOTHING | 140 |
+| EARLE | NSAC | 140 |
 | MARIELLA | WHAT | 130 |
 | MARIELLA | YOUR | 130 |
 | MARIELLA | NAME | 130 |
 | MARIELLA | MY | 80 |
-| MARIELLA | NOTHING | 160 |
+| MARIELLA | NSAC | 160 |
 
 ## Sources
 

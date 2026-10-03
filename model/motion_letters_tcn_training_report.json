@@ -16,7 +16,7 @@
   "classes": [
     "J",
     "Z",
-    "NOTHING"
+    "NSAC"
   ],
   "class_stats": {
     "J": {
@@ -33,7 +33,7 @@
       "need_sequences": 0,
       "need_groups": 0
     },
-    "NOTHING": {
+    "NSAC": {
       "sequences": 120,
       "groups": 6,
       "used": true,
@@ -56,7 +56,7 @@
       "total": 40,
       "accuracy": 35.0
     },
-    "NOTHING": {
+    "NSAC": {
       "correct": 33,
       "total": 40,
       "accuracy": 82.5

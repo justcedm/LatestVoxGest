@@ -90,7 +90,7 @@ class AvatarView @JvmOverloads constructor(
         }
 
         val cleaned = text.trim().uppercase(Locale.US)
-        if (cleaned.isBlank() || cleaned == "NOTHING") {
+        if (cleaned.isBlank() || cleaned == "NSAC") {
             pendingWord = null
             stopSignAnimation()
             stopFingerspell()

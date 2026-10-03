@@ -52,7 +52,7 @@ TEAM16_LABELS = [
     "HELP",
     "NAME",
     "NO",
-    "NOTHING",
+    "NSAC",
     "PAIN",
     "PLEASE",
     "SORRY",
@@ -414,9 +414,9 @@ def write_markdown(payload):
     lines.extend(
         [
             "",
-            "## NOTHING Warning",
+            "## NSAC Warning",
             "",
-            "NOTHING currently has 19 normalized videos. It is usable for an initial audit, but should be expanded later with idle hands, hand entering/leaving frame, partial signs, aborted signs, and transition movements.",
+            "NSAC currently has 19 normalized videos. It is usable for an initial audit, but should be expanded later with idle hands, hand entering/leaving frame, partial signs, aborted signs, and transition movements.",
             "",
             "## Next Step",
             "",
@@ -489,7 +489,7 @@ def main():
         "labels_under_10": labels_under_10,
         "labels_under_30": labels_under_30,
         "failure_reasons": failure_counts,
-        "nothing_warning": "NOTHING only has 19 videos and should be expanded later.",
+        "nsac_warning": "NSAC only has 19 videos and should be expanded later.",
         "records": rows,
     }
     write_csv(rows)
@@ -503,7 +503,7 @@ def main():
     print(f"Wrote: {MD_OUT}", flush=True)
     print(f"Ready labels: {', '.join(labels_ready) if labels_ready else 'none'}", flush=True)
     print(f"Need more recordings: {', '.join(labels_need_more) if labels_need_more else 'none'}", flush=True)
-    print("NOTE: NOTHING only has 19 videos and should be expanded later.", flush=True)
+    print("NOTE: NSAC only has 19 videos and should be expanded later.", flush=True)
 
 
 if __name__ == "__main__":

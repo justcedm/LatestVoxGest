@@ -18,11 +18,11 @@
 | WATER | 120 |
 | HELLO | 120 |
 | THANKYOU | 120 |
-| NOTHING | 150 |
+| NSAC | 150 |
 
 ## Counts Per Signer Per Label
 
-| Signer | EAT | WATER | HELLO | THANKYOU | NOTHING | Total |
+| Signer | EAT | WATER | HELLO | THANKYOU | NSAC | Total |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
 | ANASTACIA | 31 | 30 | 30 | 30 | 50 | 171 |
 | CED | 50 | 50 | 50 | 50 | 100 | 300 |

@@ -26,7 +26,7 @@ METADATA_PATH = SAVE_DIR / "metadata_static_calibration_v1.json"
 SAMPLES_PER_LABEL = int(os.environ.get("VOXGEST_STATIC_CALIBRATION_SAMPLES_PER_LABEL", "60"))
 CAPTURE_STRIDE = int(os.environ.get("VOXGEST_STATIC_CALIBRATION_STRIDE_FRAMES", "6"))
 MIRROR_INPUT = True
-LABELS = list("ABCDEFGHIJKLMNOPQRSTUVWXYZ") + ["del", "space", "nothing"]
+LABELS = list("ABCDEFGHIJKLMNOPQRSTUVWXYZ") + ["del", "space", "nsac"]
 
 
 def normalize_label(label):
@@ -64,7 +64,7 @@ def existing_count(label):
 def extract_static_vector(results, label):
     hand = select_hand_landmarks(results, mirrored_input=MIRROR_INPUT)
     if hand is None:
-        if label == "nothing":
+        if label == "nsac":
             return np.zeros((63,), dtype=np.float32), "no_hand_zero"
         return None, "no_hand"
     return normalize_static_hand(hand.landmark), "hand"
@@ -95,7 +95,7 @@ def draw(frame, label, saved, target, recording, note):
         (180, 180, 180),
         1,
     )
-    if label == "nothing":
+    if label == "nsac":
         cv2.putText(
             frame,
             "Record idle/no hand, neutral hand, and no-output transitions.",

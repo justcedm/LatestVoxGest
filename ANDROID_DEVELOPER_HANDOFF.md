@@ -11,7 +11,7 @@ Current Android avatar implementation:
 - Renderer: native Canvas `AvatarView`
 - Playback controller: `AvatarController`
 - Known animated words: `HELLO`, `THANKYOU`, `WATER`, `EAT`
-- `NOTHING`: ignored, no animation, no display, no speech
+- `NSAC`: ignored, no animation, no display, no speech
 - Unknown words: fingerspelling fallback
 
 Current experimental FullSign225 Android assets:
@@ -29,7 +29,7 @@ next inference task is to emit `[30, 225]` landmark windows into
 
 The Android build should follow this order:
 
-1. Recognition first: static alphabet, 10 dynamic words, and `NOTHING`.
+1. Recognition first: static alphabet, 10 dynamic words, and `NSAC`.
 2. Sentence composer second: build text only from confirmed accepted tokens.
 3. Avatar playback third: known words use word animations; unknown words
    fingerspell.
@@ -52,7 +52,7 @@ Current supported recognition:
 
 - Static alphabet: `A-Z`, `del`, `space`, `nothing`
 - Dynamic words: `YES`, `NO`, `PLEASE`, `WATER`, `HELLO`, `HELP`, `STOP`, `DOCTOR`, `NAME`, `THANKYOU`
-- Dynamic negative class: `NOTHING`
+- Dynamic negative class: `NSAC`
 - Token-based sentence output from confirmed accepted predictions only
 
 Current runtime assets live in [`model/`](./model):
@@ -143,12 +143,12 @@ Dynamic motion-letter model:
 - Labels:
   - `J`
   - `Z`
-  - `NOTHING`
+  - `NSAC`
 - Runtime rule:
   - keep separate from the dynamic word model
   - run only in alphabet-capable modes, not word-only mode
   - accepted `J` / `Z` enter the token composer as letters
-  - `NOTHING` is no-output
+  - `NSAC` is no-output
   - if the model is missing, fall back to the static alphabet model
 
 Phrase intent model:
@@ -161,11 +161,11 @@ Phrase intent model:
 - Output shape: depends on trained phrase labels
 - Current intended labels:
   - `ASK_NAME`
-  - `NOTHING`
+  - `NSAC`
   - `PARTIAL_ASK_NAME`
 - Output mapping:
   - `ASK_NAME` -> `What is your name?`
-  - `NOTHING` -> no displayed output
+  - `NSAC` -> no displayed output
   - `PARTIAL_ASK_NAME` -> no displayed output
 - Feature rule per frame:
   - same `162`-float single-hand feature rule as the word motion model
@@ -233,7 +233,7 @@ Word-specific `WORDS` mode rules:
 - `DOCTOR`: `conf 0.70`, `margin 0.15`, `motion 0.020`, `path 0.20`
 - `NAME`: `conf 0.55`, `margin 0.05`, `motion 0.020`, `path 0.20`
 - `THANKYOU`: `conf 0.52`, `margin 0.03`, `motion 0.010`, `path 0.08`, `stable 6`
-- `NOTHING`: `conf 0.55`, `margin 0.05`, `motion 0.000`, `path 0.00`, `hand presence 0.00`, `stable 4`
+- `NSAC`: `conf 0.55`, `margin 0.05`, `motion 0.000`, `path 0.00`, `hand presence 0.00`, `stable 4`
 
 Word override thresholds in `AUTO` mode:
 
@@ -283,7 +283,7 @@ Composer rules:
 - `space`: commit the current spelled word boundary
 - `del`: delete the latest character or full token
 - dynamic word labels: append the full word token
-- `nothing` / `NOTHING`: ignored; never displayed, spoken, or animated
+- `nothing` / `NSAC`: ignored; never displayed, spoken, or animated
 
 The Python reference is [`scripts_ml/token_composer.py`](./scripts_ml/token_composer.py).
 The live UI should show:
@@ -305,7 +305,7 @@ Playback rules:
 - known word token -> play `avatar/signs/<WORD>.json`
 - unknown word token -> fingerspell
 - spelled words from letters -> fingerspell
-- `NOTHING` -> no animation
+- `NSAC` -> no animation
 
 The current `avatar/signs/*.json` files are placeholders for animation data;
 they define the dictionary boundary, not final animation curves.
@@ -326,7 +326,7 @@ Each accepted prediction should expose:
 
 ## Current Limitations
 
-- Dynamic vocabulary is now `10` communicative words plus `NOTHING`
+- Dynamic vocabulary is now `10` communicative words plus `NSAC`
 - Current grouped validation report is around `66.6%`, so this is demo-ready, not final-production-ready
 - Some words are still weak in grouped validation and live testing, especially `WATER`, `THANKYOU`, `YES`, and `NO`
 - Thresholds are tuned for the Python prototype and should remain data-driven during Android implementation
@@ -357,8 +357,8 @@ Recommended next move is to strengthen the current recognition set:
   `scripts_ml/31_record_static_calibration.py`
 - live-test all 10 words
 - collect extra manual sessions for weak words
-- keep `NOTHING` active as the negative/no-word class
-- record partial/incomplete/transition movements as `NOTHING`
+- keep `NSAC` active as the negative/no-word class
+- record partial/incomplete/transition movements as `NSAC`
 - retrain both LSTM and TCN
 - choose the active word model by grouped validation plus live behavior
 

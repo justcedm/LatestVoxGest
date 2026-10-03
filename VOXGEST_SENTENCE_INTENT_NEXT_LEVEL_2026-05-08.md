@@ -22,7 +22,7 @@ VoxGest currently has three recognition surfaces:
 ```text
 Static letters      -> A-Z, del, space, nothing
 Short word motion   -> demo10 wor
-ds + NOTHING
+ds + NSAC
 Phrase intents      -> endpoint-segmented sentence shortcuts
 ```
 
@@ -52,7 +52,7 @@ input:  [1, 30, 162]
 Current short word vocabulary:
 
 ```text
-YES, NO, PLEASE, WATER, HELLO, HELP, STOP, DOCTOR, NAME, THANKYOU, NOTHING
+YES, NO, PLEASE, WATER, HELLO, HELP, STOP, DOCTOR, NAME, THANKYOU, NSAC
 ```
 
 Phrase model target files:
@@ -139,7 +139,7 @@ ASK_NAME -> What is your name?
 Phrase negative/no-output labels:
 
 ```text
-NOTHING
+NSAC
 PARTIAL_ASK_NAME
 ```
 
@@ -167,7 +167,7 @@ recording session from the one it trains on. One long session is weaker than
 several shorter sessions because it does not prove the model can generalize
 across timing, position, lighting, and fatigue changes.
 
-For `NOTHING`, record:
+For `NSAC`, record:
 
 ```text
 idle, neutral movement, transitions, hand entering/leaving frame
@@ -183,7 +183,7 @@ Recommended data targets:
 
 ```text
 ASK_NAME:         240-360 samples
-NOTHING:          480+ samples
+NSAC:          480+ samples
 PARTIAL_ASK_NAME: 120-240 samples
 ```
 
@@ -192,9 +192,9 @@ Fatigue-friendly collection plan after one 60-sample session already exists:
 ```powershell
 $env:VOXGEST_PHRASE_SEQUENCES_PER_LABEL='30'
 .\voxgest_env\Scripts\python.exe scripts_ml\26_record_phrase_intents.py ASK_NAME
-.\voxgest_env\Scripts\python.exe scripts_ml\26_record_phrase_intents.py NOTHING
+.\voxgest_env\Scripts\python.exe scripts_ml\26_record_phrase_intents.py NSAC
 .\voxgest_env\Scripts\python.exe scripts_ml\26_record_phrase_intents.py ASK_NAME
-.\voxgest_env\Scripts\python.exe scripts_ml\26_record_phrase_intents.py NOTHING
+.\voxgest_env\Scripts\python.exe scripts_ml\26_record_phrase_intents.py NSAC
 ```
 
 That creates three groups per class:
@@ -206,7 +206,7 @@ session 3: 30 samples
 total:     120 samples
 ```
 
-This satisfies the default trainer minimum for `ASK_NAME` and `NOTHING`.
+This satisfies the default trainer minimum for `ASK_NAME` and `NSAC`.
 
 ## Using Selected Video Data
 
@@ -242,7 +242,7 @@ phrase_videos/
   ASK_NAME/
     sample_001.mp4
     sample_002.mp4
-  NOTHING/
+  NSAC/
     idle_001.mp4
   PARTIAL_ASK_NAME/
     partial_001.mp4
@@ -251,14 +251,14 @@ phrase_videos/
 Extraction command:
 
 ```powershell
-.\voxgest_env\Scripts\python.exe scripts_ml\28_extract_phrase_videos.py ASK_NAME NOTHING PARTIAL_ASK_NAME
+.\voxgest_env\Scripts\python.exe scripts_ml\28_extract_phrase_videos.py ASK_NAME NSAC PARTIAL_ASK_NAME
 ```
 
 After video extraction, still record a smaller webcam calibration pass:
 
 ```powershell
 .\voxgest_env\Scripts\python.exe scripts_ml\26_record_phrase_intents.py ASK_NAME
-.\voxgest_env\Scripts\python.exe scripts_ml\26_record_phrase_intents.py NOTHING
+.\voxgest_env\Scripts\python.exe scripts_ml\26_record_phrase_intents.py NSAC
 .\voxgest_env\Scripts\python.exe scripts_ml\26_record_phrase_intents.py PARTIAL_ASK_NAME
 ```
 
@@ -267,7 +267,7 @@ extraction:
 
 ```text
 ASK_NAME webcam:         60-120 samples
-NOTHING webcam:          120-240 samples
+NSAC webcam:          120-240 samples
 PARTIAL_ASK_NAME webcam: 60-120 samples
 ```
 
@@ -286,9 +286,9 @@ Use `left` instead of `right` if the target signer uses the left hand.
 Record phrase data:
 
 ```powershell
-.\voxgest_env\Scripts\python.exe scripts_ml\28_extract_phrase_videos.py ASK_NAME NOTHING PARTIAL_ASK_NAME
+.\voxgest_env\Scripts\python.exe scripts_ml\28_extract_phrase_videos.py ASK_NAME NSAC PARTIAL_ASK_NAME
 .\voxgest_env\Scripts\python.exe scripts_ml\26_record_phrase_intents.py ASK_NAME
-.\voxgest_env\Scripts\python.exe scripts_ml\26_record_phrase_intents.py NOTHING
+.\voxgest_env\Scripts\python.exe scripts_ml\26_record_phrase_intents.py NSAC
 .\voxgest_env\Scripts\python.exe scripts_ml\26_record_phrase_intents.py PARTIAL_ASK_NAME
 ```
 
@@ -313,7 +313,7 @@ Expected behavior:
 ```text
 Short words -> detected by 30-frame word TCN
 ASK_NAME    -> detected only after complete phrase motion and final hold
-NOTHING / PARTIAL_ASK_NAME -> no displayed sentence
+NSAC / PARTIAL_ASK_NAME -> no displayed sentence
 ```
 
 ## Live Recognizer Behavior
@@ -388,7 +388,7 @@ The phrase milestone is successful when:
 - `ASK_NAME` does not output during the first gesture only
 - `ASK_NAME` outputs after the full phrase gesture and final hold
 - `PARTIAL_ASK_NAME` produces no displayed sentence
-- `NOTHING` suppresses idle and transition false positives
+- `NSAC` suppresses idle and transition false positives
 - existing demo10 words still work through the word TCN
 - Android contract clearly separates word and phrase models
 

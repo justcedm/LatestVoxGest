@@ -20,7 +20,7 @@ QUALITY_CAPTURE_BLOCKS = {
     "quality:NO_HAND",
 }
 GATE_BLOCK_PREFIXES = ("low_conf", "low_margin", "low_motion", "low_path", "low_hand")
-NEGATIVE_LABELS = {"NOTHING"}
+NEGATIVE_LABELS = {"NSAC"}
 
 
 def as_bool(value):
@@ -191,7 +191,7 @@ def build_payload(paths):
                 "Keep strict gate profile as default.",
                 "Demo profile lowers low-motion label thresholds.",
                 "Manual capture waits for stable hands before recording one gesture window.",
-                "NOTHING remains no-output and is never accepted as spoken output.",
+                "NSAC remains no-output and is never accepted as spoken output.",
             ],
         },
         "profiles": out_profiles,
@@ -207,7 +207,7 @@ def write_markdown(path, payload):
         "- Capture mode: `VOXGEST_LIVE_TEST_CAPTURE_MODE=manual_capture`",
         "- Capture timing: wait for 10 stable hand frames, then record exactly 30 frames",
         "- Strict gate remains the default when `VOXGEST_GATE_PROFILE` is unset",
-        "- `NOTHING` remains no-output",
+        "- `NSAC` remains no-output",
         "",
         "## Logs Analyzed",
         "",

@@ -20,7 +20,7 @@
 | STUDENT | 92 |
 | WHERE | 70 |
 | LIVE | 127 |
-| NOTHING | 592 |
+| NSAC | 592 |
 
 ## Ignored Labels
 

@@ -326,7 +326,7 @@ def main():
     ) = load_sequences()
 
     if len(classes) < 2:
-        print("\nNeed at least two valid phrase classes, usually ASK_NAME and NOTHING.")
+        print("\nNeed at least two valid phrase classes, usually ASK_NAME and NSAC.")
         print(
             "\nMeaning of the readiness columns:\n"
             f"  sequences: saved phrase samples; minimum is {MIN_SEQS} per class.\n"
@@ -336,7 +336,7 @@ def main():
         print(
             "Fatigue-friendly option:\n"
             "  $env:VOXGEST_PHRASE_SEQUENCES_PER_LABEL='30'\n"
-            "  Record two more short sessions each for ASK_NAME and NOTHING,\n"
+            "  Record two more short sessions each for ASK_NAME and NSAC,\n"
             "  then train again. Existing 60 + 30 + 30 = 120 samples in 3 groups.\n"
         )
         return

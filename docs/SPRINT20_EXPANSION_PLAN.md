@@ -12,7 +12,7 @@ Do not activate sprint20 until:
 
 - `NAME` is at least 4/5 correct in right-hand live testing.
 - `STOP` remains at least 4/5 correct.
-- `NOTHING` remains no-output and does not create false word tokens.
+- `NSAC` remains no-output and does not create false word tokens.
 - `PLEASE` does not frequently become `STOP`.
 
 The latest available right-hand TCN log does not pass this gate because `NAME`
@@ -23,7 +23,7 @@ was 0/5 and all five trials were accepted as `STOP`.
 Safe base profile:
 
 ```text
-demo10 = YES, NO, PLEASE, WATER, HELLO, HELP, STOP, DOCTOR, NAME, THANKYOU, NOTHING
+demo10 = YES, NO, PLEASE, WATER, HELLO, HELP, STOP, DOCTOR, NAME, THANKYOU, NSAC
 ```
 
 Planned sprint20 additions:
@@ -32,7 +32,7 @@ Planned sprint20 additions:
 SORRY, AGAIN, MORE, UNDERSTAND, PAIN, SICK, HURT, MEDICINE, HOSPITAL, EAT
 ```
 
-`NOTHING` remains the active negative/no-output class. Phrase recognition remains
+`NSAC` remains the active negative/no-output class. Phrase recognition remains
 disabled.
 
 ## Candidate Word Review
@@ -82,7 +82,7 @@ Training readiness requirements:
 
 - every class has enough sequences
 - every class has enough groups
-- `NOTHING` remains present
+- `NSAC` remains present
 - new words do not silently reduce output shape incorrectly
 - label JSON matches model output
 

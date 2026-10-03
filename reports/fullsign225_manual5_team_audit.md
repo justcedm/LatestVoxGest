@@ -13,11 +13,11 @@
 | WATER | 70 | 80 | 120 |
 | HELLO | 70 | 80 | 120 |
 | THANKYOU | 70 | 80 | 120 |
-| NOTHING | 50 | 120 | 180 |
+| NSAC | 50 | 120 | 180 |
 
 ## Per Signer Counts
 
-| Signer | EAT | WATER | HELLO | THANKYOU | NOTHING |
+| Signer | EAT | WATER | HELLO | THANKYOU | NSAC |
 | --- | ---: | ---: | ---: | ---: | ---: |
 | CED | 0 | 0 | 0 | 0 | 0 |
 | ANASTACIA | 0 | 0 | 0 | 0 | 0 |
@@ -25,7 +25,7 @@
 | EARLE | 0 | 0 | 0 | 0 | 0 |
 | ANASTACIA_ANASTACIA_EAT | 30 | 0 | 0 | 0 | 0 |
 | ANASTACIA_ANASTACIA_HELLO | 0 | 0 | 30 | 0 | 0 |
-| ANASTACIA_ANASTACIA_NOTHING | 0 | 0 | 0 | 0 | 50 |
+| ANASTACIA_ANASTACIA_NSAC | 0 | 0 | 0 | 0 | 50 |
 | ANASTACIA_ANASTACIA_THANKYOU | 0 | 0 | 0 | 30 | 0 |
 | ANASTACIA_ANASTACIA_WATER | 0 | 30 | 0 | 0 | 0 |
 | ANASTACIA_TEAMMATE_A_EAT | 1 | 0 | 0 | 0 | 0 |
@@ -40,8 +40,8 @@
 
 - Wrong-shape files: 0
 - Unreadable files: 0
-- Labels under minimum target: EAT, WATER, HELLO, THANKYOU, NOTHING
-- Labels under preferred target: EAT, WATER, HELLO, THANKYOU, NOTHING
+- Labels under minimum target: EAT, WATER, HELLO, THANKYOU, NSAC
+- Labels under preferred target: EAT, WATER, HELLO, THANKYOU, NSAC
 
 ## Rejected Samples Seen
 

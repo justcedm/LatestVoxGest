@@ -12,7 +12,7 @@ with one phone between them, without depending on an internet connection.
 ## 2. What The Current System Can Do
 
 - Recognize static alphabet/control signs from hand landmarks.
-- Recognize 10 dynamic demo words plus `NOTHING`.
+- Recognize 10 dynamic demo words plus `NSAC`.
 - Build sentence output only from accepted tokens.
 - Speak confirmed signed text through text-to-speech.
 - Show a lightweight avatar response for known words or fingerspell unknown
@@ -85,10 +85,10 @@ TCN uses temporal convolution, which can be faster and easier to deploy while
 still learning motion patterns. VoxGest compares both because live behavior can
 differ from validation accuracy.
 
-## 10. Why NOTHING Is Required
+## 10. Why NSAC Is Required
 
-`NOTHING` teaches the model what no valid word looks like: idle hands, partial
-signs, transitions, and aborted signs. Without `NOTHING`, the model is more
+`NSAC` teaches the model what no valid word looks like: idle hands, partial
+signs, transitions, and aborted signs. Without `NSAC`, the model is more
 likely to force every movement into a word.
 
 ## 11. Why Dominant-Hand Policy Exists
@@ -120,13 +120,13 @@ differently, the same sign can become a different input to the model.
 ## 15. What Has Been Achieved So Far
 
 - Static alphabet recognition pipeline exists.
-- Dynamic demo10 + `NOTHING` pipeline exists.
+- Dynamic demo10 + `NSAC` pipeline exists.
 - LSTM and TCN training scripts exist.
 - Live word logger captures gate metrics and failure reasons.
 - Android dry-run app builds and launches.
 - Avatar asset contract and prototype JSON are prepared.
 - The latest demo10 TCN run is mostly strong for YES, NO, PLEASE, WATER,
-  HELLO, HELP, STOP, DOCTOR, THANKYOU, and NOTHING.
+  HELLO, HELP, STOP, DOCTOR, THANKYOU, and NSAC.
 - The remaining right-hand blocker is `NAME`, which is currently being confused
   as accepted `STOP`.
 
@@ -166,13 +166,13 @@ one functional hand.
 STOP itself is currently strong in the latest right-hand TCN log, but `NAME` is
 being misclassified as accepted `STOP`. The repair goal is not to weaken STOP.
 The goal is to record clean contrast samples for `NAME`, preserve the working
-STOP version, and label partial or aborted NAME/STOP movements as `NOTHING`.
+STOP version, and label partial or aborted NAME/STOP movements as `NSAC`.
 
 ## 21. Panel Answer: "What Is Your ML Contribution?"
 
 The ML contribution is the end-to-end offline recognition pipeline: landmark
 feature design, static and dynamic model contracts, group-aware training,
-dominant-hand preprocessing, `NOTHING` negative class design, live gate metrics,
+dominant-hand preprocessing, `NSAC` negative class design, live gate metrics,
 and the token-composer safety layer that prevents raw predictions from changing
 user output.
 

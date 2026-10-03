@@ -45,10 +45,10 @@
         "WANT",
         "WATER",
         "YES",
-        "NOTHING"
+        "NSAC"
       ],
-      "negative_label": "NOTHING",
-      "nothing_policy": "ignore_no_output",
+      "negative_label": "NSAC",
+      "nsac_policy": "ignore_no_output",
       "artifact_size_bytes": 316136
     }
   },
@@ -58,8 +58,8 @@
     "videos_extracted": 380,
     "total_sequences": 3420,
     "skipped_videos": [
-      "NOTHING_fullsign225_011.mp4",
-      "NOTHING_fullsign225_018.mp4"
+      "NSAC_fullsign225_011.mp4",
+      "NSAC_fullsign225_018.mp4"
     ],
     "per_label": {
       "DOCTOR": {
@@ -98,7 +98,7 @@
         "groups": 24,
         "failed": 0
       },
-      "NOTHING": {
+      "NSAC": {
         "videos": 17,
         "sequences": 153,
         "groups": 17,
@@ -242,7 +242,7 @@
         "total": 36,
         "accuracy": 100.0
       },
-      "NOTHING": {
+      "NSAC": {
         "correct": 9,
         "total": 27,
         "accuracy": 33.33333333333333
@@ -264,13 +264,13 @@
       "WANT": "HELP",
       "WATER": "YES",
       "YES": "-",
-      "NOTHING": "HELLO"
+      "NSAC": "HELLO"
     }
   },
   "runtime_policy": {
     "input_policy": "accepted_predictions_only",
     "raw_prediction_policy": "never_update_sentence_output_directly",
-    "nothing_policy": "NOTHING remains no-output and must not be spoken, stored, or sent to avatar",
+    "nsac_policy": "NSAC remains no-output and must not be spoken, stored, or sent to avatar",
     "recommended_dynamic_model_env": "VOXGEST_DYNAMIC_MODEL=tcn",
     "feature_env": "VOXGEST_FEATURE_PROFILE=fullsign225",
     "word_profile_env": "VOXGEST_WORD_PROFILE=fullsign225_team16",

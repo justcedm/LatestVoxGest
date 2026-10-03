@@ -1,0 +1,48 @@
+{
+  "experiment_id": "mapua_npy_canonical_v1",
+  "authorization_date": "2026-09-21",
+  "converter_version": "mapua_original_npy_to_fullsign225_v1",
+  "source_dataset": "MAPUA_TRANSACTIONAL_FSL",
+  "source_doi": "10.17632/jdyrr7cm4z",
+  "source_original_npy_contract": {
+    "shape": [75, 225],
+    "dtype": "float64",
+    "layout": "pose99|anatomical_left63|anatomical_right63",
+    "coordinate_space": "raw_mediapipe",
+    "missing_hand_policy": "all_zero_63_value_block"
+  },
+  "selection": {
+    "frozen_split_manifest": "reports/fsl_dual_dataset_reset_v1/SPLIT_MANIFEST.csv",
+    "current_feature_manifest": "MAPUA26_CALIBRATION_V1/feature_manifest.csv",
+    "raw_video_root": "TRANSACTIONAL_FSL_V1/extracted",
+    "expected_original_npy_count": 1107,
+    "expected_selected_clip_count": 394,
+    "development_clip_count": 334,
+    "sealed_clip_count": 60,
+    "development_folds": 4
+  },
+  "output": {
+    "external_experiment_root": "MAPUA_NPY_CANONICAL_V1",
+    "feature_manifest": "feature_manifest.csv",
+    "feature_directory": "features"
+  },
+  "feature_contract": {
+    "version": "fullsign225_frame_v1_complete_trajectory_from_original_mapua_npy_v1",
+    "layout": "pose99|anatomical_left63|anatomical_right63",
+    "coordinate_orientation": "canonical_unmirrored",
+    "slot_swapping": false,
+    "temporal_length": 48,
+    "motion_boundary_frames": 3,
+    "maximum_internal_interpolation_gap_frames": 3,
+    "missing_pose_policy": "zero_entire_225_frame",
+    "missing_hand_policy": "zero_fixed_anatomical_63_slot",
+    "normalization_implementation": "scripts_ml/fullsign225_feature_builder.py"
+  },
+  "comparison": {
+    "base_training_config": "training_configs/fsl_practical15_mapua_v1.json",
+    "pipeline_a": "MAPUA_MP4_PYTHON_HOLISTIC_CANONICAL48",
+    "pipeline_b": "MAPUA_ORIGINAL_NPY_CANONICAL48",
+    "selection_scope": "DEVELOPMENT_OUT_OF_FOLD_ONLY",
+    "sealed_test_classifier_evaluation": false
+  }
+}

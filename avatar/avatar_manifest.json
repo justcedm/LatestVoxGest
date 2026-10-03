@@ -6,7 +6,7 @@
     "source": "confirmed token composer output only",
     "letters": "A-Z tokens form spelled words",
     "words": "known word tokens map to word animations",
-    "nothing": "ignored; never spoken or animated"
+    "nsac": "ignored; never spoken or animated"
   },
   "playback_rule": {
     "known_word": "play avatar/signs/<WORD>.json",

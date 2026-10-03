@@ -1,0 +1,53 @@
+{
+  "binary_file": "golden_fullsign225_feature_fixture_f32.bin",
+  "binary_sha256": "7256e22ebd3dd278f4d6cc9e90c364ec9cd49d21d3a5c992c88844813fa1f8f4",
+  "byte_order": "little_endian",
+  "canonical_builder": "scripts_ml/fullsign225_feature_builder.py",
+  "cases": [
+    "both",
+    "left_only",
+    "right_only",
+    "no_hands",
+    "missing_pose"
+  ],
+  "dtype": "float32",
+  "expected_case_offsets": {
+    "both": [
+      225,
+      450
+    ],
+    "left_only": [
+      450,
+      675
+    ],
+    "right_only": [
+      675,
+      900
+    ],
+    "no_hands": [
+      900,
+      1125
+    ],
+    "missing_pose": [
+      1125,
+      1350
+    ]
+  },
+  "feature_version": "fullsign225_20f_v1",
+  "float_count": 1350,
+  "input_offsets": {
+    "anatomical_left_xyz": [
+      99,
+      162
+    ],
+    "anatomical_right_xyz": [
+      162,
+      225
+    ],
+    "pose_xyz": [
+      0,
+      99
+    ]
+  },
+  "schema_version": 1
+}

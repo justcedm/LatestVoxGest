@@ -18,7 +18,7 @@ Sprint30 onehand162 live testing and validation showed several labels were weak 
 - TCN input: `[1, 30, 225]`
 - Per frame: `99 pose + 63 left hand + 63 right hand = 225`
 - Output: `[1, 22]`
-- Labels: `YES, NO, PLEASE, WATER, HELLO, HELP, STOP, DOCTOR, NAME, THANKYOU, UNDERSTAND, SORRY, AGAIN, MORE, PAIN, GO, FINE, EAT, TIME, WANT, MEDICINE, NOTHING`
+- Labels: `YES, NO, PLEASE, WATER, HELLO, HELP, STOP, DOCTOR, NAME, THANKYOU, UNDERSTAND, SORRY, AGAIN, MORE, PAIN, GO, FINE, EAT, TIME, WANT, MEDICINE, NSAC`
 
 ## 5. Files Changed
 
@@ -70,7 +70,7 @@ $env:VOXGEST_ENABLE_PHRASE='0'; $env:VOXGEST_WORD_PROFILE='sprint30'; $env:VOXGE
 - GREEN/YELLOW/RED: 21 / 1 / 0
 - Training readiness passed: `True`
 - `MEDICINE` is yellow because source coverage is smaller than the stronger labels.
-- `NOTHING` is present, but current fullsign225 NOTHING data is bootstrapped from onehand162 manual hard negatives. It should be replaced with native fullsign225 webcam negatives before demo use.
+- `NSAC` is present, but current fullsign225 NSAC data is bootstrapped from onehand162 manual hard negatives. It should be replaced with native fullsign225 webcam negatives before demo use.
 - Caveat: the first fullsign225 extraction hit the command timeout after writing arrays but before saving metadata. For those early extracted word arrays, source groups are inferred from filenames rather than metadata records.
 
 ## 9. Grouped Validation Accuracy
@@ -103,7 +103,7 @@ $env:VOXGEST_ENABLE_PHRASE='0'; $env:VOXGEST_WORD_PROFILE='sprint30'; $env:VOXGE
 | TIME | 25 | 50 | 50.0% | STOP |
 | WANT | 29 | 50 | 58.0% | MEDICINE |
 | MEDICINE | 23 | 25 | 92.0% | HELP |
-| NOTHING | 120 | 120 | 100.0% | - |
+| NSAC | 120 | 120 | 100.0% | - |
 
 ## 11. Top Confusion Map
 
@@ -130,7 +130,7 @@ $env:VOXGEST_ENABLE_PHRASE='0'; $env:VOXGEST_WORD_PROFILE='sprint30'; $env:VOXGE
 | TIME | STOP |
 | WANT | MEDICINE |
 | MEDICINE | HELP |
-| NOTHING | - |
+| NSAC | - |
 
 ## 12. Model Size
 
@@ -157,7 +157,7 @@ $env:VOXGEST_MODE='WORDS'
 
 ## 15. Recommendation
 
-Do not promote fullsign225 yet. Keep demo10 as the safe baseline and keep sprint30 onehand162 as the current experimental comparison. Continue fullsign225 only if native fullsign225 NOTHING recordings and targeted repair data can improve live behavior and grouped validation.
+Do not promote fullsign225 yet. Keep demo10 as the safe baseline and keep sprint30 onehand162 as the current experimental comparison. Continue fullsign225 only if native fullsign225 NSAC recordings and targeted repair data can improve live behavior and grouped validation.
 
 ## Weakest Remaining Labels
 
@@ -177,6 +177,6 @@ Do not promote fullsign225 yet. Keep demo10 as the safe baseline and keep sprint
 - Demo10 generic `*_v1` files were not intentionally overwritten.
 - Sprint30/fullsign225 artifacts use separate filenames.
 - Phrase recognition remains disabled by default.
-- `NOTHING` remains a no-output class.
+- `NSAC` remains a no-output class.
 - Raw predictions must still be blocked from sentence output by gates/token composer.
 - Android UI source was not modified in this sprint.

@@ -2,7 +2,7 @@
 
 Sprint30 is an experimental vocabulary-expansion profile. It preserves demo10
 and adds 11 WLASL-backed practical words, producing 22 output labels including
-`NOTHING`.
+`NSAC`.
 
 Do not treat this model as production-ready until live testing passes.
 
@@ -10,7 +10,7 @@ Do not treat this model as production-ready until live testing passes.
 
 YES, NO, PLEASE, WATER, HELLO, HELP, STOP, DOCTOR, NAME, THANKYOU,
 UNDERSTAND, SORRY, AGAIN, MORE, PAIN, GO, FINE, EAT, TIME, WANT,
-MEDICINE, NOTHING
+MEDICINE, NSAC
 
 ## Dataset Sources
 
@@ -37,7 +37,7 @@ MEDICINE, NOTHING
 | TIME | WLASL local videos | 104 | 8 | YELLOW |
 | WANT | WLASL local videos | 130 | 10 | YELLOW |
 | MEDICINE | WLASL local videos | 91 | 7 | YELLOW |
-| NOTHING | Manual hard negatives | 600 | 10 | GREEN |
+| NSAC | Manual hard negatives | 600 | 10 | GREEN |
 
 No local ASL Citizen or Kaggle dataset folder was detected during discovery.
 
@@ -76,7 +76,7 @@ so this recommendation is provisional.
 | TIME | 50.0% | MORE | 0.0% | NAME |
 | WANT | 19.2% | YES | 100.0% | - |
 | MEDICINE | 0.0% | AGAIN | 0.0% | SORRY |
-| NOTHING | not validated | manual-only train split | not validated | manual-only train split |
+| NSAC | not validated | manual-only train split | not validated | manual-only train split |
 
 ## Interpretation
 
@@ -85,7 +85,7 @@ SORRY, AGAIN, MORE, WANT, HELP, NAME.
 
 Likely hardening required before demo:
 PLEASE, WATER, STOP, DOCTOR, THANKYOU, UNDERSTAND, PAIN, GO, FINE, EAT, TIME,
-MEDICINE, NOTHING.
+MEDICINE, NSAC.
 
 Words to exclude from the next live demo if they stay weak:
 THANKYOU, PAIN, TIME, MEDICINE, FINE.

@@ -34,10 +34,10 @@
         "STUDENT",
         "WHERE",
         "LIVE",
-        "NOTHING"
+        "NSAC"
       ],
-      "negative_label": "NOTHING",
-      "nothing_policy": "ignore_no_output"
+      "negative_label": "NSAC",
+      "nsac_policy": "ignore_no_output"
     }
   },
   "dataset": {
@@ -106,7 +106,7 @@
         "preferred": 150,
         "used": true
       },
-      "NOTHING": {
+      "NSAC": {
         "sequences": 892,
         "groups": 892,
         "minimum": 240,
@@ -163,7 +163,7 @@
         "total": 61,
         "accuracy": 95.08196721311475
       },
-      "NOTHING": {
+      "NSAC": {
         "correct": 170,
         "total": 178,
         "accuracy": 95.50561797752809
@@ -225,6 +225,6 @@
   "runtime_policy": {
     "input_policy": "accepted_predictions_only",
     "raw_prediction_policy": "never_update_sentence_output_directly",
-    "nothing_policy": "NOTHING remains no-output"
+    "nsac_policy": "NSAC remains no-output"
   }
 }

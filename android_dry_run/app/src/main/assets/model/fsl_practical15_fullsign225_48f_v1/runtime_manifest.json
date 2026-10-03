@@ -1,0 +1,57 @@
+{
+  "anatomical_slot_swap": false,
+  "android_default_changed": false,
+  "bundle_id": "fsl_practical15_fullsign225_48f_v1",
+  "config_sha256": "18ead53aac730818edb62dd67685ddd285666caad0d8c12531104c4f1ede9f16",
+  "coordinate_orientation": "canonical_unmirrored",
+  "dataset_profile": "MAPUA_PUBLISHED_FSL_ONLY_INTERIM",
+  "development_gate_preparation": {
+    "live_approved": false,
+    "minimum_confidence": 0.95,
+    "minimum_margin": 0.05,
+    "minimum_trajectory_motion_mean_l2": 0.02,
+    "wrong_accepted_in_development": 2
+  },
+  "feature_version": "fullsign225_frame_v1_complete_trajectory_v1",
+  "input_shape": [
+    1,
+    48,
+    225
+  ],
+  "labels_file": "class_labels_fsl_practical15_v1.json",
+  "labels_sha256": "4d3083b853d126c243b7f9a5db94be796a99a7bfe1379ef400d1d3f82a153cb6",
+  "model_file": "fsl_practical15_fullsign225_float32.tflite",
+  "model_sha256": "dfe78b557052032b2b288685b1de97108d0ddbb3516e3bdf758c0ef1c26219e6",
+  "output_shape": [
+    1,
+    15
+  ],
+  "profile_id": "FSL_PRACTICAL15_V1",
+  "status": "experimental_non_default_requires_samsung_qualification",
+  "temporal_contract": "complete_event_resample48",
+  "tflite_parity": {
+    "config_sha256": "18ead53aac730818edb62dd67685ddd285666caad0d8c12531104c4f1ede9f16",
+    "desktop_tflite_latency_ms_median": 0.4331499994805199,
+    "desktop_tflite_latency_ms_p95": 0.7380600009128102,
+    "input_dtype": "<class 'numpy.float32'>",
+    "input_shape": [
+      1,
+      48,
+      225
+    ],
+    "labels_sha256": "4d3083b853d126c243b7f9a5db94be796a99a7bfe1379ef400d1d3f82a153cb6",
+    "maximum_allowed_probability_difference": 1e-05,
+    "maximum_probability_difference": 4.172325134277344e-07,
+    "model_file": "fsl_practical15_fullsign225_float32.tflite",
+    "model_sha256": "dfe78b557052032b2b288685b1de97108d0ddbb3516e3bdf758c0ef1c26219e6",
+    "model_size_bytes": 542172,
+    "output_dtype": "<class 'numpy.float32'>",
+    "output_shape": [
+      1,
+      15
+    ],
+    "passed": true,
+    "required_top1_agreement": 1.0,
+    "tf_tflite_top1_agreement": 1.0
+  }
+}

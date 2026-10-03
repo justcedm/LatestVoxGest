@@ -9,9 +9,9 @@ import os
 
 
 MOTION_LETTER_SEQ_LEN = int(os.environ.get("VOXGEST_MOTION_LETTER_SEQ_LEN", "30"))
-MOTION_LETTER_LABELS = ["J", "Z", "NOTHING"]
+MOTION_LETTER_LABELS = ["J", "Z", "NSAC"]
 MOTION_LETTER_OUTPUTS = {"J", "Z"}
-MOTION_LETTER_NEGATIVES = {"NOTHING"}
+MOTION_LETTER_NEGATIVES = {"NSAC"}
 
 
 def normalize_motion_letter(label):

@@ -1,0 +1,2984 @@
+{
+  "accuracy": 0.95,
+  "cache_max_absolute_difference": 0.0,
+  "cache_numeric_match_count": 60,
+  "class_counts": {
+    "AGAIN": 5,
+    "CARD": 5,
+    "CASH": 4,
+    "COIN": 4,
+    "DISCOUNT": 4,
+    "HELLO": 3,
+    "HOW_MANY": 3,
+    "HOW_MUCH": 2,
+    "NO": 5,
+    "PLEASE": 3,
+    "PROBLEM": 6,
+    "RECEIPT": 4,
+    "THANK_YOU": 4,
+    "WAIT": 4,
+    "YES": 4
+  },
+  "completed_utc": "2026-09-20T06:25:53.057385+00:00",
+  "dataset_profile": "MAPUA_PUBLISHED_FSL_ONLY_INTERIM",
+  "extraction_failure_count": 0,
+  "input_shape": [
+    1,
+    48,
+    225
+  ],
+  "limitations": [
+    "published source does not expose signer identity",
+    "sealed support per class is small",
+    "replay uses pre-recorded source clips rather than live Android camera events"
+  ],
+  "macro_f1": 0.9557183557183557,
+  "median_extraction_ms": 3658.5021000009874,
+  "median_tflite_ms": 0.9065999984159134,
+  "mediapipe_version": "0.10.9",
+  "model_sha256": "dfe78b557052032b2b288685b1de97108d0ddbb3516e3bdf758c0ef1c26219e6",
+  "motion_envelope_exact_match_count": 60,
+  "output_shape": [
+    1,
+    15
+  ],
+  "p95_tflite_ms": 1.2948049969054405,
+  "per_class": {
+    "AGAIN": {
+      "f1": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "support": 5
+    },
+    "CARD": {
+      "f1": 0.8888888888888888,
+      "precision": 1.0,
+      "recall": 0.8,
+      "support": 5
+    },
+    "CASH": {
+      "f1": 0.8571428571428571,
+      "precision": 1.0,
+      "recall": 0.75,
+      "support": 4
+    },
+    "COIN": {
+      "f1": 0.8888888888888888,
+      "precision": 0.8,
+      "recall": 1.0,
+      "support": 4
+    },
+    "DISCOUNT": {
+      "f1": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "support": 4
+    },
+    "HELLO": {
+      "f1": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "support": 3
+    },
+    "HOW_MANY": {
+      "f1": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "support": 3
+    },
+    "HOW_MUCH": {
+      "f1": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "support": 2
+    },
+    "NO": {
+      "f1": 0.8888888888888888,
+      "precision": 1.0,
+      "recall": 0.8,
+      "support": 5
+    },
+    "PLEASE": {
+      "f1": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "support": 3
+    },
+    "PROBLEM": {
+      "f1": 0.9230769230769231,
+      "precision": 0.8571428571428571,
+      "recall": 1.0,
+      "support": 6
+    },
+    "RECEIPT": {
+      "f1": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "support": 4
+    },
+    "THANK_YOU": {
+      "f1": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "support": 4
+    },
+    "WAIT": {
+      "f1": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "support": 4
+    },
+    "YES": {
+      "f1": 0.8888888888888888,
+      "precision": 0.8,
+      "recall": 1.0,
+      "support": 4
+    }
+  },
+  "raw_hash_verification": "PASS",
+  "records": [
+    {
+      "cache_max_absolute_difference": 0.0,
+      "cache_mean_absolute_difference": 0.0,
+      "cache_numeric_match_1e_6": true,
+      "cached_motion_end": 54,
+      "cached_motion_start": 10,
+      "complete_trajectory_frames": 45,
+      "decoded_frames": 75,
+      "extraction_ms": 3772.175199999765,
+      "interpolated_left_frames": 1,
+      "interpolated_right_frames": 0,
+      "label": "HELLO",
+      "left_hand_present_frames": 39,
+      "motion_end": 54,
+      "motion_start": 10,
+      "pose_present_frames": 75,
+      "raw_correct": true,
+      "raw_top1": "HELLO",
+      "raw_top1_probability": 0.9758650064468384,
+      "raw_video_sha256": "2588791b8f0e6c5d6ff1504ccf495975a6c506071be102e5b320eaf5ee2d2822",
+      "record_id": "9fb7ce796aacdce8",
+      "right_hand_present_frames": 0,
+      "tflite_ms": 2.705999999307096,
+      "top1_top2_margin": 0.9645161628723145,
+      "top5": [
+        {
+          "label": "HELLO",
+          "probability": 0.9758650064468384
+        },
+        {
+          "label": "NO",
+          "probability": 0.01134882215410471
+        },
+        {
+          "label": "COIN",
+          "probability": 0.0035806274972856045
+        },
+        {
+          "label": "YES",
+          "probability": 0.0020025598350912333
+        },
+        {
+          "label": "WAIT",
+          "probability": 0.0013129956787452102
+        }
+      ]
+    },
+    {
+      "cache_max_absolute_difference": 0.0,
+      "cache_mean_absolute_difference": 0.0,
+      "cache_numeric_match_1e_6": true,
+      "cached_motion_end": 69,
+      "cached_motion_start": 7,
+      "complete_trajectory_frames": 63,
+      "decoded_frames": 75,
+      "extraction_ms": 3544.414100000722,
+      "interpolated_left_frames": 3,
+      "interpolated_right_frames": 0,
+      "label": "HELLO",
+      "left_hand_present_frames": 55,
+      "motion_end": 69,
+      "motion_start": 7,
+      "pose_present_frames": 75,
+      "raw_correct": true,
+      "raw_top1": "HELLO",
+      "raw_top1_probability": 0.9934815168380737,
+      "raw_video_sha256": "cb3369d91dd9d4207f02f554bf45d9b5eb641330b1cdc82b7c19234936578eef",
+      "record_id": "b7c6e9d86395af27",
+      "right_hand_present_frames": 0,
+      "tflite_ms": 0.8434999981545843,
+      "top1_top2_margin": 0.9900391697883606,
+      "top5": [
+        {
+          "label": "HELLO",
+          "probability": 0.9934815168380737
+        },
+        {
+          "label": "NO",
+          "probability": 0.003442330751568079
+        },
+        {
+          "label": "YES",
+          "probability": 0.0016651818295940757
+        },
+        {
+          "label": "CASH",
+          "probability": 0.000309077586280182
+        },
+        {
+          "label": "AGAIN",
+          "probability": 0.0002745034289546311
+        }
+      ]
+    },
+    {
+      "cache_max_absolute_difference": 0.0,
+      "cache_mean_absolute_difference": 0.0,
+      "cache_numeric_match_1e_6": true,
+      "cached_motion_end": 73,
+      "cached_motion_start": 0,
+      "complete_trajectory_frames": 74,
+      "decoded_frames": 75,
+      "extraction_ms": 3699.8915000003763,
+      "interpolated_left_frames": 0,
+      "interpolated_right_frames": 0,
+      "label": "HELLO",
+      "left_hand_present_frames": 75,
+      "motion_end": 73,
+      "motion_start": 0,
+      "pose_present_frames": 75,
+      "raw_correct": true,
+      "raw_top1": "HELLO",
+      "raw_top1_probability": 0.9976009726524353,
+      "raw_video_sha256": "3175ac0231c14958cb6407e62effd47fe2bf1087d227c39ec68929e9ae02cb59",
+      "record_id": "699f83d5b7405011",
+      "right_hand_present_frames": 0,
+      "tflite_ms": 0.9657000009610783,
+      "top1_top2_margin": 0.9967778921127319,
+      "top5": [
+        {
+          "label": "HELLO",
+          "probability": 0.9976009726524353
+        },
+        {
+          "label": "NO",
+          "probability": 0.0008230796665884554
+        },
+        {
+          "label": "CARD",
+          "probability": 0.00032515375642105937
+        },
+        {
+          "label": "CASH",
+          "probability": 0.00030603480990976095
+        },
+        {
+          "label": "YES",
+          "probability": 0.0002001379180001095
+        }
+      ]
+    },
+    {
+      "cache_max_absolute_difference": 0.0,
+      "cache_mean_absolute_difference": 0.0,
+      "cache_numeric_match_1e_6": true,
+      "cached_motion_end": 74,
+      "cached_motion_start": 11,
+      "complete_trajectory_frames": 64,
+      "decoded_frames": 75,
+      "extraction_ms": 3549.48709999735,
+      "interpolated_left_frames": 0,
+      "interpolated_right_frames": 0,
+      "label": "THANK_YOU",
+      "left_hand_present_frames": 61,
+      "motion_end": 74,
+      "motion_start": 11,
+      "pose_present_frames": 75,
+      "raw_correct": true,
+      "raw_top1": "THANK_YOU",
+      "raw_top1_probability": 0.9995074272155762,
+      "raw_video_sha256": "91d1a27c562929343393e6174e1339e21bc9b6c936ceee85fd33b7259dafe83f",
+      "record_id": "94920a3c558c7c5e",
+      "right_hand_present_frames": 62,
+      "tflite_ms": 0.9085000019695144,
+      "top1_top2_margin": 0.9990609884262085,
+      "top5": [
+        {
+          "label": "THANK_YOU",
+          "probability": 0.9995074272155762
+        },
+        {
+          "label": "AGAIN",
+          "probability": 0.00044641579734161496
+        },
+        {
+          "label": "PROBLEM",
+          "probability": 1.26213526527863e-05
+        },
+        {
+          "label": "DISCOUNT",
+          "probability": 1.1671863830997609e-05
+        },
+        {
+          "label": "CASH",
+          "probability": 8.917359991755802e-06
+        }
+      ]
+    },
+    {
+      "cache_max_absolute_difference": 0.0,
+      "cache_mean_absolute_difference": 0.0,
+      "cache_numeric_match_1e_6": true,
+      "cached_motion_end": 74,
+      "cached_motion_start": 14,
+      "complete_trajectory_frames": 61,
+      "decoded_frames": 75,
+      "extraction_ms": 3632.466299997759,
+      "interpolated_left_frames": 0,
+      "interpolated_right_frames": 1,
+      "label": "THANK_YOU",
+      "left_hand_present_frames": 59,
+      "motion_end": 74,
+      "motion_start": 14,
+      "pose_present_frames": 75,
+      "raw_correct": true,
+      "raw_top1": "THANK_YOU",
+      "raw_top1_probability": 0.9995343685150146,
+      "raw_video_sha256": "062e5d09125be4714e72769766f44c8637599560798ca1df609ef7bdbd6e2c05",
+      "record_id": "2780e0cc5c9e0fb5",
+      "right_hand_present_frames": 56,
+      "tflite_ms": 0.8860000016284175,
+      "top1_top2_margin": 0.9992066025733948,
+      "top5": [
+        {
+          "label": "THANK_YOU",
+          "probability": 0.9995343685150146
+        },
+        {
+          "label": "AGAIN",
+          "probability": 0.0003277446667198092
+        },
+        {
+          "label": "PROBLEM",
+          "probability": 4.682489452534355e-05
+        },
+        {
+          "label": "DISCOUNT",
+          "probability": 2.5396877390448935e-05
+        },
+        {
+          "label": "RECEIPT",
+          "probability": 2.1571057004621252e-05
+        }
+      ]
+    },
+    {
+      "cache_max_absolute_difference": 0.0,
+      "cache_mean_absolute_difference": 0.0,
+      "cache_numeric_match_1e_6": true,
+      "cached_motion_end": 74,
+      "cached_motion_start": 13,
+      "complete_trajectory_frames": 62,
+      "decoded_frames": 75,
+      "extraction_ms": 3732.6481999989483,
+      "interpolated_left_frames": 0,
+      "interpolated_right_frames": 0,
+      "label": "THANK_YOU",
+      "left_hand_present_frames": 75,
+      "motion_end": 74,
+      "motion_start": 13,
+      "pose_present_frames": 75,
+      "raw_correct": true,
+      "raw_top1": "THANK_YOU",
+      "raw_top1_probability": 0.9996587038040161,
+      "raw_video_sha256": "053c7e2e4a862b707998d9cfcf03c689c838f974fa2e2a2a60d814d702f6bf7e",
+      "record_id": "59e38042ead0b269",
+      "right_hand_present_frames": 75,
+      "tflite_ms": 0.9189000011247117,
+      "top1_top2_margin": 0.9994322657585144,
+      "top5": [
+        {
+          "label": "THANK_YOU",
+          "probability": 0.9996587038040161
+        },
+        {
+          "label": "AGAIN",
+          "probability": 0.0002264245558762923
+        },
+        {
+          "label": "PROBLEM",
+          "probability": 7.132603059289977e-05
+        },
+        {
+          "label": "RECEIPT",
+          "probability": 1.5127026927075349e-05
+        },
+        {
+          "label": "DISCOUNT",
+          "probability": 8.034699931158684e-06
+        }
+      ]
+    },
+    {
+      "cache_max_absolute_difference": 0.0,
+      "cache_mean_absolute_difference": 0.0,
+      "cache_numeric_match_1e_6": true,
+      "cached_motion_end": 69,
+      "cached_motion_start": 11,
+      "complete_trajectory_frames": 59,
+      "decoded_frames": 75,
+      "extraction_ms": 3661.442500000703,
+      "interpolated_left_frames": 4,
+      "interpolated_right_frames": 0,
+      "label": "THANK_YOU",
+      "left_hand_present_frames": 51,
+      "motion_end": 69,
+      "motion_start": 11,
+      "pose_present_frames": 75,
+      "raw_correct": true,
+      "raw_top1": "THANK_YOU",
+      "raw_top1_probability": 0.9838855266571045,
+      "raw_video_sha256": "91a945e1126b555c60cacf745d2d0d3b29ed16feeb5767f3c3c0b9cdc0fd86f4",
+      "record_id": "fd9042647ea9e524",
+      "right_hand_present_frames": 42,
+      "tflite_ms": 0.921900002140319,
+      "top1_top2_margin": 0.9705853462219238,
+      "top5": [
+        {
+          "label": "THANK_YOU",
+          "probability": 0.9838855266571045
+        },
+        {
+          "label": "AGAIN",
+          "probability": 0.013300206512212753
+        },
+        {
+          "label": "CASH",
+          "probability": 0.0011303568026050925
+        },
+        {
+          "label": "DISCOUNT",
+          "probability": 0.0005818966892547905
+        },
+        {
+          "label": "PROBLEM",
+          "probability": 0.0005062695709057152
+        }
+      ]
+    },
+    {
+      "cache_max_absolute_difference": 0.0,
+      "cache_mean_absolute_difference": 0.0,
+      "cache_numeric_match_1e_6": true,
+      "cached_motion_end": 67,
+      "cached_motion_start": 0,
+      "complete_trajectory_frames": 68,
+      "decoded_frames": 75,
+      "extraction_ms": 3678.6919000005582,
+      "interpolated_left_frames": 0,
+      "interpolated_right_frames": 0,
+      "label": "YES",
+      "left_hand_present_frames": 75,
+      "motion_end": 67,
+      "motion_start": 0,
+      "pose_present_frames": 75,
+      "raw_correct": true,
+      "raw_top1": "YES",
+      "raw_top1_probability": 0.9994854927062988,
+      "raw_video_sha256": "334286043ea40736fa64d83491da31772d358590da13158e49848502361bc236",
+      "record_id": "3d3d5c060921d9f6",
+      "right_hand_present_frames": 0,
+      "tflite_ms": 0.8635999984107912,
+      "top1_top2_margin": 0.9991716742515564,
+      "top5": [
+        {
+          "label": "YES",
+          "probability": 0.9994854927062988
+        },
+        {
+          "label": "NO",
+          "probability": 0.0003138106840196997
+        },
+        {
+          "label": "HELLO",
+          "probability": 0.00011647640349110588
+        },
+        {
+          "label": "HOW_MUCH",
+          "probability": 2.6854799216380343e-05
+        },
+        {
+          "label": "CASH",
+          "probability": 1.8814373106579296e-05
+        }
+      ]
+    },
+    {
+      "cache_max_absolute_difference": 0.0,
+      "cache_mean_absolute_difference": 0.0,
+      "cache_numeric_match_1e_6": true,
+      "cached_motion_end": 74,
+      "cached_motion_start": 0,
+      "complete_trajectory_frames": 75,
+      "decoded_frames": 75,
+      "extraction_ms": 3660.0872999988496,
+      "interpolated_left_frames": 0,
+      "interpolated_right_frames": 0,
+      "label": "YES",
+      "left_hand_present_frames": 75,
+      "motion_end": 74,
+      "motion_start": 0,
+      "pose_present_frames": 75,
+      "raw_correct": true,
+      "raw_top1": "YES",
+      "raw_top1_probability": 0.9996675252914429,
+      "raw_video_sha256": "4ee7f2e14343be0943af28012f80be7ff80d6898fb55bb850a6f0af226e6e1bb",
+      "record_id": "4ebb81ee0eba3583",
+      "right_hand_present_frames": 0,
+      "tflite_ms": 1.0542999989411328,
+      "top1_top2_margin": 0.9994922876358032,
+      "top5": [
+        {
+          "label": "YES",
+          "probability": 0.9996675252914429
+        },
+        {
+          "label": "NO",
+          "probability": 0.00017525945440866053
+        },
+        {
+          "label": "HELLO",
+          "probability": 8.441590762231499e-05
+        },
+        {
+          "label": "HOW_MUCH",
+          "probability": 2.1381312762969173e-05
+        },
+        {
+          "label": "CASH",
+          "probability": 1.673249244049657e-05
+        }
+      ]
+    },
+    {
+      "cache_max_absolute_difference": 0.0,
+      "cache_mean_absolute_difference": 0.0,
+      "cache_numeric_match_1e_6": true,
+      "cached_motion_end": 74,
+      "cached_motion_start": 2,
+      "complete_trajectory_frames": 73,
+      "decoded_frames": 75,
+      "extraction_ms": 3663.5456000003614,
+      "interpolated_left_frames": 0,
+      "interpolated_right_frames": 0,
+      "label": "YES",
+      "left_hand_present_frames": 71,
+      "motion_end": 74,
+      "motion_start": 2,
+      "pose_present_frames": 75,
+      "raw_correct": true,
+      "raw_top1": "YES",
+      "raw_top1_probability": 0.9985498785972595,
+      "raw_video_sha256": "88f1ed4dfb89278835e1a3d448105f5067e860e3cf168dc8865ffb6803e6a62b",
+      "record_id": "d1d9756e717b82a8",
+      "right_hand_present_frames": 0,
+      "tflite_ms": 1.2880999966000672,
+      "top1_top2_margin": 0.9977172017097473,
+      "top5": [
+        {
+          "label": "YES",
+          "probability": 0.9985498785972595
+        },
+        {
+          "label": "NO",
+          "probability": 0.000832698424346745
+        },
+        {
+          "label": "CARD",
+          "probability": 0.0002014108031289652
+        },
+        {
+          "label": "HELLO",
+          "probability": 0.0001858171308413148
+        },
+        {
+          "label": "HOW_MUCH",
+          "probability": 0.00010154447227250785
+        }
+      ]
+    },
+    {
+      "cache_max_absolute_difference": 0.0,
+      "cache_mean_absolute_difference": 0.0,
+      "cache_numeric_match_1e_6": true,
+      "cached_motion_end": 74,
+      "cached_motion_start": 0,
+      "complete_trajectory_frames": 75,
+      "decoded_frames": 75,
+      "extraction_ms": 3658.780100002332,
+      "interpolated_left_frames": 0,
+      "interpolated_right_frames": 0,
+      "label": "YES",
+      "left_hand_present_frames": 75,
+      "motion_end": 74,
+      "motion_start": 0,
+      "pose_present_frames": 75,
+      "raw_correct": true,
+      "raw_top1": "YES",
+      "raw_top1_probability": 0.9986934065818787,
+      "raw_video_sha256": "256e0e166d26a0adfe6899886f28ad3ed63dfef06b9c4c6b802a390096792f9e",
+      "record_id": "6c903758982fe7a1",
+      "right_hand_present_frames": 0,
+      "tflite_ms": 0.9473000027355738,
+      "top1_top2_margin": 0.9978014230728149,
+      "top5": [
+        {
+          "label": "YES",
+          "probability": 0.9986934065818787
+        },
+        {
+          "label": "NO",
+          "probability": 0.000892012205440551
+        },
+        {
+          "label": "HELLO",
+          "probability": 0.0001288830826524645
+        },
+        {
+          "label": "CARD",
+          "probability": 0.0001276199909625575
+        },
+        {
+          "label": "HOW_MUCH",
+          "probability": 7.418650784529746e-05
+        }
+      ]
+    },
+    {
+      "cache_max_absolute_difference": 0.0,
+      "cache_mean_absolute_difference": 0.0,
+      "cache_numeric_match_1e_6": true,
+      "cached_motion_end": 71,
+      "cached_motion_start": 5,
+      "complete_trajectory_frames": 67,
+      "decoded_frames": 75,
+      "extraction_ms": 3682.8972000002977,
+      "interpolated_left_frames": 0,
+      "interpolated_right_frames": 0,
+      "label": "NO",
+      "left_hand_present_frames": 75,
+      "motion_end": 71,
+      "motion_start": 5,
+      "pose_present_frames": 75,
+      "raw_correct": false,
+      "raw_top1": "YES",
+      "raw_top1_probability": 0.6960423588752747,
+      "raw_video_sha256": "1fa98004ec32da8d0c6d379bffc3b9b7bf22eb04849cfc238240bdcc22082171",
+      "record_id": "63d96ff068e98890",
+      "right_hand_present_frames": 0,
+      "tflite_ms": 1.135700000304496,
+      "top1_top2_margin": 0.465683251619339,
+      "top5": [
+        {
+          "label": "YES",
+          "probability": 0.6960423588752747
+        },
+        {
+          "label": "NO",
+          "probability": 0.23035910725593567
+        },
+        {
+          "label": "HELLO",
+          "probability": 0.07273551821708679
+        },
+        {
+          "label": "AGAIN",
+          "probability": 0.0002472747873980552
+        },
+        {
+          "label": "WAIT",
+          "probability": 0.00015515666746068746
+        }
+      ]
+    },
+    {
+      "cache_max_absolute_difference": 0.0,
+      "cache_mean_absolute_difference": 0.0,
+      "cache_numeric_match_1e_6": true,
+      "cached_motion_end": 74,
+      "cached_motion_start": 10,
+      "complete_trajectory_frames": 65,
+      "decoded_frames": 75,
+      "extraction_ms": 3470.905000001949,
+      "interpolated_left_frames": 0,
+      "interpolated_right_frames": 0,
+      "label": "NO",
+      "left_hand_present_frames": 63,
+      "motion_end": 74,
+      "motion_start": 10,
+      "pose_present_frames": 75,
+      "raw_correct": true,
+      "raw_top1": "NO",
+      "raw_top1_probability": 0.9945912957191467,
+      "raw_video_sha256": "a54a7784a9fcdc7e77678feeb2bdc1876c1a130ae6a7a178f59eca39a7c10a8b",
+      "record_id": "7df123df0c233253",
+      "right_hand_present_frames": 0,
+      "tflite_ms": 0.9637000002840068,
+      "top1_top2_margin": 0.9919431805610657,
+      "top5": [
+        {
+          "label": "NO",
+          "probability": 0.9945912957191467
+        },
+        {
+          "label": "YES",
+          "probability": 0.002648141235113144
+        },
+        {
+          "label": "HELLO",
+          "probability": 0.0025875272694975138
+        },
+        {
+          "label": "AGAIN",
+          "probability": 4.656618693843484e-05
+        },
+        {
+          "label": "CARD",
+          "probability": 4.1667324694572017e-05
+        }
+      ]
+    },
+    {
+      "cache_max_absolute_difference": 0.0,
+      "cache_mean_absolute_difference": 0.0,
+      "cache_numeric_match_1e_6": true,
+      "cached_motion_end": 74,
+      "cached_motion_start": 0,
+      "complete_trajectory_frames": 75,
+      "decoded_frames": 75,
+      "extraction_ms": 3697.1651000021666,
+      "interpolated_left_frames": 0,
+      "interpolated_right_frames": 0,
+      "label": "NO",
+      "left_hand_present_frames": 75,
+      "motion_end": 74,
+      "motion_start": 0,
+      "pose_present_frames": 75,
+      "raw_correct": true,
+      "raw_top1": "NO",
+      "raw_top1_probability": 0.9557456374168396,
+      "raw_video_sha256": "eea053e183ab93bdc2d85ed75efc4bb42c813aa7d8dad9f6d42f2f2ac9ec5733",
+      "record_id": "3b69fd7a4736a8ca",
+      "right_hand_present_frames": 0,
+      "tflite_ms": 0.9181999994325452,
+      "top1_top2_margin": 0.913400411605835,
+      "top5": [
+        {
+          "label": "NO",
+          "probability": 0.9557456374168396
+        },
+        {
+          "label": "YES",
+          "probability": 0.04234524071216583
+        },
+        {
+          "label": "HELLO",
+          "probability": 0.0017880548257380724
+        },
+        {
+          "label": "AGAIN",
+          "probability": 3.8615755329374224e-05
+        },
+        {
+          "label": "WAIT",
+          "probability": 2.7006701202481054e-05
+        }
+      ]
+    },
+    {
+      "cache_max_absolute_difference": 0.0,
+      "cache_mean_absolute_difference": 0.0,
+      "cache_numeric_match_1e_6": true,
+      "cached_motion_end": 74,
+      "cached_motion_start": 16,
+      "complete_trajectory_frames": 59,
+      "decoded_frames": 75,
+      "extraction_ms": 3410.879200000636,
+      "interpolated_left_frames": 0,
+      "interpolated_right_frames": 0,
+      "label": "NO",
+      "left_hand_present_frames": 57,
+      "motion_end": 74,
+      "motion_start": 16,
+      "pose_present_frames": 75,
+      "raw_correct": true,
+      "raw_top1": "NO",
+      "raw_top1_probability": 0.9823557734489441,
+      "raw_video_sha256": "54d8691e9a412172ae921b70317568a5bb743f6bd3273d7af969f86615b0180b",
+      "record_id": "bb38516d8852fe82",
+      "right_hand_present_frames": 0,
+      "tflite_ms": 1.2465999971027486,
+      "top1_top2_margin": 0.9680163860321045,
+      "top5": [
+        {
+          "label": "NO",
+          "probability": 0.9823557734489441
+        },
+        {
+          "label": "YES",
+          "probability": 0.014339393936097622
+        },
+        {
+          "label": "HELLO",
+          "probability": 0.003024026518687606
+        },
+        {
+          "label": "AGAIN",
+          "probability": 7.72594430600293e-05
+        },
+        {
+          "label": "CARD",
+          "probability": 7.327275670832023e-05
+        }
+      ]
+    },
+    {
+      "cache_max_absolute_difference": 0.0,
+      "cache_mean_absolute_difference": 0.0,
+      "cache_numeric_match_1e_6": true,
+      "cached_motion_end": 74,
+      "cached_motion_start": 0,
+      "complete_trajectory_frames": 75,
+      "decoded_frames": 75,
+      "extraction_ms": 3681.7968000032124,
+      "interpolated_left_frames": 0,
+      "interpolated_right_frames": 0,
+      "label": "NO",
+      "left_hand_present_frames": 75,
+      "motion_end": 74,
+      "motion_start": 0,
+      "pose_present_frames": 75,
+      "raw_correct": true,
+      "raw_top1": "NO",
+      "raw_top1_probability": 0.9938411712646484,
+      "raw_video_sha256": "d885fd65c4b8893a148e59a9a7d90022fc7c0f809a64a9a531b353721e0c354e",
+      "record_id": "253a91cb664f1a19",
+      "right_hand_present_frames": 0,
+      "tflite_ms": 0.9652000007918105,
+      "top1_top2_margin": 0.9885214567184448,
+      "top5": [
+        {
+          "label": "NO",
+          "probability": 0.9938411712646484
+        },
+        {
+          "label": "YES",
+          "probability": 0.00531973410397768
+        },
+        {
+          "label": "HELLO",
+          "probability": 0.0007800067542120814
+        },
+        {
+          "label": "AGAIN",
+          "probability": 1.9639759557321668e-05
+        },
+        {
+          "label": "WAIT",
+          "probability": 1.1744447874662e-05
+        }
+      ]
+    },
+    {
+      "cache_max_absolute_difference": 0.0,
+      "cache_mean_absolute_difference": 0.0,
+      "cache_numeric_match_1e_6": true,
+      "cached_motion_end": 74,
+      "cached_motion_start": 12,
+      "complete_trajectory_frames": 63,
+      "decoded_frames": 75,
+      "extraction_ms": 3871.056199997838,
+      "interpolated_left_frames": 2,
+      "interpolated_right_frames": 0,
+      "label": "PLEASE",
+      "left_hand_present_frames": 61,
+      "motion_end": 74,
+      "motion_start": 12,
+      "pose_present_frames": 75,
+      "raw_correct": true,
+      "raw_top1": "PLEASE",
+      "raw_top1_probability": 0.9998785257339478,
+      "raw_video_sha256": "a9bef930d5b70fc8eb7d6f6f5072802d843f8622362fef6a7e8c6af82531e173",
+      "record_id": "f2378634c6edf3ff",
+      "right_hand_present_frames": 0,
+      "tflite_ms": 0.9028999993461184,
+      "top1_top2_margin": 0.9997791647911072,
+      "top5": [
+        {
+          "label": "PLEASE",
+          "probability": 0.9998785257339478
+        },
+        {
+          "label": "HOW_MANY",
+          "probability": 9.935990237863734e-05
+        },
+        {
+          "label": "PROBLEM",
+          "probability": 6.465894330176525e-06
+        },
+        {
+          "label": "DISCOUNT",
+          "probability": 4.224992608214961e-06
+        },
+        {
+          "label": "CASH",
+          "probability": 3.554504019120941e-06
+        }
+      ]
+    },
+    {
+      "cache_max_absolute_difference": 0.0,
+      "cache_mean_absolute_difference": 0.0,
+      "cache_numeric_match_1e_6": true,
+      "cached_motion_end": 74,
+      "cached_motion_start": 2,
+      "complete_trajectory_frames": 73,
+      "decoded_frames": 75,
+      "extraction_ms": 3657.06979999959,
+      "interpolated_left_frames": 0,
+      "interpolated_right_frames": 0,
+      "label": "PLEASE",
+      "left_hand_present_frames": 71,
+      "motion_end": 74,
+      "motion_start": 2,
+      "pose_present_frames": 75,
+      "raw_correct": true,
+      "raw_top1": "PLEASE",
+      "raw_top1_probability": 0.9990891218185425,
+      "raw_video_sha256": "17398f2ca420a384134e3d5b9bdc1ad6b62a39ac5ea9b1578439e1bcff3f6125",
+      "record_id": "8d88ecf27a169731",
+      "right_hand_present_frames": 0,
+      "tflite_ms": 0.947299999097595,
+      "top1_top2_margin": 0.998338520526886,
+      "top5": [
+        {
+          "label": "PLEASE",
+          "probability": 0.9990891218185425
+        },
+        {
+          "label": "HOW_MANY",
+          "probability": 0.000750597333535552
+        },
+        {
+          "label": "DISCOUNT",
+          "probability": 4.222871211823076e-05
+        },
+        {
+          "label": "PROBLEM",
+          "probability": 2.8709840989904478e-05
+        },
+        {
+          "label": "CASH",
+          "probability": 2.345717621210497e-05
+        }
+      ]
+    },
+    {
+      "cache_max_absolute_difference": 0.0,
+      "cache_mean_absolute_difference": 0.0,
+      "cache_numeric_match_1e_6": true,
+      "cached_motion_end": 74,
+      "cached_motion_start": 3,
+      "complete_trajectory_frames": 72,
+      "decoded_frames": 75,
+      "extraction_ms": 3655.114599998342,
+      "interpolated_left_frames": 0,
+      "interpolated_right_frames": 0,
+      "label": "PLEASE",
+      "left_hand_present_frames": 75,
+      "motion_end": 74,
+      "motion_start": 3,
+      "pose_present_frames": 75,
+      "raw_correct": true,
+      "raw_top1": "PLEASE",
+      "raw_top1_probability": 0.9998052716255188,
+      "raw_video_sha256": "7df102d90b5a3eb03907fdad796169a477b078b2b1fc242f683baf4ae124e44c",
+      "record_id": "9796902ae420c467",
+      "right_hand_present_frames": 0,
+      "tflite_ms": 1.019100000121398,
+      "top1_top2_margin": 0.9996403455734253,
+      "top5": [
+        {
+          "label": "PLEASE",
+          "probability": 0.9998052716255188
+        },
+        {
+          "label": "HOW_MANY",
+          "probability": 0.00016491957649122924
+        },
+        {
+          "label": "PROBLEM",
+          "probability": 9.201887223753147e-06
+        },
+        {
+          "label": "DISCOUNT",
+          "probability": 5.435672392195556e-06
+        },
+        {
+          "label": "CASH",
+          "probability": 4.4035332393832505e-06
+        }
+      ]
+    },
+    {
+      "cache_max_absolute_difference": 0.0,
+      "cache_mean_absolute_difference": 0.0,
+      "cache_numeric_match_1e_6": true,
+      "cached_motion_end": 57,
+      "cached_motion_start": 10,
+      "complete_trajectory_frames": 48,
+      "decoded_frames": 75,
+      "extraction_ms": 3642.237000000023,
+      "interpolated_left_frames": 2,
+      "interpolated_right_frames": 0,
+      "label": "HOW_MUCH",
+      "left_hand_present_frames": 73,
+      "motion_end": 57,
+      "motion_start": 10,
+      "pose_present_frames": 75,
+      "raw_correct": true,
+      "raw_top1": "HOW_MUCH",
+      "raw_top1_probability": 0.9957234859466553,
+      "raw_video_sha256": "cc25d7fbb686d92f4b7d056627e85cf0ebd8ea779465e0c2fcdc5c1d16b6c281",
+      "record_id": "2d1ec98aa062d826",
+      "right_hand_present_frames": 0,
+      "tflite_ms": 1.422200002707541,
+      "top1_top2_margin": 0.9935405254364014,
+      "top5": [
+        {
+          "label": "HOW_MUCH",
+          "probability": 0.9957234859466553
+        },
+        {
+          "label": "HOW_MANY",
+          "probability": 0.002182958647608757
+        },
+        {
+          "label": "AGAIN",
+          "probability": 0.0019014753634110093
+        },
+        {
+          "label": "WAIT",
+          "probability": 7.193077908596024e-05
+        },
+        {
+          "label": "CASH",
+          "probability": 2.437940929667093e-05
+        }
+      ]
+    },
+    {
+      "cache_max_absolute_difference": 0.0,
+      "cache_mean_absolute_difference": 0.0,
+      "cache_numeric_match_1e_6": true,
+      "cached_motion_end": 70,
+      "cached_motion_start": 20,
+      "complete_trajectory_frames": 51,
+      "decoded_frames": 75,
+      "extraction_ms": 3539.2095999995945,
+      "interpolated_left_frames": 1,
+      "interpolated_right_frames": 0,
+      "label": "HOW_MUCH",
+      "left_hand_present_frames": 56,
+      "motion_end": 70,
+      "motion_start": 20,
+      "pose_present_frames": 75,
+      "raw_correct": true,
+      "raw_top1": "HOW_MUCH",
+      "raw_top1_probability": 0.9870070219039917,
+      "raw_video_sha256": "c22b5d7285096b8ed2f6713da26c25eba65bd863d0bbbe1ad44dbd9ea48773f4",
+      "record_id": "ecc26aa9a9609aa4",
+      "right_hand_present_frames": 0,
+      "tflite_ms": 0.8312999998452142,
+      "top1_top2_margin": 0.9789948463439941,
+      "top5": [
+        {
+          "label": "HOW_MUCH",
+          "probability": 0.9870070219039917
+        },
+        {
+          "label": "AGAIN",
+          "probability": 0.008012158796191216
+        },
+        {
+          "label": "HOW_MANY",
+          "probability": 0.002441070042550564
+        },
+        {
+          "label": "CARD",
+          "probability": 0.0007648165337741375
+        },
+        {
+          "label": "CASH",
+          "probability": 0.0004031429998576641
+        }
+      ]
+    },
+    {
+      "cache_max_absolute_difference": 0.0,
+      "cache_mean_absolute_difference": 0.0,
+      "cache_numeric_match_1e_6": true,
+      "cached_motion_end": 74,
+      "cached_motion_start": 7,
+      "complete_trajectory_frames": 68,
+      "decoded_frames": 75,
+      "extraction_ms": 3658.224099999643,
+      "interpolated_left_frames": 0,
+      "interpolated_right_frames": 0,
+      "label": "CASH",
+      "left_hand_present_frames": 64,
+      "motion_end": 74,
+      "motion_start": 7,
+      "pose_present_frames": 75,
+      "raw_correct": true,
+      "raw_top1": "CASH",
+      "raw_top1_probability": 0.9997945427894592,
+      "raw_video_sha256": "ee3dd1b068c4a397e100bb75d1f8fb0bc0965eb802c3ef46136ecf73ce1c7c63",
+      "record_id": "0d70e5aa47b37d08",
+      "right_hand_present_frames": 66,
+      "tflite_ms": 0.8507999991707038,
+      "top1_top2_margin": 0.999620258808136,
+      "top5": [
+        {
+          "label": "CASH",
+          "probability": 0.9997945427894592
+        },
+        {
+          "label": "AGAIN",
+          "probability": 0.00017426200793124735
+        },
+        {
+          "label": "DISCOUNT",
+          "probability": 8.748946129344404e-06
+        },
+        {
+          "label": "PROBLEM",
+          "probability": 8.332958714163397e-06
+        },
+        {
+          "label": "HELLO",
+          "probability": 4.333413926360663e-06
+        }
+      ]
+    },
+    {
+      "cache_max_absolute_difference": 0.0,
+      "cache_mean_absolute_difference": 0.0,
+      "cache_numeric_match_1e_6": true,
+      "cached_motion_end": 49,
+      "cached_motion_start": 16,
+      "complete_trajectory_frames": 34,
+      "decoded_frames": 75,
+      "extraction_ms": 3553.067100001499,
+      "interpolated_left_frames": 0,
+      "interpolated_right_frames": 1,
+      "label": "CASH",
+      "left_hand_present_frames": 54,
+      "motion_end": 49,
+      "motion_start": 16,
+      "pose_present_frames": 75,
+      "raw_correct": true,
+      "raw_top1": "CASH",
+      "raw_top1_probability": 0.9986978769302368,
+      "raw_video_sha256": "b816a6796b367159f496e454f9cdedf91db99fb63184811a621d0ba261209b36",
+      "record_id": "2617b7a94b78d83a",
+      "right_hand_present_frames": 59,
+      "tflite_ms": 0.8170000000973232,
+      "top1_top2_margin": 0.9978882074356079,
+      "top5": [
+        {
+          "label": "CASH",
+          "probability": 0.9986978769302368
+        },
+        {
+          "label": "PROBLEM",
+          "probability": 0.0008096440578810871
+        },
+        {
+          "label": "AGAIN",
+          "probability": 0.00027993228286504745
+        },
+        {
+          "label": "YES",
+          "probability": 5.2294719353085384e-05
+        },
+        {
+          "label": "DISCOUNT",
+          "probability": 4.8617945139994845e-05
+        }
+      ]
+    },
+    {
+      "cache_max_absolute_difference": 0.0,
+      "cache_mean_absolute_difference": 0.0,
+      "cache_numeric_match_1e_6": true,
+      "cached_motion_end": 74,
+      "cached_motion_start": 4,
+      "complete_trajectory_frames": 71,
+      "decoded_frames": 75,
+      "extraction_ms": 3679.666799998813,
+      "interpolated_left_frames": 1,
+      "interpolated_right_frames": 0,
+      "label": "CASH",
+      "left_hand_present_frames": 74,
+      "motion_end": 74,
+      "motion_start": 4,
+      "pose_present_frames": 75,
+      "raw_correct": false,
+      "raw_top1": "PROBLEM",
+      "raw_top1_probability": 0.5918121337890625,
+      "raw_video_sha256": "82df304f8658d147483f27eae437e34128bc6455f9744c198e20cd360a24efb3",
+      "record_id": "82e8b11af7a2d05f",
+      "right_hand_present_frames": 68,
+      "tflite_ms": 0.8574000021326356,
+      "top1_top2_margin": 0.3160461485385895,
+      "top5": [
+        {
+          "label": "PROBLEM",
+          "probability": 0.5918121337890625
+        },
+        {
+          "label": "CASH",
+          "probability": 0.275765985250473
+        },
+        {
+          "label": "DISCOUNT",
+          "probability": 0.11633012443780899
+        },
+        {
+          "label": "AGAIN",
+          "probability": 0.00557380635291338
+        },
+        {
+          "label": "CARD",
+          "probability": 0.00259659462608397
+        }
+      ]
+    },
+    {
+      "cache_max_absolute_difference": 0.0,
+      "cache_mean_absolute_difference": 0.0,
+      "cache_numeric_match_1e_6": true,
+      "cached_motion_end": 65,
+      "cached_motion_start": 16,
+      "complete_trajectory_frames": 50,
+      "decoded_frames": 75,
+      "extraction_ms": 3498.9289000004646,
+      "interpolated_left_frames": 2,
+      "interpolated_right_frames": 0,
+      "label": "CASH",
+      "left_hand_present_frames": 42,
+      "motion_end": 65,
+      "motion_start": 16,
+      "pose_present_frames": 75,
+      "raw_correct": true,
+      "raw_top1": "CASH",
+      "raw_top1_probability": 0.5217702388763428,
+      "raw_video_sha256": "9d2b122e243c5a237ed06376f36c544ba599abbde5cc745d537ddd6309ef145e",
+      "record_id": "0f696cf229e4ac13",
+      "right_hand_present_frames": 33,
+      "tflite_ms": 1.0827999976754654,
+      "top1_top2_margin": 0.4090479016304016,
+      "top5": [
+        {
+          "label": "CASH",
+          "probability": 0.5217702388763428
+        },
+        {
+          "label": "AGAIN",
+          "probability": 0.11272235214710236
+        },
+        {
+          "label": "DISCOUNT",
+          "probability": 0.1037028431892395
+        },
+        {
+          "label": "HOW_MANY",
+          "probability": 0.07948308438062668
+        },
+        {
+          "label": "HOW_MUCH",
+          "probability": 0.07244547456502914
+        }
+      ]
+    },
+    {
+      "cache_max_absolute_difference": 0.0,
+      "cache_mean_absolute_difference": 0.0,
+      "cache_numeric_match_1e_6": true,
+      "cached_motion_end": 74,
+      "cached_motion_start": 8,
+      "complete_trajectory_frames": 67,
+      "decoded_frames": 75,
+      "extraction_ms": 3702.329899999313,
+      "interpolated_left_frames": 1,
+      "interpolated_right_frames": 0,
+      "label": "CARD",
+      "left_hand_present_frames": 64,
+      "motion_end": 74,
+      "motion_start": 8,
+      "pose_present_frames": 75,
+      "raw_correct": true,
+      "raw_top1": "CARD",
+      "raw_top1_probability": 0.9941534399986267,
+      "raw_video_sha256": "f185ec241154215de9b86794708188d619ea326df1a9d94f5c1794b84310310b",
+      "record_id": "c61821ae2f616cdf",
+      "right_hand_present_frames": 22,
+      "tflite_ms": 0.8778000010352116,
+      "top1_top2_margin": 0.9919512271881104,
+      "top5": [
+        {
+          "label": "CARD",
+          "probability": 0.9941534399986267
+        },
+        {
+          "label": "DISCOUNT",
+          "probability": 0.002202230039983988
+        },
+        {
+          "label": "RECEIPT",
+          "probability": 0.0015456140972673893
+        },
+        {
+          "label": "PROBLEM",
+          "probability": 0.0007674997905269265
+        },
+        {
+          "label": "NO",
+          "probability": 0.000548499752767384
+        }
+      ]
+    },
+    {
+      "cache_max_absolute_difference": 0.0,
+      "cache_mean_absolute_difference": 0.0,
+      "cache_numeric_match_1e_6": true,
+      "cached_motion_end": 68,
+      "cached_motion_start": 9,
+      "complete_trajectory_frames": 60,
+      "decoded_frames": 75,
+      "extraction_ms": 3669.497599999886,
+      "interpolated_left_frames": 3,
+      "interpolated_right_frames": 1,
+      "label": "CARD",
+      "left_hand_present_frames": 52,
+      "motion_end": 68,
+      "motion_start": 9,
+      "pose_present_frames": 75,
+      "raw_correct": true,
+      "raw_top1": "CARD",
+      "raw_top1_probability": 0.9921994805335999,
+      "raw_video_sha256": "3ddebe533d4f778cab8286b3af70fa3b40c1a56b6976a436b8a2ec2de52bfee7",
+      "record_id": "27bd737fc265d96b",
+      "right_hand_present_frames": 23,
+      "tflite_ms": 1.0755999974207953,
+      "top1_top2_margin": 0.9886181354522705,
+      "top5": [
+        {
+          "label": "CARD",
+          "probability": 0.9921994805335999
+        },
+        {
+          "label": "DISCOUNT",
+          "probability": 0.0035813660360872746
+        },
+        {
+          "label": "PROBLEM",
+          "probability": 0.001259196549654007
+        },
+        {
+          "label": "RECEIPT",
+          "probability": 0.001057208632119
+        },
+        {
+          "label": "HOW_MANY",
+          "probability": 0.0004555637133307755
+        }
+      ]
+    },
+    {
+      "cache_max_absolute_difference": 0.0,
+      "cache_mean_absolute_difference": 0.0,
+      "cache_numeric_match_1e_6": true,
+      "cached_motion_end": 62,
+      "cached_motion_start": 7,
+      "complete_trajectory_frames": 56,
+      "decoded_frames": 75,
+      "extraction_ms": 3632.8150000008463,
+      "interpolated_left_frames": 0,
+      "interpolated_right_frames": 0,
+      "label": "CARD",
+      "left_hand_present_frames": 51,
+      "motion_end": 62,
+      "motion_start": 7,
+      "pose_present_frames": 75,
+      "raw_correct": true,
+      "raw_top1": "CARD",
+      "raw_top1_probability": 0.9430109858512878,
+      "raw_video_sha256": "6c9fd8479a7d24966090115e9a28ecb58003bc3e15b31f822a8396f8e2118f62",
+      "record_id": "66ade7d63d389019",
+      "right_hand_present_frames": 13,
+      "tflite_ms": 0.8670000024721958,
+      "top1_top2_margin": 0.9191540479660034,
+      "top5": [
+        {
+          "label": "CARD",
+          "probability": 0.9430109858512878
+        },
+        {
+          "label": "HELLO",
+          "probability": 0.023856909945607185
+        },
+        {
+          "label": "DISCOUNT",
+          "probability": 0.01355401799082756
+        },
+        {
+          "label": "NO",
+          "probability": 0.005643426440656185
+        },
+        {
+          "label": "RECEIPT",
+          "probability": 0.004788531456142664
+        }
+      ]
+    },
+    {
+      "cache_max_absolute_difference": 0.0,
+      "cache_mean_absolute_difference": 0.0,
+      "cache_numeric_match_1e_6": true,
+      "cached_motion_end": 73,
+      "cached_motion_start": 15,
+      "complete_trajectory_frames": 59,
+      "decoded_frames": 75,
+      "extraction_ms": 3512.3780999965675,
+      "interpolated_left_frames": 3,
+      "interpolated_right_frames": 0,
+      "label": "CARD",
+      "left_hand_present_frames": 60,
+      "motion_end": 73,
+      "motion_start": 15,
+      "pose_present_frames": 75,
+      "raw_correct": false,
+      "raw_top1": "COIN",
+      "raw_top1_probability": 0.989343523979187,
+      "raw_video_sha256": "62da1a3ea2d191997c8e19f5589ad3ec684eb83f2bd02d39f64e995062d294ab",
+      "record_id": "0447f4e0816c8359",
+      "right_hand_present_frames": 0,
+      "tflite_ms": 0.9114999993471429,
+      "top1_top2_margin": 0.984096109867096,
+      "top5": [
+        {
+          "label": "COIN",
+          "probability": 0.989343523979187
+        },
+        {
+          "label": "CARD",
+          "probability": 0.00524741318076849
+        },
+        {
+          "label": "HOW_MANY",
+          "probability": 0.002486210549250245
+        },
+        {
+          "label": "AGAIN",
+          "probability": 0.0009564883075654507
+        },
+        {
+          "label": "HOW_MUCH",
+          "probability": 0.0006271364982239902
+        }
+      ]
+    },
+    {
+      "cache_max_absolute_difference": 0.0,
+      "cache_mean_absolute_difference": 0.0,
+      "cache_numeric_match_1e_6": true,
+      "cached_motion_end": 74,
+      "cached_motion_start": 8,
+      "complete_trajectory_frames": 67,
+      "decoded_frames": 75,
+      "extraction_ms": 3697.565200000099,
+      "interpolated_left_frames": 0,
+      "interpolated_right_frames": 0,
+      "label": "CARD",
+      "left_hand_present_frames": 65,
+      "motion_end": 74,
+      "motion_start": 8,
+      "pose_present_frames": 75,
+      "raw_correct": true,
+      "raw_top1": "CARD",
+      "raw_top1_probability": 0.7433711290359497,
+      "raw_video_sha256": "916a46b028e357656e0965eac387d11b9c4f9046b58a2fea379654e64f7bf8a1",
+      "record_id": "089b79f315ce05d5",
+      "right_hand_present_frames": 0,
+      "tflite_ms": 1.0216000009677373,
+      "top1_top2_margin": 0.5281676054000854,
+      "top5": [
+        {
+          "label": "CARD",
+          "probability": 0.7433711290359497
+        },
+        {
+          "label": "HOW_MANY",
+          "probability": 0.21520355343818665
+        },
+        {
+          "label": "COIN",
+          "probability": 0.00860531721264124
+        },
+        {
+          "label": "CASH",
+          "probability": 0.008131776005029678
+        },
+        {
+          "label": "DISCOUNT",
+          "probability": 0.008078760467469692
+        }
+      ]
+    },
+    {
+      "cache_max_absolute_difference": 0.0,
+      "cache_mean_absolute_difference": 0.0,
+      "cache_numeric_match_1e_6": true,
+      "cached_motion_end": 74,
+      "cached_motion_start": 13,
+      "complete_trajectory_frames": 62,
+      "decoded_frames": 75,
+      "extraction_ms": 3672.3165000003064,
+      "interpolated_left_frames": 0,
+      "interpolated_right_frames": 0,
+      "label": "RECEIPT",
+      "left_hand_present_frames": 60,
+      "motion_end": 74,
+      "motion_start": 13,
+      "pose_present_frames": 75,
+      "raw_correct": true,
+      "raw_top1": "RECEIPT",
+      "raw_top1_probability": 0.9996541738510132,
+      "raw_video_sha256": "619ed420a332ffb7e6830a4dc56e7133824cf0992738891cefd6d70e91e93049",
+      "record_id": "31b6c67b6a623bc4",
+      "right_hand_present_frames": 59,
+      "tflite_ms": 0.8285000003525056,
+      "top1_top2_margin": 0.999434232711792,
+      "top5": [
+        {
+          "label": "RECEIPT",
+          "probability": 0.9996541738510132
+        },
+        {
+          "label": "CARD",
+          "probability": 0.00021992296387907118
+        },
+        {
+          "label": "PROBLEM",
+          "probability": 4.225219163345173e-05
+        },
+        {
+          "label": "NO",
+          "probability": 2.904238863266073e-05
+        },
+        {
+          "label": "DISCOUNT",
+          "probability": 1.757231257215608e-05
+        }
+      ]
+    },
+    {
+      "cache_max_absolute_difference": 0.0,
+      "cache_mean_absolute_difference": 0.0,
+      "cache_numeric_match_1e_6": true,
+      "cached_motion_end": 70,
+      "cached_motion_start": 11,
+      "complete_trajectory_frames": 60,
+      "decoded_frames": 75,
+      "extraction_ms": 3604.953600002773,
+      "interpolated_left_frames": 0,
+      "interpolated_right_frames": 0,
+      "label": "RECEIPT",
+      "left_hand_present_frames": 55,
+      "motion_end": 70,
+      "motion_start": 11,
+      "pose_present_frames": 75,
+      "raw_correct": true,
+      "raw_top1": "RECEIPT",
+      "raw_top1_probability": 0.9966465830802917,
+      "raw_video_sha256": "c69eb7b5e3b8fc4cd793ce9d9b7d0550f7fefd742aeb19f291b29cbce2a18d34",
+      "record_id": "3fb84fce836559f4",
+      "right_hand_present_frames": 53,
+      "tflite_ms": 1.150600000983104,
+      "top1_top2_margin": 0.9938048124313354,
+      "top5": [
+        {
+          "label": "RECEIPT",
+          "probability": 0.9966465830802917
+        },
+        {
+          "label": "CARD",
+          "probability": 0.0028417741414159536
+        },
+        {
+          "label": "PROBLEM",
+          "probability": 0.00021062455198261887
+        },
+        {
+          "label": "DISCOUNT",
+          "probability": 0.00010801937605720013
+        },
+        {
+          "label": "NO",
+          "probability": 9.846247849054635e-05
+        }
+      ]
+    },
+    {
+      "cache_max_absolute_difference": 0.0,
+      "cache_mean_absolute_difference": 0.0,
+      "cache_numeric_match_1e_6": true,
+      "cached_motion_end": 57,
+      "cached_motion_start": 20,
+      "complete_trajectory_frames": 38,
+      "decoded_frames": 75,
+      "extraction_ms": 3575.31630000085,
+      "interpolated_left_frames": 0,
+      "interpolated_right_frames": 0,
+      "label": "RECEIPT",
+      "left_hand_present_frames": 53,
+      "motion_end": 57,
+      "motion_start": 20,
+      "pose_present_frames": 75,
+      "raw_correct": true,
+      "raw_top1": "RECEIPT",
+      "raw_top1_probability": 0.9995338916778564,
+      "raw_video_sha256": "8148289a5e8b203db3fe54f565fda889bd7207ded818121fc265a2977b41d946",
+      "record_id": "883f52f418a50b1d",
+      "right_hand_present_frames": 52,
+      "tflite_ms": 0.9650000029068906,
+      "top1_top2_margin": 0.9992531538009644,
+      "top5": [
+        {
+          "label": "RECEIPT",
+          "probability": 0.9995338916778564
+        },
+        {
+          "label": "CARD",
+          "probability": 0.0002807395358104259
+        },
+        {
+          "label": "PROBLEM",
+          "probability": 6.190168642206118e-05
+        },
+        {
+          "label": "NO",
+          "probability": 5.4541422287002206e-05
+        },
+        {
+          "label": "COIN",
+          "probability": 1.5375137081719004e-05
+        }
+      ]
+    },
+    {
+      "cache_max_absolute_difference": 0.0,
+      "cache_mean_absolute_difference": 0.0,
+      "cache_numeric_match_1e_6": true,
+      "cached_motion_end": 8,
+      "cached_motion_start": 2,
+      "complete_trajectory_frames": 7,
+      "decoded_frames": 75,
+      "extraction_ms": 3671.903200000088,
+      "interpolated_left_frames": 0,
+      "interpolated_right_frames": 0,
+      "label": "RECEIPT",
+      "left_hand_present_frames": 75,
+      "motion_end": 8,
+      "motion_start": 2,
+      "pose_present_frames": 75,
+      "raw_correct": true,
+      "raw_top1": "RECEIPT",
+      "raw_top1_probability": 0.999772846698761,
+      "raw_video_sha256": "e2ff340a9dcdee6ce7a79cecc9e3e0a59be4ac5f9e642b1b76d5be66c1c3c3b0",
+      "record_id": "5315bd4b9c52d1e8",
+      "right_hand_present_frames": 75,
+      "tflite_ms": 1.2019999994663522,
+      "top1_top2_margin": 0.9996064901351929,
+      "top5": [
+        {
+          "label": "RECEIPT",
+          "probability": 0.999772846698761
+        },
+        {
+          "label": "CARD",
+          "probability": 0.00016636385407764465
+        },
+        {
+          "label": "NO",
+          "probability": 2.9373732104431838e-05
+        },
+        {
+          "label": "PROBLEM",
+          "probability": 7.722554983047303e-06
+        },
+        {
+          "label": "WAIT",
+          "probability": 7.232521056721453e-06
+        }
+      ]
+    },
+    {
+      "cache_max_absolute_difference": 0.0,
+      "cache_mean_absolute_difference": 0.0,
+      "cache_numeric_match_1e_6": true,
+      "cached_motion_end": 53,
+      "cached_motion_start": 0,
+      "complete_trajectory_frames": 54,
+      "decoded_frames": 75,
+      "extraction_ms": 3658.8902000003145,
+      "interpolated_left_frames": 0,
+      "interpolated_right_frames": 0,
+      "label": "WAIT",
+      "left_hand_present_frames": 75,
+      "motion_end": 53,
+      "motion_start": 0,
+      "pose_present_frames": 75,
+      "raw_correct": true,
+      "raw_top1": "WAIT",
+      "raw_top1_probability": 0.9941674470901489,
+      "raw_video_sha256": "4d6b0c5e4469224ad6f656343b3c39dcb2b9cf9b3af0064fc98bad4d54bf9644",
+      "record_id": "758eabcf0ecbe23f",
+      "right_hand_present_frames": 0,
+      "tflite_ms": 0.8118000005197246,
+      "top1_top2_margin": 0.989848256111145,
+      "top5": [
+        {
+          "label": "WAIT",
+          "probability": 0.9941674470901489
+        },
+        {
+          "label": "NO",
+          "probability": 0.00431921798735857
+        },
+        {
+          "label": "HELLO",
+          "probability": 0.0005459589301608503
+        },
+        {
+          "label": "RECEIPT",
+          "probability": 0.0004001862253062427
+        },
+        {
+          "label": "COIN",
+          "probability": 0.0002309038391103968
+        }
+      ]
+    },
+    {
+      "cache_max_absolute_difference": 0.0,
+      "cache_mean_absolute_difference": 0.0,
+      "cache_numeric_match_1e_6": true,
+      "cached_motion_end": 45,
+      "cached_motion_start": 18,
+      "complete_trajectory_frames": 28,
+      "decoded_frames": 75,
+      "extraction_ms": 3394.3156999994244,
+      "interpolated_left_frames": 0,
+      "interpolated_right_frames": 0,
+      "label": "WAIT",
+      "left_hand_present_frames": 55,
+      "motion_end": 45,
+      "motion_start": 18,
+      "pose_present_frames": 75,
+      "raw_correct": true,
+      "raw_top1": "WAIT",
+      "raw_top1_probability": 0.99898761510849,
+      "raw_video_sha256": "a3a6c9ad9959127733fab0435dc72d27a996abe29e9f9b89cda2f70d90ead57d",
+      "record_id": "90074e3327187849",
+      "right_hand_present_frames": 0,
+      "tflite_ms": 0.8691000002727378,
+      "top1_top2_margin": 0.9986178278923035,
+      "top5": [
+        {
+          "label": "WAIT",
+          "probability": 0.99898761510849
+        },
+        {
+          "label": "NO",
+          "probability": 0.0003697934444062412
+        },
+        {
+          "label": "HELLO",
+          "probability": 0.0002417103823972866
+        },
+        {
+          "label": "HOW_MANY",
+          "probability": 0.00011854595504701138
+        },
+        {
+          "label": "YES",
+          "probability": 0.00011606076441239566
+        }
+      ]
+    },
+    {
+      "cache_max_absolute_difference": 0.0,
+      "cache_mean_absolute_difference": 0.0,
+      "cache_numeric_match_1e_6": true,
+      "cached_motion_end": 32,
+      "cached_motion_start": 19,
+      "complete_trajectory_frames": 14,
+      "decoded_frames": 75,
+      "extraction_ms": 3364.0999999988708,
+      "interpolated_left_frames": 0,
+      "interpolated_right_frames": 0,
+      "label": "WAIT",
+      "left_hand_present_frames": 54,
+      "motion_end": 32,
+      "motion_start": 19,
+      "pose_present_frames": 75,
+      "raw_correct": true,
+      "raw_top1": "WAIT",
+      "raw_top1_probability": 0.990740180015564,
+      "raw_video_sha256": "fe7eb30d7598b3a9f1ad6afcd07f2cef4f1eef43c4a2581db069467b180ccd9a",
+      "record_id": "8a344bb3b5e2abd8",
+      "right_hand_present_frames": 0,
+      "tflite_ms": 0.8393999996769708,
+      "top1_top2_margin": 0.9851148724555969,
+      "top5": [
+        {
+          "label": "WAIT",
+          "probability": 0.990740180015564
+        },
+        {
+          "label": "NO",
+          "probability": 0.00562528520822525
+        },
+        {
+          "label": "HELLO",
+          "probability": 0.0022791107185184956
+        },
+        {
+          "label": "COIN",
+          "probability": 0.0006642056978307664
+        },
+        {
+          "label": "RECEIPT",
+          "probability": 0.0003077444853261113
+        }
+      ]
+    },
+    {
+      "cache_max_absolute_difference": 0.0,
+      "cache_mean_absolute_difference": 0.0,
+      "cache_numeric_match_1e_6": true,
+      "cached_motion_end": 10,
+      "cached_motion_start": 0,
+      "complete_trajectory_frames": 11,
+      "decoded_frames": 75,
+      "extraction_ms": 3646.2110000029497,
+      "interpolated_left_frames": 0,
+      "interpolated_right_frames": 0,
+      "label": "WAIT",
+      "left_hand_present_frames": 75,
+      "motion_end": 10,
+      "motion_start": 0,
+      "pose_present_frames": 75,
+      "raw_correct": true,
+      "raw_top1": "WAIT",
+      "raw_top1_probability": 0.9994547963142395,
+      "raw_video_sha256": "d0551bffab695e37aac52b055122f39fe15b148c55c8b8f8f0f747819caabb46",
+      "record_id": "ea1dba0a9a627193",
+      "right_hand_present_frames": 0,
+      "tflite_ms": 0.9070999985851813,
+      "top1_top2_margin": 0.9990196824073792,
+      "top5": [
+        {
+          "label": "WAIT",
+          "probability": 0.9994547963142395
+        },
+        {
+          "label": "NO",
+          "probability": 0.0004351136740297079
+        },
+        {
+          "label": "HELLO",
+          "probability": 4.188246020930819e-05
+        },
+        {
+          "label": "YES",
+          "probability": 2.125570608768612e-05
+        },
+        {
+          "label": "HOW_MANY",
+          "probability": 1.4480278878181707e-05
+        }
+      ]
+    },
+    {
+      "cache_max_absolute_difference": 0.0,
+      "cache_mean_absolute_difference": 0.0,
+      "cache_numeric_match_1e_6": true,
+      "cached_motion_end": 59,
+      "cached_motion_start": 12,
+      "complete_trajectory_frames": 48,
+      "decoded_frames": 75,
+      "extraction_ms": 3475.0375999974494,
+      "interpolated_left_frames": 3,
+      "interpolated_right_frames": 0,
+      "label": "HOW_MANY",
+      "left_hand_present_frames": 58,
+      "motion_end": 59,
+      "motion_start": 12,
+      "pose_present_frames": 75,
+      "raw_correct": true,
+      "raw_top1": "HOW_MANY",
+      "raw_top1_probability": 0.9556616544723511,
+      "raw_video_sha256": "ab5d6d1cf480926a1d09172733af12174299c0c8e199699efcc63d03bb3f5884",
+      "record_id": "cd8afdec5e8a4732",
+      "right_hand_present_frames": 0,
+      "tflite_ms": 0.8987000001070555,
+      "top1_top2_margin": 0.9406406283378601,
+      "top5": [
+        {
+          "label": "HOW_MANY",
+          "probability": 0.9556616544723511
+        },
+        {
+          "label": "PLEASE",
+          "probability": 0.01502103079110384
+        },
+        {
+          "label": "CARD",
+          "probability": 0.00706685334444046
+        },
+        {
+          "label": "COIN",
+          "probability": 0.006423989310860634
+        },
+        {
+          "label": "HOW_MUCH",
+          "probability": 0.0036753914318978786
+        }
+      ]
+    },
+    {
+      "cache_max_absolute_difference": 0.0,
+      "cache_mean_absolute_difference": 0.0,
+      "cache_numeric_match_1e_6": true,
+      "cached_motion_end": 63,
+      "cached_motion_start": 11,
+      "complete_trajectory_frames": 53,
+      "decoded_frames": 75,
+      "extraction_ms": 3462.1708000013314,
+      "interpolated_left_frames": 1,
+      "interpolated_right_frames": 0,
+      "label": "HOW_MANY",
+      "left_hand_present_frames": 61,
+      "motion_end": 63,
+      "motion_start": 11,
+      "pose_present_frames": 75,
+      "raw_correct": true,
+      "raw_top1": "HOW_MANY",
+      "raw_top1_probability": 0.9472958445549011,
+      "raw_video_sha256": "6205b7e14b856c24ec8eb78e28e73c19deb39f8c1d46b698513126a8bd4e9d68",
+      "record_id": "ccb20fa0e031f55c",
+      "right_hand_present_frames": 0,
+      "tflite_ms": 0.8268000019597821,
+      "top1_top2_margin": 0.8992498517036438,
+      "top5": [
+        {
+          "label": "HOW_MANY",
+          "probability": 0.9472958445549011
+        },
+        {
+          "label": "HOW_MUCH",
+          "probability": 0.04804600402712822
+        },
+        {
+          "label": "COIN",
+          "probability": 0.0008671347168274224
+        },
+        {
+          "label": "AGAIN",
+          "probability": 0.0006759460084140301
+        },
+        {
+          "label": "CARD",
+          "probability": 0.0006528826779685915
+        }
+      ]
+    },
+    {
+      "cache_max_absolute_difference": 0.0,
+      "cache_mean_absolute_difference": 0.0,
+      "cache_numeric_match_1e_6": true,
+      "cached_motion_end": 74,
+      "cached_motion_start": 5,
+      "complete_trajectory_frames": 70,
+      "decoded_frames": 75,
+      "extraction_ms": 3689.8433999995177,
+      "interpolated_left_frames": 4,
+      "interpolated_right_frames": 0,
+      "label": "HOW_MANY",
+      "left_hand_present_frames": 67,
+      "motion_end": 74,
+      "motion_start": 5,
+      "pose_present_frames": 75,
+      "raw_correct": true,
+      "raw_top1": "HOW_MANY",
+      "raw_top1_probability": 0.8773776888847351,
+      "raw_video_sha256": "b264ca74ecfbf71e265ca9184ccdf9602dbce4385c5d1b97487d5d69e1d10b92",
+      "record_id": "bb5f747cd4342837",
+      "right_hand_present_frames": 0,
+      "tflite_ms": 0.8582000009482726,
+      "top1_top2_margin": 0.7656823992729187,
+      "top5": [
+        {
+          "label": "HOW_MANY",
+          "probability": 0.8773776888847351
+        },
+        {
+          "label": "HOW_MUCH",
+          "probability": 0.111695297062397
+        },
+        {
+          "label": "CARD",
+          "probability": 0.0033984100446105003
+        },
+        {
+          "label": "COIN",
+          "probability": 0.0025828664656728506
+        },
+        {
+          "label": "AGAIN",
+          "probability": 0.0018966752104461193
+        }
+      ]
+    },
+    {
+      "cache_max_absolute_difference": 0.0,
+      "cache_mean_absolute_difference": 0.0,
+      "cache_numeric_match_1e_6": true,
+      "cached_motion_end": 68,
+      "cached_motion_start": 11,
+      "complete_trajectory_frames": 58,
+      "decoded_frames": 75,
+      "extraction_ms": 3636.2865999981295,
+      "interpolated_left_frames": 1,
+      "interpolated_right_frames": 0,
+      "label": "AGAIN",
+      "left_hand_present_frames": 61,
+      "motion_end": 68,
+      "motion_start": 11,
+      "pose_present_frames": 75,
+      "raw_correct": true,
+      "raw_top1": "AGAIN",
+      "raw_top1_probability": 0.9992563128471375,
+      "raw_video_sha256": "f01bd041030350b5bf7949d1f588729205b6252ddb70b5750133dde6298cb65b",
+      "record_id": "1b5c1a34857766d3",
+      "right_hand_present_frames": 62,
+      "tflite_ms": 0.8707000015419908,
+      "top1_top2_margin": 0.99895179271698,
+      "top5": [
+        {
+          "label": "AGAIN",
+          "probability": 0.9992563128471375
+        },
+        {
+          "label": "CASH",
+          "probability": 0.00030454396619461477
+        },
+        {
+          "label": "DISCOUNT",
+          "probability": 0.00030074341339059174
+        },
+        {
+          "label": "HELLO",
+          "probability": 5.060049443272874e-05
+        },
+        {
+          "label": "YES",
+          "probability": 4.2725165258161724e-05
+        }
+      ]
+    },
+    {
+      "cache_max_absolute_difference": 0.0,
+      "cache_mean_absolute_difference": 0.0,
+      "cache_numeric_match_1e_6": true,
+      "cached_motion_end": 74,
+      "cached_motion_start": 10,
+      "complete_trajectory_frames": 65,
+      "decoded_frames": 75,
+      "extraction_ms": 3665.9993000030227,
+      "interpolated_left_frames": 0,
+      "interpolated_right_frames": 0,
+      "label": "AGAIN",
+      "left_hand_present_frames": 62,
+      "motion_end": 74,
+      "motion_start": 10,
+      "pose_present_frames": 75,
+      "raw_correct": true,
+      "raw_top1": "AGAIN",
+      "raw_top1_probability": 0.9984639883041382,
+      "raw_video_sha256": "d4ea19490a55d6207296eb2baf53440072f7a4da85dab3f39f6c6770cb47914e",
+      "record_id": "611f95cc43bbfb06",
+      "right_hand_present_frames": 63,
+      "tflite_ms": 0.9812000025704037,
+      "top1_top2_margin": 0.9977582693099976,
+      "top5": [
+        {
+          "label": "AGAIN",
+          "probability": 0.9984639883041382
+        },
+        {
+          "label": "DISCOUNT",
+          "probability": 0.0007057423936203122
+        },
+        {
+          "label": "CASH",
+          "probability": 0.0006511820829473436
+        },
+        {
+          "label": "HELLO",
+          "probability": 6.420056888600811e-05
+        },
+        {
+          "label": "YES",
+          "probability": 5.532250361284241e-05
+        }
+      ]
+    },
+    {
+      "cache_max_absolute_difference": 0.0,
+      "cache_mean_absolute_difference": 0.0,
+      "cache_numeric_match_1e_6": true,
+      "cached_motion_end": 74,
+      "cached_motion_start": 15,
+      "complete_trajectory_frames": 60,
+      "decoded_frames": 75,
+      "extraction_ms": 3665.6838999988395,
+      "interpolated_left_frames": 4,
+      "interpolated_right_frames": 1,
+      "label": "AGAIN",
+      "left_hand_present_frames": 30,
+      "motion_end": 74,
+      "motion_start": 15,
+      "pose_present_frames": 75,
+      "raw_correct": true,
+      "raw_top1": "AGAIN",
+      "raw_top1_probability": 0.9982911944389343,
+      "raw_video_sha256": "15922c6137e7041d0ace5d8e668ed0d39b83d8f5cb1e1b6713bb738a6b35a6b0",
+      "record_id": "1dce9aad12264cfa",
+      "right_hand_present_frames": 57,
+      "tflite_ms": 0.8918000021367334,
+      "top1_top2_margin": 0.9967789649963379,
+      "top5": [
+        {
+          "label": "AGAIN",
+          "probability": 0.9982911944389343
+        },
+        {
+          "label": "CASH",
+          "probability": 0.0015122031327337027
+        },
+        {
+          "label": "DISCOUNT",
+          "probability": 4.4091910240240395e-05
+        },
+        {
+          "label": "CARD",
+          "probability": 3.43560786859598e-05
+        },
+        {
+          "label": "PROBLEM",
+          "probability": 2.5723709768499248e-05
+        }
+      ]
+    },
+    {
+      "cache_max_absolute_difference": 0.0,
+      "cache_mean_absolute_difference": 0.0,
+      "cache_numeric_match_1e_6": true,
+      "cached_motion_end": 73,
+      "cached_motion_start": 0,
+      "complete_trajectory_frames": 74,
+      "decoded_frames": 75,
+      "extraction_ms": 3678.2768000011856,
+      "interpolated_left_frames": 0,
+      "interpolated_right_frames": 2,
+      "label": "AGAIN",
+      "left_hand_present_frames": 74,
+      "motion_end": 73,
+      "motion_start": 0,
+      "pose_present_frames": 75,
+      "raw_correct": true,
+      "raw_top1": "AGAIN",
+      "raw_top1_probability": 0.9836013913154602,
+      "raw_video_sha256": "cd034f9833bc8ec3be8bd7fa0626477a4a2be4f4d5a5c9d68e3990cba72bf85e",
+      "record_id": "ca48804cd1079c0c",
+      "right_hand_present_frames": 73,
+      "tflite_ms": 0.8719999968889169,
+      "top1_top2_margin": 0.9793206453323364,
+      "top5": [
+        {
+          "label": "AGAIN",
+          "probability": 0.9836013913154602
+        },
+        {
+          "label": "CASH",
+          "probability": 0.004280716180801392
+        },
+        {
+          "label": "PROBLEM",
+          "probability": 0.0029486280400305986
+        },
+        {
+          "label": "THANK_YOU",
+          "probability": 0.0024944825563579798
+        },
+        {
+          "label": "DISCOUNT",
+          "probability": 0.002302764682099223
+        }
+      ]
+    },
+    {
+      "cache_max_absolute_difference": 0.0,
+      "cache_mean_absolute_difference": 0.0,
+      "cache_numeric_match_1e_6": true,
+      "cached_motion_end": 74,
+      "cached_motion_start": 6,
+      "complete_trajectory_frames": 69,
+      "decoded_frames": 75,
+      "extraction_ms": 3693.1055999993987,
+      "interpolated_left_frames": 1,
+      "interpolated_right_frames": 3,
+      "label": "AGAIN",
+      "left_hand_present_frames": 65,
+      "motion_end": 74,
+      "motion_start": 6,
+      "pose_present_frames": 75,
+      "raw_correct": true,
+      "raw_top1": "AGAIN",
+      "raw_top1_probability": 0.987392008304596,
+      "raw_video_sha256": "7a4947f389b3b4816f712176de9ae21195fed7ffdb0dc0c83df39f47dc7f3223",
+      "record_id": "a1da26117099171c",
+      "right_hand_present_frames": 32,
+      "tflite_ms": 1.274300000659423,
+      "top1_top2_margin": 0.9830524325370789,
+      "top5": [
+        {
+          "label": "AGAIN",
+          "probability": 0.987392008304596
+        },
+        {
+          "label": "THANK_YOU",
+          "probability": 0.004339588340371847
+        },
+        {
+          "label": "CARD",
+          "probability": 0.003047877922654152
+        },
+        {
+          "label": "CASH",
+          "probability": 0.0017896468052640557
+        },
+        {
+          "label": "DISCOUNT",
+          "probability": 0.0014982378343120217
+        }
+      ]
+    },
+    {
+      "cache_max_absolute_difference": 0.0,
+      "cache_mean_absolute_difference": 0.0,
+      "cache_numeric_match_1e_6": true,
+      "cached_motion_end": 74,
+      "cached_motion_start": 6,
+      "complete_trajectory_frames": 69,
+      "decoded_frames": 75,
+      "extraction_ms": 3630.9089999995194,
+      "interpolated_left_frames": 6,
+      "interpolated_right_frames": 2,
+      "label": "PROBLEM",
+      "left_hand_present_frames": 52,
+      "motion_end": 74,
+      "motion_start": 6,
+      "pose_present_frames": 75,
+      "raw_correct": true,
+      "raw_top1": "PROBLEM",
+      "raw_top1_probability": 0.9973962306976318,
+      "raw_video_sha256": "54a5824c009e80765643a0e16df09b9afb95a30dc43776f643ff14528e6eea2f",
+      "record_id": "520cd9a4d0f55a73",
+      "right_hand_present_frames": 53,
+      "tflite_ms": 0.8756999995966908,
+      "top1_top2_margin": 0.995921790599823,
+      "top5": [
+        {
+          "label": "PROBLEM",
+          "probability": 0.9973962306976318
+        },
+        {
+          "label": "CARD",
+          "probability": 0.0014744538348168135
+        },
+        {
+          "label": "RECEIPT",
+          "probability": 0.0010144752450287342
+        },
+        {
+          "label": "DISCOUNT",
+          "probability": 2.7168032829649746e-05
+        },
+        {
+          "label": "WAIT",
+          "probability": 2.3271206373465247e-05
+        }
+      ]
+    },
+    {
+      "cache_max_absolute_difference": 0.0,
+      "cache_mean_absolute_difference": 0.0,
+      "cache_numeric_match_1e_6": true,
+      "cached_motion_end": 74,
+      "cached_motion_start": 5,
+      "complete_trajectory_frames": 70,
+      "decoded_frames": 75,
+      "extraction_ms": 3619.6162000014738,
+      "interpolated_left_frames": 7,
+      "interpolated_right_frames": 10,
+      "label": "PROBLEM",
+      "left_hand_present_frames": 48,
+      "motion_end": 74,
+      "motion_start": 5,
+      "pose_present_frames": 75,
+      "raw_correct": true,
+      "raw_top1": "PROBLEM",
+      "raw_top1_probability": 0.9938616752624512,
+      "raw_video_sha256": "a878b6dec4aa8dd66294745f4429595e499fd55d9560c2623c88d5e51a70b7cf",
+      "record_id": "33d22bb110a054be",
+      "right_hand_present_frames": 55,
+      "tflite_ms": 0.9060999982466456,
+      "top1_top2_margin": 0.9907670617103577,
+      "top5": [
+        {
+          "label": "PROBLEM",
+          "probability": 0.9938616752624512
+        },
+        {
+          "label": "CARD",
+          "probability": 0.0030946284532546997
+        },
+        {
+          "label": "AGAIN",
+          "probability": 0.0008978649857454002
+        },
+        {
+          "label": "WAIT",
+          "probability": 0.0006428048945963383
+        },
+        {
+          "label": "CASH",
+          "probability": 0.00040694032213650644
+        }
+      ]
+    },
+    {
+      "cache_max_absolute_difference": 0.0,
+      "cache_mean_absolute_difference": 0.0,
+      "cache_numeric_match_1e_6": true,
+      "cached_motion_end": 73,
+      "cached_motion_start": 4,
+      "complete_trajectory_frames": 70,
+      "decoded_frames": 75,
+      "extraction_ms": 3702.6491000033275,
+      "interpolated_left_frames": 3,
+      "interpolated_right_frames": 3,
+      "label": "PROBLEM",
+      "left_hand_present_frames": 50,
+      "motion_end": 73,
+      "motion_start": 4,
+      "pose_present_frames": 75,
+      "raw_correct": true,
+      "raw_top1": "PROBLEM",
+      "raw_top1_probability": 0.9956218600273132,
+      "raw_video_sha256": "c3a711934c70ac5d0569f00529ce840a44486fc4982255eb75a5c907a0536d74",
+      "record_id": "dd659d7f974bc7e0",
+      "right_hand_present_frames": 43,
+      "tflite_ms": 0.8606000010331627,
+      "top1_top2_margin": 0.993314802646637,
+      "top5": [
+        {
+          "label": "PROBLEM",
+          "probability": 0.9956218600273132
+        },
+        {
+          "label": "CARD",
+          "probability": 0.002307051792740822
+        },
+        {
+          "label": "DISCOUNT",
+          "probability": 0.0009662467055022717
+        },
+        {
+          "label": "RECEIPT",
+          "probability": 0.00047907253610901535
+        },
+        {
+          "label": "COIN",
+          "probability": 0.00026376533787697554
+        }
+      ]
+    },
+    {
+      "cache_max_absolute_difference": 0.0,
+      "cache_mean_absolute_difference": 0.0,
+      "cache_numeric_match_1e_6": true,
+      "cached_motion_end": 74,
+      "cached_motion_start": 4,
+      "complete_trajectory_frames": 71,
+      "decoded_frames": 75,
+      "extraction_ms": 3840.870600000926,
+      "interpolated_left_frames": 7,
+      "interpolated_right_frames": 2,
+      "label": "PROBLEM",
+      "left_hand_present_frames": 68,
+      "motion_end": 74,
+      "motion_start": 4,
+      "pose_present_frames": 75,
+      "raw_correct": true,
+      "raw_top1": "PROBLEM",
+      "raw_top1_probability": 0.9935697317123413,
+      "raw_video_sha256": "d085d98bcdf3655a2de60d9b9532d3895038e70f67bfae7fc5e169427d149e17",
+      "record_id": "f8c7f92469690226",
+      "right_hand_present_frames": 69,
+      "tflite_ms": 1.629099999263417,
+      "top1_top2_margin": 0.9903206825256348,
+      "top5": [
+        {
+          "label": "PROBLEM",
+          "probability": 0.9935697317123413
+        },
+        {
+          "label": "THANK_YOU",
+          "probability": 0.0032490226440131664
+        },
+        {
+          "label": "AGAIN",
+          "probability": 0.0008824194665066898
+        },
+        {
+          "label": "CASH",
+          "probability": 0.0007182960398495197
+        },
+        {
+          "label": "DISCOUNT",
+          "probability": 0.0006546275690197945
+        }
+      ]
+    },
+    {
+      "cache_max_absolute_difference": 0.0,
+      "cache_mean_absolute_difference": 0.0,
+      "cache_numeric_match_1e_6": true,
+      "cached_motion_end": 74,
+      "cached_motion_start": 10,
+      "complete_trajectory_frames": 65,
+      "decoded_frames": 75,
+      "extraction_ms": 3762.111800002458,
+      "interpolated_left_frames": 8,
+      "interpolated_right_frames": 12,
+      "label": "PROBLEM",
+      "left_hand_present_frames": 58,
+      "motion_end": 74,
+      "motion_start": 10,
+      "pose_present_frames": 75,
+      "raw_correct": true,
+      "raw_top1": "PROBLEM",
+      "raw_top1_probability": 0.998656153678894,
+      "raw_video_sha256": "749fcd178bba4ba1f3a7124ac40f6d84454c773b2765950a4305882bd6a8a97d",
+      "record_id": "502726214694ac06",
+      "right_hand_present_frames": 46,
+      "tflite_ms": 1.0784000005514827,
+      "top1_top2_margin": 0.9981270432472229,
+      "top5": [
+        {
+          "label": "PROBLEM",
+          "probability": 0.998656153678894
+        },
+        {
+          "label": "DISCOUNT",
+          "probability": 0.0005291230045258999
+        },
+        {
+          "label": "CARD",
+          "probability": 0.0003240843361709267
+        },
+        {
+          "label": "CASH",
+          "probability": 0.00024205594672821462
+        },
+        {
+          "label": "COIN",
+          "probability": 5.495702498592436e-05
+        }
+      ]
+    },
+    {
+      "cache_max_absolute_difference": 0.0,
+      "cache_mean_absolute_difference": 0.0,
+      "cache_numeric_match_1e_6": true,
+      "cached_motion_end": 73,
+      "cached_motion_start": 0,
+      "complete_trajectory_frames": 74,
+      "decoded_frames": 75,
+      "extraction_ms": 3650.215900001058,
+      "interpolated_left_frames": 3,
+      "interpolated_right_frames": 12,
+      "label": "PROBLEM",
+      "left_hand_present_frames": 72,
+      "motion_end": 73,
+      "motion_start": 0,
+      "pose_present_frames": 75,
+      "raw_correct": true,
+      "raw_top1": "PROBLEM",
+      "raw_top1_probability": 0.9995142221450806,
+      "raw_video_sha256": "194d5cfa91b2916d3e95c897b8cf1b6743ea151242921fa6aac9a24b97c31439",
+      "record_id": "e9cd1843b00e8549",
+      "right_hand_present_frames": 46,
+      "tflite_ms": 0.8784999990893994,
+      "top1_top2_margin": 0.9993259310722351,
+      "top5": [
+        {
+          "label": "PROBLEM",
+          "probability": 0.9995142221450806
+        },
+        {
+          "label": "CARD",
+          "probability": 0.00018827505118679255
+        },
+        {
+          "label": "DISCOUNT",
+          "probability": 0.00011131155042676255
+        },
+        {
+          "label": "RECEIPT",
+          "probability": 9.840490383794531e-05
+        },
+        {
+          "label": "CASH",
+          "probability": 3.956026921514422e-05
+        }
+      ]
+    },
+    {
+      "cache_max_absolute_difference": 0.0,
+      "cache_mean_absolute_difference": 0.0,
+      "cache_numeric_match_1e_6": true,
+      "cached_motion_end": 71,
+      "cached_motion_start": 9,
+      "complete_trajectory_frames": 63,
+      "decoded_frames": 75,
+      "extraction_ms": 3635.352500001318,
+      "interpolated_left_frames": 0,
+      "interpolated_right_frames": 2,
+      "label": "COIN",
+      "left_hand_present_frames": 59,
+      "motion_end": 71,
+      "motion_start": 9,
+      "pose_present_frames": 75,
+      "raw_correct": true,
+      "raw_top1": "COIN",
+      "raw_top1_probability": 0.9939687252044678,
+      "raw_video_sha256": "fdd3aba14d11be65ae558b28b6217126534eb15780d2e03a938ed702c92a6364",
+      "record_id": "7f502aa9844f8a3d",
+      "right_hand_present_frames": 34,
+      "tflite_ms": 0.9057999996002764,
+      "top1_top2_margin": 0.991317093372345,
+      "top5": [
+        {
+          "label": "COIN",
+          "probability": 0.9939687252044678
+        },
+        {
+          "label": "HOW_MANY",
+          "probability": 0.0026516523212194443
+        },
+        {
+          "label": "PROBLEM",
+          "probability": 0.0008712872513569891
+        },
+        {
+          "label": "CASH",
+          "probability": 0.0007890425040386617
+        },
+        {
+          "label": "CARD",
+          "probability": 0.0006159602198749781
+        }
+      ]
+    },
+    {
+      "cache_max_absolute_difference": 0.0,
+      "cache_mean_absolute_difference": 0.0,
+      "cache_numeric_match_1e_6": true,
+      "cached_motion_end": 61,
+      "cached_motion_start": 19,
+      "complete_trajectory_frames": 43,
+      "decoded_frames": 75,
+      "extraction_ms": 3333.0215999994834,
+      "interpolated_left_frames": 0,
+      "interpolated_right_frames": 0,
+      "label": "COIN",
+      "left_hand_present_frames": 38,
+      "motion_end": 61,
+      "motion_start": 19,
+      "pose_present_frames": 75,
+      "raw_correct": true,
+      "raw_top1": "COIN",
+      "raw_top1_probability": 0.9982682466506958,
+      "raw_video_sha256": "99f6045b80dbd3d117d0384c21b459ea1ff46a3622703cd78fea8daeec6659b9",
+      "record_id": "8fe1a266c7d6ee64",
+      "right_hand_present_frames": 6,
+      "tflite_ms": 0.9461999979976099,
+      "top1_top2_margin": 0.996994137763977,
+      "top5": [
+        {
+          "label": "COIN",
+          "probability": 0.9982682466506958
+        },
+        {
+          "label": "HOW_MANY",
+          "probability": 0.0012741107493638992
+        },
+        {
+          "label": "CARD",
+          "probability": 0.00011068953608628362
+        },
+        {
+          "label": "RECEIPT",
+          "probability": 0.00010837441368494183
+        },
+        {
+          "label": "CASH",
+          "probability": 6.209380080690607e-05
+        }
+      ]
+    },
+    {
+      "cache_max_absolute_difference": 0.0,
+      "cache_mean_absolute_difference": 0.0,
+      "cache_numeric_match_1e_6": true,
+      "cached_motion_end": 58,
+      "cached_motion_start": 9,
+      "complete_trajectory_frames": 50,
+      "decoded_frames": 75,
+      "extraction_ms": 3691.375700000208,
+      "interpolated_left_frames": 0,
+      "interpolated_right_frames": 0,
+      "label": "COIN",
+      "left_hand_present_frames": 45,
+      "motion_end": 58,
+      "motion_start": 9,
+      "pose_present_frames": 75,
+      "raw_correct": true,
+      "raw_top1": "COIN",
+      "raw_top1_probability": 0.9999561309814453,
+      "raw_video_sha256": "bb958bffe41c755a194f698e0052d44b7f93a6c79763a9f7387991118211cc1e",
+      "record_id": "3af4843392781864",
+      "right_hand_present_frames": 0,
+      "tflite_ms": 0.8770000022195745,
+      "top1_top2_margin": 0.9999256730079651,
+      "top5": [
+        {
+          "label": "COIN",
+          "probability": 0.9999561309814453
+        },
+        {
+          "label": "HOW_MANY",
+          "probability": 3.0475535822915845e-05
+        },
+        {
+          "label": "CARD",
+          "probability": 3.5341536204214208e-06
+        },
+        {
+          "label": "CASH",
+          "probability": 3.5222424230596516e-06
+        },
+        {
+          "label": "RECEIPT",
+          "probability": 2.0159693576715654e-06
+        }
+      ]
+    },
+    {
+      "cache_max_absolute_difference": 0.0,
+      "cache_mean_absolute_difference": 0.0,
+      "cache_numeric_match_1e_6": true,
+      "cached_motion_end": 74,
+      "cached_motion_start": 0,
+      "complete_trajectory_frames": 75,
+      "decoded_frames": 75,
+      "extraction_ms": 3722.680399998353,
+      "interpolated_left_frames": 0,
+      "interpolated_right_frames": 0,
+      "label": "COIN",
+      "left_hand_present_frames": 75,
+      "motion_end": 74,
+      "motion_start": 0,
+      "pose_present_frames": 75,
+      "raw_correct": true,
+      "raw_top1": "COIN",
+      "raw_top1_probability": 0.9999364614486694,
+      "raw_video_sha256": "cd385b13eb73050c7e762f3095851548bec06116b0ad5c5be2ca521705ef8f28",
+      "record_id": "0aa30d284cb5bcf9",
+      "right_hand_present_frames": 0,
+      "tflite_ms": 0.8931000011216383,
+      "top1_top2_margin": 0.9999170899391174,
+      "top5": [
+        {
+          "label": "COIN",
+          "probability": 0.9999364614486694
+        },
+        {
+          "label": "HOW_MANY",
+          "probability": 1.9394376067793928e-05
+        },
+        {
+          "label": "HELLO",
+          "probability": 1.1192953024874441e-05
+        },
+        {
+          "label": "CASH",
+          "probability": 8.67038488649996e-06
+        },
+        {
+          "label": "AGAIN",
+          "probability": 8.383565727854148e-06
+        }
+      ]
+    },
+    {
+      "cache_max_absolute_difference": 0.0,
+      "cache_mean_absolute_difference": 0.0,
+      "cache_numeric_match_1e_6": true,
+      "cached_motion_end": 62,
+      "cached_motion_start": 11,
+      "complete_trajectory_frames": 52,
+      "decoded_frames": 75,
+      "extraction_ms": 3635.0949999978184,
+      "interpolated_left_frames": 0,
+      "interpolated_right_frames": 8,
+      "label": "DISCOUNT",
+      "left_hand_present_frames": 46,
+      "motion_end": 62,
+      "motion_start": 11,
+      "pose_present_frames": 75,
+      "raw_correct": true,
+      "raw_top1": "DISCOUNT",
+      "raw_top1_probability": 0.9916008710861206,
+      "raw_video_sha256": "2c07387214747a81a11307a336af37ac9fbc4c8d7a7415e807dc3a94d46fafef",
+      "record_id": "172ac70d62b7ea56",
+      "right_hand_present_frames": 36,
+      "tflite_ms": 0.8746000021346845,
+      "top1_top2_margin": 0.9882110953330994,
+      "top5": [
+        {
+          "label": "DISCOUNT",
+          "probability": 0.9916008710861206
+        },
+        {
+          "label": "AGAIN",
+          "probability": 0.0033897708635777235
+        },
+        {
+          "label": "CASH",
+          "probability": 0.0023799350019544363
+        },
+        {
+          "label": "CARD",
+          "probability": 0.002114285482093692
+        },
+        {
+          "label": "THANK_YOU",
+          "probability": 0.00020309415413066745
+        }
+      ]
+    },
+    {
+      "cache_max_absolute_difference": 0.0,
+      "cache_mean_absolute_difference": 0.0,
+      "cache_numeric_match_1e_6": true,
+      "cached_motion_end": 74,
+      "cached_motion_start": 1,
+      "complete_trajectory_frames": 74,
+      "decoded_frames": 75,
+      "extraction_ms": 3662.5492999992275,
+      "interpolated_left_frames": 17,
+      "interpolated_right_frames": 0,
+      "label": "DISCOUNT",
+      "left_hand_present_frames": 54,
+      "motion_end": 74,
+      "motion_start": 1,
+      "pose_present_frames": 75,
+      "raw_correct": true,
+      "raw_top1": "DISCOUNT",
+      "raw_top1_probability": 0.9976820945739746,
+      "raw_video_sha256": "a1ac50b622783517db8c11e95380ae5531e7cdb178e73cadf63f45620155c56e",
+      "record_id": "ab1ce00a1f182720",
+      "right_hand_present_frames": 75,
+      "tflite_ms": 0.8768999978201464,
+      "top1_top2_margin": 0.9960434436798096,
+      "top5": [
+        {
+          "label": "DISCOUNT",
+          "probability": 0.9976820945739746
+        },
+        {
+          "label": "CARD",
+          "probability": 0.0016386624192819
+        },
+        {
+          "label": "THANK_YOU",
+          "probability": 0.00038139286334626377
+        },
+        {
+          "label": "AGAIN",
+          "probability": 9.245582623407245e-05
+        },
+        {
+          "label": "CASH",
+          "probability": 8.915428043110296e-05
+        }
+      ]
+    },
+    {
+      "cache_max_absolute_difference": 0.0,
+      "cache_mean_absolute_difference": 0.0,
+      "cache_numeric_match_1e_6": true,
+      "cached_motion_end": 55,
+      "cached_motion_start": 15,
+      "complete_trajectory_frames": 41,
+      "decoded_frames": 75,
+      "extraction_ms": 3645.033400000102,
+      "interpolated_left_frames": 0,
+      "interpolated_right_frames": 0,
+      "label": "DISCOUNT",
+      "left_hand_present_frames": 55,
+      "motion_end": 55,
+      "motion_start": 15,
+      "pose_present_frames": 75,
+      "raw_correct": true,
+      "raw_top1": "DISCOUNT",
+      "raw_top1_probability": 0.9979856014251709,
+      "raw_video_sha256": "9cf85e680cd57899458f256eba4fbd8aedab0a63faff05774f0dcde0fea24913",
+      "record_id": "c03d4cf76ccf7761",
+      "right_hand_present_frames": 58,
+      "tflite_ms": 1.2549999992188532,
+      "top1_top2_margin": 0.9964184761047363,
+      "top5": [
+        {
+          "label": "DISCOUNT",
+          "probability": 0.9979856014251709
+        },
+        {
+          "label": "CARD",
+          "probability": 0.0015671084402129054
+        },
+        {
+          "label": "THANK_YOU",
+          "probability": 0.00021883258887100965
+        },
+        {
+          "label": "PROBLEM",
+          "probability": 0.00010740037396317348
+        },
+        {
+          "label": "AGAIN",
+          "probability": 4.6708308218512684e-05
+        }
+      ]
+    },
+    {
+      "cache_max_absolute_difference": 0.0,
+      "cache_mean_absolute_difference": 0.0,
+      "cache_numeric_match_1e_6": true,
+      "cached_motion_end": 69,
+      "cached_motion_start": 0,
+      "complete_trajectory_frames": 70,
+      "decoded_frames": 75,
+      "extraction_ms": 3619.4615999993403,
+      "interpolated_left_frames": 0,
+      "interpolated_right_frames": 3,
+      "label": "DISCOUNT",
+      "left_hand_present_frames": 75,
+      "motion_end": 69,
+      "motion_start": 0,
+      "pose_present_frames": 75,
+      "raw_correct": true,
+      "raw_top1": "DISCOUNT",
+      "raw_top1_probability": 0.9906124472618103,
+      "raw_video_sha256": "c62542ee0934e565a6b76b85e272d8f726d42e3a7a4b8b4589635788c640b75c",
+      "record_id": "c5ba8da492d5261a",
+      "right_hand_present_frames": 72,
+      "tflite_ms": 0.8711000009498093,
+      "top1_top2_margin": 0.9818531274795532,
+      "top5": [
+        {
+          "label": "DISCOUNT",
+          "probability": 0.9906124472618103
+        },
+        {
+          "label": "CARD",
+          "probability": 0.008759315125644207
+        },
+        {
+          "label": "RECEIPT",
+          "probability": 0.0002999228599946946
+        },
+        {
+          "label": "PROBLEM",
+          "probability": 0.00019237816741224378
+        },
+        {
+          "label": "THANK_YOU",
+          "probability": 5.495676305145025e-05
+        }
+      ]
+    }
+  ],
+  "scope": "SEALED_RAW_VIDEO_END_TO_END_REPLAY_SECOND_SEALED_EVALUATION",
+  "signer_independent_claim": false,
+  "source_count": 60,
+  "split_sha256": "683c55fbb10d4d17413dc5968496c95de0ef22062bc50bd337ae94a406a6c9a1",
+  "tensorflow_version": "2.15.0",
+  "top_confusions": [
+    {
+      "count": 1,
+      "predicted": "COIN",
+      "true": "CARD"
+    },
+    {
+      "count": 1,
+      "predicted": "PROBLEM",
+      "true": "CASH"
+    },
+    {
+      "count": 1,
+      "predicted": "YES",
+      "true": "NO"
+    }
+  ],
+  "weakest_class_f1": 0.8571428571428571
+}

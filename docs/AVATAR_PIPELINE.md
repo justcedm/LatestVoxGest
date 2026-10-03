@@ -10,7 +10,7 @@ Known word -> play a small 2D cartoon keyframe animation.
 
 Unknown word -> fingerspell.
 
-`NOTHING` -> no animation.
+`NSAC` -> no animation.
 
 Missing or empty animation -> clean placeholder fallback.
 
@@ -33,7 +33,7 @@ Current known prototype words:
 - LIVE
 
 YES and NO may remain as legacy prototype assets, but the current FullSign225
-manual5 UI path focuses on HELLO, THANKYOU, WATER, EAT, and NOTHING.
+manual5 UI path focuses on HELLO, THANKYOU, WATER, EAT, and NSAC.
 
 ## Asset Layout
 
@@ -90,7 +90,7 @@ available.
 
 - Known word token: load and play `avatar/signs/<WORD>.json`.
 - Unknown word token: fingerspell each A-Z character.
-- `NOTHING`: no animation and no spoken/displayed output.
+- `NSAC`: no animation and no spoken/displayed output.
 - Missing file: show a clean placeholder fallback.
 - Empty keyframes: show a clean placeholder fallback.
 
@@ -119,7 +119,7 @@ available.
 - `VoxGestMockupApp`: Compose UI route that embeds `AvatarView` with
   `AndroidView`.
 
-`AvatarController` ignores NOTHING and routes unknown words to fingerspelling
+`AvatarController` ignores NSAC and routes unknown words to fingerspelling
 fallback. It should only be called after a token has passed recognition gates.
 
 ## Integration Boundary

@@ -36,11 +36,11 @@ Training readiness passed: `True`
 | TIME | YELLOW | True | 104 | 8 | 0 | 0 | trainable, but schedule manual hardening before demo |
 | WANT | YELLOW | True | 130 | 10 | 0 | 0 | trainable, but schedule manual hardening before demo |
 | MEDICINE | YELLOW | True | 91 | 7 | 0 | 0 | trainable, but schedule manual hardening before demo |
-| NOTHING | GREEN | True | 600 | 10 | 600 | 0 | include idle, partial, incomplete, transition, and hand-enter/leave hard negatives |
+| NSAC | GREEN | True | 600 | 10 | 600 | 0 | include idle, partial, incomplete, transition, and hand-enter/leave hard negatives |
 
 ## Readiness Gates
 
-- NOTHING present and trainable: True
+- NSAC present and trainable: True
 - Demo10 labels preserved in profile: True
 - Wrong-shape files in required labels: 0
 - Blocked labels: none

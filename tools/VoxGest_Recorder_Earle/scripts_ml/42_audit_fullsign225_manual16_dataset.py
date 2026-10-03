@@ -136,7 +136,7 @@ def write_markdown(payload):
         f"- Missing labels: {', '.join(payload['missing_labels']) if payload['missing_labels'] else 'none'}",
         f"- Labels under 20: {', '.join(payload['labels_under_20']) if payload['labels_under_20'] else 'none'}",
         f"- Labels under 30: {', '.join(payload['labels_under_30']) if payload['labels_under_30'] else 'none'}",
-        f"- NOTHING samples: {payload['nothing_count']}",
+        f"- NSAC samples: {payload['nsac_count']}",
         f"- Rejected/failed samples logged: {payload['rejected_count']}",
         "",
         "## Per Label",
@@ -171,7 +171,7 @@ def main():
     missing = [row["label"] for row in rows if row["missing"]]
     under_20 = [row["label"] for row in rows if row["under_20"]]
     under_30 = [row["label"] for row in rows if row["under_30"]]
-    nothing_count = next((row["samples"] for row in rows if row["label"] == "NOTHING"), 0)
+    nsac_count = next((row["samples"] for row in rows if row["label"] == "NSAC"), 0)
     payload = {
         "generated_at": datetime.now().isoformat(timespec="seconds"),
         "profile": WORD_PROFILE,
@@ -184,7 +184,7 @@ def main():
         "missing_labels": missing,
         "labels_under_20": under_20,
         "labels_under_30": under_30,
-        "nothing_count": nothing_count,
+        "nsac_count": nsac_count,
         "rejected_count": len(rejected),
         "rejected_examples": rejected[:20],
         "totals": {
@@ -208,7 +208,7 @@ def main():
     print(f"Missing labels: {missing if missing else 'none'}")
     print(f"Under 20      : {under_20 if under_20 else 'none'}")
     print(f"Under 30      : {under_30 if under_30 else 'none'}")
-    print(f"NOTHING count : {nothing_count}")
+    print(f"NSAC count : {nsac_count}")
     print(f"Rejected log  : {len(rejected)}")
     print(f"Wrote: {CSV_OUT}")
     print(f"Wrote: {JSON_OUT}")

@@ -36,7 +36,7 @@ UNDERSTAND, PAIN, GO, FINE
 EAT, TIME, MEDICINE
 ```
 
-Then test NOTHING hard negatives:
+Then test NSAC hard negatives:
 
 ```text
 idle hand, hand entering frame, hand leaving frame, partial STOP,
@@ -51,7 +51,7 @@ After logging:
 
 ## Pass Gate
 
-- `NOTHING` must not create false word outputs.
+- `NSAC` must not create false word outputs.
 - Demo10 safe words must stay usable.
 - New words must show stable true accepts, not only high raw confidence.
 - If sprint30 weakens demo10 behavior, keep Android default on demo10.

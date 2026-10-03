@@ -1,0 +1,43 @@
+{
+  "anatomical_slot_swap": false,
+  "android_default_changed": false,
+  "coordinate_orientation": "canonical_unmirrored",
+  "feature_version": "fullsign225_frame_v1_complete_trajectory_v1",
+  "input_shape": [
+    1,
+    48,
+    225
+  ],
+  "labels_file": "class_labels_mapua14_v1.json",
+  "labels_sha256": "af398236fd62da6c5bafbe0b60d21bc8a155c48aeb45987090c1b14a20cb9ef0",
+  "model_file": "mapua14_fullsign225_float32.tflite",
+  "model_sha256": "f850c5d414c5c253ef9131bae5a85bb3ed5ad5412abdf9936df510c6ec043dcc",
+  "output_shape": [
+    1,
+    14
+  ],
+  "profile_id": "MAPUA14_RESCUE_V1",
+  "status": "experimental_developer_diagnostic_only",
+  "tflite_parity": {
+    "input_dtype": "<class 'numpy.float32'>",
+    "input_shape": [
+      1,
+      48,
+      225
+    ],
+    "label_sha256": "af398236fd62da6c5bafbe0b60d21bc8a155c48aeb45987090c1b14a20cb9ef0",
+    "maximum_allowed_probability_difference": 1e-05,
+    "maximum_probability_difference": 4.76837158203125e-07,
+    "model_path": "C:\\VOXGEST_TRAINING\\MAPUA14_RESCUE_V1\\final\\mapua14_fullsign225_48f_v1\\mapua14_fullsign225_float32.tflite",
+    "model_sha256": "f850c5d414c5c253ef9131bae5a85bb3ed5ad5412abdf9936df510c6ec043dcc",
+    "model_size_bytes": 541912,
+    "output_dtype": "<class 'numpy.float32'>",
+    "output_shape": [
+      1,
+      14
+    ],
+    "passed": true,
+    "required_top1_agreement": 1.0,
+    "tf_tflite_top1_agreement": 1.0
+  }
+}

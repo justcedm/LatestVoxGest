@@ -124,7 +124,7 @@ class AlphabetClassifier(context: Context) : AutoCloseable {
         return when (trim().uppercase(Locale.US)) {
             "DEL", "DELETE" -> "DEL"
             "SPACE" -> "SPACE"
-            "NOTHING" -> "NOTHING"
+            "NSAC" -> "NSAC"
             else -> trim().uppercase(Locale.US)
         }
     }

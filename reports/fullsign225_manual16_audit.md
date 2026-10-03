@@ -12,7 +12,7 @@ Expected shape: `[30, 225]`
 - Missing labels: none
 - Labels under 20: none
 - Labels under 30: none
-- NOTHING samples: 100
+- NSAC samples: 100
 - Rejected/failed samples logged: 389
 
 ## Per Label
@@ -23,7 +23,7 @@ Expected shape: `[30, 225]`
 | WATER | 50 | 2 | 0 | 0 |
 | HELLO | 50 | 2 | 0 | 0 |
 | THANKYOU | 50 | 2 | 0 | 0 |
-| NOTHING | 100 | 1 | 0 | 0 |
+| NSAC | 100 | 1 | 0 | 0 |
 
 ## Readiness
 

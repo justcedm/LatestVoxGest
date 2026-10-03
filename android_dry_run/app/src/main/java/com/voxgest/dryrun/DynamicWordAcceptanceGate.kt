@@ -1,6 +1,5 @@
 package com.voxgest.dryrun
 
-import android.os.SystemClock
 import java.util.Locale
 
 data class DynamicWordGateResult(
@@ -30,10 +29,11 @@ class DynamicWordAcceptanceGate {
         raw: RecognitionResult,
         profile: RecognitionProfile,
         decision: RouterDecision,
-        handPresence: Float
+        handPresence: Float,
+        consecutiveMatches: Int = 1
     ): DynamicWordGateResult {
         val label = raw.label.trim().uppercase(Locale.US)
-        if (decision.route == RecognitionRoute.NOTHING && decision.handPresence <= 0f) {
+        if (decision.route == RecognitionRoute.NSAC && decision.handPresence <= 0f) {
             noteNoOutputState()
             return reject(label, raw, "LOW_HAND_PRESENCE")
         }
@@ -47,9 +47,9 @@ class DynamicWordAcceptanceGate {
             resetStableCandidate()
             return reject(label, raw, "BAD_SEQUENCE")
         }
-        if (label == "NOTHING") {
+        if (label == "NSAC") {
             noteNoOutputState()
-            return reject(label, raw, "NOTHING")
+            return reject(label, raw, "NSAC")
         }
         if (label !in ALLOWED_ONEHAND_LABELS) {
             resetStableCandidate()
@@ -72,10 +72,24 @@ class DynamicWordAcceptanceGate {
             resetStableCandidate()
             return reject(label, raw, "LOW_MARGIN")
         }
+        if (consecutiveMatches < REQUIRED_CONSECUTIVE_WINDOWS) {
+            return reject(label, raw, "SLIDING_WINDOW_NEEDS_SECOND_MATCH")
+        }
+
+        // Duplicate suppression must run before every acceptance path. The
+        // calibrated high-confidence shortcut previously returned early here,
+        // allowing a held sign to bypass cooldown and movement reset.
+        val now = (System.nanoTime() / 1_000_000L)
+        if (label == lastAcceptedLabel && now < cooldownUntilMs) {
+            return reject(label, raw, "DUPLICATE_COOLDOWN", cooldownActive = true, duplicateBlocked = true)
+        }
+        if (label == lastAcceptedLabel && !movementResetSeen) {
+            return reject(label, raw, "DUPLICATE_COOLDOWN", duplicateBlocked = true)
+        }
 
         if (shouldAcceptCalibratedHighConfidence(label, raw, profile)) {
             lastAcceptedLabel = label
-            cooldownUntilMs = SystemClock.elapsedRealtime() + ACCEPTED_COOLDOWN_MS
+            cooldownUntilMs = now + ACCEPTED_COOLDOWN_MS
             movementResetSeen = false
             resetStableCandidate()
             return DynamicWordGateResult(true, label, raw.confidence, raw.margin, "HIGH_CONFIDENCE")
@@ -93,14 +107,6 @@ class DynamicWordAcceptanceGate {
             if (!highConfidenceSingleWindow && stableCandidateCount < NAME_REQUIRED_WINDOWS) {
                 return reject(label, raw, "NAME_NEEDS_SECOND_WINDOW")
             }
-        }
-
-        val now = SystemClock.elapsedRealtime()
-        if (label == lastAcceptedLabel && now < cooldownUntilMs) {
-            return reject(label, raw, "DUPLICATE_COOLDOWN", cooldownActive = true, duplicateBlocked = true)
-        }
-        if (label == lastAcceptedLabel && !movementResetSeen) {
-            return reject(label, raw, "DUPLICATE_COOLDOWN", duplicateBlocked = true)
         }
 
         movementResetSeen = label != lastAcceptedLabel || movementResetSeen
@@ -167,6 +173,7 @@ class DynamicWordAcceptanceGate {
     companion object {
         private val ALLOWED_ONEHAND_LABELS = setOf("WHAT", "YOUR", "NAME", "MY")
         private const val MIN_HAND_PRESENCE = 0.65f
+        private const val REQUIRED_CONSECUTIVE_WINDOWS = 2
         private const val NAME_REQUIRED_WINDOWS = 2
         private const val NAME_SINGLE_WINDOW_CONFIDENCE = 0.85f
         private const val CALIBRATED_HIGH_CONFIDENCE = 0.85f

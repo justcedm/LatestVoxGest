@@ -88,7 +88,7 @@ def load_sequences():
     if not DATA_DIR.exists():
         raise FileNotFoundError(
             "Motion-letter dataset not found. Record samples first:\n"
-            "  python scripts_ml/34_record_motion_letters.py J Z NOTHING"
+            "  python scripts_ml/34_record_motion_letters.py J Z NSAC"
         )
 
     metadata = load_metadata()

@@ -101,7 +101,7 @@ G H P Q X nothing
 Motion-letter labels for the dynamic pass:
 
 ```text
-J Z NOTHING
+J Z NSAC
 ```
 
 ## Calibration Rule
@@ -127,7 +127,7 @@ $env:VOXGEST_ENABLE_PHRASE='0'
 $env:VOXGEST_SINGLE_HAND_POSE='1'
 $env:VOXGEST_DOMINANT_HAND='right'
 $env:VOXGEST_MOTION_LETTER_SEQUENCES_PER_LABEL='20'
-.\voxgest_env\Scripts\python.exe scripts_ml\34_record_motion_letters.py J Z NOTHING
+.\voxgest_env\Scripts\python.exe scripts_ml\34_record_motion_letters.py J Z NSAC
 ```
 
 Run that recorder three separate times, changing distance/angle/speed a little

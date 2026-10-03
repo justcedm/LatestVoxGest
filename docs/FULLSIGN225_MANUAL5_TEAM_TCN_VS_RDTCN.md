@@ -7,7 +7,7 @@ This comparison is profile-safe and experimental. Live webcam testing still deci
 - Word profile: `fullsign225_manual5_team`
 - Feature profile: `fullsign225`
 - Input shape: `[1, 30, 225]`
-- Labels: EAT, WATER, HELLO, THANKYOU, NOTHING
+- Labels: EAT, WATER, HELLO, THANKYOU, NSAC
 
 ## Basic TCN
 

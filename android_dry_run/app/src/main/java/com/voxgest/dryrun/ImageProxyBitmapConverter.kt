@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.ImageFormat
 import android.graphics.Matrix
+import android.graphics.PixelFormat
 import android.graphics.Rect
 import android.graphics.YuvImage
 import androidx.camera.core.ImageProxy
@@ -11,19 +12,48 @@ import java.io.ByteArrayOutputStream
 
 object ImageProxyBitmapConverter {
     fun toUprightBitmap(imageProxy: ImageProxy, mirrorHorizontally: Boolean): Bitmap {
-        val nv21 = yuv420888ToNv21(imageProxy)
-        val yuvImage = YuvImage(nv21, ImageFormat.NV21, imageProxy.width, imageProxy.height, null)
-        val jpeg = ByteArrayOutputStream()
-        yuvImage.compressToJpeg(Rect(0, 0, imageProxy.width, imageProxy.height), 78, jpeg)
-        val raw = jpeg.toByteArray()
-        val bitmap = BitmapFactory.decodeByteArray(raw, 0, raw.size)
+        val bitmap = if (imageProxy.format == PixelFormat.RGBA_8888 && imageProxy.planes.size == 1) {
+            rgba8888ToBitmap(imageProxy)
+        } else {
+            val nv21 = yuv420888ToNv21(imageProxy)
+            val yuvImage = YuvImage(nv21, ImageFormat.NV21, imageProxy.width, imageProxy.height, null)
+            val jpeg = ByteArrayOutputStream()
+            yuvImage.compressToJpeg(Rect(0, 0, imageProxy.width, imageProxy.height), 78, jpeg)
+            val raw = jpeg.toByteArray()
+            BitmapFactory.decodeByteArray(raw, 0, raw.size)
+        }
         val matrix = Matrix().apply {
             postRotate(imageProxy.imageInfo.rotationDegrees.toFloat())
             if (mirrorHorizontally) {
                 postScale(-1f, 1f)
             }
         }
-        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+        val transformed = Bitmap.createBitmap(
+            bitmap,
+            0,
+            0,
+            bitmap.width,
+            bitmap.height,
+            matrix,
+            false
+        )
+        if (transformed !== bitmap) bitmap.recycle()
+        return transformed
+    }
+
+    private fun rgba8888ToBitmap(imageProxy: ImageProxy): Bitmap {
+        val bitmap = Bitmap.createBitmap(imageProxy.width, imageProxy.height, Bitmap.Config.ARGB_8888)
+        val buffer = imageProxy.planes[0].buffer.duplicate()
+        buffer.rewind()
+        val plane = imageProxy.planes[0]
+        if (plane.pixelStride == 4 && plane.rowStride == imageProxy.width * 4) {
+            bitmap.copyPixelsFromBuffer(buffer)
+        } else {
+            // CameraX permits row padding. Copy RGBA bytes without assuming packed rows.
+            val packed = RgbaPlanePacking.pack(buffer, imageProxy.width, imageProxy.height, plane.rowStride, plane.pixelStride)
+            bitmap.copyPixelsFromBuffer(packed)
+        }
+        return bitmap
     }
 
     private fun yuv420888ToNv21(imageProxy: ImageProxy): ByteArray {

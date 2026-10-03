@@ -31,21 +31,21 @@
     "WATER",
     "HELLO",
     "THANKYOU",
-    "NOTHING"
+    "NSAC"
   ],
   "classes": [
     "EAT",
     "WATER",
     "HELLO",
     "THANKYOU",
-    "NOTHING"
+    "NSAC"
   ],
   "sample_counts": {
     "EAT": 72,
     "WATER": 70,
     "HELLO": 70,
     "THANKYOU": 70,
-    "NOTHING": 50
+    "NSAC": 50
   },
   "class_stats": {
     "EAT": {
@@ -76,7 +76,7 @@
       "wrong_shape": 0,
       "skipped_missing_hand_metadata": 0
     },
-    "NOTHING": {
+    "NSAC": {
       "sequences": 50,
       "groups": 1,
       "used": true,
@@ -117,7 +117,7 @@
       "total": 40,
       "accuracy": 25.0
     },
-    "NOTHING": {
+    "NSAC": {
       "correct": 0,
       "total": 10,
       "accuracy": 0.0
@@ -128,7 +128,7 @@
     "WATER": "HELLO",
     "HELLO": "-",
     "THANKYOU": "EAT",
-    "NOTHING": "HELLO"
+    "NSAC": "HELLO"
   },
   "confusion_counts": {
     "EAT": {
@@ -147,7 +147,7 @@
       "top_miss": "EAT",
       "count": 20
     },
-    "NOTHING": {
+    "NSAC": {
       "top_miss": "HELLO",
       "count": 8
     }

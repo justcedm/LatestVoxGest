@@ -1,7 +1,7 @@
 # VoxGest Demo10 Recognition Hardening Recording Protocol
 
 This protocol is for the current Recognition Hardening + Avatar Prototype sprint.
-It keeps the active dynamic contract fixed at 10 words plus `NOTHING`.
+It keeps the active dynamic contract fixed at 10 words plus `NSAC`.
 
 Do not add 25 or 50 words during this pass. Do not enable phrase recognition.
 Training stays in Python. Android consumes exported TFLite models, labels, and
@@ -19,7 +19,7 @@ the runtime manifest only.
 - DOCTOR
 - NAME
 - THANKYOU
-- NOTHING
+- NSAC
 
 ## Recording Rule
 
@@ -51,7 +51,7 @@ $env:VOXGEST_WORD_PROFILE='demo10'
 $env:VOXGEST_SINGLE_HAND_POSE='1'
 $env:VOXGEST_DOMINANT_HAND='right'
 $env:VOXGEST_MANUAL_SEQUENCES_PER_WORD='60'
-.\voxgest_env\Scripts\python.exe scripts_ml\16_record_manual_words.py NAME STOP NOTHING
+.\voxgest_env\Scripts\python.exe scripts_ml\16_record_manual_words.py NAME STOP NSAC
 ```
 
 Use this when the signer will demo mostly with the right hand. Historical logs
@@ -69,18 +69,18 @@ $env:VOXGEST_WORD_PROFILE='demo10'
 $env:VOXGEST_SINGLE_HAND_POSE='1'
 $env:VOXGEST_DOMINANT_HAND='left'
 $env:VOXGEST_MANUAL_SEQUENCES_PER_WORD='60'
-.\voxgest_env\Scripts\python.exe scripts_ml\16_record_manual_words.py HELP STOP DOCTOR NAME NOTHING
+.\voxgest_env\Scripts\python.exe scripts_ml\16_record_manual_words.py HELP STOP DOCTOR NAME NSAC
 ```
 
 Use this when the signer will demo mostly with the left hand, or when left-hand
 coverage is missing from the hardening dataset.
 
-## NOTHING Hard Negatives
+## NSAC Hard Negatives
 
-`NOTHING` is a no-output negative class. It must never become a displayed,
+`NSAC` is a no-output negative class. It must never become a displayed,
 spoken, or animated word. Record it as controlled non-word motion.
 
-NOTHING hard negatives must include:
+NSAC hard negatives must include:
 
 - idle hand visible
 - open hand
@@ -101,7 +101,7 @@ NOTHING hard negatives must include:
 - Keep the signer at the same arm's-length distance expected during demo.
 - Keep lighting stable and avoid backlight.
 - Record clean examples first, then small variations in speed and distance.
-- Record partial, interrupted, or messy attempts as `NOTHING`, not as the word.
+- Record partial, interrupted, or messy attempts as `NSAC`, not as the word.
 - Keep the configured hand visible for most of the 30-frame sequence.
 - Do not mix left-hand and right-hand samples in one command.
 - Do not use `VOXGEST_DOMINANT_HAND='auto'` for controlled recording.

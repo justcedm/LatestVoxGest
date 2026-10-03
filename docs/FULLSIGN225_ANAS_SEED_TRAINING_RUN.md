@@ -21,7 +21,7 @@ Prepared seed dataset:
 - Word profile: `fullsign225_manual5_anas_seed`
 - Feature profile: `fullsign225`
 - Input shape: `[1, 30, 225]`
-- Labels: `EAT`, `WATER`, `HELLO`, `THANKYOU`, `NOTHING`
+- Labels: `EAT`, `WATER`, `HELLO`, `THANKYOU`, `NSAC`
 - Model kind: TCN
 
 ## Prepare Result
@@ -32,7 +32,7 @@ Prepared seed dataset:
 | WATER | 30 | 0 |
 | HELLO | 30 | 0 |
 | THANKYOU | 30 | 0 |
-| NOTHING | 50 | 0 |
+| NSAC | 50 | 0 |
 
 Total copied valid samples: 171.
 
@@ -44,7 +44,7 @@ Total copied valid samples: 171.
 | WATER | 30 | 20 | 1 | 0 | 0 |
 | HELLO | 30 | 20 | 1 | 0 | 0 |
 | THANKYOU | 30 | 20 | 1 | 0 | 0 |
-| NOTHING | 50 | 30 | 1 | 0 | 0 |
+| NSAC | 50 | 30 | 1 | 0 | 0 |
 
 Audit passed for a seed run. The warning is that this dataset uses one signer only, so validation does not prove team/general live performance.
 
@@ -67,8 +67,8 @@ Per-class validation:
 | EAT | 1 | 6 | 16.7% | HELLO |
 | WATER | 0 | 6 | 0.0% | THANKYOU |
 | HELLO | 6 | 6 | 100.0% | - |
-| THANKYOU | 5 | 6 | 83.3% | NOTHING |
-| NOTHING | 4 | 10 | 40.0% | HELLO |
+| THANKYOU | 5 | 6 | 83.3% | NSAC |
+| NSAC | 4 | 10 | 40.0% | HELLO |
 
 ## Weak Labels
 
@@ -76,7 +76,7 @@ Weakest validation labels:
 
 - `WATER`
 - `EAT`
-- `NOTHING`
+- `NSAC`
 
 Stronger seed labels:
 
@@ -103,7 +103,7 @@ $env:VOXGEST_DYNAMIC_MODEL='tcn'
 $env:VOXGEST_SINGLE_HAND_POSE='0'
 $env:VOXGEST_MODE='WORDS'
 $env:VOXGEST_LIVE_TEST_CAPTURE_MODE='hand_trigger_auto'
-$env:VOXGEST_LIVE_TEST_LABELS='EAT,WATER,HELLO,THANKYOU,NOTHING'
+$env:VOXGEST_LIVE_TEST_LABELS='EAT,WATER,HELLO,THANKYOU,NSAC'
 $env:VOXGEST_LIVE_TEST_TRIALS_PER_LABEL='5'
 .\voxgest_env\Scripts\python.exe scripts_ml\33_live_word_test_logger.py
 ```

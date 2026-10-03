@@ -54,7 +54,7 @@ WORD_RULES = {
     "DOCTOR": {"conf": 0.70, "margin": 0.15, "motion": 0.020, "path": 0.20},
     "NAME": {"conf": 0.55, "margin": 0.05, "motion": 0.020, "path": 0.20},
     "THANKYOU": {"conf": 0.52, "margin": 0.03, "motion": 0.010, "path": 0.08},
-    "NOTHING": {"conf": 0.55, "margin": 0.05, "motion": 0.000, "path": 0.00, "presence": 0.00},
+    "NSAC": {"conf": 0.55, "margin": 0.05, "motion": 0.000, "path": 0.00, "presence": 0.00},
 }
 MIRROR_INPUT = True
 

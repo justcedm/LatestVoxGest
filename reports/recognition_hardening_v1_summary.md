@@ -26,7 +26,7 @@ YES, NO, PLEASE, WATER, HELLO, HELP, STOP, DOCTOR, NAME, THANKYOU
 Dynamic negative class:
 
 ```text
-NOTHING
+NSAC
 ```
 
 No new words and no phrase-intent expansion are part of this pass.
@@ -52,12 +52,12 @@ reports/recognition_audit_words.csv
 | DOCTOR | 541 | 22 | 180 | 3 | Yes | Focus live calibration |
 | NAME | 460 | 23 | 60 | 1 | Yes | Ready for retraining/live test |
 | THANKYOU | 580 | 25 | 180 | 3 | Yes | Focus live calibration |
-| NOTHING | 360 | 6 | 360 | 6 | Yes | Add hard negatives if false positives appear |
+| NSAC | 360 | 6 | 360 | 6 | Yes | Add hard negatives if false positives appear |
 
 Focus classes:
 
 ```text
-WATER, THANKYOU, YES, NO, DOCTOR, PLEASE, HELLO, NOTHING
+WATER, THANKYOU, YES, NO, DOCTOR, PLEASE, HELLO, NSAC
 ```
 
 ## Alphabet Live Results
@@ -119,9 +119,9 @@ $env:VOXGEST_ENABLE_PHRASE='0'
 $env:VOXGEST_SINGLE_HAND_POSE='1'
 $env:VOXGEST_DOMINANT_HAND='right'
 $env:VOXGEST_MOTION_LETTER_SEQUENCES_PER_LABEL='20'
-.\voxgest_env\Scripts\python.exe scripts_ml\34_record_motion_letters.py J Z NOTHING
-.\voxgest_env\Scripts\python.exe scripts_ml\34_record_motion_letters.py J Z NOTHING
-.\voxgest_env\Scripts\python.exe scripts_ml\34_record_motion_letters.py J Z NOTHING
+.\voxgest_env\Scripts\python.exe scripts_ml\34_record_motion_letters.py J Z NSAC
+.\voxgest_env\Scripts\python.exe scripts_ml\34_record_motion_letters.py J Z NSAC
+.\voxgest_env\Scripts\python.exe scripts_ml\34_record_motion_letters.py J Z NSAC
 .\voxgest_env\Scripts\python.exe scripts_ml\35_train_motion_letter_tcn.py
 ```
 
@@ -154,10 +154,10 @@ Contract:
 ```text
 input:  [1, 30, 162]
 output: [1, 3]
-labels: J, Z, NOTHING
+labels: J, Z, NSAC
 ```
 
-This model is separate from the 10-word dynamic model. Accepted `J` and `Z` predictions enter the token composer as alphabet letters. `NOTHING` is ignored.
+This model is separate from the 10-word dynamic model. Accepted `J` and `Z` predictions enter the token composer as alphabet letters. `NSAC` is ignored.
 
 ## Word Live Results
 
@@ -234,9 +234,9 @@ ML hardening continues in Python while Android app shell and inference plumbing 
 
 ## Remaining Issues
 
-- Dynamic motion-letter model still needs recorded J/Z/NOTHING data and training.
+- Dynamic motion-letter model still needs recorded J/Z/NSAC data and training.
 - Static weak letters G, H, P, Q, and X need targeted calibration or signing/framing correction.
 - `del`, `space`, and `nothing` controls still need live testing/gesture definition.
 - Live word evaluation has not been performed in this pass.
 - Dynamic TCN must be retrained under `demo10` before it can be active.
-- `NOTHING` must be live-tested for idle, transition, and partial-sign suppression.
+- `NSAC` must be live-tested for idle, transition, and partial-sign suppression.

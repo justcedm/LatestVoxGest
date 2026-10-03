@@ -15,8 +15,8 @@ OneHand162 phrase result:
 
 - `MY` is the most demo-usable one-hand token.
 - `WHAT` is partially usable but needs cleaner capture timing.
-- `YOUR` and `NAME` are not demo-safe yet because they collapse into `NOTHING`.
-- `NOTHING` remains useful as no-output, but quality blocking still appears in negative trials.
+- `YOUR` and `NAME` are not demo-safe yet because they collapse into `NSAC`.
+- `NSAC` remains useful as no-output, but quality blocking still appears in negative trials.
 
 FullSign225 phrase result:
 
@@ -37,7 +37,7 @@ Demo gate behavior:
 - Lowers thresholds for `MY`, `OKAY`, `YOU`, and `YOUR`.
 - Lowers motion and wrist-path requirements for low-motion phrase signs.
 - Keeps `BAD_SEQUENCE`, `LOW_HAND_PRESENCE`, and `NO_HAND` blocking.
-- Keeps `NOTHING` as no-output. It must never become a displayed/spoken token.
+- Keeps `NSAC` as no-output. It must never become a displayed/spoken token.
 
 ## Capture Timing
 
@@ -80,7 +80,7 @@ $env:VOXGEST_DOMINANT_HAND='right'
 $env:VOXGEST_MODE='WORDS'
 $env:VOXGEST_GATE_PROFILE='demo'
 $env:VOXGEST_LIVE_TEST_CAPTURE_MODE='manual_capture'
-$env:VOXGEST_LIVE_TEST_LABELS='WHAT,MY,NOTHING'
+$env:VOXGEST_LIVE_TEST_LABELS='WHAT,MY,NSAC'
 .\voxgest_env\Scripts\python.exe scripts_ml\33_live_word_test_logger.py
 ```
 
@@ -95,7 +95,7 @@ $env:VOXGEST_SINGLE_HAND_POSE='0'
 $env:VOXGEST_MODE='WORDS'
 $env:VOXGEST_GATE_PROFILE='demo'
 $env:VOXGEST_LIVE_TEST_CAPTURE_MODE='manual_capture'
-$env:VOXGEST_LIVE_TEST_LABELS='MY,OKAY,LIVE,NOTHING'
+$env:VOXGEST_LIVE_TEST_LABELS='MY,OKAY,LIVE,NSAC'
 .\voxgest_env\Scripts\python.exe scripts_ml\33_live_word_test_logger.py
 ```
 

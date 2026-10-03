@@ -12,7 +12,7 @@
     "YOUR",
     "NAME",
     "MY",
-    "NOTHING"
+    "NSAC"
   ],
   "zip_files_found": [
     {
@@ -94,7 +94,7 @@
       "YOUR",
       "NAME",
       "MY",
-      "NOTHING"
+      "NSAC"
     ],
     "status_counts": {
       "rejected": 1473,
@@ -109,7 +109,7 @@
       "YOUR": 80,
       "NAME": 80,
       "MY": 80,
-      "NOTHING": 160
+      "NSAC": 160
     },
     "copied_total": 480,
     "duplicate_count": 0,
@@ -124,7 +124,7 @@
     "YOUR": 310,
     "NAME": 310,
     "MY": 160,
-    "NOTHING": 380
+    "NSAC": 380
   },
   "per_signer": {
     "ANASTACIA": 240,
@@ -145,21 +145,21 @@
       "YOUR": 40,
       "NAME": 40,
       "MY": 40,
-      "NOTHING": 80
+      "NSAC": 80
     },
     "EARLE": {
       "WHAT": 90,
       "YOUR": 140,
       "NAME": 140,
       "MY": 40,
-      "NOTHING": 140
+      "NSAC": 140
     },
     "MARIELLA": {
       "WHAT": 130,
       "YOUR": 130,
       "NAME": 130,
       "MY": 80,
-      "NOTHING": 160
+      "NSAC": 160
     }
   },
   "per_signer_per_source": {
@@ -207,7 +207,7 @@
       "missing": 0,
       "ready": true
     },
-    "NOTHING": {
+    "NSAC": {
       "count": 380,
       "minimum": 180,
       "missing": 0,
@@ -239,7 +239,7 @@
       "missing": 0,
       "ready": true
     },
-    "NOTHING": {
+    "NSAC": {
       "count": 380,
       "preferred": 240,
       "missing": 0,

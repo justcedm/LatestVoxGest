@@ -28,7 +28,7 @@ Immediate engineering objective:
 - make the current dynamic word recognizer respond clearly and quickly
 - keep the runtime offline and device-local
 - keep the dynamic recognizer focused on one dominant hand
-- stabilize the current 10 communicative words plus `NOTHING` before adding more words or moving to sentence assembly
+- stabilize the current 10 communicative words plus `NSAC` before adding more words or moving to sentence assembly
 
 ## Current Scope
 
@@ -54,9 +54,9 @@ Dynamic recognition currently exists for:
 
 Negative or non-word target:
 
-- `NOTHING`
-- `NOTHING` is now inside the trained dynamic model
-- `NOTHING` should be treated as a negative/no-word class, not as a spoken output token
+- `NSAC`
+- `NSAC` is now inside the trained dynamic model
+- `NSAC` should be treated as a negative/no-word class, not as a spoken output token
 
 ## Design Constraint: Dominant Hand
 
@@ -110,7 +110,7 @@ Interpretation:
 - `30` frames per decision window
 - `162` features per frame
 - dynamic classes currently total `11`
-- `NOTHING` is active as the negative/no-word class
+- `NSAC` is active as the negative/no-word class
 
 Dynamic label order:
 
@@ -124,7 +124,7 @@ Dynamic label order:
 8. `DOCTOR`
 9. `NAME`
 10. `THANKYOU`
-11. `NOTHING`
+11. `NSAC`
 
 ## Current Training Report Snapshot
 
@@ -169,7 +169,7 @@ Current top confusion mapping:
 
 Interpretation:
 
-- the model now includes `NOTHING`
+- the model now includes `NSAC`
 - grouped validation improved from the prior report but is still not strong enough for sentence-level use
 - `WATER` and `THANKYOU` are current live weak spots
 - `YES` and `NO` are also harder than expected in live use despite moderate grouped validation
@@ -188,7 +188,7 @@ From the current training report:
 - `DOCTOR`: `481 sequences`, `21 groups`
 - `NAME`: `460 sequences`, `23 groups`
 - `THANKYOU`: `700 sequences`, `27 groups`
-- `NOTHING`: `240 sequences`, `4 groups`, `used: true`
+- `NSAC`: `240 sequences`, `4 groups`, `used: true`
 
 Important trainer limits from [`scripts_ml/19_train_lstm.py`](./scripts_ml/19_train_lstm.py):
 
@@ -197,8 +197,8 @@ Important trainer limits from [`scripts_ml/19_train_lstm.py`](./scripts_ml/19_tr
 
 Implication:
 
-- `NOTHING` now meets the training minimums and is included in the model
-- more `NOTHING` data can still improve false-positive control later
+- `NSAC` now meets the training minimums and is included in the model
+- more `NSAC` data can still improve false-positive control later
 
 ## What Was Done In This Chat
 
@@ -230,7 +230,7 @@ User-facing operating rules clarified during this chat:
 
 - recorder target count matters more than raw repetition count
 - repeating the same target word continuously during capture is acceptable
-- `NOTHING` should be neutral non-word movement, not total stillness
+- `NSAC` should be neutral non-word movement, not total stillness
 
 ### 3. The dynamic vocabulary was expanded from 5 words to 10 words
 
@@ -287,7 +287,7 @@ Fix applied in the main runtime:
 - [`scripts_ml/20_webcam_dual.py`](./scripts_ml/20_webcam_dual.py)
 - `WORDS_MODE_WORD_RULES` starts at line 60
 - added or revised explicit rules for compact and weak live words
-- added `NOTHING` as a no-output negative class
+- added `NSAC` as a no-output negative class
 - added per-word stable-frame tuning in `WORDS` mode
 
 Fix applied in the diagnostic:
@@ -295,7 +295,7 @@ Fix applied in the diagnostic:
 - [`scripts_ml/22_diagnostic_lstm.py`](./scripts_ml/22_diagnostic_lstm.py)
 - `WORD_RULES` starts at line 38
 - synced diagnostic thresholds with the live recognizer
-- added `NOTHING` diagnostic thresholds
+- added `NSAC` diagnostic thresholds
 
 Current `WORDS` mode rules:
 
@@ -309,7 +309,7 @@ Current `WORDS` mode rules:
 - `DOCTOR`: `conf 0.70`, `margin 0.15`, `motion 0.020`, `path 0.20`
 - `NAME`: `conf 0.55`, `margin 0.05`, `motion 0.020`, `path 0.20`
 - `THANKYOU`: `conf 0.52`, `margin 0.03`, `motion 0.010`, `path 0.08`, `stable 6`
-- `NOTHING`: `conf 0.55`, `margin 0.05`, `motion 0.000`, `path 0.00`, `presence 0.00`, `stable 4`
+- `NSAC`: `conf 0.55`, `margin 0.05`, `motion 0.000`, `path 0.00`, `presence 0.00`, `stable 4`
 
 ### 6. Angle robustness was improved in the extractor
 
@@ -341,8 +341,8 @@ What happened operationally:
 - the user recorded manual data for the original 5 words
 - the dynamic model was retrained
 - the user then expanded to the next 5 words and retrained again
-- the user recorded enough `NOTHING` sessions for it to enter training
-- the project now has a current 10-word plus `NOTHING` trained model and TFLite export
+- the user recorded enough `NSAC` sessions for it to enter training
+- the project now has a current 10-word plus `NSAC` trained model and TFLite export
 
 Latest export state:
 
@@ -411,7 +411,7 @@ Current engineering risks:
 
 - grouped validation is not yet strong enough for sentence-level deployment
 - live recognition is still sensitive to signer angle and motion style
-- `NOTHING` is now active but still new
+- `NSAC` is now active but still new
 - threshold tuning alone will not fully solve weak separation if the data distribution is still narrow
 
 Specific weak spots right now:
@@ -452,7 +452,7 @@ Secondary watch list:
 
 - `HELLO`
 - `PLEASE`
-- `NOTHING`
+- `NSAC`
 
 ### Step 1: record more manual data
 
@@ -529,10 +529,10 @@ Current goal:
 - make the current 10 communicative dynamic words very strong before adding more words
 
 Current dynamic classes:
-YES, NO, PLEASE, WATER, HELLO, HELP, STOP, DOCTOR, NAME, THANKYOU, NOTHING
+YES, NO, PLEASE, WATER, HELLO, HELP, STOP, DOCTOR, NAME, THANKYOU, NSAC
 
 Current negative class status:
-- NOTHING is now trained into the model as class index 10
+- NSAC is now trained into the model as class index 10
 - current model output shape is [1, 11]
 
 Important files:
@@ -551,7 +551,7 @@ Already changed:
 - dynamic feature extraction is single-hand with VOXGEST_DOMINANT_HAND support
 - added demo10 profile with HELP, STOP, DOCTOR, NAME, THANKYOU
 - updated Android handoff and runtime manifest to the 11-class model
-- added per-word WORDS thresholds for HELP, STOP, DOCTOR, NAME, THANKYOU, NOTHING
+- added per-word WORDS thresholds for HELP, STOP, DOCTOR, NAME, THANKYOU, NSAC
 - made YES, NO, WATER, and THANKYOU easier to accept in WORDS mode with lighter gates and faster stable-frame requirements
 - added angle augmentation in 18_extract_lstm.py with x/y/z rotations
 

@@ -1,4 +1,4 @@
-"""Bootstrap fullsign225 NOTHING samples from existing onehand162 negatives.
+"""Bootstrap fullsign225 NSAC samples from existing onehand162 negatives.
 
 This is an experiment-only bridge for the sprint30_fullsign225 profile. The
 output files are true 30x225 arrays, but their source is the existing manual
@@ -27,7 +27,7 @@ from lstm_features import (
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE_DIR = Path(os.environ.get("VOXGEST_BOOTSTRAP_SOURCE_DATASET", ROOT / "dataset_words_lstm"))
 TARGET_DIR = Path(os.environ.get("VOXGEST_LSTM_DATASET", ROOT / default_dataset_dir_name()))
-SOURCE_LABEL = os.environ.get("VOXGEST_BOOTSTRAP_NEGATIVE_LABEL", "NOTHING").strip().upper()
+SOURCE_LABEL = os.environ.get("VOXGEST_BOOTSTRAP_NEGATIVE_LABEL", "NSAC").strip().upper()
 TARGET_LABEL = SOURCE_LABEL
 SOURCE_META = SOURCE_DIR / "metadata_lstm_v2.json"
 TARGET_META = TARGET_DIR / "metadata_lstm_v2.json"
@@ -134,7 +134,7 @@ def main():
     print(f"Saved  : {saved}")
     print(f"Skipped: {skipped}")
     print(f"Meta   : {TARGET_META}")
-    print("NOTE   : Replace with native fullsign225 NOTHING recordings before demo use.")
+    print("NOTE   : Replace with native fullsign225 NSAC recordings before demo use.")
 
 
 if __name__ == "__main__":

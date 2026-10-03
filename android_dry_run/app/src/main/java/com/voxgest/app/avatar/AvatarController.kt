@@ -65,7 +65,7 @@ class AvatarController(
 
     fun playWord(word: String): Boolean {
         val clean = AvatarMotion.normalizeWord(word)
-        if (clean.isBlank() || clean == "NOTHING") {
+        if (clean.isBlank() || clean == "NSAC") {
             return false
         }
         handler.removeCallbacksAndMessages(null)
@@ -111,7 +111,7 @@ class AvatarController(
     }
 
     private fun playSingle(word: String) {
-        if (word == "NOTHING") return
+        if (word == "NSAC") return
         val animation = AvatarAnimationLibrary.resolve(word)
         val fallback = animation.kind == AvatarAnimationKind.FINGERSPELL
         val canvasAssetPresent = assetLoader?.hasCanvasAnimation(word) ?: false

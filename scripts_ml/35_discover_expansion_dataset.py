@@ -193,7 +193,7 @@ def support_score(row):
         score += 50
     if row["candidate_word"] in DEMO10_WORDS:
         score += 1000
-    if row["candidate_word"] == "NOTHING":
+    if row["candidate_word"] == "NSAC":
         score += 1000
     return score
 
@@ -272,8 +272,8 @@ def choose_recommended(rows):
                 selected.append(row)
                 selected_names.add(row["candidate_word"])
     selected_words = [row["candidate_word"] for row in selected if row["candidate_word"] not in NEGATIVE_WORDS]
-    if "NOTHING" not in selected_words:
-        selected_words.append("NOTHING")
+    if "NSAC" not in selected_words:
+        selected_words.append("NSAC")
     return selected_words
 
 
@@ -287,7 +287,7 @@ def write_outputs(rows, recommended):
         "video_dirs": [str(path) for path in VIDEO_DIRS],
         "minimum_sequences_per_class": MIN_SEQS,
         "minimum_groups_per_class": MIN_GROUPS,
-        "target_total_labels_including_nothing": TARGET_TOTAL_LABELS,
+        "target_total_labels_including_nsac": TARGET_TOTAL_LABELS,
         "sprint30_config_words_without_negative": SPRINT30_WORDS,
         "recommended_final_sprint30_word_list": recommended,
         "external_dataset_roots_detected": external_roots,

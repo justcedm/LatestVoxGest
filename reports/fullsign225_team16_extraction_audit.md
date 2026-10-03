@@ -19,7 +19,7 @@ Poor tracking videos: 2
 | HELP | 26 | 26 | 0 | 0 | 1.00 | 0.61 | yes |
 | NAME | 25 | 25 | 0 | 0 | 1.00 | 0.73 | yes |
 | NO | 24 | 24 | 0 | 0 | 1.00 | 0.81 | yes |
-| NOTHING | 19 | 17 | 2 | 2 | 1.00 | 0.55 | yes |
+| NSAC | 19 | 17 | 2 | 2 | 1.00 | 0.55 | yes |
 | PAIN | 19 | 19 | 0 | 0 | 1.00 | 0.80 | yes |
 | PLEASE | 25 | 25 | 0 | 0 | 1.00 | 0.83 | yes |
 | SORRY | 31 | 31 | 0 | 0 | 1.00 | 0.69 | yes |
@@ -32,11 +32,11 @@ Poor tracking videos: 2
 
 ## Labels Ready For Training
 
-DOCTOR, EAT, HELLO, HELP, NAME, NO, NOTHING, PAIN, PLEASE, SORRY, STOP, THANKYOU, TIME, WANT, WATER, YES
+DOCTOR, EAT, HELLO, HELP, NAME, NO, NSAC, PAIN, PLEASE, SORRY, STOP, THANKYOU, TIME, WANT, WATER, YES
 
 ## Labels Needing More Recordings
 
-EAT, HELLO, HELP, NAME, NO, NOTHING, PAIN, PLEASE, STOP, THANKYOU, TIME, WANT, YES
+EAT, HELLO, HELP, NAME, NO, NSAC, PAIN, PLEASE, STOP, THANKYOU, TIME, WANT, YES
 
 ## Labels Under 10 Successful Extractions
 
@@ -44,15 +44,15 @@ None
 
 ## Labels Under 30 Successful Extractions
 
-EAT, HELLO, HELP, NAME, NO, NOTHING, PAIN, PLEASE, STOP, THANKYOU, TIME, WANT, YES
+EAT, HELLO, HELP, NAME, NO, NSAC, PAIN, PLEASE, STOP, THANKYOU, TIME, WANT, YES
 
 ## Failure Reasons
 
 - low_hand_ratio<0.20: 2
 
-## NOTHING Warning
+## NSAC Warning
 
-NOTHING currently has 19 normalized videos. It is usable for an initial audit, but should be expanded later with idle hands, hand entering/leaving frame, partial signs, aborted signs, and transition movements.
+NSAC currently has 19 normalized videos. It is usable for an initial audit, but should be expanded later with idle hands, hand entering/leaving frame, partial signs, aborted signs, and transition movements.
 
 ## Next Step
 
