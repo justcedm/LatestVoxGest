@@ -38,7 +38,7 @@ data class RecognitionProfile(
     companion object {
         const val ACTIVE_RECOGNITION_PROFILE = OneHandCalibrationConfig.ORIGINAL_PROFILE_ID
         val ONEHAND162_LABELS = OneHandCalibrationConfig.MODEL_LABELS
-        val ONEHAND162_INPUT_SHAPE = intArrayOf(1, 30, 162)
+        val ONEHAND162_INPUT_SHAPE = intArrayOf(1, 20, 162)
 
         fun loadDefault(context: Context): RecognitionProfile {
             return load(context, activeRecognitionProfileId(context))

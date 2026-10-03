@@ -1,0 +1,99 @@
+{
+  "version": 1,
+  "profile": "onehand162_android_calibrated_v1",
+  "status": "android_calibrated_experimental_until_live_tested",
+  "default_model": false,
+  "replaces_onehand162": false,
+  "feature_profile": "onehand162",
+  "dominant_hand": "right",
+  "mirrored_input": true,
+  "single_hand_pose": true,
+  "model_kind": "basic_tcn",
+  "models": {
+    "tcn": {
+      "file": "model/voxgest_tcn_onehand162_android_calibrated_v1.tflite",
+      "keras_file": "model/voxgest_tcn_onehand162_android_calibrated_v1.h5",
+      "labels_file": "model/class_labels_tcn_onehand162_android_calibrated_v1.json",
+      "training_report": "model/tcn_training_report_onehand162_android_calibrated_v1.json",
+      "input_shape": [
+        1,
+        30,
+        162
+      ],
+      "output_shape": [
+        1,
+        5
+      ],
+      "sequence_length": 30,
+      "feature_size": 162,
+      "labels": [
+        "WHAT",
+        "YOUR",
+        "NAME",
+        "MY",
+        "NOTHING"
+      ],
+      "negative_label": "NOTHING",
+      "nothing_policy": "ignore_no_output"
+    }
+  },
+  "dataset": {
+    "features": "external_datasets/android_onehand162_phrase_v1_features",
+    "class_stats": {
+      "WHAT": {
+        "sequences": 102,
+        "minimum": 50,
+        "preferred": 80,
+        "minimum_ready": true,
+        "preferred_ready": true
+      },
+      "YOUR": {
+        "sequences": 100,
+        "minimum": 50,
+        "preferred": 80,
+        "minimum_ready": true,
+        "preferred_ready": true
+      },
+      "NAME": {
+        "sequences": 100,
+        "minimum": 50,
+        "preferred": 80,
+        "minimum_ready": true,
+        "preferred_ready": true
+      },
+      "MY": {
+        "sequences": 102,
+        "minimum": 50,
+        "preferred": 80,
+        "minimum_ready": true,
+        "preferred_ready": true
+      },
+      "NOTHING": {
+        "sequences": 108,
+        "minimum": 100,
+        "preferred": 150,
+        "minimum_ready": true,
+        "preferred_ready": false
+      }
+    },
+    "minimums": {
+      "MY": 50,
+      "WHAT": 50,
+      "YOUR": 50,
+      "NAME": 50,
+      "NOTHING": 100
+    },
+    "preferred": {
+      "MY": 80,
+      "WHAT": 80,
+      "YOUR": 80,
+      "NAME": 80,
+      "NOTHING": 150
+    }
+  },
+  "runtime_policy": {
+    "input_policy": "android_camera_feature_arrays_recorded_before_inference",
+    "nothing_policy": "NOTHING remains no-output",
+    "android_flag": "USE_ANDROID_CALIBRATED_ONEHAND_MODEL"
+  }
+}

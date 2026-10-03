@@ -1,0 +1,133 @@
+{
+  "profile": "onehand162_android_calibrated_v1",
+  "dataset": "C:\\BSIT 3RD YEAR\\New VovGest\\external_datasets\\android_onehand162_phrase_v1_features",
+  "model": "C:\\BSIT 3RD YEAR\\New VovGest\\model\\voxgest_tcn_onehand162_android_calibrated_v1.h5",
+  "tflite": "C:\\BSIT 3RD YEAR\\New VovGest\\model\\voxgest_tcn_onehand162_android_calibrated_v1.tflite",
+  "labels": "C:\\BSIT 3RD YEAR\\New VovGest\\model\\class_labels_tcn_onehand162_android_calibrated_v1.json",
+  "runtime_manifest": "C:\\BSIT 3RD YEAR\\New VovGest\\model\\runtime_manifest_onehand162_android_calibrated_v1.json",
+  "input_shape": [
+    1,
+    30,
+    162
+  ],
+  "output_shape": [
+    1,
+    5
+  ],
+  "classes": [
+    "WHAT",
+    "YOUR",
+    "NAME",
+    "MY",
+    "NOTHING"
+  ],
+  "class_stats": {
+    "WHAT": {
+      "sequences": 102,
+      "minimum": 50,
+      "preferred": 80,
+      "minimum_ready": true,
+      "preferred_ready": true
+    },
+    "YOUR": {
+      "sequences": 100,
+      "minimum": 50,
+      "preferred": 80,
+      "minimum_ready": true,
+      "preferred_ready": true
+    },
+    "NAME": {
+      "sequences": 100,
+      "minimum": 50,
+      "preferred": 80,
+      "minimum_ready": true,
+      "preferred_ready": true
+    },
+    "MY": {
+      "sequences": 102,
+      "minimum": 50,
+      "preferred": 80,
+      "minimum_ready": true,
+      "preferred_ready": true
+    },
+    "NOTHING": {
+      "sequences": 108,
+      "minimum": 100,
+      "preferred": 150,
+      "minimum_ready": true,
+      "preferred_ready": false
+    }
+  },
+  "minimums": {
+    "MY": 50,
+    "WHAT": 50,
+    "YOUR": 50,
+    "NAME": 50,
+    "NOTHING": 100
+  },
+  "preferred": {
+    "MY": 80,
+    "WHAT": 80,
+    "YOUR": 80,
+    "NAME": 80,
+    "NOTHING": 150
+  },
+  "train_sequences": 410,
+  "val_sequences": 102,
+  "split_notes": {
+    "WHAT": {
+      "mode": "stratified_random",
+      "train": 82,
+      "val": 20
+    },
+    "YOUR": {
+      "mode": "stratified_random",
+      "train": 80,
+      "val": 20
+    },
+    "NAME": {
+      "mode": "stratified_random",
+      "train": 80,
+      "val": 20
+    },
+    "MY": {
+      "mode": "stratified_random",
+      "train": 82,
+      "val": 20
+    },
+    "NOTHING": {
+      "mode": "stratified_random",
+      "train": 86,
+      "val": 22
+    }
+  },
+  "best_val_accuracy": 100.0,
+  "per_class": {
+    "WHAT": {
+      "correct": 20,
+      "total": 20,
+      "accuracy": 100.0
+    },
+    "YOUR": {
+      "correct": 20,
+      "total": 20,
+      "accuracy": 100.0
+    },
+    "NAME": {
+      "correct": 20,
+      "total": 20,
+      "accuracy": 100.0
+    },
+    "MY": {
+      "correct": 20,
+      "total": 20,
+      "accuracy": 100.0
+    },
+    "NOTHING": {
+      "correct": 22,
+      "total": 22,
+      "accuracy": 100.0
+    }
+  },
+  "training_seconds": 39.19164443016052
+}
