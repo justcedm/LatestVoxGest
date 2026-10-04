@@ -14,6 +14,7 @@ p = argparse.ArgumentParser()
 p.add_argument('--blend',required=True)
 p.add_argument('--action',required=True)
 p.add_argument('--out',required=True)
+p.add_argument('--stem',default='THANK_YOU')
 args = p.parse_args(sys.argv[sys.argv.index('--')+1:])
 out = pathlib.Path(args.out).resolve()
 assert not out.exists(), 'Use a new derivative directory'
@@ -48,11 +49,11 @@ cam.rotation_euler=(Vector((0,0,1.18))-cam.location).to_track_quat('-Z','Y').to_
 scene.frame_set(scene.frame_start)
 out.mkdir(parents=True)
 bpy.data.texts.new('SURVEY_REVIEW_STATUS').write('UNAPPROVED engineering review: '+args.action+'\n60 FPS review movie is not human visual approval.\nSource mapping/reviewer confirmation and contact review remain pending.\nNo Android qualification, no FSL approval, listen_ready=false.\n')
-bpy.ops.wm.save_as_mainfile(filepath=str(out/'THANK_YOU_review_only.blend'))
+bpy.ops.wm.save_as_mainfile(filepath=str(out/(args.stem+'_review_only.blend')))
 scene.render.image_settings.file_format='FFMPEG'
 scene.render.ffmpeg.format='MPEG4'
 scene.render.ffmpeg.codec='H264'
 scene.render.ffmpeg.constant_rate_factor='MEDIUM'
-scene.render.filepath=str(out/'THANK_YOU_candidate_60fps.mp4')
+scene.render.filepath=str(out/(args.stem+'_candidate_60fps.mp4'))
 bpy.ops.render.render(animation=True)
 print('REVIEW_MOVIE_COMPLETE',flush=True)

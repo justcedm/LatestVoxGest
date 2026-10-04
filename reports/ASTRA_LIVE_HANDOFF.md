@@ -1,3 +1,17 @@
+# UNDERSTAND V9 review checkpoint - 2026-10-05T00:41:49.706503+08:00
+
+Saved a separate UNDERSTAND__EYE_HEIGHT_REVIEW_V9 Blender Action and245-frame/60FPS source comparison. V8 is preserved and rejected for elevated elbow/sleeve deformation. V9 keeps the same source-relative height and uses70mm forward clearance to obtain a lower elbow; this depth is a hypothesis requiring review. All13 pre-existing Action curve/key/interpolation/handle hashes match, including HELLO/MILK/RICE and THANK YOU V4. Blender pose parity PASS across245frames/238bones (max matrix error8.35e-7).
+
+SOURCE=PENDING_REVIEW; MECHANICAL=BLOCKED_CONTACT_CLASSIFICATION_AND_DEFORMATION_REVIEW; FULL_SPEED_VISUAL=PENDING; EXPORT=NOT_CREATED; LISTEN_READY=false.41 inherited collision frame/pair flags remain, with none added. No nearby signed face flags; minimum tip/face distance14.42mm in frames96-219. These diagnostics exclude clothing and do not certify inside-volume clearance. Source head tilt/facial expression remains unmatched. Existing finger local-translation discontinuities are retained and require visual review; values are local rig units, not metres.
+
+Sampled front/side and comparison frames80,106,140,196,218,245 inspected: fingertip height improved; elbow below shoulder at160; sleeve/shoulder and curled-finger appearance need closer review. No full-speed human acceptance claimed. Previous GLB/ZIP unchanged. THANK YOU onset mismatch remains open; all3 survey phrase references remain missing. Recognition and production LISTEN untouched.
+
+Private artifacts and SHA256 are in reports/UNDERSTAND_HEIGHT_CALIBRATION_20261005.json. Only scripts and aggregate reports enter Git. Authority read: origin/main98682a8, including FINAL_SURVEY_DEMO_INTEGRATION_PLAN_20261003.md.
+
+NEXT_EXACT_ACTION=Classify inherited hand/torso contacts at frames10-12,76-82,234-236 and finger contacts121-196,211-225 using close-up multi-view deformation; review V9 full-speed source comparison before a further derivative or export.
+
+---
+
 # Survey phrase reference gate — 2026-10-01T00:20:03.864259+08:00
 
 SURVEY_INTRO_REFERENCE=MISSING; FSL_LEARNING_REFERENCE=MISSING; TRY_AND_RATE_REFERENCE=MISSING. No phrase animation/export. Request packet and9-take metadata template created in avatar_handoff. Read authority on origin/main at 8b2ac0ce822eaa00e8e0873d455f63f02856568e. See reports/ASTRA_SURVEY_PHRASE_STATE_20261001.json for exact search scope/provenance.

@@ -12,6 +12,7 @@ import numpy as np
 p=argparse.ArgumentParser()
 for key in ('source','candidate','out'):
     p.add_argument('--'+key,required=True)
+p.add_argument('--source-label',default='REFERENCE: clip 7/0')
 a=p.parse_args()
 out=pathlib.Path(a.out).resolve()
 assert not out.exists()
@@ -24,7 +25,7 @@ writer=cv2.VideoWriter(str(out),cv2.VideoWriter_fourcc(*'mp4v'),60,(1120,520))
 assert writer.isOpened()
 for i in range(counts[0]):
     canvas=np.full((520,1120,3),240,dtype=np.uint8)
-    for col,(cap,label) in enumerate(zip(caps,('REFERENCE: clip 7/0','CANDIDATE: NOT APPROVED'))):
+    for col,(cap,label) in enumerate(zip(caps,(a.source_label,'CANDIDATE: NOT APPROVED'))):
         ok,frame=cap.read()
         assert ok,(col,i)
         scale=min(550/frame.shape[1],460/frame.shape[0])
@@ -33,7 +34,7 @@ for i in range(counts[0]):
         x=col*560+(560-frame.shape[1])//2
         canvas[y:y+frame.shape[0],x:x+frame.shape[1]]=frame
         cv2.putText(canvas,label,(col*560+10,25),cv2.FONT_HERSHEY_SIMPLEX,.65,(20,20,20),1,cv2.LINE_AA)
-    cv2.putText(canvas,f'Frame {i+1} / {counts[0]} | 60 FPS | inspect face placement and frames 127-128',(10,515),cv2.FONT_HERSHEY_SIMPLEX,.5,(20,20,20),1,cv2.LINE_AA)
+    cv2.putText(canvas,f'Frame {i+1} / {counts[0]} | 60 FPS | review preparation, contact and recovery',(10,515),cv2.FONT_HERSHEY_SIMPLEX,.5,(20,20,20),1,cv2.LINE_AA)
     writer.write(canvas)
 writer.release()
 for cap in caps:
