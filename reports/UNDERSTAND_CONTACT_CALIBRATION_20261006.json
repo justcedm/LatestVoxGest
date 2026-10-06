@@ -1,0 +1,773 @@
+{
+  "timestamp": "2026-10-06T20:00:34.343834+08:00",
+  "action": "UNDERSTAND__CLOTHING_CLEARANCE_REVIEW_V11",
+  "selected_fit": "fit_v11_trial4",
+  "source": "clips/10/0.MOV",
+  "source_sha256": "16337c389b76ea72cd24064cda4f073855539c4607b3e451f1a30b86b69b8996",
+  "files": {
+    "blender_v11/UNDERSTAND__CLOTHING_CLEARANCE_REVIEW_V11.blend": {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-15\\files-mentioned-by-the-user-voxgest-2\\outputs\\understand_contact_review_20261006_v1\\blender_v11\\UNDERSTAND__CLOTHING_CLEARANCE_REVIEW_V11.blend",
+      "sha256": "586ae8d96d81e109a4e5fe41778adb8d9274946b7180ed78c975f1fe81b6f696",
+      "bytes": 565767224
+    },
+    "fit_v11_trial4/private_pose_fit.npz": {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-15\\files-mentioned-by-the-user-voxgest-2\\outputs\\understand_contact_review_20261006_v1\\fit_v11_trial4\\private_pose_fit.npz",
+      "sha256": "d2c26a33f8c2eb54e23cd602fd39b282b8b30e8279686b4ff861be460ce1aa09",
+      "bytes": 9903699
+    },
+    "movie_v11/UNDERSTAND_V11_SOURCE_COMPARISON_60fps.mp4": {
+      "path": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-15\\files-mentioned-by-the-user-voxgest-2\\outputs\\understand_contact_review_20261006_v1\\movie_v11\\UNDERSTAND_V11_SOURCE_COMPARISON_60fps.mp4",
+      "sha256": "961428a4d5db161244a6f6ef109d9777be619f7686e758db1cc2d9acb26e494b",
+      "bytes": 1214771
+    }
+  },
+  "immutable_input_hashes": {
+    "v9_blend": "9b080e1782e7a2e0e78a0937fbc57e7599250d15cd3ac4eda0a9c4311a99b127",
+    "runtime_glb": "1f566e98e020b8e46e8a625c3910794be86a2017392093950f467bad68c7689b",
+    "source_blend": "a61a1f69e0bee8bcb23ef07a76790ce47ae0c621a476976719f75a27bc9af1c0"
+  },
+  "blender_build": {
+    "action_hash_schema": "v2_bulk_numeric_enum_identifiers",
+    "baseline_world_basis_error": 4.76837158203125e-07,
+    "changed_bones": 138,
+    "original_action_hashes": {
+      "FSL_HELLO": "2267cbe1877a105dc3efc3f97105bc70a5e8fd3b0c120702e6bff7c982ab36a8",
+      "FSL_MILK": "7353c73627db2e5cbff9e770e18e74a94b7d5d09a9e9ffe8b62e3a733b1893ba",
+      "FSL_RICE": "77cce83be5751d49d6958ff05c0f749f2fda2aa44df52cfc883850724db25e7e",
+      "GOOD_EVENING": "f3eb76019cec9adf7c2802ff6429e63aceb9884bb2138c5556feb242131002ea",
+      "HOW_ARE_YOU": "b0cc3e0257fc76655eff08b262ef2dd932a543dcebac6696063fa5d0f5b65aa0",
+      "IM_FINE": "6da00c9c5b60e6d3e86bdb75a2f22a2f702869e611846f6be23b1658da8813e2",
+      "KNOW": "263c08c6097f0ab8efcaba087bde5366db3630aacaaecf6da0ae011502d574a7",
+      "NO": "104c7e3847f62d3f7df852d752ba80ecebc3fe287eea5bd64b24273282632020",
+      "THANK_YOU": "0fd5301ce356034bc7e8f62815284052ea0cc4a97000e9bc6eebec795e4639f2",
+      "THANK_YOU__BODY_CLEARANCE_REVIEW_V4": "3d96e0b601b9450796cc2bfcf6fbfabede3b095d8c48f7732691ff63840b8699",
+      "UNDERSTAND": "5f4353328f08d60758a8b41323d94c1919df9a0224013446386f9d6cf0d1d0ba",
+      "WRONG": "45c6016341d829edb5d06c0416962b2edb7990319f03ca7e840b30b8d7ea0579",
+      "YES": "0ed10fe65e1f51e90564ba6e01a290a7526b866ccba372de6fb1aeb41eff97b3"
+    },
+    "original_actions_unchanged": true,
+    "new_action": "UNDERSTAND__CLOTHING_CLEARANCE_REVIEW_V11",
+    "visual": "PENDING",
+    "mechanical": "PENDING",
+    "export": "BLOCKED",
+    "listen_ready": false
+  },
+  "blender_parity": {
+    "frames": 245,
+    "bones": 238,
+    "max_evaluated_world_matrix_error": 8.940696716308594e-07,
+    "parity_pass": true,
+    "source_file_modified": false,
+    "scope": "Evaluated pose parity only; not visual/FSL acceptance"
+  },
+  "pose_comparison": {
+    "frames": 245,
+    "finite": true,
+    "neutral_exact_to_previous": true,
+    "stroke_96_220_exact": true,
+    "root_exact": true,
+    "changed_bones": [
+      "RT_DEF-f_index.03.L_00",
+      "RT_DEF-f_index.03.L_03",
+      "RT_DEF-f_index.03.L_07",
+      "RT_DEF-f_index.03.L_10",
+      "RT_DEF-f_index.02.L_00",
+      "RT_DEF-f_index.02.L_03",
+      "RT_DEF-f_index.02.L_07",
+      "RT_DEF-f_index.02.L_10",
+      "RT_DEF-f_index.01.L_00",
+      "RT_DEF-f_index.01.L_03",
+      "RT_DEF-f_index.01.L_07",
+      "RT_DEF-f_index.01.L_10",
+      "RT_DEF-thumb.03.L_00",
+      "RT_DEF-thumb.03.L_03",
+      "RT_DEF-thumb.03.L_07",
+      "RT_DEF-thumb.03.L_10",
+      "RT_DEF-thumb.02.L_00",
+      "RT_DEF-thumb.02.L_03",
+      "RT_DEF-thumb.02.L_07",
+      "RT_DEF-thumb.02.L_10",
+      "RT_DEF-thumb.01.L_00",
+      "RT_DEF-thumb.01.L_03",
+      "RT_DEF-thumb.01.L_07",
+      "RT_DEF-thumb.01.L_10",
+      "DEF-palm.01.L",
+      "RT_DEF-f_middle.03.L_00",
+      "RT_DEF-f_middle.03.L_03",
+      "RT_DEF-f_middle.03.L_07",
+      "RT_DEF-f_middle.03.L_10",
+      "RT_DEF-f_middle.02.L_00",
+      "RT_DEF-f_middle.02.L_03",
+      "RT_DEF-f_middle.02.L_07",
+      "RT_DEF-f_middle.02.L_10",
+      "RT_DEF-f_middle.01.L_00",
+      "RT_DEF-f_middle.01.L_03",
+      "RT_DEF-f_middle.01.L_07",
+      "RT_DEF-f_middle.01.L_10",
+      "DEF-palm.02.L",
+      "RT_DEF-f_ring.03.L_00",
+      "RT_DEF-f_ring.03.L_03",
+      "RT_DEF-f_ring.03.L_07",
+      "RT_DEF-f_ring.03.L_10",
+      "RT_DEF-f_ring.02.L_00",
+      "RT_DEF-f_ring.02.L_03",
+      "RT_DEF-f_ring.02.L_07",
+      "RT_DEF-f_ring.02.L_10",
+      "RT_DEF-f_ring.01.L_00",
+      "RT_DEF-f_ring.01.L_03",
+      "RT_DEF-f_ring.01.L_07",
+      "RT_DEF-f_ring.01.L_10",
+      "DEF-palm.03.L",
+      "RT_DEF-f_pinky.03.L_00",
+      "RT_DEF-f_pinky.03.L_03",
+      "RT_DEF-f_pinky.03.L_07",
+      "RT_DEF-f_pinky.03.L_10",
+      "RT_DEF-f_pinky.02.L_00",
+      "RT_DEF-f_pinky.02.L_03",
+      "RT_DEF-f_pinky.02.L_07",
+      "RT_DEF-f_pinky.02.L_10",
+      "RT_DEF-f_pinky.01.L_00",
+      "RT_DEF-f_pinky.01.L_03",
+      "RT_DEF-f_pinky.01.L_07",
+      "RT_DEF-f_pinky.01.L_10",
+      "DEF-palm.04.L",
+      "DEF-hand.L",
+      "DEF-forearm.L.001",
+      "DEF-forearm.L",
+      "DEF-upper_arm.L.001",
+      "DEF-upper_arm.L",
+      "RT_DEF-f_index.03.R_00",
+      "RT_DEF-f_index.03.R_03",
+      "RT_DEF-f_index.03.R_07",
+      "RT_DEF-f_index.03.R_10",
+      "RT_DEF-f_index.02.R_00",
+      "RT_DEF-f_index.02.R_03",
+      "RT_DEF-f_index.02.R_07",
+      "RT_DEF-f_index.02.R_10",
+      "RT_DEF-f_index.01.R_00",
+      "RT_DEF-f_index.01.R_03",
+      "RT_DEF-f_index.01.R_07",
+      "RT_DEF-f_index.01.R_10",
+      "RT_DEF-thumb.03.R_00",
+      "RT_DEF-thumb.03.R_03",
+      "RT_DEF-thumb.03.R_07",
+      "RT_DEF-thumb.03.R_10",
+      "RT_DEF-thumb.02.R_00",
+      "RT_DEF-thumb.02.R_03",
+      "RT_DEF-thumb.02.R_07",
+      "RT_DEF-thumb.02.R_10",
+      "RT_DEF-thumb.01.R_00",
+      "RT_DEF-thumb.01.R_03",
+      "RT_DEF-thumb.01.R_07",
+      "RT_DEF-thumb.01.R_10",
+      "DEF-palm.01.R",
+      "RT_DEF-f_middle.03.R_00",
+      "RT_DEF-f_middle.03.R_03",
+      "RT_DEF-f_middle.03.R_07",
+      "RT_DEF-f_middle.03.R_10",
+      "RT_DEF-f_middle.02.R_00",
+      "RT_DEF-f_middle.02.R_03",
+      "RT_DEF-f_middle.02.R_07",
+      "RT_DEF-f_middle.02.R_10",
+      "RT_DEF-f_middle.01.R_00",
+      "RT_DEF-f_middle.01.R_03",
+      "RT_DEF-f_middle.01.R_07",
+      "RT_DEF-f_middle.01.R_10",
+      "DEF-palm.02.R",
+      "RT_DEF-f_ring.03.R_00",
+      "RT_DEF-f_ring.03.R_03",
+      "RT_DEF-f_ring.03.R_07",
+      "RT_DEF-f_ring.03.R_10",
+      "RT_DEF-f_ring.02.R_00",
+      "RT_DEF-f_ring.02.R_03",
+      "RT_DEF-f_ring.02.R_07",
+      "RT_DEF-f_ring.02.R_10",
+      "RT_DEF-f_ring.01.R_00",
+      "RT_DEF-f_ring.01.R_03",
+      "RT_DEF-f_ring.01.R_07",
+      "RT_DEF-f_ring.01.R_10",
+      "DEF-palm.03.R",
+      "RT_DEF-f_pinky.03.R_00",
+      "RT_DEF-f_pinky.03.R_03",
+      "RT_DEF-f_pinky.03.R_07",
+      "RT_DEF-f_pinky.03.R_10",
+      "RT_DEF-f_pinky.02.R_00",
+      "RT_DEF-f_pinky.02.R_03",
+      "RT_DEF-f_pinky.02.R_07",
+      "RT_DEF-f_pinky.02.R_10",
+      "RT_DEF-f_pinky.01.R_00",
+      "RT_DEF-f_pinky.01.R_03",
+      "RT_DEF-f_pinky.01.R_07",
+      "RT_DEF-f_pinky.01.R_10",
+      "DEF-palm.04.R",
+      "DEF-hand.R",
+      "DEF-forearm.R.001",
+      "DEF-forearm.R",
+      "DEF-upper_arm.R.001",
+      "DEF-upper_arm.R"
+    ],
+    "changed_frames": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      61,
+      62,
+      63,
+      64,
+      65,
+      66,
+      67,
+      68,
+      69,
+      70,
+      71,
+      72,
+      73,
+      74,
+      75,
+      76,
+      77,
+      78,
+      79,
+      80,
+      81,
+      82,
+      83,
+      84,
+      85,
+      86,
+      87,
+      88,
+      89,
+      90,
+      91,
+      92,
+      93,
+      94,
+      222,
+      223,
+      224,
+      225,
+      226,
+      227,
+      228,
+      229,
+      230,
+      231,
+      232,
+      233,
+      234,
+      235,
+      236,
+      237,
+      238,
+      239,
+      240,
+      241,
+      242,
+      243,
+      244
+    ],
+    "max_new_world_translation_m": 0.047265209192385915,
+    "largest_rotation_peaks": [
+      {
+        "bone": "RT_DEF-f_middle.03.R_03",
+        "before": {
+          "max_rotation_step_degrees": 17.46717266620423,
+          "rotation_frames": [
+            106,
+            107
+          ],
+          "max_translation_step_local_units": 0.09269034799168245,
+          "scale_unit_error": 2.264976501575866e-06
+        },
+        "after": {
+          "max_rotation_step_degrees": 17.46717266620423,
+          "rotation_frames": [
+            106,
+            107
+          ],
+          "max_translation_step_local_units": 0.09269034799168237,
+          "scale_unit_error": 2.264976501575866e-06
+        },
+        "rotation_peak_increase_degrees": 0.0
+      },
+      {
+        "bone": "RT_DEF-f_middle.03.R_00",
+        "before": {
+          "max_rotation_step_degrees": 17.46717155597897,
+          "rotation_frames": [
+            106,
+            107
+          ],
+          "max_translation_step_local_units": 0.07739730196497731,
+          "scale_unit_error": 2.264976501575866e-06
+        },
+        "after": {
+          "max_rotation_step_degrees": 17.46717155597897,
+          "rotation_frames": [
+            106,
+            107
+          ],
+          "max_translation_step_local_units": 0.07739730196497561,
+          "scale_unit_error": 2.264976501575866e-06
+        },
+        "rotation_peak_increase_degrees": 0.0
+      },
+      {
+        "bone": "RT_DEF-f_middle.03.R_07",
+        "before": {
+          "max_rotation_step_degrees": 17.467171355378277,
+          "rotation_frames": [
+            106,
+            107
+          ],
+          "max_translation_step_local_units": 0.11350960818044373,
+          "scale_unit_error": 2.3841857911266473e-06
+        },
+        "after": {
+          "max_rotation_step_degrees": 17.467171355378277,
+          "rotation_frames": [
+            106,
+            107
+          ],
+          "max_translation_step_local_units": 0.11350960818044376,
+          "scale_unit_error": 2.3841857911266473e-06
+        },
+        "rotation_peak_increase_degrees": 0.0
+      },
+      {
+        "bone": "RT_DEF-f_middle.03.R_10",
+        "before": {
+          "max_rotation_step_degrees": 17.467171355378277,
+          "rotation_frames": [
+            106,
+            107
+          ],
+          "max_translation_step_local_units": 0.12927623146391848,
+          "scale_unit_error": 2.3841857911266473e-06
+        },
+        "after": {
+          "max_rotation_step_degrees": 17.467171355378277,
+          "rotation_frames": [
+            106,
+            107
+          ],
+          "max_translation_step_local_units": 0.12927623146391845,
+          "scale_unit_error": 2.3841857911266473e-06
+        },
+        "rotation_peak_increase_degrees": 0.0
+      },
+      {
+        "bone": "RT_DEF-f_index.03.R_03",
+        "before": {
+          "max_rotation_step_degrees": 17.18256509100374,
+          "rotation_frames": [
+            196,
+            197
+          ],
+          "max_translation_step_local_units": 0.09386273479333503,
+          "scale_unit_error": 3.397464752308288e-06
+        },
+        "after": {
+          "max_rotation_step_degrees": 17.18256509100374,
+          "rotation_frames": [
+            196,
+            197
+          ],
+          "max_translation_step_local_units": 0.09386273479333503,
+          "scale_unit_error": 3.397464752308288e-06
+        },
+        "rotation_peak_increase_degrees": 0.0
+      },
+      {
+        "bone": "RT_DEF-f_index.03.R_00",
+        "before": {
+          "max_rotation_step_degrees": 17.18256378750341,
+          "rotation_frames": [
+            196,
+            197
+          ],
+          "max_translation_step_local_units": 0.07163762198342116,
+          "scale_unit_error": 3.3378601076439196e-06
+        },
+        "after": {
+          "max_rotation_step_degrees": 17.18256378750341,
+          "rotation_frames": [
+            196,
+            197
+          ],
+          "max_translation_step_local_units": 0.07163762198342116,
+          "scale_unit_error": 3.3378601076439196e-06
+        },
+        "rotation_peak_increase_degrees": 0.0
+      },
+      {
+        "bone": "RT_DEF-f_index.03.R_07",
+        "before": {
+          "max_rotation_step_degrees": 17.18256378750341,
+          "rotation_frames": [
+            196,
+            197
+          ],
+          "max_translation_step_local_units": 0.12381682112975394,
+          "scale_unit_error": 3.3378601073108527e-06
+        },
+        "after": {
+          "max_rotation_step_degrees": 17.18256378750341,
+          "rotation_frames": [
+            196,
+            197
+          ],
+          "max_translation_step_local_units": 0.12381682112975394,
+          "scale_unit_error": 3.3378601073108527e-06
+        },
+        "rotation_peak_increase_degrees": 0.0
+      },
+      {
+        "bone": "RT_DEF-f_index.03.R_10",
+        "before": {
+          "max_rotation_step_degrees": 17.182563787503238,
+          "rotation_frames": [
+            196,
+            197
+          ],
+          "max_translation_step_local_units": 0.14634659338057857,
+          "scale_unit_error": 3.3378601073108527e-06
+        },
+        "after": {
+          "max_rotation_step_degrees": 17.182563787503238,
+          "rotation_frames": [
+            196,
+            197
+          ],
+          "max_translation_step_local_units": 0.14634659338057857,
+          "scale_unit_error": 3.3378601073108527e-06
+        },
+        "rotation_peak_increase_degrees": 0.0
+      }
+    ],
+    "largest_peak_increases": [
+      {
+        "bone": "DEF-upper_arm.L",
+        "before": {
+          "max_rotation_step_degrees": 6.613302226726412e-06,
+          "rotation_frames": [
+            8,
+            9
+          ],
+          "max_translation_step_local_units": 1.301187962038292e-07,
+          "scale_unit_error": 4.768371584251696e-07
+        },
+        "after": {
+          "max_rotation_step_degrees": 1.0511371950166093,
+          "rotation_frames": [
+            230,
+            231
+          ],
+          "max_translation_step_local_units": 1.301187962038292e-07,
+          "scale_unit_error": 4.768371584251696e-07
+        },
+        "rotation_peak_increase_degrees": 1.0511305817143826
+      },
+      {
+        "bone": "DEF-hand.L",
+        "before": {
+          "max_rotation_step_degrees": 9.507220963046143e-06,
+          "rotation_frames": [
+            9,
+            10
+          ],
+          "max_translation_step_local_units": 2.626090207019376e-07,
+          "scale_unit_error": 5.364418030895379e-07
+        },
+        "after": {
+          "max_rotation_step_degrees": 1.0366413627518705,
+          "rotation_frames": [
+            4,
+            5
+          ],
+          "max_translation_step_local_units": 2.626090178422286e-07,
+          "scale_unit_error": 5.369694400236824e-07
+        },
+        "rotation_peak_increase_degrees": 1.0366318555309073
+      },
+      {
+        "bone": "DEF-forearm.L",
+        "before": {
+          "max_rotation_step_degrees": 7.616808955165215,
+          "rotation_frames": [
+            9,
+            10
+          ],
+          "max_translation_step_local_units": 2.977809920647681e-07,
+          "scale_unit_error": 7.152557375267321e-07
+        },
+        "after": {
+          "max_rotation_step_degrees": 7.652636746459312,
+          "rotation_frames": [
+            7,
+            8
+          ],
+          "max_translation_step_local_units": 2.977809923253404e-07,
+          "scale_unit_error": 7.152557375267321e-07
+        },
+        "rotation_peak_increase_degrees": 0.03582779129409719
+      },
+      {
+        "bone": "DEF-pelvis.L",
+        "before": {
+          "max_rotation_step_degrees": 4.829673078902933e-06,
+          "rotation_frames": [
+            3,
+            4
+          ],
+          "max_translation_step_local_units": 4.768747057045072e-07,
+          "scale_unit_error": 2.384185793236071e-07
+        },
+        "after": {
+          "max_rotation_step_degrees": 4.829673078902933e-06,
+          "rotation_frames": [
+            3,
+            4
+          ],
+          "max_translation_step_local_units": 4.768747057045072e-07,
+          "scale_unit_error": 2.384185793236071e-07
+        },
+        "rotation_peak_increase_degrees": 0.0
+      },
+      {
+        "bone": "DEF-pelvis.R",
+        "before": {
+          "max_rotation_step_degrees": 4.829673078902933e-06,
+          "rotation_frames": [
+            14,
+            15
+          ],
+          "max_translation_step_local_units": 5.141766013504533e-07,
+          "scale_unit_error": 2.384185793236071e-07
+        },
+        "after": {
+          "max_rotation_step_degrees": 4.829673078902933e-06,
+          "rotation_frames": [
+            14,
+            15
+          ],
+          "max_translation_step_local_units": 5.141766013504533e-07,
+          "scale_unit_error": 2.384185793236071e-07
+        },
+        "rotation_peak_increase_degrees": 0.0
+      },
+      {
+        "bone": "DEF-thigh.L",
+        "before": {
+          "max_rotation_step_degrees": 6.097163388881891e-05,
+          "rotation_frames": [
+            9,
+            10
+          ],
+          "max_translation_step_local_units": 4.777675730550706e-07,
+          "scale_unit_error": 1.1920928999487046e-07
+        },
+        "after": {
+          "max_rotation_step_degrees": 6.097163388881891e-05,
+          "rotation_frames": [
+            9,
+            10
+          ],
+          "max_translation_step_local_units": 4.777675730550706e-07,
+          "scale_unit_error": 1.1920928999487046e-07
+        },
+        "rotation_peak_increase_degrees": 0.0
+      },
+      {
+        "bone": "DEF-thigh.L.001",
+        "before": {
+          "max_rotation_step_degrees": 0.00040272060348015264,
+          "rotation_frames": [
+            9,
+            10
+          ],
+          "max_translation_step_local_units": 2.3849181743225144e-07,
+          "scale_unit_error": 4.172325135387567e-07
+        },
+        "after": {
+          "max_rotation_step_degrees": 0.00040272060348015264,
+          "rotation_frames": [
+            9,
+            10
+          ],
+          "max_translation_step_local_units": 2.3849181743225144e-07,
+          "scale_unit_error": 4.172325135387567e-07
+        },
+        "rotation_peak_increase_degrees": 0.0
+      },
+      {
+        "bone": "DEF-shin.L",
+        "before": {
+          "max_rotation_step_degrees": 0.00040413355479354773,
+          "rotation_frames": [
+            9,
+            10
+          ],
+          "max_translation_step_local_units": 1.196031841663814e-07,
+          "scale_unit_error": 2.384185794346294e-07
+        },
+        "after": {
+          "max_rotation_step_degrees": 0.00040413355479354773,
+          "rotation_frames": [
+            9,
+            10
+          ],
+          "max_translation_step_local_units": 1.196031841663814e-07,
+          "scale_unit_error": 2.384185794346294e-07
+        },
+        "rotation_peak_increase_degrees": 0.0
+      }
+    ],
+    "scope": "Derived quaternions normalized by scipy; keyed quaternion norms require Blender/export audit. Local translations use rig units, not metres. No visual/FSL/Android approval.",
+    "listen_ready": false
+  },
+  "fit_settings": {
+    "draft": "UNDERSTAND__CLOTHING_CLEARANCE_REVIEW_V11",
+    "right_outward_m": 0.04,
+    "right_forward_m": 0.025,
+    "left_outward_m": 0.02,
+    "left_forward_m": 0.015,
+    "active_frames": {
+      "L": [
+        [
+          2,
+          24
+        ],
+        [
+          222,
+          244
+        ]
+      ],
+      "R": [
+        [
+          2,
+          24
+        ],
+        [
+          61,
+          94
+        ],
+        [
+          222,
+          244
+        ]
+      ]
+    },
+    "signing_frames_96_220_exact": true,
+    "right_neutral_offsets_m": [
+      0.02,
+      0.015
+    ],
+    "neutral_exact": true,
+    "preparation_lift_m": 0.003,
+    "source": "PENDING_REVIEW",
+    "export": "BLOCKED"
+  },
+  "collision_summary": {
+    "v9_body_flags": 13,
+    "v11_body_flags": 0,
+    "v9_clothing_flags": 28,
+    "v10_clothing_flags": 9,
+    "v11_clothing_flags": 0,
+    "unchanged_finger_flags": 28,
+    "finger_frames": {
+      "f_middle.R/thumb.R": [
+        121,
+        122,
+        123,
+        124,
+        125,
+        126,
+        127,
+        128,
+        129,
+        130,
+        131,
+        195,
+        196
+      ],
+      "f_index.R/thumb.R": [
+        211,
+        212,
+        213,
+        214,
+        215,
+        216,
+        217,
+        218,
+        219,
+        220,
+        221,
+        222,
+        223,
+        224,
+        225
+      ]
+    },
+    "frames": 245,
+    "scope": "Surface triangle crossing diagnostics; not enclosed-volume certification. All finger flags remain review-required."
+  },
+  "face_window": [
+    96,
+    219
+  ],
+  "near_surface_face_flags": 0,
+  "max_local_rotation": {
+    "bone": "RT_DEF-f_middle.03.R_03",
+    "max_adjacent_degrees": 17.46717418337317,
+    "frames": [
+      106,
+      107
+    ],
+    "quaternion_norm_error": 1.1859603255004458e-07,
+    "max_scale_unit_error": 2.264976501575866e-06,
+    "max_local_translation_step": 0.09269034799168038
+  },
+  "tests": [
+    "Blender pose parity 245 frames/238 bones PASS",
+    "All13 pre-existing Action protected-field hashes unchanged using schema v2",
+    "Digest test: equal clone plus9 field mutations PASS",
+    "Original source/V9/runtime SHA unchanged",
+    "Finite/root/neutral/stroke96-220 exact PASS",
+    "Python compile and git diff whitespace checks PASS"
+  ],
+  "visual": "Sampled multi-view frames11/79 show skirt clearance improvement; full-speed human review pending",
+  "failures": [
+    "V10 remains incomplete due9 clothing flags",
+    "V11 trial1-3 target unreachable, no fitted asset written",
+    "Blender bulk handle enum read unreliable: individual enum identifiers retained"
+  ],
+  "source_gate": "PENDING_QUALIFIED_REVIEW",
+  "mechanical_gate": "PARTIAL_BODY_CLOTHING_ONLY_FINGER_DEFORMATION_REVIEW_PENDING",
+  "visual_gate": "PENDING_FULL_SPEED_HUMAN_REVIEW",
+  "export": "NOT_CREATED",
+  "owner_device": "V11_NOT_TESTED",
+  "listen_ready": false
+}

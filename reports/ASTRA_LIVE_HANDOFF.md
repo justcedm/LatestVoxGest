@@ -1,3 +1,19 @@
+# UNDERSTAND V11 private review checkpoint - 2026-10-06T20:00:34.343834+08:00
+
+V11 supersedes V10 for body/clothing clearance testing.245-frame audits:13 body flags ->0;28 V9 clothing flags ->0;28 finger flags remain unchanged. Source signing frames96-220 and neutral endpoints exact toV9. All13 original Actions unchanged; Blender pose parity PASS. V9/source/runtime SHA unchanged. No GLB export; listen_ready=false. Source/FSL approval and full-speed human review remain pending. THANK YOU onset issue remains open; survey phrases still lack approved reference.
+
+Private V11 Blender and60FPS comparison saved with paths/hashes in reports/UNDERSTAND_CONTACT_CALIBRATION_20261006.json. Failed unreachable IK trials1-3 preserved as empty attempt directories; trial4 is selected. Body/clothing diagnostics are scoped triangle tests, not full mechanical acceptance.
+
+NEXT_EXACT_ACTION=Inspect right middle/thumb frames121-131 and195-196, index/thumb211-225 with exact source and mesh closeups; classify contact versus penetration before any handshape derivative. Review V11 full-speed transitions, then repeat gates before GLB export.
+
+---
+
+# Resumed contact calibration - 2026-10-06
+
+Base6dbc5d8 preserved; V9 and exported runtime assets immutable. Inspect inherited contacts before local correction; all approval gates remain pending. NEXT_EXACT_ACTION=Render multi-view contact evidence.
+
+---
+
 # UNDERSTAND V9 review checkpoint - 2026-10-05T00:41:49.706503+08:00
 
 Saved a separate UNDERSTAND__EYE_HEIGHT_REVIEW_V9 Blender Action and245-frame/60FPS source comparison. V8 is preserved and rejected for elevated elbow/sleeve deformation. V9 keeps the same source-relative height and uses70mm forward clearance to obtain a lower elbow; this depth is a hypothesis requiring review. All13 pre-existing Action curve/key/interpolation/handle hashes match, including HELLO/MILK/RICE and THANK YOU V4. Blender pose parity PASS across245frames/238bones (max matrix error8.35e-7).

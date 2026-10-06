@@ -12,8 +12,17 @@ p.add_argument('--base-action',required=True)
 a=p.parse_args(sys.argv[sys.argv.index('--')+1:]);out=pathlib.Path(a.out).resolve();assert not out.exists();out.mkdir(parents=True)
 bpy.ops.wm.open_mainfile(filepath=str(pathlib.Path(a.blend).resolve()),load_ui=False)
 def digest(action):
-    rows=[(c.data_path,c.array_index,c.extrapolation,[(tuple(k.co),k.interpolation,k.handle_left_type,k.handle_right_type,tuple(k.handle_left),tuple(k.handle_right)) for k in c.keyframe_points]) for c in action.fcurves]
-    return hashlib.sha256(repr(rows).encode()).hexdigest()
+    # v2 hashes the same fields as v1, using bulk numeric reads to avoid slow RNA scalar access.
+    h=hashlib.sha256()
+    for c in action.fcurves:
+        h.update(repr((c.data_path,c.array_index,c.extrapolation,len(c.keyframe_points))).encode())
+        for attr in ('co','handle_left','handle_right'):
+            values=np.empty(len(c.keyframe_points)*2,dtype=np.float32)
+            c.keyframe_points.foreach_get(attr,values)
+            h.update(attr.encode());h.update(values.astype('<f4',copy=False).tobytes())
+        # Blender 3.2 bulk enum access is unreliable for handle types; read enum identifiers individually.
+        h.update(repr([(k.interpolation,k.handle_left_type,k.handle_right_type) for k in c.keyframe_points]).encode())
+    return h.hexdigest()
 before={act.name:digest(act) for act in bpy.data.actions}
 arms=[o for o in bpy.context.scene.objects if o.type=='ARMATURE'];assert len(arms)==1;arm=arms[0];scene=bpy.context.scene
 for track in arm.animation_data.nla_tracks:track.mute=True
@@ -60,6 +69,6 @@ for frame in [100,120,140,160,180,200,220]:
     scene.frame_set(frame)
     for view,pos in [('front',(0,-4,1.18)),('side',(4,0,1.18)),('perspective',(2,-4,1.4))]:
         aim(pos);scene.render.image_settings.file_format='PNG';scene.render.filepath=str(out/f'{view}_{frame}.png');bpy.ops.render.render(write_still=True)
-report=dict(baseline_world_basis_error=baseline_error,changed_bones=len(changed),original_action_hashes=before,original_actions_unchanged=all(digest(bpy.data.actions[n])==h for n,h in before.items()),new_action=new.name,visual='PENDING',mechanical='PENDING',export='BLOCKED',listen_ready=False)
+report=dict(action_hash_schema="v2_bulk_numeric_enum_identifiers",baseline_world_basis_error=baseline_error,changed_bones=len(changed),original_action_hashes=before,original_actions_unchanged=all(digest(bpy.data.actions[n])==h for n,h in before.items()),new_action=new.name,visual='PENDING',mechanical='PENDING',export='BLOCKED',listen_ready=False)
 (out/'blender_build_report.json').write_text(json.dumps(report,indent=2),encoding='utf8')
 print('LIPFIT_BLEND_COMPLETE',flush=True)

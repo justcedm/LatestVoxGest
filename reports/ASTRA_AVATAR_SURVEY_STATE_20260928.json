@@ -1,13 +1,13 @@
 {
-  "timestamp": "2026-10-05T00:41:49.706503+08:00",
+  "timestamp": "2026-10-06T20:00:34.343834+08:00",
   "branch": "avatar/astra-calibration-20260914",
   "base_commit": "fcacf3ffdb80bdf8d1bdf3e5e08dd316fa7a9531",
   "head": "THIS_CHECKPOINT_COMMIT_USE_GIT_REV_PARSE_HEAD",
   "worktree": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-15\\files-mentioned-by-the-user-voxgest-2\\work\\avatar_core5_survey_20260928",
-  "active_blender_file": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-15\\files-mentioned-by-the-user-voxgest-2\\outputs\\understand_height_review_20261005_v1\\blender_v9\\UNDERSTAND__EYE_HEIGHT_REVIEW_V9.blend",
-  "active_action": "UNDERSTAND__EYE_HEIGHT_REVIEW_V9",
+  "active_blender_file": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-15\\files-mentioned-by-the-user-voxgest-2\\outputs\\understand_contact_review_20261006_v1\\blender_v11\\UNDERSTAND__CLOTHING_CLEARANCE_REVIEW_V11.blend",
+  "active_action": "UNDERSTAND__CLOTHING_CLEARANCE_REVIEW_V11",
   "source_reference": "FSL-105 clips/10/0.MOV;245 frames/60FPS; mapping from recovered metadata, qualified approval pending",
-  "current_gate": "UNDERSTAND_V9_CONTACT_AND_FULL_SPEED_REVIEW",
+  "current_gate": "UNDERSTAND_V11_FINGER_AND_FULL_SPEED_REVIEW",
   "priority": [
     "THANK YOU",
     "YES",
@@ -47,7 +47,14 @@
     "tools/avatar_survey/fit_preparation_clearance.py",
     "reports/THANK_YOU_V4_REVIEW_20260929.md",
     "reports/THANK_YOU_V4_ENGINEERING_SUMMARY_20260929.json",
-    "reports/ALL_WORDS_APP_TEST_READINESS_20260929.md"
+    "reports/ALL_WORDS_APP_TEST_READINESS_20260929.md",
+    "reports/UNDERSTAND_CONTACT_CALIBRATION_20261006.md",
+    "reports/UNDERSTAND_CONTACT_CALIBRATION_20261006.json",
+    "tools/avatar_survey/fit_understand_body_clearance.py",
+    "tools/avatar_survey/check_clothing_intersections.py",
+    "tools/avatar_survey/render_contact_closeups.py",
+    "tools/avatar_survey/compare_pose_derivatives.py",
+    "tools/avatar_survey/test_action_digest.py"
   ],
   "scripts_run": [
     "git status/branch/HEAD/remotes; fetch origin --prune",
@@ -74,7 +81,13 @@
     "blender_face_clearance.py --start-frame96 --end-frame219; preserved original unbounded diagnostic",
     "build_action_pose_review.py V8/V9; verify_lipfit_blender.py --base-action UNDERSTAND",
     "render_review.py --stem UNDERSTAND; compare_video.py --source-label REFERENCE: UNDERSTAND 10/0",
-    "Local translation baseline/candidate comparison; peaks unchanged within4e-15 local units"
+    "Local translation baseline/candidate comparison; peaks unchanged within4e-15 local units",
+    "render_contact_closeups.py V9/V11",
+    "fit_understand_body_clearance.py V10 trials1/2/selected andV11 trials1-4",
+    "check_hand_intersections.py --include-body; check_clothing_intersections.py all245frames",
+    "compare_pose_derivatives.py V9 versusV10/V11",
+    "build_action_pose_review.py V10/V11; test_action_digest.py9 mutation checks",
+    "verify_lipfit_blender.py V11; render_review.py V11; compare_video.py245frames/60FPS"
   ],
   "hashes": {
     "core3_glb": "30f13fb65e7557992a8c3109460a790a69161e69f3ba9771a1e64a33f98294f8",
@@ -86,7 +99,9 @@
     "candidate_glb": "1f566e98e020b8e46e8a625c3910794be86a2017392093950f467bad68c7689b",
     "handoff_zip": "40e2f67c51c41571971da6491eecf437930d91d667d0fd5f02be8bd4fc6a0c92",
     "understand_v9_blend": "9b080e1782e7a2e0e78a0937fbc57e7599250d15cd3ac4eda0a9c4311a99b127",
-    "understand_v9_comparison": "bf1b76a2c89dd2b680930b18db1dc9f31e8274995c34f2535bbd1fe64a3e7200"
+    "understand_v9_comparison": "bf1b76a2c89dd2b680930b18db1dc9f31e8274995c34f2535bbd1fe64a3e7200",
+    "understand_v11_blend": "586ae8d96d81e109a4e5fe41778adb8d9274946b7180ed78c975f1fe81b6f696",
+    "understand_v11_comparison": "961428a4d5db161244a6f6ef109d9777be619f7686e758db1cc2d9acb26e494b"
   },
   "status": {
     "THANK YOU": {
@@ -121,9 +136,9 @@
     },
     "UNDERSTAND": {
       "SOURCE_REFERENCE": "PENDING_REVIEW",
-      "MECHANICAL": "BLOCKED_CONTACT_CLASSIFICATION_AND_DEFORMATION_REVIEW",
-      "HUMAN_MOTION_VISUAL": "SAMPLED_VIEWS_INSPECTED_FULL_SPEED_HUMAN_REVIEW_PENDING",
-      "EXPORT": "V9_NOT_CREATED",
+      "MECHANICAL": "PARTIAL_BODY_CLOTHING_ONLY_FINGER_DEFORMATION_REVIEW_PENDING",
+      "HUMAN_MOTION_VISUAL": "PENDING_FULL_SPEED_HUMAN_REVIEW",
+      "EXPORT": "V11_NOT_CREATED",
       "OWNER_DEVICE": "VISUAL_REVIEW_PENDING",
       "FSL_APPROVAL": "PENDING",
       "listen_ready": false,
@@ -136,8 +151,8 @@
     "rebuild_reference_blob": "23b3681edd46f8704a36c4c6aa8d1aa52cbe2cf8"
   },
   "private_files_committed": false,
-  "next_action": "Classify inherited hand/torso contacts at frames10-12,76-82,234-236 and finger contacts121-196,211-225 using close-up multi-view deformation; review V9 full-speed source comparison before a further derivative or export.",
-  "head_before_checkpoint": "4690c21b31924a321bf5a2fb8861155256b07e35",
+  "next_action": "Inspect right middle/thumb frames121-131 and195-196, index/thumb211-225 with exact source and mesh closeups; classify contact versus penetration before any handshape derivative. Review V11 full-speed transitions, then repeat gates before GLB export.",
+  "head_before_checkpoint": "6dbc5d8fe1f9170c72313c47d7066ac5cc97990f",
   "source_reference_sha256": "16337c389b76ea72cd24064cda4f073855539c4607b3e451f1a30b86b69b8996",
   "core3_regression": {
     "HELLO": "PASS_EXACT_ACTION_DATA",
@@ -153,7 +168,9 @@
     "Source head tilt/facial expression not reconstructed",
     "70mm forward clearance is bounded engineering hypothesis, not measured source depth",
     "Sampled shoulder/sleeve appearance improved over V8 but not full visual acceptance",
-    "Existing finger translation steps retained; local rig units not metres"
+    "Existing finger translation steps retained; local rig units not metres",
+    "V9frame79 right fingers penetrate skirt; V11frame79 visibly outside skirt",
+    "Finger/thumb handshape remains review-required; no linguistic acceptance"
   ],
   "failures": [
     "Source placement mismatch",
@@ -175,7 +192,7 @@
   "failures_are_historical": true,
   "v3_engineering_summary": "reports/THANK_YOU_V3_ENGINEERING_SUMMARY_20260929.json",
   "remote_verification": "Current content checkpoint pending normal push and fetched equality verification",
-  "active_pose_fit": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-15\\files-mentioned-by-the-user-voxgest-2\\outputs\\understand_height_review_20261005_v1\\fit_v9\\private_pose_fit.npz",
+  "active_pose_fit": "C:\\Users\\Erl\\Documents\\Codex\\2026-09-15\\files-mentioned-by-the-user-voxgest-2\\outputs\\understand_contact_review_20261006_v1\\fit_v11_trial4\\private_pose_fit.npz",
   "files_changed": [
     "tools/avatar_survey/check_hand_intersections.py",
     "reports/ASTRA_AVATAR_SURVEY_STATE_20260928.json",
@@ -204,7 +221,9 @@
   },
   "phrase_state": "reports/ASTRA_SURVEY_PHRASE_STATE_20261001.json",
   "failures_this_iteration": [
-    "UNDERSTAND V8 sampled elbow/sleeve deformation; preserved as rejected comparison"
+    "V10 remains incomplete due9 clothing flags",
+    "V11 trial1-3 target unreachable, no fitted asset written",
+    "Blender bulk handle enum read unreliable: individual enum identifiers retained"
   ],
-  "understand_engineering_summary": "reports/UNDERSTAND_HEIGHT_CALIBRATION_20261005.json"
+  "understand_engineering_summary": "reports/UNDERSTAND_CONTACT_CALIBRATION_20261006.json"
 }
