@@ -1,73 +1,83 @@
 # VoxGest
 
-VoxGest is an offline Android accessibility prototype for bidirectional communication between Deaf/mute users and hearing users. The repository keeps the Android UI, ML scripts, runtime manifests, label files, avatar prototype JSON, reviewer-facing documentation, and small demo TFLite artifacts.
+**VoxGest** is an Android-based bidirectional accessibility prototype for controlled Filipino Sign Language (FSL) communication between signing users and hearing or non-signing users.
 
-## What Is Included
+This branch is intentionally **documentation-only**. It contains no application source code, ML binaries, datasets, private Avatar assets, device logs, or build artifacts.
 
-- `android_dry_run/` source code for the Android UI prototype.
-- `scripts_ml/` Python source for recording, extraction, training, testing, and reporting.
-- `docs/` project documentation and defense notes.
-- `avatar/` and `android_dry_run/app/src/main/assets/avatar/` lightweight avatar prototype JSON files.
-- `model/runtime_manifest*.json` and `model/class_labels*.json`.
-- Small demo `.tflite` files needed for review/reference.
-- `README_CURRENT.md` and `ANDROID_DEVELOPER_HANDOFF.md`.
+## Current Capstone Scope
 
-## What Is Not Included
+VoxGest demonstrates two controlled communication directions:
 
-Large or generated assets are intentionally excluded from Git:
+1. **Sign -> Text / Speech**
+   - Android camera input
+   - MediaPipe pose and hand landmarks
+   - temporal landmark recognition
+   - acceptance/rejection checks
+   - readable text
+   - optional text-to-speech
 
-- `voxgest_env/`
-- `dataset_*`
-- `wlasl_videos/`
-- WLASL metadata/raw videos
-- `.npy` / `.npz` extracted feature arrays
-- Android/Gradle build output
-- model backups and `.h5` checkpoints
-- temporary live logs and generated CSV/JSON reports
-- zip archives and crash heap dumps
+2. **Speech / Supported Concept -> FSL Avatar**
+   - Android speech recognition when supported
+   - strict supported-concept mapping
+   - calibrated Avatar playback for supported actions
+   - manual **Play Signs** fallback independent of speech recognition
 
-See `docs/DATA_ASSETS_NOT_INCLUDED.md` for the restore plan.
+VoxGest is **not** presented as an unrestricted FSL translator, a full continuous-sign recognizer, or a replacement for qualified FSL interpreters.
 
-## Restore Local Python Environment
+## Current Survey/Demo Recognition Set
 
-Create a fresh environment locally instead of committing `voxgest_env/`:
+The current controlled Core5 survey path uses:
 
-```powershell
-python -m venv voxgest_env
-.\voxgest_env\Scripts\pip.exe install --upgrade pip
-.\voxgest_env\Scripts\pip.exe install -r requirements.txt
-```
+- HELLO
+- THANK YOU
+- YES
+- NO
+- UNDERSTAND
 
-## Restore Datasets Locally
+The deployed experimental recognition contract uses a temporal FullSign225 representation with pose plus anatomical left/right hand landmarks. Current runtime qualification and model-selection evidence are maintained separately from the public documentation.
 
-Place large datasets back into local-only folders:
+## Current Avatar Runtime Catalog
 
-- `wlasl_videos/`
-- `dataset_words_lstm/`
-- `dataset_motion_letters/`
-- `dataset_phrase_intents/`
+Known-good Core3 controls:
+- HELLO
+- MILK
+- RICE
 
-These paths are ignored by Git. Regenerate extracted features with the scripts in `scripts_ml/` after restoring videos or manual recordings.
+Candidate actions for expert evaluation:
+- THANK YOU
+- YES
+- NO
+- I'M FINE
+- HOW ARE YOU
+- UNDERSTAND
+- GOOD EVENING
+- KNOW
+- WRONG
 
-## Android Build
+Candidate actions must not be described as linguistically validated FSL until qualified evaluation is complete.
 
-```powershell
-cd android_dry_run
-.\gradlew.bat assembleDebug
-```
+## Research Evaluation
 
-The current UI preview build avoids packaging TensorFlow Lite JNI because the available upstream native library is not compatible with 16 KB page-size Android devices/emulators. Python-side training/export is unaffected.
+The capstone evaluates selected ISO/IEC 25010 quality characteristics:
 
-## ML Workflow
+- Functional Suitability
+- Performance Efficiency
+- Reliability
+- Usability
 
-Training remains in Python. Android consumes exported TFLite models, labels, and runtime manifests only.
+Technical and accessibility/linguistic evaluation are kept conceptually separate so that general usability ratings are not treated as proof of FSL linguistic correctness.
 
-```powershell
-$env:VOXGEST_ENABLE_PHRASE='0'
-$env:VOXGEST_WORD_PROFILE='demo10'
-$env:VOXGEST_SINGLE_HAND_POSE='1'
-.\voxgest_env\Scripts\python.exe scripts_ml\19_train_lstm.py
-.\voxgest_env\Scripts\python.exe scripts_ml\24_train_tcn.py
-```
+## Documentation
 
-Keep generated datasets/checkpoints local unless a release process explicitly publishes them elsewhere.
+- [Current Implementation](docs/CURRENT_IMPLEMENTATION.md)
+- [System Architecture](docs/SYSTEM_ARCHITECTURE.md)
+- [Research Scope](docs/RESEARCH_SCOPE.md)
+- [Datasets and Validation](docs/DATASETS_AND_VALIDATION.md)
+- [Survey and Evaluation](docs/SURVEY_AND_EVALUATION.md)
+- [Limitations and Ethics](docs/LIMITATIONS_AND_ETHICS.md)
+- [Paper / Runtime Alignment](docs/PAPER_RUNTIME_ALIGNMENT.md)
+- [Roadmap](docs/ROADMAP.md)
+
+## Development Principle
+
+**Reliability over vocabulary size.** A smaller set of tested FSL concepts is preferred over a larger set of unreliable or linguistically unverified outputs.
