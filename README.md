@@ -1,73 +1,42 @@
 # VoxGest
 
-VoxGest is an offline Android accessibility prototype for bidirectional communication between Deaf/mute users and hearing users. The repository keeps the Android UI, ML scripts, runtime manifests, label files, avatar prototype JSON, reviewer-facing documentation, and small demo TFLite artifacts.
+VoxGest is a BSIT capstone Android accessibility prototype exploring bidirectional communication between Filipino Sign Language (FSL) users and hearing/non-signing people. It combines a selected-sign recognition pipeline with text/speech output and a separate supported-concept avatar pathway.
 
-## What Is Included
+> **Start here:** the [Gemini Master Handoff](docs/GEMINI_MASTER_HANDOFF_20261028.md) is the current authoritative project transfer document. The previous root-level `README_CURRENT.md` and `ANDROID_DEVELOPER_HANDOFF.md` described an earlier 10-word / 30-frame / 162-feature implementation; their original contents are preserved in `docs/*_LEGACY_20261028.md`.
 
-- `android_dry_run/` source code for the Android UI prototype.
-- `scripts_ml/` Python source for recording, extraction, training, testing, and reporting.
-- `docs/` project documentation and defense notes.
-- `avatar/` and `android_dry_run/app/src/main/assets/avatar/` lightweight avatar prototype JSON files.
-- `model/runtime_manifest*.json` and `model/class_labels*.json`.
-- Small demo `.tflite` files needed for review/reference.
-- `README_CURRENT.md` and `ANDROID_DEVELOPER_HANDOFF.md`.
+## Current status (2026-10-28)
 
-## What Is Not Included
+- Current survey profile: **Core20**, an inherited name for a **19-class** FSL-105 V1 subset.
+- Standard dynamic input contract: `[1,20,225]` (99 pose + 63 anatomical-left hand + 63 anatomical-right hand values per frame); Core20 output: `[1,19]`.
+- Primary dataset restriction: FSL-105 Mendeley Version 1 only for this track.
+- Current physical-device blocker: the user reports the main app's front-camera preview still appears mirrored on a Samsung Galaxy A56 5G (SM-A566B, Android 16). This is not resolved until the user confirms the installed build is visually unmirrored.
+- The connected repository's last visible commit before this documentation update was dated 2026-10-03. Later local changes may not be present in GitHub. Verify local/remote parity and active model identity before modifying code or quoting metrics.
 
-Large or generated assets are intentionally excluded from Git:
+## Repository map
 
-- `voxgest_env/`
-- `dataset_*`
-- `wlasl_videos/`
-- WLASL metadata/raw videos
-- `.npy` / `.npz` extracted feature arrays
-- Android/Gradle build output
-- model backups and `.h5` checkpoints
-- temporary live logs and generated CSV/JSON reports
-- zip archives and crash heap dumps
+- `android_dry_run/` — Android prototype source.
+- `scripts_ml/` — Python recording, extraction, training, and evaluation scripts for multiple historical/experimental profiles.
+- `model/` — model artifacts, labels, and runtime manifests. Multiple generations coexist; never infer the active model from filename alone.
+- `docs/` — research, model, avatar, survey, and handoff documents.
+- `reports/` — historical audit/evaluation reports; check model/profile/date before relying on a result.
+- `avatar/` — avatar prototype assets.
 
-See `docs/DATA_ASSETS_NOT_INCLUDED.md` for the restore plan.
-
-## Restore Local Python Environment
-
-Create a fresh environment locally instead of committing `voxgest_env/`:
+## Build and test (only after verifying the active worktree)
 
 ```powershell
-python -m venv voxgest_env
-.\voxgest_env\Scripts\pip.exe install --upgrade pip
-.\voxgest_env\Scripts\pip.exe install -r requirements.txt
-```
-
-## Restore Datasets Locally
-
-Place large datasets back into local-only folders:
-
-- `wlasl_videos/`
-- `dataset_words_lstm/`
-- `dataset_motion_letters/`
-- `dataset_phrase_intents/`
-
-These paths are ignored by Git. Regenerate extracted features with the scripts in `scripts_ml/` after restoring videos or manual recordings.
-
-## Android Build
-
-```powershell
-cd android_dry_run
+cd .\android_dry_run
+.\gradlew.bat testDebugUnitTest
 .\gradlew.bat assembleDebug
 ```
 
-The current UI preview build avoids packaging TensorFlow Lite JNI because the available upstream native library is not compatible with 16 KB page-size Android devices/emulators. Python-side training/export is unaffected.
+Build/test success is necessary but not sufficient: camera orientation, overlay alignment, active model, and recognition behavior require verification on the actual device.
 
-## ML Workflow
+## Data and privacy
 
-Training remains in Python. Android consumes exported TFLite models, labels, and runtime manifests only.
+Large datasets, raw videos, extracted arrays, local environments, build outputs, and some generated artifacts are intentionally excluded from Git. See [Data Assets Not Included](docs/DATA_ASSETS_NOT_INCLUDED.md). Do not commit participant recordings, identifiable videos, consent forms, credentials, or API keys without an approved process.
 
-```powershell
-$env:VOXGEST_ENABLE_PHRASE='0'
-$env:VOXGEST_WORD_PROFILE='demo10'
-$env:VOXGEST_SINGLE_HAND_POSE='1'
-.\voxgest_env\Scripts\python.exe scripts_ml\19_train_lstm.py
-.\voxgest_env\Scripts\python.exe scripts_ml\24_train_tcn.py
-```
+## Documentation
 
-Keep generated datasets/checkpoints local unless a release process explicitly publishes them elsewhere.
+- [Current Project Status](README_CURRENT.md)
+- [Gemini Master Handoff](docs/GEMINI_MASTER_HANDOFF_20261028.md)
+- [Documentation Index](docs/README.md)
