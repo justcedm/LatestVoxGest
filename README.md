@@ -1,5 +1,8 @@
 # VoxGest
 
+> **Current AI handoff:** [Gemini Master Handoff](docs/GEMINI_MASTER_HANDOFF_20261028.md). The previous README_CURRENT and Android handoff described a legacy 10-word / 30-frame / 162-feature pipeline; original contents are preserved under `docs/*_LEGACY_20261028.md`.
+
+
 VoxGest is a BSIT capstone Android accessibility prototype exploring bidirectional communication between Filipino Sign Language (FSL) users and hearing/non-signing people. It combines a selected-sign recognition pipeline with text/speech output and a separate supported-concept avatar pathway.
 
 > **Start here:** the [Gemini Master Handoff](docs/GEMINI_MASTER_HANDOFF_20261028.md) is the current authoritative project transfer document. The previous root-level `README_CURRENT.md` and `ANDROID_DEVELOPER_HANDOFF.md` described an earlier 10-word / 30-frame / 162-feature implementation; their original contents are preserved in `docs/*_LEGACY_20261028.md`.
